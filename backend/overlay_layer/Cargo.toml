@@ -12,8 +12,11 @@ name = "froststrap_overlay_layer"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+logger.workspace = true
+log.workspace = true
 smithay-client-toolkit = "0.19"
 tinyjson = "2.5.1"
-ashpd = { version = "0.11", default-features = false }
+ashpd = { version = "0.14", default-features = false, features = ["async-io", "global_shortcuts"] }
 async-io = "2"
+zbus = "6"
 futures = "0.3"

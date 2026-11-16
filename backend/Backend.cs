@@ -298,6 +298,12 @@ internal partial class InternalOverlay
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_focus_game")]
     public static partial int FocusGame();
 
+    [LibraryImport(
+        "froststrap_overlay_layer",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
+
     [LibraryImport("froststrap_overlay_layer", EntryPoint = "overlay_poll_input")]
     public static partial int PollInput(IntPtr events, int max);
 

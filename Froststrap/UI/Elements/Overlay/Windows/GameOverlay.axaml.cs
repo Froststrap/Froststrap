@@ -1344,6 +1344,7 @@ namespace Froststrap.UI.Elements.Overlay
 
         protected override void OnClosed(EventArgs e)
         {
+            App.Logger.Warn("GameOverlay: window closed");
             Dispose();
 
             base.OnClosed(e);

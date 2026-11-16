@@ -175,6 +175,21 @@ internal static class LinuxHotkeys
 
             _portalChecked = true;
 
+            // Hyprland's portal accepts GlobalShortcuts but ignores preferred_trigger,
+            // so portal hotkeys need manual Hyprland config to fire. The /dev/input
+            // fallback works out of the box there. Set FROSTSTRAP_PORTAL_HOTKEYS=1 to force the portal.
+            string? desktop = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP");
+            string? forcePortal = Environment.GetEnvironmentVariable("FROSTSTRAP_PORTAL_HOTKEYS");
+
+            if (desktop is not null
+                && desktop.Contains("Hyprland", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(forcePortal, "1", StringComparison.Ordinal))
+            {
+                App.Logger.Info("Portal global shortcuts skipped on Hyprland (use FROSTSTRAP_PORTAL_HOTKEYS=1 to enable)");
+                _portalSupported = false;
+                return _portalSupported;
+            }
+
             try
             {
                 _portalSupported = LinuxOverlay.PortalSupported();

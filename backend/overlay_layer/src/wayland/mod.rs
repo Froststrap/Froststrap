@@ -400,10 +400,17 @@ impl App {
     fn draw(&mut self, id: i32) {
         {
             let Some(surface) = self.surfaces.get(&id) else {
+                log::warn!("wayland: draw id={id} skipped — surface missing");
                 return;
             };
 
-            if !surface.configured || !surface.visible {
+            if !surface.configured {
+                log::warn!("wayland: draw id={id} skipped — not configured yet");
+                return;
+            }
+
+            if !surface.visible {
+                log::debug!("wayland: draw id={id} skipped — not visible");
                 return;
             }
         }
@@ -424,6 +431,10 @@ impl App {
 
         {
             let frames = lock(&self.shared.frames);
+            match frames.get(&id) {
+                Some(frame) => log::debug!("wayland: draw id={id} frame {}x{} ({} px)", frame.width, frame.height, frame.pixels.len()),
+                None => log::warn!("wayland: draw id={id} NO FRAME — rendering transparent pixels"),
+            }
             if let Some(frame) = frames.get(&id) {
                 let copy_width = frame.width.min(width).max(0) as usize;
                 let copy_height = frame.height.min(height).max(0) as usize;
@@ -446,6 +457,9 @@ impl App {
 
         if buffer.attach_to(layer.wl_surface()).is_ok() {
             layer.commit();
+            log::debug!("wayland: draw id={id} committed {width}x{height}");
+        } else {
+            log::error!("wayland: draw id={id} buffer attach failed");
         }
     }
 
@@ -473,10 +487,17 @@ impl App {
             if let Some(surface) = self.surfaces.get_mut(&id) {
                 surface.apply_game(game);
             }
+        }
 
-            if self.surfaces.get(&id).map(|s| s.visible).unwrap_or(false) {
-                self.draw(id);
-            }
+        let visible: Vec<i32> = self
+            .surfaces
+            .iter()
+            .filter(|(_, surface)| surface.visible)
+            .map(|(id, _)| *id)
+            .collect();
+
+        for id in visible {
+            self.draw(id);
         }
     }
 
@@ -520,6 +541,7 @@ impl App {
     fn handle(&mut self, command: Command) {
         match command {
             Command::Create { id, tracked } => {
+                log::info!("wayland: create layer surface id={id} tracked={tracked}");
                 let surface = self.compositor.create_surface(&self.qh);
 
                 let layer = self.layer_shell.create_layer_surface(
@@ -560,10 +582,12 @@ impl App {
                 self.sync();
             }
             Command::Destroy(id) => {
+                log::info!("wayland: destroy layer surface id={id}");
                 self.surfaces.remove(&id);
                 lock(&self.shared.frames).remove(&id);
             }
             Command::SetVisible { id, visible } => {
+                log::info!("wayland: set_visible id={id} visible={visible}");
                 if let Some(surface) = self.surfaces.get_mut(&id) {
                     surface.visible = visible;
                 }

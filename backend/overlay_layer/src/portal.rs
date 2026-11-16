@@ -38,8 +38,42 @@ pub struct Portal {
 impl Portal {
     pub fn start() -> Option<Portal> {
         let prepared = async_io::block_on(async {
-            let proxy = GlobalShortcuts::new().await.ok()?;
-            let session = proxy.create_session(CreateSessionOptions::default()).await.ok()?;
+            let connection = match zbus::Connection::session().await {
+                Ok(connection) => connection,
+                Err(err) => {
+                    log::error!("portal session bus unavailable: {err}");
+                    return None;
+                }
+            };
+
+            // xdg-desktop-portal >= 1.20 requires unsandboxed apps to
+            // register their app id on the same connection used for the session.
+            let app_id = match ashpd::AppID::try_from("com.froststrap.Froststrap") {
+                Ok(app_id) => app_id,
+                Err(_) => {
+                    log::error!("portal app id is invalid");
+                    return None;
+                }
+            };
+            if let Err(err) = ashpd::register_host_app_with_connection(connection.clone(), app_id).await {
+                log::error!("portal Registry.Register failed: {err}");
+                return None;
+            }
+
+            let proxy = match GlobalShortcuts::with_connection(connection).await {
+                Ok(proxy) => proxy,
+                Err(err) => {
+                    log::error!("portal global shortcuts unavailable: {err}");
+                    return None;
+                }
+            };
+            let session = match proxy.create_session(CreateSessionOptions::default()).await {
+                Ok(session) => session,
+                Err(err) => {
+                    log::error!("portal create_session failed: {err}");
+                    return None;
+                }
+            };
             Some((proxy, session))
         })?;
 
@@ -57,7 +91,7 @@ impl Portal {
                 if let Err(err) =
                     async_io::block_on(run(proxy, session, receiver, thread_activations, thread_stop))
                 {
-                    eprintln!("portal stopped: {err}");
+                    log::error!("portal stopped: {err}");
                 }
             })
             .ok()?;
@@ -111,8 +145,9 @@ async fn run(
     activations: Arc<Mutex<VecDeque<i32>>>,
     stop: Arc<AtomicBool>,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
-    let mut activation_stream = portal.receive_activated().await?;
+    let activation_stream = portal.receive_activated().await?;
     futures::pin_mut!(activation_stream);
+    let mut activation_stream = activation_stream.fuse();
 
     let mut shortcut_map: HashMap<String, i32> = HashMap::new();
 
@@ -148,14 +183,15 @@ async fn run(
                         {
                             Ok(request) => match request.response() {
                                 Ok(_) => {
+                                    log::info!("portal shortcut bound: {shortcut_id}");
                                     shortcut_map.insert(shortcut_id, id);
                                 }
                                 Err(err) => {
-                                    eprintln!("portal bind response failed: {err}");
+                                    log::error!("portal bind response failed: {err}");
                                 }
                             },
                             Err(err) => {
-                                eprintln!("portal bind failed: {err}");
+                                log::error!("portal bind failed: {err}");
                             }
                         }
                     }

@@ -14,6 +14,7 @@ using Froststrap.Integrations.OverlayModules;
 using Froststrap.Models.Overlay;
 using Froststrap.UI.Elements.Overlay;
 
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Froststrap.Integrations.Overlay.Platform
@@ -44,6 +45,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         private readonly HashSet<Window> _visibleWindows = [];
         private readonly Dictionary<Window, bool> _clickThrough = [];
         private readonly Dictionary<int, DateTime> _lastFrame = [];
+        private readonly HashSet<Window> _hiddenByGame = [];
         private readonly IntPtr _eventBuffer = Marshal.AllocHGlobal(EventSize * MaxEvents);
 
         private DispatcherTimer? _timer;
@@ -158,10 +160,29 @@ namespace Froststrap.Integrations.Overlay.Platform
             if (_disposed || !_initialised)
                 return;
 
-            PollGame();
-            PollHotkeys();
-            PollInput();
-            RenderSurfaces();
+            try { PollGame(); }
+            catch (Exception ex) { App.Logger.Error("Tick: PollGame failed"); App.Logger.Error(ex); }
+
+            try { PollHotkeys(); }
+            catch (Exception ex) { App.Logger.Error("Tick: PollHotkeys failed"); App.Logger.Error(ex); }
+
+            try { PollInput(); }
+            catch (Exception ex) { App.Logger.Error("Tick: PollInput failed"); App.Logger.Error(ex); }
+
+            try { RenderSurfaces(); }
+            catch (Exception ex) { LogRenderFailure(ex); }
+        }
+
+        private DateTime _lastRenderFailureLog = DateTime.MinValue;
+
+        private void LogRenderFailure(Exception ex)
+        {
+            if (DateTime.UtcNow - _lastRenderFailureLog < TimeSpan.FromSeconds(5))
+                return;
+
+            _lastRenderFailureLog = DateTime.UtcNow;
+            App.Logger.Error("Tick: RenderSurfaces failed");
+            App.Logger.Error(ex);
         }
 
         private void PollGame()
@@ -196,6 +217,8 @@ namespace Froststrap.Integrations.Overlay.Platform
             {
                 _visibilityKnown = true;
                 _visible = visible;
+                App.Logger.Info($"LinuxOverlayHost: game visibility changed visible={visible}");
+                RestoreRenderedWindows(visible);
                 GameVisibilityChanged?.Invoke(this, visible);
                 Dispatcher.UIThread.Post(() => _window?.RefreshPinned());
             }
@@ -248,6 +271,7 @@ namespace Froststrap.Integrations.Overlay.Platform
                 if (id < 0)
                     return;
 
+                App.Logger.Info($"LinuxOverlayHost: hotkey fired id={id}");
                 HotkeyPressed?.Invoke(this, id);
             }
         }
@@ -341,6 +365,7 @@ namespace Froststrap.Integrations.Overlay.Platform
                 return;
 
             _visibleWindows.Add(window);
+            App.Logger.Info($"LinuxOverlayHost: ShowRendered surface={surface.Id}");
             LinuxOverlay.SetVisible(surface.Id, true);
         }
 
@@ -350,6 +375,7 @@ namespace Froststrap.Integrations.Overlay.Platform
                 return;
 
             _visibleWindows.Remove(window);
+            App.Logger.Info($"LinuxOverlayHost: HideRendered surface={surface.Id}");
             LinuxOverlay.SetVisible(surface.Id, false);
 
             if (ReferenceEquals(_focused, window))
@@ -357,6 +383,27 @@ namespace Froststrap.Integrations.Overlay.Platform
                 _focused = null;
                 LinuxOverlay.SetKeyboard(surface.Id, 0);
             }
+        }
+
+        private void RestoreRenderedWindows(bool visible)
+        {
+            if (!visible)
+            {
+                _hiddenByGame.Clear();
+
+                foreach (Window window in _visibleWindows.ToList())
+                {
+                    _hiddenByGame.Add(window);
+                    HideRendered(window);
+                }
+
+                return;
+            }
+
+            foreach (Window window in _hiddenByGame.ToList())
+                ShowRendered(window);
+
+            _hiddenByGame.Clear();
         }
 
         public void FocusRendered(Window window)

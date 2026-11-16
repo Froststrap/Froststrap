@@ -149,6 +149,7 @@ impl OutputHandler for App {
 
 impl LayerShellHandler for App {
     fn closed(&mut self, _conn: &Connection, _qh: &QueueHandle<Self>, _layer: &LayerSurface) {
+        log::error!("layer surface closed by the compositor — overlay backend stopping");
         self.signal.stop();
     }
 
@@ -164,10 +165,13 @@ impl LayerShellHandler for App {
             return;
         };
 
-        if let Some(surface) = self.surfaces.get_mut(&id) {
-            surface.configured = true;
-        }
+        let Some(surface) = self.surfaces.get_mut(&id) else {
+            log::warn!("wayland: configure for unknown surface {:?}", layer.wl_surface());
+            return;
+        };
 
+        surface.configured = true;
+        log::info!("wayland: surface id={id} configured {}x{}", surface.width, surface.height);
         self.draw(id);
     }
 }

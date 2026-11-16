@@ -44,6 +44,9 @@ public static unsafe class NativeLog
 
         SetLogger("notify", InternalNativeNotify.SetLogger, callback);
 
+        if (OperatingSystem.IsLinux())
+            SetLogger("overlay_layer", InternalOverlay.SetLogger, callback);
+
         if (OperatingSystem.IsMacOS())
         {
             SetLogger("virtualdisplay", InternalVirtualDisplay.SetLogger, callback);

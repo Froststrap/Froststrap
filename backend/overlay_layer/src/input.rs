@@ -11,6 +11,8 @@ use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 const EV_KEY: u16 = 1;
+const EV_SYN: u16 = 0;
+const SYN_DROPPED: u16 = 3;
 const KEY_MAX: usize = 0x300;
 const KEY_BYTES: usize = KEY_MAX / 8;
 const BTN_LEFT: u16 = 0x110;
@@ -174,9 +176,21 @@ fn scan_loop(state: Arc<Mutex<Input>>, stop: Arc<AtomicBool>, active: Arc<Mutex<
     }
 }
 
+static LOGGED_FAILURES: Mutex<Option<HashSet<String>>> = Mutex::new(None);
+
 fn read_device(path: &str, state: Arc<Mutex<Input>>) {
-    let Ok(mut file) = File::open(path) else {
-        return;
+    let mut file = match File::open(path) {
+        Ok(file) => file,
+        Err(err) => {
+            let mut logged = lock(&LOGGED_FAILURES);
+            let set = logged.get_or_insert_with(HashSet::new);
+
+            if set.insert(path.to_owned()) {
+                log::warn!("input: cannot open {path}: {err}");
+            }
+
+            return;
+        }
     };
 
     let mut buffer = [0u8; 24 * 64];
@@ -189,10 +203,11 @@ fn read_device(path: &str, state: Arc<Mutex<Input>>) {
 
                 while offset + 24 <= count {
                     let kind = u16::from_ne_bytes([buffer[offset + 16], buffer[offset + 17]]);
+                    let code = u16::from_ne_bytes([buffer[offset + 18], buffer[offset + 19]]);
 
-                    if kind == EV_KEY {
-                        let code =
-                            u16::from_ne_bytes([buffer[offset + 18], buffer[offset + 19]]);
+                    if kind == EV_SYN && code == SYN_DROPPED {
+                        reset_after_drop(&state);
+                    } else if kind == EV_KEY {
                         let value = i32::from_ne_bytes([
                             buffer[offset + 20],
                             buffer[offset + 21],
@@ -208,6 +223,16 @@ fn read_device(path: &str, state: Arc<Mutex<Input>>) {
             }
             Err(_) => break,
         }
+    }
+}
+
+fn reset_after_drop(state: &Arc<Mutex<Input>>) {
+    let mut input = lock(state);
+    input.keys = [0; KEY_BYTES];
+    input.mouse = 0;
+
+    for hotkey in input.hotkeys.values_mut() {
+        hotkey.down = false;
     }
 }
 

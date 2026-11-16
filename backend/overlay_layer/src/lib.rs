@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+logger::export_set_logger!();
+
 #[cfg(target_os = "linux")]
 pub mod ffi;
 
