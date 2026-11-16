@@ -133,37 +133,9 @@ namespace Froststrap.UI.Elements.Base
             _appliedBrush = _currentBackgroundBrush;
             _appliedStretch = _currentImageStretch;
             _appliedOpacity = _currentImageOpacity;
-
             _backgroundHost.Background = null;
 
-            if (showImage)
-            {
-                _backgroundBorder.Background = null;
-                _backgroundImage.IsVisible = true;
-                _backgroundImage.Stretch = _currentImageStretch;
-                _backgroundImage.Opacity = _currentImageOpacity;
-
-                if (_currentIsAnimatedGif && _currentAnimatedImagePath is not null)
-                {
-                    bool pathChanged = !string.Equals(previousAnimatedPath, _currentAnimatedImagePath, StringComparison.Ordinal);
-
-                    if (pathChanged || ImageBehavior.GetAnimatedSource(_backgroundImage) is null)
-                    {
-                        var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
-                        ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
-                        ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
-                        _backgroundImage.Source = null;
-                    }
-                }
-                else
-                {
-                    if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
-                        ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
-
-                    _backgroundImage.Source = _currentBackgroundBitmap;
-                }
-            }
-            else
+            if (!showImage)
             {
                 _backgroundImage.IsVisible = false;
 
@@ -172,7 +144,31 @@ namespace Froststrap.UI.Elements.Base
 
                 _backgroundImage.Source = null;
                 _backgroundBorder.Background = _currentBackgroundBrush;
+                return;
             }
+
+            _backgroundBorder.Background = null;
+            _backgroundImage.IsVisible = true;
+            _backgroundImage.Stretch = _currentImageStretch;
+            _backgroundImage.Opacity = _currentImageOpacity;
+
+            if (!_currentIsAnimatedGif || _currentAnimatedImagePath is null)
+            {
+                if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
+                    ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
+
+                _backgroundImage.Source = _currentBackgroundBitmap;
+                return;
+            }
+
+            bool pathChanged = !string.Equals(previousAnimatedPath, _currentAnimatedImagePath, StringComparison.Ordinal);
+            if (!(pathChanged || ImageBehavior.GetAnimatedSource(_backgroundImage) is null))
+                return;
+
+            var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
+            ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
+            ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
+            _backgroundImage.Source = null;
         }
 
         public static void ApplyTheme()
