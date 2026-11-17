@@ -343,7 +343,6 @@ internal sealed partial class App : Application
 #if DEBUG
         /// Return early just becasue of if this runs in debug this might fuck shit up
         /// Would be good to though make it more robust so this doesn't need to happen
-        Logger.Debug("Skipping AUMID verification in Debug builds.");
         return Task.CompletedTask;
 #else
         return AssertWindowsAUMIDImplAsync();
