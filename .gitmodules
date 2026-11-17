@@ -7,6 +7,3 @@
 [submodule "backend/virtualdisplay"]
 	path = backend/virtualdisplay
 	url = https://github.com/Froststrap/virtualdisplay
-[submodule "libs/DiscordRPC-NativeAOT"]
-	path = libs/DiscordRPC-NativeAOT
-	url = https://github.com/Froststrap/DiscordRPC-NativeAOT.git

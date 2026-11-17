@@ -58,12 +58,12 @@ SPDX-License-Identifier: MPL-2.0
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.321" PrivateAssets="all" />
     <PackageReference Include="Velopack" Version="1.2.161" />
+    <PackageReference Include="Froststrap.DiscordRPC" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../libs/LucideAvalonia/LucideAvalonia/LucideAvalonia.csproj" />
     <ProjectReference Include="../libs/FluentAvalonia/src/FluentAvalonia/FluentAvalonia.csproj" />
-    <ProjectReference Include="../libs/DiscordRPC-NativeAOT/DiscordRPC-NativeAOT.csproj" />
     <ProjectReference Include="../backend/backend.csproj" />
     <ProjectReference Include="../Froststrap.Localisation/Froststrap.Localisation.csproj" />
     <ProjectReference Include="../Froststrap.Core/Froststrap.Core.csproj" />
