@@ -6,7 +6,6 @@
   nfpm,
   zstd,
   stdenv,
-  cargo-bloat,
   squashfsTools,
   callPackage,
 }:
@@ -24,7 +23,6 @@ mkFragment {
     vpk
     avdt
     zstd
-    cargo-bloat
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     nfpm

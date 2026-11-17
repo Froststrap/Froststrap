@@ -69,14 +69,7 @@
           // mkComposedShell [ lintFrag ] { }
           // mkComposedShell [ dotnetFrag rustFrag lspFrag ] { nameOverride = "lsp"; }
           // mkComposedShell [ dotnetFrag rustFrag ] { nameOverride = "minimal"; }
-          // mkComposedShell [ dotnetFrag rustFrag lspFrag ] { nameOverride = "default"; }
-          // mkComposedShell [
-            dotnetFrag
-            rustFrag
-            lspFrag
-            extraFrag
-            lintFrag
-          ] { nameOverride = "full"; };
+          // mkComposedShell [ dotnetFrag rustFrag lspFrag extraFrag lintFrag ] { nameOverride = "default"; };
 
         packages =
           let
