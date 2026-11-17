@@ -8,7 +8,7 @@ using System.Web;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class ExceptionDialog : Base.AvaloniaWindow
+    internal sealed partial class ExceptionDialog : Base.AvaloniaWindow
     {
         const int MAX_GITHUB_URL_LENGTH = 8192;
 

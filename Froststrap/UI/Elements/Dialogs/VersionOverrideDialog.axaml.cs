@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal class VersionEntry : INotifyPropertyChanged
+    internal sealed class VersionEntry : INotifyPropertyChanged
     {
         private string _hash = string.Empty;
         private string _version = string.Empty;
@@ -41,11 +41,11 @@ namespace Froststrap.UI.Elements.Dialogs
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string name) =>
+        private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
-    internal partial class VersionOverrideDialog : Base.AvaloniaWindow
+    internal sealed partial class VersionOverrideDialog : Base.AvaloniaWindow
     {
         private readonly LaunchMode _launchMode;
         private readonly ObservableCollection<VersionEntry> _versions = [];

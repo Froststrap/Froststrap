@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Diagnostics
 {
-    internal partial class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         public bool IsNotLinux { get; } = !OperatingSystem.IsLinux();
         public int TitlebarSpaceHeight { get; } = OperatingSystem.IsMacOS() ? 52 : 40;

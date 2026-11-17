@@ -6,6 +6,7 @@
 // TODO: Clean up this, possible rip apart code and do
 //       class seperation using partial implemntations
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Reflection;
 using SkiaSharp;
@@ -39,11 +40,11 @@ namespace Froststrap.Integrations
             Strict = ["gradient/gradient_0_100"]
         };
 
-        internal record GradientStop(float Stop, Color Color);
+        internal sealed record GradientStop(float Stop, Color Color);
 
-        internal record SpriteDef(string Name, int X, int Y, int W, int H);
+        internal sealed record SpriteDef(string Name, int X, int Y, int W, int H);
 
-        private class SpriteBlacklist
+        private sealed class SpriteBlacklist
         {
             public List<string> Prefixes { get; set; } = [];
             public List<string> Suffixes { get; set; } = [];
@@ -213,6 +214,7 @@ namespace Froststrap.Integrations
             }
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "False positive: the sprite sheet is wrapped in a using statement")]
         private static void RecolorSpriteSheets(
             Color solidColor,
             List<GradientStop>? gradient,

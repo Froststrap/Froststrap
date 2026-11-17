@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal partial class IntegrationsPage : UserControl
+    internal sealed partial class IntegrationsPage : UserControl
     {
         public IntegrationsPage()
         {

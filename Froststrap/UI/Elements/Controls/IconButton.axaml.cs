@@ -9,7 +9,7 @@ using LucideAvalonia.Enum;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    internal class IconButton : Button
+    internal sealed class IconButton : Button
     {
         public static readonly StyledProperty<double> IconSizeProperty =
             AvaloniaProperty.Register<IconButton, double>(nameof(IconSize), 12);

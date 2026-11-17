@@ -22,10 +22,12 @@ SPDX-License-Identifier: MPL-2.0
     <AssemblyName>froststrap</AssemblyName>
     <Company>Froststrap</Company>
     <Product>Froststrap</Product>
+    <AssemblyTitle>Froststrap</AssemblyTitle>
+    <Copyright>Copyright © Froststrap</Copyright>
     <RootNamespace>Froststrap</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NeutralLanguage>en</NeutralLanguage>
-    <Description>Froststrap - A Fishstrap fork</Description>
+    <Description>A Fishstrap fork</Description>
     <ApplicationIcon>../build/win.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <WindowsPackageType>None</WindowsPackageType>

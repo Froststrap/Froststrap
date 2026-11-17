@@ -7,7 +7,7 @@
 
 namespace Froststrap.Integrations.AccountManager
 {
-    internal class AvatarService
+    internal sealed class AvatarService
     {
         private readonly Dictionary<long, string?> _avatarUrlCache = [];
 

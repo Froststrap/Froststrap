@@ -133,37 +133,9 @@ namespace Froststrap.UI.Elements.Base
             _appliedBrush = _currentBackgroundBrush;
             _appliedStretch = _currentImageStretch;
             _appliedOpacity = _currentImageOpacity;
-
             _backgroundHost.Background = null;
 
-            if (showImage)
-            {
-                _backgroundBorder.Background = null;
-                _backgroundImage.IsVisible = true;
-                _backgroundImage.Stretch = _currentImageStretch;
-                _backgroundImage.Opacity = _currentImageOpacity;
-
-                if (_currentIsAnimatedGif && _currentAnimatedImagePath is not null)
-                {
-                    bool pathChanged = !string.Equals(previousAnimatedPath, _currentAnimatedImagePath, StringComparison.Ordinal);
-
-                    if (pathChanged || ImageBehavior.GetAnimatedSource(_backgroundImage) is null)
-                    {
-                        var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
-                        ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
-                        ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
-                        _backgroundImage.Source = null;
-                    }
-                }
-                else
-                {
-                    if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
-                        ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
-
-                    _backgroundImage.Source = _currentBackgroundBitmap;
-                }
-            }
-            else
+            if (!showImage)
             {
                 _backgroundImage.IsVisible = false;
 
@@ -172,7 +144,31 @@ namespace Froststrap.UI.Elements.Base
 
                 _backgroundImage.Source = null;
                 _backgroundBorder.Background = _currentBackgroundBrush;
+                return;
             }
+
+            _backgroundBorder.Background = null;
+            _backgroundImage.IsVisible = true;
+            _backgroundImage.Stretch = _currentImageStretch;
+            _backgroundImage.Opacity = _currentImageOpacity;
+
+            if (!_currentIsAnimatedGif || _currentAnimatedImagePath is null)
+            {
+                if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
+                    ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
+
+                _backgroundImage.Source = _currentBackgroundBitmap;
+                return;
+            }
+
+            bool pathChanged = !string.Equals(previousAnimatedPath, _currentAnimatedImagePath, StringComparison.Ordinal);
+            if (!(pathChanged || ImageBehavior.GetAnimatedSource(_backgroundImage) is null))
+                return;
+
+            var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
+            ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
+            ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
+            _backgroundImage.Source = null;
         }
 
         public static void ApplyTheme()
@@ -187,6 +183,11 @@ namespace Froststrap.UI.Elements.Base
             bool isCustomColors = finalTheme == Enums.Theme.Custom;
             bool isCustomImage = finalTheme == Enums.Theme.Image;
             bool isBackgroundTheme = isCustomColors || isCustomImage;
+
+            var faTheme = app.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+
+            if (faTheme != null)
+                ApplyAccentColor(faTheme);
 
             bool themeChanged = isBackgroundTheme
                 || _activeThemeDictionary == null
@@ -203,12 +204,10 @@ namespace Froststrap.UI.Elements.Base
                 ? ThemeVariant.Light
                 : ThemeVariant.Dark;
 
-            var faTheme = app.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-
             if (faTheme != null)
             {
                 faTheme.PreferSystemTheme = false;
-                faTheme.PreferUserAccentColor = true;
+                ApplyAccentColor(faTheme);
             }
 
             if (_activeThemeDictionary != null)
@@ -312,6 +311,14 @@ namespace Froststrap.UI.Elements.Base
             UpdateBackdropForAllWindows();
 
             bitmapToDispose?.Dispose();
+        }
+
+        private static void ApplyAccentColor(FluentAvaloniaTheme faTheme)
+        {
+            if (App.Settings.Prop.AccentColorMode == Enums.AccentColorMode.Custom
+                && Color.TryParse(App.Settings.Prop.CustomAccentColor, out var customAccent))
+                faTheme.CustomAccentColor = customAccent;
+            else faTheme.CustomAccentColor = null;
         }
 
         private static readonly Color DefaultCustomColor = Color.Parse("#80272F48");

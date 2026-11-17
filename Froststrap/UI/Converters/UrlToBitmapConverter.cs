@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace Froststrap.UI.Converters
 {
-    internal class UrlToBitmapConverter : IValueConverter
+    internal sealed class UrlToBitmapConverter : IValueConverter
     {
         private const int MaxCacheEntries = 256;
 

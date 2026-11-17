@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
@@ -19,7 +20,7 @@ using Velopack;
 
 namespace Froststrap;
 
-internal partial class App : Application
+internal sealed partial class App : Application
 {
     public static bool AboutOpen;
     private void About_OnClick(object? sender, EventArgs e)
@@ -337,16 +338,22 @@ internal partial class App : Application
         return false;
     }
 
-#pragma warning disable CS0162
-    public static async Task AssertWindowsAUMIDAsync()
+    public static Task AssertWindowsAUMIDAsync()
+    {
+#if DEBUG
+        /// Return early just becasue of if this runs in debug this might fuck shit up
+        /// Would be good to though make it more robust so this doesn't need to happen
+        Logger.Debug("Skipping AUMID verification in Debug builds.");
+        return Task.CompletedTask;
+#else
+        return AssertWindowsAUMIDImplAsync();
+#endif
+    }
+
+    private static async Task AssertWindowsAUMIDImplAsync()
     {
         if (!OperatingSystem.IsWindows())
             return;
-#if DEBUG
-        return;
-        /// Return early just becasue of if this runs in debug this might fuck shit up
-        /// Would be good to though make it more robust so this doesn't need to happen
-#endif
 
         Logger.Debug("Verifying AUMID creation");
 
@@ -382,7 +389,48 @@ internal partial class App : Application
         aumidKey.SetValue("IconUri", iconPath);
         Logger.Info("Created AUMID registry key.");
     }
-#pragma warning restore CS0162
+
+    private static void OnSystemColorValuesChanged(object? sender, PlatformColorValues e)
+    {
+        if (Settings.Prop.Theme != Theme.Default)
+            return;
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (Settings.Prop.Theme == Theme.Default)
+                AvaloniaWindow.ApplyTheme();
+        });
+    }
+
+    public static void LoadRemoteTranslations()
+    {
+        string cacheDirectory = Path.Combine(Paths.Cache, "Translations");
+
+        try
+        {
+            int cached = RemoteTranslations.LoadCached(cacheDirectory);
+            if (cached > 0)
+                Logger.Debug($"Loaded {cached} cached remote translations for {Localizer.CultureName}");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+        {
+            Logger.Warn(ex, "Failed to load cached remote translations");
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                int updated = await RemoteTranslations.RefreshAsync(HttpClient, cacheDirectory);
+                if (updated > 0)
+                    Logger.Info($"Updated {updated} remote translations for {Localizer.CultureName}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to refresh remote translations");
+            }
+        });
+    }
 
     public static void ApplyAnimationSettings()
     {
@@ -523,12 +571,10 @@ internal partial class App : Application
 
         Logger.Debug($"Starting {ProjectInfo.Name} {Version} ({Paths.Process})");
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
-        Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
 
         var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
-
-        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
-        userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
@@ -551,8 +597,21 @@ internal partial class App : Application
             Settings.Save();
         }
 
+        string locale = Locale.Normalise(Settings.Prop.Locale);
+        if (locale != Settings.Prop.Locale)
+        {
+            Logger.Info($"Migrating locale setting '{Settings.Prop.Locale}' to '{locale}'");
+            Settings.Prop.Locale = locale;
+            Settings.Save();
+        }
+
         AvaloniaWindow.ApplyTheme();
-        Locale.Set(Settings.Prop.Locale);
+
+        if (PlatformSettings is { } platformSettings)
+            platformSettings.ColorValuesChanged += OnSystemColorValuesChanged;
+
+        Locale.Set(locale);
+        LoadRemoteTranslations();
 
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();

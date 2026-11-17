@@ -1,5 +1,10 @@
-﻿// Credits to fishstrap for originally making this
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
 
+// Credits to fishstrap for originally making this
+
+using System.Runtime.Versioning;
 using Avalonia.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -8,7 +13,8 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Froststrap.Integrations
 {
-    internal class WindowManipulation : IDisposable
+    [SupportedOSPlatform("windows5.0")]
+    internal sealed class WindowManipulation : IDisposable
     {
         private const uint WINEVENT_OUTOFCONTEXT = 0x0;
         private const uint EVENT_OBJECT_NAMECHANGE = 0x800C;

@@ -4,7 +4,7 @@
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    internal class Page4ViewModel : NotifyPropertyChangedViewModel
+    internal sealed class Page4ViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;

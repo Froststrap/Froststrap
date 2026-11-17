@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class FontModPresetTask : StringBaseTask
+    internal sealed class FontModPresetTask : StringBaseTask
     {
         private const string CustomFontAssetId = "rbxasset://fonts/CustomFont.ttf";
         private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };

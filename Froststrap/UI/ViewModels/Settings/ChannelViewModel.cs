@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal class ChannelViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class ChannelViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private CancellationTokenSource? _playerCts;
         private CancellationTokenSource? _studioCts;
@@ -914,7 +914,7 @@ namespace Froststrap.UI.ViewModels.Settings
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

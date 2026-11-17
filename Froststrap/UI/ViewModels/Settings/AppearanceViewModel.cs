@@ -17,7 +17,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal partial class AppearanceViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
         private static readonly string[] _zipFilter = ["*.zip"];
         private static readonly string[] JsonPatterns = ["*.json"];
@@ -128,6 +128,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(SelectedLanguage));
 
                     Locale.Set(identifier);
+                    App.LoadRemoteTranslations();
                 }
             }
         }
@@ -943,6 +944,56 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool IsColorTheme => this.Theme == Enums.Theme.Custom;
         public bool IsImageTheme => this.Theme == Enums.Theme.Image;
+
+        #region Accent Color
+        public IEnumerable<AccentColorMode> AccentColorModes { get; } = Enum.GetValues<AccentColorMode>();
+
+        public static bool AccentColorExpanded => App.Settings.Prop.AccentColorMode == AccentColorMode.Custom;
+
+        public bool IsCustomAccentColor => AccentColorMode == AccentColorMode.Custom;
+
+        public AccentColorMode AccentColorMode
+        {
+            get => App.Settings.Prop.AccentColorMode;
+            set
+            {
+                if (App.Settings.Prop.AccentColorMode == value)
+                    return;
+
+                App.Settings.Prop.AccentColorMode = value;
+                OnPropertyChanged(nameof(AccentColorMode));
+                OnPropertyChanged(nameof(AccentColorExpanded));
+                OnPropertyChanged(nameof(IsCustomAccentColor));
+                AvaloniaWindow.ApplyTheme();
+            }
+        }
+
+        public string CustomAccentColor
+        {
+            get => App.Settings.Prop.CustomAccentColor;
+            set
+            {
+                App.Settings.Prop.CustomAccentColor = value;
+                OnPropertyChanged(nameof(CustomAccentColor));
+                AvaloniaWindow.ApplyTheme();
+            }
+        }
+
+        private ICommand? _openAccentColorPickerCommand;
+        public ICommand OpenAccentColorPickerCommand => _openAccentColorPickerCommand ??= new RelayCommand<Control>(async control =>
+        {
+            if (control is null) return;
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+
+            var dialog = new ColorPickerDialog(App.Settings.Prop.CustomAccentColor);
+            var result = await dialog.ShowDialog<string>(parentWindow);
+
+            if (!string.IsNullOrWhiteSpace(result))
+                CustomAccentColor = result;
+        });
+        #endregion
         public double? GradientAngle
         {
             get => App.Settings.Prop.GradientAngle;
@@ -1201,7 +1252,7 @@ namespace Froststrap.UI.ViewModels.Settings
         #endregion
     }
 
-    internal class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
+    internal sealed class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
     {
         private bool _isSelected;
         private string _themeName = string.Empty;

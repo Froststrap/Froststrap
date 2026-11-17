@@ -10,7 +10,7 @@ using System.Xml.XPath;
 
 namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
 {
-    internal partial class GlobalSettingsEditor : UserControl, IDisposable
+    internal sealed partial class GlobalSettingsEditor : UserControl, IDisposable
     {
         // This all could of been done better but meh
 
@@ -187,7 +187,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

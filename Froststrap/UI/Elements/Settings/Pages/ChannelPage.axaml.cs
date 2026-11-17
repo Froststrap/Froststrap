@@ -6,7 +6,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-internal partial class ChannelPage : UserControl
+internal sealed partial class ChannelPage : UserControl
 {
     public ChannelPage()
     {

@@ -12,6 +12,7 @@ using Froststrap;
 
 internal static class AppInitializer
 {
+    [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
     [DllImport("libSystem.dylib")]
     private static extern int csr_get_active_config(out uint config);
 
@@ -153,6 +154,7 @@ internal static class AppInitializer
     private static bool _resolversInitialized;
 
     [SupportedOSPlatform("windows")]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern bool SetDllDirectory(string lpPathName);
 

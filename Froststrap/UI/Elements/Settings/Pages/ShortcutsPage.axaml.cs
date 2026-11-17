@@ -6,7 +6,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal partial class ShortcutsPage : UserControl
+    internal sealed partial class ShortcutsPage : UserControl
     {
         public ShortcutsPage()
         {

@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    internal class Page2ViewModel : NotifyPropertyChangedViewModel
+    internal sealed class Page2ViewModel : NotifyPropertyChangedViewModel
     {
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };

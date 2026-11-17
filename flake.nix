@@ -13,6 +13,10 @@
   };
 
   inputs = {
+    dotnix = {
+      url = "github:froststrap/dotnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     fenix = {
       url = "github:nix-community/fenix/monthly";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,10 +53,10 @@
               mkComposedShell
               ;
 
-            dotnetFrag = pkgs.callPackage ./nix/dotnetDevShell.nix {
+            dotnetFrag = (pkgs.callPackage ./nix/dotnetDevShell.nix {
               fontconfig = pkgs-unstable.fontconfig;
-            };
-            extraFrag = pkgs.callPackage ./nix/extra.nix { };
+            } inputs);
+            extraFrag = (pkgs.callPackage ./nix/extra.nix { }) inputs;
             lintFrag = pkgs.callPackage ./nix/lint.nix { };
             lspFrag = pkgs.callPackage ./nix/lsp.nix { };
             rustFrag = (pkgs.callPackage ./nix/rustDevShell.nix { }) inputs;

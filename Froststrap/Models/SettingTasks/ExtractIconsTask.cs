@@ -8,7 +8,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class ExtractIconsTask : BoolBaseTask
+    internal sealed class ExtractIconsTask : BoolBaseTask
     {
         private static string IconPath => Path.Combine(Paths.Base, Strings.Paths_Icons);
 
@@ -44,13 +44,7 @@ namespace Froststrap.Models.SettingTasks
                     if (!AssetLoader.Exists(assetUri))
                         continue;
 
-                    string filePath = Path.Combine(IconPath, $"{iconName}.ico");
-                    Filesystem.AssertReadOnly(filePath);
-
-                    using var stream = AssetLoader.Open(assetUri);
-                    using var bitmap = new Bitmap(stream);
-                    using var fileStream = File.Create(filePath);
-                    IcoWriter.Write(bitmap, fileStream);
+                    WriteIconFile(assetUri, Path.Combine(IconPath, $"{iconName}.ico"));
                 }
             }
             else if (Directory.Exists(IconPath))
@@ -59,6 +53,17 @@ namespace Froststrap.Models.SettingTasks
             }
 
             OriginalState = NewState;
+        }
+
+        private static void WriteIconFile(Uri assetUri, string filePath)
+        {
+            Filesystem.AssertReadOnly(filePath);
+
+            using var stream = AssetLoader.Open(assetUri);
+            using var bitmap = new Bitmap(stream);
+            using var fileStream = File.Create(filePath);
+
+            IcoWriter.Write(bitmap, fileStream);
         }
     }
 }

@@ -6,7 +6,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    internal class GlobalSetting : NotifyPropertyChangedViewModel
+    internal sealed class GlobalSetting : NotifyPropertyChangedViewModel
     {
         private string _name = string.Empty;
         private string _value = string.Empty;

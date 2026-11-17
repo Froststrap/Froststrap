@@ -4,7 +4,7 @@
 
 namespace Froststrap.AppData
 {
-    internal class RobloxStudioData : CommonAppData, IAppData
+    internal sealed class RobloxStudioData : CommonAppData, IAppData
     {
         public string ProductName => "Roblox Studio";
 

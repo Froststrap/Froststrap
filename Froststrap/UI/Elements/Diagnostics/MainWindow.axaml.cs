@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Diagnostics;
 
 namespace Froststrap.UI.Elements.Diagnostics
 {
-    internal partial class MainWindow : Base.AvaloniaWindow
+    internal sealed partial class MainWindow : Base.AvaloniaWindow
     {
         private readonly MainWindowViewModel _viewModel;
         protected override bool ApplyTopPadding => false;

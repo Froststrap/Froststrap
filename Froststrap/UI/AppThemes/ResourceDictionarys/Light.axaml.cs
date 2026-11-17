@@ -7,7 +7,7 @@ using Avalonia.Markup.Xaml;
 
 namespace Froststrap.UI.AppThemes.ResourceDictionarys
 {
-    internal partial class Light : ResourceDictionary
+    internal sealed partial class Light : ResourceDictionary
     {
         public Light()
         {

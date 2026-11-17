@@ -1,5 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
 {
-  dotnetCorePackages,
   buildDotnetModule,
   makeRustPlatform,
   rustPlatform,
@@ -31,12 +34,14 @@
   lib,
 }:
 {
+  dotnix,
   fenix,
   ...
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
-  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
+  dotnet = dotnix.packages.${stdenv.hostPlatform.system};
+  dotnet-sdk = dotnet.combine [ dotnet."10-0".stable.sdk ];
+  dotnet-runtime = dotnet.combine [ dotnet."10-0".stable.runtime ];
   toolchain = with fenix.packages.${stdenv.system}; combine [ minimal.toolchain ];
   src = ../.;
   fenixRustPlatform = makeRustPlatform {
@@ -93,7 +98,7 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-KqFpWnP1SgVWs//PM0nqgzpmxDTGuHhy2ffHils4U2Q=";
+    hash = "sha256-30TGDP5xGnqfws4nHk7bRLTj8ugkCoLrfHLtVEu0fk8=";
   };
 
   nativeBuildInputs = [

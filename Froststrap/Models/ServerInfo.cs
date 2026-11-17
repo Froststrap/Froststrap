@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.Models;
 
-internal class ServerInfo
+internal sealed class ServerInfo
 {
     [JsonPropertyName("jobId")]
     public string JobId { get; set; } = "";

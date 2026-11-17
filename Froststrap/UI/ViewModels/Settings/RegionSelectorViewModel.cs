@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
@@ -6,7 +10,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal partial class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed partial class RegionSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int ApiPageSize = 100;
         private const int SpecificRegionBatchSize = 12;
@@ -765,7 +769,7 @@ namespace Froststrap.UI.ViewModels.Settings
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed) return;
 

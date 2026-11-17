@@ -11,7 +11,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class FlagProfilesDialog : AvaloniaWindow
+    internal sealed partial class FlagProfilesDialog : AvaloniaWindow
     {
         public MessageBoxResult Result = MessageBoxResult.Cancel;
 

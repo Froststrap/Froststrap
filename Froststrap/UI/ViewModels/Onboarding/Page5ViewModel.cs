@@ -4,7 +4,7 @@
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    internal class Page5ViewModel : NotifyPropertyChangedViewModel
+    internal sealed class Page5ViewModel : NotifyPropertyChangedViewModel
     {
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{ProjectInfo.Name}.lnk");
         public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{ProjectInfo.Name}.lnk");

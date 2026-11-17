@@ -10,7 +10,7 @@ using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class FluentMessageBox : Base.AvaloniaWindow
+    internal sealed partial class FluentMessageBox : Base.AvaloniaWindow
     {
         public MessageBoxResult Result = MessageBoxResult.None;
 

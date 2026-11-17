@@ -7,7 +7,7 @@ using NLog;
 
 namespace Froststrap
 {
-    internal class LaunchSettings
+    internal sealed class LaunchSettings
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

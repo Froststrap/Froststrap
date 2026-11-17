@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal class SubplaceJoinDialogViewModel : NotifyPropertyChangedViewModel
+internal sealed class SubplaceJoinDialogViewModel : NotifyPropertyChangedViewModel
 {
     private readonly long _universeId;
 

@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class AddCustomThemeDialog : Base.AvaloniaWindow
+    internal sealed partial class AddCustomThemeDialog : Base.AvaloniaWindow
     {
         private const int CreateNewTabId = 0;
         private readonly AddCustomThemeViewModel _viewModel;

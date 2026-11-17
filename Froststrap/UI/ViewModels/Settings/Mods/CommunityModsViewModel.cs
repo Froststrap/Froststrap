@@ -12,7 +12,7 @@ using System.IO.Compression;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    internal partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
@@ -405,7 +405,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

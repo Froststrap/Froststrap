@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    internal partial class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }

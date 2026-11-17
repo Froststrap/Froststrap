@@ -1926,7 +1926,7 @@ internal partial class Bootstrapper : IDisposable
     private static readonly X509Certificate2 _webView2RootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
     private static HttpClient CreateWebView2HttpClient()
     {
-        var handler = new HttpClientHandler
+        HttpClientHandler? handler = new HttpClientHandler
         {
             ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
             {
@@ -1944,7 +1944,16 @@ internal partial class Bootstrapper : IDisposable
             }
         };
 
-        return new HttpClient(handler);
+        try
+        {
+            var client = new HttpClient(handler);
+            handler = null;
+            return client;
+        }
+        finally
+        {
+            handler?.Dispose();
+        }
     }
 
     private async Task<string?> GetWebView2LatestVersionAsync()
@@ -2837,7 +2846,7 @@ internal partial class Bootstrapper : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed)
             return;

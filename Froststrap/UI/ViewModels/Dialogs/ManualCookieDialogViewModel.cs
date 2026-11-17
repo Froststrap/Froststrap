@@ -8,7 +8,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    internal partial class ManualCookieDialogViewModel(AvaloniaWindow window) : NotifyPropertyChangedViewModel
+    internal sealed partial class ManualCookieDialogViewModel(AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
         private string _cookieInput = string.Empty;
         public string CookieInput

@@ -1,6 +1,9 @@
-[type.resx]
-extend-glob = ["*.resx"]
-check-file = false
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
+[files]
+extend-exclude = ["Froststrap.Localisation/Resources/Translations/*.json"]
 
 [type.control-strings]
 extend-glob = ["*ControlStrings.json"]

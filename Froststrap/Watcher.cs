@@ -6,7 +6,7 @@ using Froststrap.Integrations;
 
 namespace Froststrap
 {
-    internal class Watcher : IDisposable
+    internal sealed class Watcher : IDisposable
     {
         private readonly InterProcessLock _lock = new("Watcher");
 
@@ -33,6 +33,7 @@ namespace Froststrap
         private CancellationTokenSource? _closeCancel;
 #pragma warning restore CA2213
         private int _gameModeHandle = -1;
+        private int _fallbackPid;
 
         public static int? ProcessId { get; private set; }
 
@@ -50,7 +51,7 @@ namespace Froststrap
 
             ProcessId = _watcherData.ProcessId;
 
-            if (OperatingSystem.IsWindows() && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0) && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
                 WindowManipulation = new(_watcherData.ProcessId);
 
             if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
@@ -93,7 +94,7 @@ namespace Froststrap
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
 
-                if (_watcherData.LaunchMode == LaunchMode.Player)
+                if (_watcherData.LaunchMode == LaunchMode.Player && OperatingSystem.IsWindows())
                     IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, WindowManipulation);
 
                 if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
@@ -356,13 +357,91 @@ namespace Froststrap
             return newestPid;
         }
 
+        private static bool IsProcessRunning(int pid)
+        {
+            if (pid <= 0)
+                return false;
+
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        private bool IsRobloxRunning(WatcherData watcherData, bool isStudio)
+        {
+            if (IsProcessRunning(watcherData.ProcessId))
+                return true;
+
+            if (_fallbackPid != 0 && IsProcessRunning(_fallbackPid))
+                return true;
+
+            _fallbackPid = 0;
+
+            var processes = Utility.Processes.GetProcessesSafe();
+
+            try
+            {
+                if (isStudio)
+                {
+                    var studioProcesses = processes.Where(IsStudioProcess).ToList();
+
+                    if (studioProcesses.Count == 0)
+                        return false;
+
+                    int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
+
+                    if (newestStudioPid != 0)
+                    {
+                        App.Logger.Info($"Studio process {watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
+                        watcherData.ProcessId = newestStudioPid;
+                        ProcessId = newestStudioPid;
+                    }
+
+                    return true;
+                }
+
+                if (watcherData.LaunchMode != LaunchMode.Player)
+                    return false;
+
+                string? playerName = OperatingSystem.IsLinux() ? "sober"
+                    : OperatingSystem.IsMacOS() ? "RobloxPlayer"
+                    : null;
+
+                if (playerName is null)
+                    return false;
+
+                var player = processes.FirstOrDefault(x => x.ProcessName == playerName);
+
+                if (player is null)
+                    return false;
+
+                App.Logger.Info($"Roblox process {watcherData.ProcessId} is no longer running, watching '{playerName}' (PID {player.Id}) instead");
+                _fallbackPid = player.Id;
+
+                return true;
+            }
+            finally
+            {
+                foreach (var process in processes)
+                    process.Dispose();
+            }
+        }
+
         public async Task Run()
         {
             if (!_lock.IsAcquired || _watcherData is null)
                 return;
 
             ActivityWatcher?.Start();
-            WindowManipulation?.Start();
+
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
+                WindowManipulation?.Start();
 
             bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
 
@@ -370,40 +449,8 @@ namespace Froststrap
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    var processes = Utility.Processes.GetProcessesSafe();
-                    var processExists = processes.Any(x => x.Id == _watcherData.ProcessId);
-
-                    if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
-                    {
-                        if (OperatingSystem.IsLinux())
-                            processExists = processes.Any(x => x.ProcessName == "sober");
-                        else if (OperatingSystem.IsMacOS())
-                            processExists = processes.Any(x => x.ProcessName == "RobloxPlayer");
-                    }
-
-                    if (isStudio)
-                    {
-                        var studioProcesses = processes.Where(IsStudioProcess).ToList();
-
-                        if (studioProcesses.Count > 0)
-                        {
-                            processExists = true;
-
-                            if (!studioProcesses.Any(x => x.Id == _watcherData.ProcessId))
-                            {
-                                int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
-
-                                if (newestStudioPid != 0)
-                                {
-                                    App.Logger.Info($"Studio process {_watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
-                                    _watcherData.ProcessId = newestStudioPid;
-                                    ProcessId = newestStudioPid;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!processExists) break;
+                    if (!IsRobloxRunning(_watcherData, isStudio))
+                        break;
 
                     await Task.Delay(1000, _cancellationTokenSource.Token);
                 }
@@ -544,8 +591,11 @@ namespace Froststrap
                 _gameModeHandle = -1;
             }
 
-            IntegrationWatcher?.Dispose();
-            WindowManipulation?.Dispose();
+            if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
+            {
+                IntegrationWatcher?.Dispose();
+                WindowManipulation?.Dispose();
+            }
             Softkey?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();

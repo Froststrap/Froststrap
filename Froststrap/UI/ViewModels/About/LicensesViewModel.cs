@@ -6,14 +6,14 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    internal class LicenseItem
+    internal sealed class LicenseItem
     {
         public string Header { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
     }
 
-    internal class LicensesViewModel : NotifyPropertyChangedViewModel
+    internal sealed class LicensesViewModel : NotifyPropertyChangedViewModel
     {
         public ObservableCollection<LicenseItem> Licenses { get; } = [];
 

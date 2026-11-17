@@ -7,7 +7,7 @@ using System.Runtime.Versioning;
 namespace Froststrap.Integrations
 {
     [SupportedOSPlatform("windows")]
-    internal class IntegrationWatcher : IDisposable
+    internal sealed class IntegrationWatcher : IDisposable
     {
         private readonly ActivityWatcher _activityWatcher;
         private readonly WindowManipulation? _windowManipulation;
@@ -37,14 +37,14 @@ namespace Froststrap.Integrations
                     if (App.Settings.Prop.AutoChangeIcon)
                     {
                         byte[]? iconBytes = await FetchGameIconAsync();
-                        if (iconBytes is not null)
+                        if (iconBytes is not null && OperatingSystem.IsWindowsVersionAtLeast(5, 0))
                             _windowManipulation.ApplyGameIcon(iconBytes);
                     }
 
                     if (App.Settings.Prop.AutoChangeTitle)
                     {
                         string? title = await FetchGameTitleAsync();
-                        if (title is not null)
+                        if (title is not null && OperatingSystem.IsWindowsVersionAtLeast(5, 0))
                             _windowManipulation.ApplyGameTitle(title);
                     }
                 });
@@ -63,7 +63,7 @@ namespace Froststrap.Integrations
 
         private void OnGameLeave(object? sender, EventArgs e)
         {
-            if (_windowManipulation != null && WindowManipulationEnabled)
+            if (_windowManipulation != null && WindowManipulationEnabled && OperatingSystem.IsWindowsVersionAtLeast(5, 0))
                 _windowManipulation.ResetToConfigured();
 
             foreach (var pid in _activeIntegrations.Keys.ToList())

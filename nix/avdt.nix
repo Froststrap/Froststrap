@@ -4,13 +4,17 @@
 {
   lib,
   stdenv,
-  dotnetCorePackages,
   writeShellScriptBin,
   buildDotnetGlobalTool,
 }:
+{
+  dotnix,
+  ...
+}:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
-  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
+  dotnet = dotnix.packages.${stdenv.hostPlatform.system};
+  dotnet-sdk = dotnet.combine [ dotnet."10-0".stable.sdk ];
+  dotnet-runtime = dotnet.combine [ dotnet."10-0".stable.runtime ];
   avdt-unwrapped = buildDotnetGlobalTool {
     pname = "avdt";
     version = "2.2.3";

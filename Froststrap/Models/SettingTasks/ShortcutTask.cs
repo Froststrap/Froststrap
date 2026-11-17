@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class ShortcutTask : BoolBaseTask
+    internal sealed class ShortcutTask : BoolBaseTask
     {
         private readonly string _shortcutPath;
 

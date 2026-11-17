@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal record PrivateServerInfo(
+internal sealed record PrivateServerInfo(
     long VipServerId,
     string AccessCode,
     string Name,
@@ -21,7 +21,7 @@ internal record PrivateServerInfo(
     int MaxPlayers,
     int CurrentPlayers);
 
-internal class PrivateServerJoinDialogViewModel : NotifyPropertyChangedViewModel
+internal sealed class PrivateServerJoinDialogViewModel : NotifyPropertyChangedViewModel
 {
     private readonly long _placeId;
 

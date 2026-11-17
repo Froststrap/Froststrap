@@ -8,7 +8,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class ColorPickerDialog : AvaloniaWindow
+    internal sealed partial class ColorPickerDialog : AvaloniaWindow
     {
         public ColorPickerDialog()
         {

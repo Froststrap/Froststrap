@@ -428,7 +428,7 @@ namespace Froststrap
     /// <see cref="JsonManager{T}"/> that will automatically load in the JSON if it has not been already
     /// </summary>
     /// <typeparam name="T">Class</typeparam>
-    internal class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
+    internal sealed class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
     {
         private readonly object _loadSync = new();
 

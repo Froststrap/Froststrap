@@ -19,7 +19,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings;
 
-internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable, IGameMenuActions
+internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable, IGameMenuActions
 {
     internal enum QuickPlayTab
     {
@@ -1537,7 +1537,7 @@ internal class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisposable,
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed) return;
 

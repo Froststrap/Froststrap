@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal class GlobalSettingsDialogService(MainWindowViewModel mainVm) : IDialogServiceGlobal
+    internal sealed class GlobalSettingsDialogService(MainWindowViewModel mainVm) : IDialogServiceGlobal
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
@@ -20,7 +20,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         }
     }
 
-    internal partial class GlobalSettingsPage : UserControl
+    internal sealed partial class GlobalSettingsPage : UserControl
     {
         public GlobalSettingsPage()
         {

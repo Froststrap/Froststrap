@@ -7,6 +7,7 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using Avalonia.LogicalTree;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.MarkupExtensions;
@@ -30,7 +31,7 @@ using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    internal partial class MainWindow : Base.AvaloniaWindow
+    internal sealed partial class MainWindow : Base.AvaloniaWindow
     {
         protected override bool ApplyTopPadding => false;
         public static MainWindow? Instance { get; private set; }
@@ -537,6 +538,7 @@ namespace Froststrap.UI.Elements.Settings
             loadingOverlay?.IsVisible = false;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Deliberate: the view models and pages are long-lived UI objects owned by the indexed page tree")]
         private async Task IndexMissingPagesAsync()
         {
             if (_viewModel == null) return;
@@ -597,10 +599,24 @@ namespace Froststrap.UI.Elements.Settings
 
                         if (vm == null) continue;
 
-                        var view = ResolveViewForViewModel(vm);
-                        if (view == null) continue;
+                        IDisposable? trackedVm = vm as IDisposable;
 
-                        view.DataContext = vm;
+                        Control? view = null;
+
+                        try
+                        {
+                            view = ResolveViewForViewModel(vm);
+
+                            if (view == null)
+                                continue;
+
+                            view.DataContext = vm;
+                            trackedVm = null;
+                        }
+                        finally
+                        {
+                            trackedVm?.Dispose();
+                        }
 
                         var container = new Border { Child = view };
                         stagingArea.Child = container;

@@ -4,7 +4,7 @@
 
 namespace Froststrap;
 
-internal class WineManager(string baseWineDir)
+internal sealed class WineManager(string baseWineDir)
 {
     private readonly string _wineRoot = Path.Combine(baseWineDir, "kombucha");
     private readonly string _prefixDir = Path.Combine(baseWineDir, "prefixes", "studio");
