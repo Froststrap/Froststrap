@@ -13,148 +13,180 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Localisation"
     x:Name="Root"
-    x:DataType="models:QuickPlayGameItem">
+    x:DataType="models:QuickPlayGameItem"
+    RenderTransformOrigin="0.5,0.5">
 
-    <Button
-        x:Name="CardButton"
-        Margin="4"
-        Padding="0"
-        Background="Transparent"
-        BorderThickness="0"
-        ClickMode="Press">
-        <Button.Styles>
-            <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Background" Value="Transparent" />
-            </Style>
-        </Button.Styles>
+    <UserControl.Transitions>
+        <Transitions>
+            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.12" />
+        </Transitions>
+    </UserControl.Transitions>
 
-        <controls:Card
-            MaxWidth="190"
+    <Grid>
+        <Button
+            x:Name="CardButton"
+            Margin="4"
             Padding="0"
-            CornerRadius="12,12,4,4"
-            ClipToBounds="True">
-            <Panel>
-                <StackPanel>
-                    <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                        <Image
-                            Source="{Binding ThumbnailBitmap}"
-                            Height="190"
-                            MinWidth="190"
-                            Stretch="Fill"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            RenderOptions.BitmapInterpolationMode="HighQuality" />
-                    </Border>
-                    <StackPanel Margin="8" Spacing="4">
-                        <TextBlock
-                            Text="{Binding Name}"
-                            FontWeight="SemiBold"
-                            TextTrimming="CharacterEllipsis" />
+            Background="Transparent"
+            BorderThickness="0"
+            ClickMode="Press">
+            <Button.Styles>
+                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+                <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </Button.Styles>
 
-                        <StackPanel
-                            Orientation="Horizontal"
-                            Spacing="4"
-                            IsVisible="{Binding #Root.ShowDetails}">
-                            <TextBlock
-                                Text="{Binding Creator, StringFormat='By {0}'}"
-                                FontSize="11"
-                                Opacity="0.6"
-                                TextTrimming="CharacterEllipsis"
-                                VerticalAlignment="Center" />
+            <controls:Card
+                MaxWidth="190"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                Padding="0"
+                CornerRadius="12,12,4,4"
+                ClipToBounds="True">
+                <Panel>
+                    <StackPanel>
+                        <Border CornerRadius="12,12,0,0" ClipToBounds="True">
                             <Image
-                                IsVisible="{Binding IsVerified}"
-                                Source="avares://Froststrap/Resources/RobloxVerified.png"
-                                Width="12"
-                                Height="12"
-                                VerticalAlignment="Center" />
-                        </StackPanel>
+                                Source="{Binding ThumbnailBitmap}"
+                                Height="190"
+                                MinWidth="190"
+                                Stretch="Fill"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RenderOptions.BitmapInterpolationMode="HighQuality" />
+                        </Border>
+                        <StackPanel Margin="8" Spacing="4">
+                            <TextBlock
+                                Text="{Binding Name}"
+                                FontWeight="SemiBold"
+                                TextTrimming="CharacterEllipsis" />
 
-                        <Grid ColumnDefinitions="*,Auto,*">
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ic:Lucide
-                                    Icon="Users"
-                                    Height="12"
-                                    Width="12"
-                                    VerticalAlignment="Center" />
-                                <TextBlock
-                                    Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
-                                    FontSize="11"
-                                    FontWeight="Medium" />
-                                <TextBlock
-                                    Text="{x:Static resources:Strings.Menu_QuickPlay_Active}"
-                                    FontSize="11"
-                                    Opacity="0.5" />
-                            </StackPanel>
                             <StackPanel
-                                Grid.Column="2"
                                 Orientation="Horizontal"
                                 Spacing="4"
-                                HorizontalAlignment="Right"
                                 IsVisible="{Binding #Root.ShowDetails}">
-                                <ic:Lucide
-                                    Icon="Eye"
-                                    Height="12"
-                                    Width="12"
+                                <TextBlock
+                                    Text="{Binding Creator, StringFormat='By {0}'}"
+                                    FontSize="11"
+                                    Opacity="0.6"
+                                    TextTrimming="CharacterEllipsis"
                                     VerticalAlignment="Center" />
-                                <TextBlock
-                                    Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}"
-                                    FontSize="11"
-                                    FontWeight="Medium" />
-                                <TextBlock
-                                    Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}"
-                                    FontSize="11"
-                                    Opacity="0.5" />
+                                <Image
+                                    IsVisible="{Binding IsVerified}"
+                                    Source="avares://Froststrap/Resources/RobloxVerified.png"
+                                    Width="12"
+                                    Height="12"
+                                    VerticalAlignment="Center" />
                             </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </StackPanel>
 
-                <Panel
-                    IsVisible="{Binding #Root.ShowDetails}"
-                    Margin="8"
-                    VerticalAlignment="Top">
-                    <Border
-                        IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}"
-                        Padding="8,2"
-                        Background="Black"
-                        CornerRadius="8"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top">
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <ic:Lucide Icon="Server" Height="12" Width="12" />
-                            <TextBlock
-                                Text="{Binding ServerCount}"
-                                FontSize="11"
-                                FontWeight="Bold" />
+                            <Grid ColumnDefinitions="*,Auto,*">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <ic:Lucide
+                                        Icon="Users"
+                                        Height="12"
+                                        Width="12"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock
+                                        Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
+                                        FontSize="11"
+                                        FontWeight="Medium" />
+                                    <TextBlock
+                                        Text="{x:Static resources:Strings.Menu_QuickPlay_Active}"
+                                        FontSize="11"
+                                        Opacity="0.5" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    Spacing="4"
+                                    HorizontalAlignment="Right"
+                                    IsVisible="{Binding #Root.ShowDetails}">
+                                    <ic:Lucide
+                                        Icon="Eye"
+                                        Height="12"
+                                        Width="12"
+                                        VerticalAlignment="Center" />
+                                    <TextBlock
+                                        Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}"
+                                        FontSize="11"
+                                        FontWeight="Medium" />
+                                    <TextBlock
+                                        Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}"
+                                        FontSize="11"
+                                        Opacity="0.5" />
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
-                    </Border>
+                    </StackPanel>
 
                     <Panel
-                        HorizontalAlignment="Left"
+                        IsVisible="{Binding #Root.ShowDetails}"
+                        Margin="8"
                         VerticalAlignment="Top">
                         <Border
                             IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}"
                             Padding="8,2"
-                            Background="#22C55E"
-                            CornerRadius="8">
-                            <TextBlock
-                                Text="{x:Static resources:Strings.Menu_QuickPlay_Tracked}"
-                                FontSize="11"
-                                FontWeight="Bold" />
+                            Background="Black"
+                            CornerRadius="8"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ic:Lucide Icon="Server" Height="12" Width="12" />
+                                <TextBlock
+                                    Text="{Binding ServerCount}"
+                                    FontSize="11"
+                                    FontWeight="Bold" />
+                            </StackPanel>
                         </Border>
-                        <Border
-                            IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}"
-                            Padding="8,2"
-                            Background="#3B82F6"
-                            CornerRadius="8">
-                            <TextBlock
-                                Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxAPI}"
-                                FontSize="11"
-                                FontWeight="Bold" />
-                        </Border>
+
+                        <Panel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top">
+                            <Border
+                                IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}"
+                                Padding="8,2"
+                                Background="#22C55E"
+                                CornerRadius="8">
+                                <TextBlock
+                                    Text="{x:Static resources:Strings.Menu_QuickPlay_Tracked}"
+                                    FontSize="11"
+                                    FontWeight="Bold" />
+                            </Border>
+                            <Border
+                                IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}"
+                                Padding="8,2"
+                                Background="#3B82F6"
+                                CornerRadius="8">
+                                <TextBlock
+                                    Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxAPI}"
+                                    FontSize="11"
+                                    FontWeight="Bold" />
+                            </Border>
+                        </Panel>
                     </Panel>
                 </Panel>
-            </Panel>
-        </controls:Card>
-    </Button>
+            </controls:Card>
+        </Button>
+
+        <Border
+            x:Name="PlayBar"
+            IsVisible="False"
+            Padding="8"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+            BorderThickness="0,0,1,1"
+            CornerRadius="0,0,4,4">
+            <controls:IconButton
+                x:Name="PlayButton"
+                Icon="Play"
+                IconSize="24"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                VerticalAlignment="Stretch"
+                Classes="Primary" />
+        </Border>
+    </Grid>
 </UserControl>

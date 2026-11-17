@@ -4,6 +4,12 @@
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Media.Transformation;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Froststrap.Localisation;
 using Froststrap.Models;
@@ -33,14 +39,22 @@ namespace Froststrap.UI.Elements.Controls
     }
 
     /// <summary>
-    /// Reusable game card with thumbnail, live stats and the game context menu:
-    /// join/rejoin/best region, server lists, subplaces and the game page link.
+    /// Reusable game card with thumbnail, live stats, hover play button and the
+    /// game context menu: join/rejoin/best region, server lists, subplaces and
+    /// the game page link.
     /// </summary>
     internal sealed partial class GameCard : UserControl
     {
+        private const double PopScale = 1.08;
+
         public static readonly StyledProperty<bool> ShowDetailsProperty =
             AvaloniaProperty.Register<GameCard, bool>(nameof(ShowDetails));
 
+        private static readonly ITransform PopTransform = TransformOperations.Parse($"scale({PopScale})");
+
+        private readonly DispatcherTimer _closeTimer;
+        private readonly Panel? _playBarHost;
+        private bool _barOpen;
         private readonly MenuFlyout _flyout;
         private readonly MenuItem _join;
         private readonly MenuItem _rejoin;
@@ -83,7 +97,21 @@ namespace Froststrap.UI.Elements.Controls
             };
 
             _flyout.Opening += (_, _) => RefreshItems();
-            CardButton.Flyout = _flyout;
+
+            _playBarHost = PlayBar.Parent as Panel;
+            PlayBar.PointerEntered += (_, _) => StopCloseTimer();
+            PlayBar.PointerExited += (_, _) => StartCloseTimer();
+            PlayButton.Click += OnPlayButtonClick;
+
+            _closeTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(160) };
+            _closeTimer.Tick += (_, _) =>
+            {
+                StopCloseTimer();
+                if (!IsPointerOver && !PlayBar.IsPointerOver)
+                    ClosePop();
+            };
+
+            AddHandler(PointerPressedEvent, OnPointerPressed, RoutingStrategies.Tunnel);
         }
 
         /// <summary>
@@ -102,6 +130,121 @@ namespace Froststrap.UI.Elements.Controls
                 Header = header,
                 Icon = new LucideAvalonia.Lucide { Icon = icon, Height = 16, Width = 16 }
             };
+        }
+
+        private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+                return;
+
+            _flyout.ShowAt(this);
+            e.Handled = true;
+        }
+
+        private void OnPlayButtonClick(object? sender, RoutedEventArgs e)
+        {
+            var actions = FindActions();
+            if (actions != null && DataContext is QuickPlayGameItem item)
+                actions.JoinGameCommand.Execute(item);
+
+            ClosePop();
+        }
+
+        protected override void OnPointerEntered(PointerEventArgs e)
+        {
+            base.OnPointerEntered(e);
+            StopCloseTimer();
+            RenderTransform = PopTransform;
+            SetContainerZIndex(100);
+            SetSiblingsDimmed(true);
+            OpenPlayBar();
+        }
+
+        protected override void OnPointerExited(PointerEventArgs e)
+        {
+            base.OnPointerExited(e);
+            StartCloseTimer();
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            ClosePop();
+            base.OnDetachedFromVisualTree(e);
+        }
+
+        private void OpenPlayBar()
+        {
+            var layer = OverlayLayer.GetOverlayLayer(this);
+            if (layer == null)
+                return;
+
+            double width = CardButton.Bounds.Width;
+            if (width <= 0 || CardButton.TranslatePoint(new Point(0, CardButton.Bounds.Height), layer) is not { } anchor)
+                return;
+
+            if (!_barOpen)
+            {
+                _playBarHost?.Children.Remove(PlayBar);
+                layer.Children.Add(PlayBar);
+                _barOpen = true;
+            }
+
+            PlayBar.Width = width * PopScale;
+            PlayBar.Height = 58 * PopScale;
+            Canvas.SetLeft(PlayBar, anchor.X);
+            Canvas.SetTop(PlayBar, anchor.Y - 1);
+            PlayBar.IsVisible = true;
+        }
+
+        private void ClosePop()
+        {
+            StopCloseTimer();
+            PlayBar.IsVisible = false;
+
+            if (_barOpen)
+            {
+                if (PlayBar.Parent is Panel layer)
+                    layer.Children.Remove(PlayBar);
+
+                _playBarHost?.Children.Add(PlayBar);
+                _barOpen = false;
+            }
+
+            RenderTransform = null;
+            SetContainerZIndex(0);
+            SetSiblingsDimmed(false);
+        }
+
+        private void SetSiblingsDimmed(bool dimmed)
+        {
+            if (Parent is not Visual container || container.Parent is not Panel panel)
+                return;
+
+            foreach (var child in panel.Children)
+            {
+                if (ReferenceEquals(child, container))
+                    continue;
+
+                if (child is StyledElement { DataContext: QuickPlayGameItem })
+                    child.Opacity = dimmed ? 0.55 : 1;
+            }
+        }
+
+        private void StartCloseTimer()
+        {
+            _closeTimer.Stop();
+            _closeTimer.Start();
+        }
+
+        private void StopCloseTimer()
+        {
+            _closeTimer.Stop();
+        }
+
+        private void SetContainerZIndex(int value)
+        {
+            if (Parent is Visual parent)
+                parent.ZIndex = value;
         }
 
         private void RefreshItems()
