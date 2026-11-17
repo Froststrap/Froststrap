@@ -129,7 +129,7 @@ SPDX-License-Identifier: MPL-2.0
                             Background="{DynamicResource ControlFillColorSecondaryBrush}"
                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                             BorderThickness="0,0,0,1">
-                        <Grid ColumnDefinitions="*,Auto">
+                        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                             <Button Grid.Column="0"
                                     Content="{x:Static resources:Strings.Menu_AccountSelector_AddAccount}"
                                     Command="{Binding AddAccountCommand}"
@@ -159,9 +159,48 @@ SPDX-License-Identifier: MPL-2.0
                                         <Style Selector="ComboBox /template/ ContentControl">
                                             <Setter Property="Opacity" Value="0" />
                                         </Style>
+                                        <!-- the template's glyph sits off-centre in a box this small; draw our own -->
+                                        <Style Selector="ComboBox /template/ PathIcon">
+                                            <Setter Property="Opacity" Value="0" />
+                                        </Style>
                                     </ComboBox.Styles>
                                 </ComboBox>
                             </Border>
+
+                            <ic:Lucide Grid.Column="1"
+                                       Icon="ChevronDown"
+                                       Width="14"
+                                       Height="14"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"
+                                       StrokeBrush="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                            <controls:IconButton Grid.Column="2"
+                                                 Width="36"
+                                                 Height="32"
+                                                 Margin="4,0,0,0"
+                                                 Padding="4"
+                                                 Icon="Import"
+                                                 IconSize="14"
+                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_AccountTransfer_Import_Title}"
+                                                 ToolTip.Placement="Top"
+                                                 ToolTip.ShowDelay="400"
+                                                 IsEnabled="{Binding !IsAddingAccount}"
+                                                 Command="{Binding ImportAccountsCommand}" />
+
+                            <controls:IconButton Grid.Column="3"
+                                                 Width="36"
+                                                 Height="32"
+                                                 Margin="4,0,0,0"
+                                                 Padding="4"
+                                                 Icon="Download"
+                                                 IconSize="14"
+                                                 ToolTip.Tip="{x:Static resources:Strings.Menu_AccountTransfer_Export_Title}"
+                                                 ToolTip.Placement="Top"
+                                                 ToolTip.ShowDelay="400"
+                                                 IsEnabled="{Binding !IsAddingAccount}"
+                                                 Command="{Binding ExportAccountsCommand}" />
                         </Grid>
                     </Border>
 
