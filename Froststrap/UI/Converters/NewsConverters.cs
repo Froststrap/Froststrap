@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace Froststrap.UI.Converters;
 
-internal class UnixTimeToRelativeConverter : IValueConverter
+internal sealed class UnixTimeToRelativeConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -47,7 +47,7 @@ internal class UnixTimeToRelativeConverter : IValueConverter
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();
 }
-internal class NewsSelectionBorderConverter : IValueConverter
+internal sealed class NewsSelectionBorderConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

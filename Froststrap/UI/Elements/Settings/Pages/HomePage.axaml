@@ -79,7 +79,7 @@ SPDX-License-Identifier: MPL-2.0
                                         CornerRadius="4"
                                         Background="{DynamicResource SystemAccentColor}">
                                         <TextBlock
-                                            Text="Pinned"
+                                            Text="{x:Static resources:Strings.Menu_Home_Pinned}"
                                             FontSize="10"
                                             FontWeight="Bold"
                                             Foreground="White" />
@@ -292,61 +292,7 @@ SPDX-License-Identifier: MPL-2.0
 
         <!-- continue playing card -->
         <DataTemplate x:Key="RecentGameTemplate" x:DataType="models:QuickPlayGameItem">
-            <Button
-                Margin="4"
-                Padding="0"
-                Background="Transparent"
-                BorderThickness="0"
-                ClickMode="Press">
-                <Button.Styles>
-                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </Button.Styles>
-                <Button.Flyout>
-                    <controls:GameMenuFlyout />
-                </Button.Flyout>
-
-                <controls:Card
-                    MaxWidth="190"
-                    Padding="0"
-                    CornerRadius="12,12,4,4"
-                    ClipToBounds="True">
-                    <StackPanel>
-                        <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                            <Image
-                                Source="{Binding ThumbnailBitmap}"
-                                Height="190"
-                                MinWidth="190"
-                                Stretch="Fill"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                RenderOptions.BitmapInterpolationMode="HighQuality" />
-                        </Border>
-                        <StackPanel Margin="8" Spacing="4">
-                            <TextBlock
-                                Text="{Binding Name}"
-                                FontWeight="SemiBold"
-                                TextTrimming="CharacterEllipsis" />
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <ic:Lucide
-                                    Icon="Users"
-                                    Height="12"
-                                    Width="12"
-                                    VerticalAlignment="Center" />
-                                <TextBlock
-                                    Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}"
-                                    FontSize="11"
-                                    FontWeight="Medium" />
-                                <TextBlock
-                                    Text="{x:Static resources:Strings.Menu_Home_Active}"
-                                    FontSize="11"
-                                    Opacity="0.5" />
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </controls:Card>
-            </Button>
+            <controls:GameCard />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -370,7 +316,7 @@ SPDX-License-Identifier: MPL-2.0
             <StackPanel Spacing="10" IsVisible="{Binding HasNews}">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <TextBlock
-                        Text="News"
+                        Text="{x:Static resources:Strings.Menu_Home_News}"
                         FontSize="18"
                         FontWeight="SemiBold" />
                 </StackPanel>
@@ -411,7 +357,7 @@ SPDX-License-Identifier: MPL-2.0
                                         Background="{DynamicResource SystemAccentColor}"
                                         VerticalAlignment="Center">
                                         <TextBlock
-                                            Text="Pinned"
+                                            Text="{x:Static resources:Strings.Menu_Home_Pinned}"
                                             FontSize="10"
                                             FontWeight="Bold"
                                             Foreground="White" />
@@ -543,7 +489,7 @@ SPDX-License-Identifier: MPL-2.0
                         FontWeight="SemiBold"
                         IsVisible="{Binding HasFriends}" />
                     <TextBlock
-                        Text="{Binding OnlineCount, StringFormat='· {0} online'}"
+                        Text="{Binding OnlineText}"
                         FontSize="12"
                         Opacity="0.6"
                         VerticalAlignment="Center"

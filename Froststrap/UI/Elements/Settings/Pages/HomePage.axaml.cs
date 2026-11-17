@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-internal partial class HomePage : UserControl
+internal sealed partial class HomePage : UserControl
 {
     public HomePage()
     {

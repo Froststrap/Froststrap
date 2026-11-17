@@ -8,13 +8,14 @@ using Avalonia.VisualTree;
 using Froststrap.Localisation;
 using Froststrap.Models;
 using LucideAvalonia.Enum;
+using System.Globalization;
 using System.Windows.Input;
 
 namespace Froststrap.UI.Elements.Controls
 {
     /// <summary>
-    /// Shared command surface for the game context menu. Page view models
-    /// implement this so GameMenuFlyout can drive their commands.
+    /// Shared command surface for the game card context menu. Page view models
+    /// implement this so GameCard can drive their commands.
     /// </summary>
     internal interface IGameMenuActions
     {
@@ -32,11 +33,15 @@ namespace Froststrap.UI.Elements.Controls
     }
 
     /// <summary>
-    /// Reusable context menu for game cards: join/rejoin/best region,
-    /// server lists, subplaces and the game page link.
+    /// Reusable game card with thumbnail, live stats and the game context menu:
+    /// join/rejoin/best region, server lists, subplaces and the game page link.
     /// </summary>
-    internal class GameMenuFlyout : MenuFlyout
+    internal sealed partial class GameCard : UserControl
     {
+        public static readonly StyledProperty<bool> ShowDetailsProperty =
+            AvaloniaProperty.Register<GameCard, bool>(nameof(ShowDetails));
+
+        private readonly MenuFlyout _flyout;
         private readonly MenuItem _join;
         private readonly MenuItem _rejoin;
         private readonly MenuItem _joinBestRegion;
@@ -46,9 +51,10 @@ namespace Froststrap.UI.Elements.Controls
         private readonly MenuItem _viewSubplaces;
         private readonly MenuItem _visitPage;
 
-        public GameMenuFlyout()
+        public GameCard()
         {
-            Placement = PlacementMode.Pointer;
+            InitializeComponent();
+
             _join = CreateItem(LucideIconNames.Play, Strings.Menu_QuickPlay_JoinGame);
             _rejoin = CreateItem(LucideIconNames.RotateCcwClock, Strings.Menu_QuickPlay_RejoinLastServer);
             _joinBestRegion = CreateItem(LucideIconNames.Globe, Strings.Menu_QuickPlay_JoinBestRegion);
@@ -58,18 +64,35 @@ namespace Froststrap.UI.Elements.Controls
             _viewSubplaces = CreateItem(LucideIconNames.Layers, Strings.Menu_QuickPlay_ViewSubplaces);
             _visitPage = CreateItem(LucideIconNames.ExternalLink, Strings.Menu_QuickPlay_VisitPage);
 
-            Items.Add(_join);
-            Items.Add(_rejoin);
-            Items.Add(_joinBestRegion);
-            Items.Add(new Separator());
-            Items.Add(_trackedServers);
-            Items.Add(_robloxServers);
-            Items.Add(_privateServers);
-            Items.Add(_viewSubplaces);
-            Items.Add(new Separator());
-            Items.Add(_visitPage);
+            _flyout = new MenuFlyout
+            {
+                Placement = PlacementMode.Pointer,
+                Items =
+                {
+                    _join,
+                    _rejoin,
+                    _joinBestRegion,
+                    new Separator(),
+                    _trackedServers,
+                    _robloxServers,
+                    _privateServers,
+                    _viewSubplaces,
+                    new Separator(),
+                    _visitPage
+                }
+            };
 
-            Opening += (_, _) => RefreshItems();
+            _flyout.Opening += (_, _) => RefreshItems();
+            CardButton.Flyout = _flyout;
+        }
+
+        /// <summary>
+        /// Shows creator, visits and source badges in addition to the basic card.
+        /// </summary>
+        public bool ShowDetails
+        {
+            get => GetValue(ShowDetailsProperty);
+            set => SetValue(ShowDetailsProperty, value);
         }
 
         private static MenuItem CreateItem(LucideIconNames icon, string header)
@@ -83,7 +106,7 @@ namespace Froststrap.UI.Elements.Controls
 
         private void RefreshItems()
         {
-            if (Target?.DataContext is not QuickPlayGameItem item)
+            if (DataContext is not QuickPlayGameItem item)
                 return;
 
             var actions = FindActions();
@@ -113,10 +136,7 @@ namespace Froststrap.UI.Elements.Controls
 
         private IGameMenuActions? FindActions()
         {
-            if (Target is not Visual visual)
-                return null;
-
-            foreach (var ancestor in visual.GetVisualAncestors())
+            foreach (var ancestor in this.GetVisualAncestors())
             {
                 if (ancestor is StyledElement { DataContext: IGameMenuActions actions })
                     return actions;

@@ -18,7 +18,10 @@ internal static class NewsService
         try
         {
             var newsFile = await FetchAndParseAsync();
-            if (newsFile?.News == null || newsFile.News.Count == 0)
+            if (newsFile?.News == null)
+                return LoadFromCache();
+
+            if (newsFile.News.Count == 0)
                 return [];
 
             var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace Froststrap.Models;
 
-internal class NewsFile
+internal sealed class NewsFile
 {
     [JsonPropertyName("version")] public int Version { get; set; } = 1;
     [JsonPropertyName("news")] public List<NewsEntry> News { get; set; } = new();
 }
 
-internal class NewsEntry
+internal sealed class NewsEntry
 {
     [JsonPropertyName("id")] public string Id { get; set; } = "";
     [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
@@ -30,7 +30,7 @@ internal class NewsEntry
     public bool HasButtons => Buttons.Count > 0;
 }
 
-internal class NewsButton
+internal sealed class NewsButton
 {
     [JsonPropertyName("name")] public string Name { get; set; } = "";
     [JsonPropertyName("link")] public string Link { get; set; } = "";

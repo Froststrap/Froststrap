@@ -6,15 +6,17 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.Localisation;
 using Froststrap.Models;
 using Froststrap.UI.Elements.Controls;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings;
 
-internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGameMenuActions
+internal sealed class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGameMenuActions
 {
     private const int MaxFriends = 200;
     private const int PresenceChunk = 50;
@@ -27,7 +29,10 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
     private readonly Dictionary<long, FriendItem> _friendsById = [];
     private int _friendsSeq;
     private int _recentSeq;
+    private int _newsSeq;
     private bool _friendsBusy;
+    private bool _friendsReloadPending;
+    private bool _friendsReloadShowSpinner;
     private bool _isJoiningBestRegion;
     private bool _disposed;
 
@@ -104,8 +109,9 @@ internal class HomeViewModel : NotifyPropertyChangedViewModel, IDisposable, IGam
     public bool ShowRecentEmpty => !IsRecentLoading && !HasRecentGames;
     public int FriendCount => Friends.Count;
     public int OnlineCount => Friends.Count(f => f.IsOnline);
+    public string OnlineText => string.Format(CultureInfo.CurrentCulture, Strings.Menu_Home_OnlineCount, OnlineCount);
 
-public ICommand JoinFriendCommand { get; }
+    public ICommand JoinFriendCommand { get; }
     public ICommand ViewFriendProfileCommand { get; }
     public ICommand JoinGameCommand { get; }
     public ICommand VisitPageCommand { get; }
@@ -216,6 +222,7 @@ public ICommand JoinFriendCommand { get; }
 
         _onAccountChanged = account =>
         {
+            Interlocked.Increment(ref _friendsSeq);
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 OnPropertyChanged(nameof(IsLoggedIn));
@@ -245,6 +252,7 @@ public ICommand JoinFriendCommand { get; }
         OnPropertyChanged(nameof(ShowFriendsEmpty));
         OnPropertyChanged(nameof(FriendCount));
         OnPropertyChanged(nameof(OnlineCount));
+        OnPropertyChanged(nameof(OnlineText));
     }
 
     private void NotifyRecentChanged()
@@ -255,7 +263,13 @@ public ICommand JoinFriendCommand { get; }
 
     private async Task LoadFriendsAsync(bool showSpinner)
     {
-        if (_friendsBusy) return;
+        if (_friendsBusy)
+        {
+            _friendsReloadPending = true;
+            _friendsReloadShowSpinner |= showSpinner;
+            return;
+        }
+
         _friendsBusy = true;
         int seq = Interlocked.Increment(ref _friendsSeq);
 
@@ -402,6 +416,14 @@ public ICommand JoinFriendCommand { get; }
         {
             _friendsBusy = false;
             await Dispatcher.UIThread.InvokeAsync(() => IsFriendsLoading = false);
+
+            if (_friendsReloadPending)
+            {
+                bool reloadSpinner = _friendsReloadShowSpinner;
+                _friendsReloadPending = false;
+                _friendsReloadShowSpinner = false;
+                _ = LoadFriendsAsync(reloadSpinner);
+            }
         }
     }
 
@@ -593,17 +615,22 @@ public ICommand JoinFriendCommand { get; }
         }
         finally
         {
-            await Dispatcher.UIThread.InvokeAsync(() => IsRecentLoading = false);
+            if (seq == _recentSeq)
+                await Dispatcher.UIThread.InvokeAsync(() => IsRecentLoading = false);
         }
     }
 
     private async Task LoadNewsAsync()
     {
+        int seq = Interlocked.Increment(ref _newsSeq);
+
         try
         {
             await Dispatcher.UIThread.InvokeAsync(() => IsNewsLoading = true);
 
             var news = await NewsService.GetNewsAsync();
+
+            if (seq != _newsSeq) return;
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -619,7 +646,8 @@ public ICommand JoinFriendCommand { get; }
         }
         finally
         {
-            await Dispatcher.UIThread.InvokeAsync(() => IsNewsLoading = false);
+            if (seq == _newsSeq)
+                await Dispatcher.UIThread.InvokeAsync(() => IsNewsLoading = false);
         }
     }
 
@@ -653,7 +681,7 @@ public ICommand JoinFriendCommand { get; }
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed) return;
 
@@ -667,7 +695,7 @@ public ICommand JoinFriendCommand { get; }
     }
 }
 
-internal class NewsCardViewModel : INotifyPropertyChanged
+internal sealed class NewsCardViewModel : INotifyPropertyChanged
 {
     public NewsEntry Entry { get; }
 
@@ -691,7 +719,7 @@ internal class NewsCardViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 }
 
-internal class FriendItem : INotifyPropertyChanged
+internal sealed class FriendItem : INotifyPropertyChanged
 {
     public long UserId { get; init; }
     public string Name { get; init; } = "";
@@ -720,13 +748,13 @@ internal class FriendItem : INotifyPropertyChanged
 
     public string SubText => PresenceType switch
     {
-        2 => string.IsNullOrEmpty(GameName) ? "In game" : GameName,
-        3 => "In Studio",
-        1 => "Online",
-        _ => "Offline"
+        2 => string.IsNullOrEmpty(GameName) ? Strings.Menu_Home_InGame : GameName,
+        3 => Strings.Menu_Home_InStudio,
+        1 => Strings.Menu_Home_Online,
+        _ => Strings.Menu_Home_Offline
     };
 
-    public string PlayingText => $"{Name} is playing";
+    public string PlayingText => string.Format(CultureInfo.CurrentCulture, Strings.Menu_Home_Playing, Name);
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -743,36 +771,36 @@ internal class FriendItem : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
 
-internal class FriendsListResponse
+internal sealed class FriendsListResponse
 {
     [JsonPropertyName("data")] public List<FriendEntry>? Data { get; set; }
 }
 
-internal class FriendEntry
+internal sealed class FriendEntry
 {
     [JsonPropertyName("id")] public long Id { get; set; }
     [JsonPropertyName("name")] public string? Name { get; set; }
     [JsonPropertyName("displayName")] public string? DisplayName { get; set; }
 }
 
-internal class HeadshotResponse
+internal sealed class HeadshotResponse
 {
     [JsonPropertyName("data")] public List<HeadshotEntry>? Data { get; set; }
 }
 
-internal class HeadshotEntry
+internal sealed class HeadshotEntry
 {
     [JsonPropertyName("targetId")] public long TargetId { get; set; }
     [JsonPropertyName("imageUrl")] public string? ImageUrl { get; set; }
 }
 
-internal class UserIdsRequest
+internal sealed class UserIdsRequest
 {
     [JsonPropertyName("userIds")] public List<long> UserIds { get; set; } = [];
     [JsonPropertyName("excludeBannedUsers")] public bool ExcludeBannedUsers { get; set; }
 }
 
-internal class UsersListResponse
+internal sealed class UsersListResponse
 {
     [JsonPropertyName("data")] public List<FriendEntry>? Data { get; set; }
 }
