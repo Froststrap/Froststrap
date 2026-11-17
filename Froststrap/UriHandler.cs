@@ -32,8 +32,7 @@ namespace Froststrap
                 Handler.Register();
         });
 
-        // Velopack no likey likey excptions in install/uninstall phase
-        // So let's handle it properly
+        // Velopack doesn't like exceptions in install/uninstall phase- so handle it properly
         static void Safely(Action action)
         {
             try { action(); }

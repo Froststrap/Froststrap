@@ -40,7 +40,7 @@ namespace Froststrap.Utility
             "LPT9"
         ];
 
-        private static readonly char[] _directorySeperatorDelimiters =
+        private static readonly char[] _directorySeparatorDelimiters =
         [
             Path.DirectorySeparatorChar,
             Path.AltDirectorySeparatorChar
@@ -77,7 +77,7 @@ namespace Froststrap.Utility
             string? pathRoot = Path.GetPathRoot(path);
             string pathNoRoot = pathRoot != null ? path[pathRoot.Length..] : path;
 
-            string[] pathParts = pathNoRoot.Split(_directorySeperatorDelimiters);
+            string[] pathParts = pathNoRoot.Split(_directorySeparatorDelimiters);
 
             foreach (var part in pathParts)
             {

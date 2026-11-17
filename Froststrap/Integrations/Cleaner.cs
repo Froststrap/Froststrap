@@ -56,7 +56,7 @@ namespace Froststrap.Integrations
 
                 try
                 {
-                    string[] files = RecursivlyGetFiles(folder);
+                    string[] files = RecursivelyGetFiles(folder);
 
                     App.Logger.Info($"Running cleaner in {type}, {files.Length} files found");
 
@@ -112,7 +112,7 @@ namespace Froststrap.Integrations
             return true;
         }
 
-        private static string[] RecursivlyGetFiles(string folder)
+        private static string[] RecursivelyGetFiles(string folder)
         {
             if (string.IsNullOrEmpty(folder))
                 throw new ArgumentNullException(nameof(folder), "Folder path is null or empty.");

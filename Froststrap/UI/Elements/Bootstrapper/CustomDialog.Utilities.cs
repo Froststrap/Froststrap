@@ -89,7 +89,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 "BOLD" => FontWeight.Bold,
                 "EXTRABOLD" or "ULTRABOLD" => FontWeight.ExtraBold,
                 "BLACK" or "HEAVY" => FontWeight.Black,
-                "EXTRABLACK" or "ULTRABLACK" => FontWeight.ExtraBlack, //i just noticed ExtraBlack was mispelled :joy:
+                "EXTRABLACK" or "ULTRABLACK" => FontWeight.ExtraBlack,
                 _ => throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name, "FontWeight", value)
             };
         }

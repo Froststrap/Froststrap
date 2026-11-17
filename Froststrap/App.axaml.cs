@@ -341,7 +341,7 @@ internal sealed partial class App : Application
     public static Task AssertWindowsAUMIDAsync()
     {
 #if DEBUG
-        /// Return early just becasue of if this runs in debug this might fuck shit up
+        /// Return early just because of if this runs in debug this might fuck shit up
         /// Would be good to though make it more robust so this doesn't need to happen
         return Task.CompletedTask;
 #else

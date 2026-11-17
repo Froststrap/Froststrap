@@ -5,11 +5,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Froststrap.UI.AppThemes.ResourceDictionarys
+namespace Froststrap.UI.AppThemes.ResourceDictionaries
 {
-    internal sealed partial class Dark : ResourceDictionary
+    internal sealed partial class Light : ResourceDictionary
     {
-        public Dark()
+        public Light()
         {
             AvaloniaXamlLoader.Load(this);
         }
