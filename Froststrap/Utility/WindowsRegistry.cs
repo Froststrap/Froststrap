@@ -12,6 +12,16 @@ namespace Froststrap.Utility
     {
         private const string RobloxPlaceKey = "Roblox.Place";
 
+        private const string UninstallRoot = @"Software\Microsoft\Windows\CurrentVersion\Uninstall";
+
+        private const string UninstallKey = $@"{UninstallRoot}\MSI:{ProjectInfo.Name}";
+
+        [Obsolete("LegacyUninstallKey is obsolete and is currently only used new version migration."
+                +"Delete all references after v2.0.9 release",
+                DiagnosticId = "FS0001"
+        )]
+        private const string LegacyUninstallKey = $@"{UninstallRoot}\{ProjectInfo.Name}";
+
         public static readonly List<RegistryKey> Roots = [Registry.CurrentUser, Registry.LocalMachine];
 
         public static void RegisterProtocol(string key, string name, string handler, string handlerParam = "%1")
@@ -164,6 +174,78 @@ namespace Froststrap.Utility
             }
         }
 
+        public static void SyncUninstallEntry()
+        {
+            if (!OperatingSystem.IsWindows())
+                return;
+
+            string version = App.Version;
+
+            if (string.IsNullOrWhiteSpace(version) || version is "unknown" || version.StartsWith("0.0.0", StringComparison.Ordinal))
+                return;
+
+            if (UpdaterManager.IsCiBuild)
+                return;
+
+            try
+            {
+                using var uninstallKey = OpenUninstallKey(UninstallKey);
+
+                if (uninstallKey is not null)
+                {
+                    uninstallKey.SetValue("DisplayVersion", version);
+                    RemoveLegacyUninstallEntry();
+                    return;
+                }
+
+                using var legacyKey = OpenUninstallKey(LegacyUninstallKey);
+                legacyKey?.SetValue("DisplayVersion", version);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to reconcile uninstall registry entry");
+            }
+        }
+
+        private static void RemoveLegacyUninstallEntry()
+        {
+            foreach (var root in Roots)
+            {
+                try
+                {
+                    using (var legacyKey = root.OpenSubKey(LegacyUninstallKey))
+                    {
+                        if (legacyKey is null)
+                            continue;
+                    }
+
+                    root.DeleteSubKeyTree(LegacyUninstallKey, throwOnMissingSubKey: false);
+                    App.Logger.Info($"Removed stale legacy uninstall registry entry from {root.Name}");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Debug(ex, $"Failed to remove legacy uninstall registry entry from {root.Name}");
+                }
+            }
+        }
+
+        private static RegistryKey? OpenUninstallKey(string subKeyPath)
+        {
+            try
+            {
+                return Registry.CurrentUser.OpenSubKey(subKeyPath, writable: true)
+                    ?? Registry.LocalMachine.OpenSubKey(subKeyPath, writable: true);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to open uninstall registry key '{subKeyPath}': {ex.Message}");
+                return null;
+            }
+        }
+
+        private static RegistryKey? OpenActiveUninstallKey()
+            => OpenUninstallKey(UninstallKey) ?? OpenUninstallKey(LegacyUninstallKey);
+
         public static void UpdateEstimatedSize()
         {
             if (!OperatingSystem.IsWindows())
@@ -186,8 +268,15 @@ namespace Froststrap.Utility
                         totalBytes += file.Length;
 
                     int totalKB = (int)Math.Min(totalBytes / 1024, int.MaxValue);
-                    using var uninstallKey = Registry.CurrentUser.CreateSubKey(ProjectInfo.UninstallKey);
-                    uninstallKey?.SetValueSafe("EstimatedSize", totalKB);
+
+                    using var uninstallKey = OpenActiveUninstallKey();
+                    if (uninstallKey is null)
+                    {
+                        App.Logger.Debug("No uninstall registry entry to update EstimatedSize on");
+                        return;
+                    }
+
+                    uninstallKey.SetValue("EstimatedSize", totalKB);
                     App.Logger.Info($"Updated EstimatedSize to {totalKB} KB");
                 }
                 catch (Exception ex)

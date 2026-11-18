@@ -14,8 +14,6 @@ namespace Froststrap
 
         public const string BundleId = "xyz.froststrap.desktop";
 
-        public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{Name}";
-
         public const string RegistryKey = $@"Software\{Name}";
     }
 }

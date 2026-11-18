@@ -15,6 +15,9 @@ internal sealed class Updater
         if (OperatingSystem.IsLinux())
             SetupSoberSymlink();
 
+        if (OperatingSystem.IsWindows())
+            Utility.WindowsRegistry.SyncUninstallEntry();
+
         string currentVer = App.InternalVersion;
         string? existingVer = previousVersion ?? App.State.Prop.LastMigratedVersion;
 
