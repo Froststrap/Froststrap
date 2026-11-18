@@ -46,6 +46,7 @@ namespace Froststrap.UI.Elements.Settings
         private readonly SearchIndexBuilder _searchIndexBuilder = new();
         private bool _isIndexingAllPagesStarted;
         private SearchDialog? _searchOverlay;
+        private EventHandler? _remoteDataHandler;
 
         private void ToggleSidebar(object? sender, Avalonia.Interactivity.RoutedEventArgs e) =>
             NavView.IsPaneOpen = !NavView.IsPaneOpen;
@@ -87,21 +88,8 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
-            App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
-            {
-                var data = App.RemoteData.Prop;
-                if (data is null) return;
-
-                bool show = data.AlertEnabled && !string.IsNullOrWhiteSpace(data.AlertContent);
-                AlertBar.IsVisible = show;
-                AlertBar.IsOpen = show;
-
-                if (!show)
-                    return;
-
-                AlertBar.Message = data.AlertContent;
-                AlertBar.Severity = data.AlertSeverity;
-            }));
+            _remoteDataHandler = OnRemoteDataLoaded;
+            App.RemoteData.Subscribe(_remoteDataHandler);
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
@@ -184,6 +172,25 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
+        private void OnRemoteDataLoaded(object? sender, EventArgs e)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var data = App.RemoteData.Prop;
+                if (data is null) return;
+
+                bool show = data.AlertEnabled && !string.IsNullOrWhiteSpace(data.AlertContent);
+                AlertBar.IsVisible = show;
+                AlertBar.IsOpen = show;
+
+                if (!show)
+                    return;
+
+                AlertBar.Message = data.AlertContent;
+                AlertBar.Severity = data.AlertSeverity;
+            });
+        }
+
         private SearchBarItem? _pendingSearchScrollItem;
 
         private void OnSearchResultSelected(SearchBarItem item)
@@ -249,6 +256,14 @@ namespace Froststrap.UI.Elements.Settings
             if (view == null) return;
 
             if (view.DataContext == viewModel) return;
+
+            if (pageControl.Content is Control previousPage
+                && !ReferenceEquals(previousPage, view)
+                && previousPage.DataContext is IDisposable previousViewModel
+                && !ReferenceEquals(previousViewModel, viewModel))
+            {
+                previousViewModel.Dispose();
+            }
 
             view.DataContext = viewModel;
             pageControl.Content = view;
@@ -627,6 +642,7 @@ namespace Froststrap.UI.Elements.Settings
                         container.Child = null;
                         stagingArea.Child = null;
                         view.DataContext = null;
+                        (vm as IDisposable)?.Dispose();
                         stagingArea.UpdateLayout();
                         await Task.Delay(30);
                     }
@@ -793,6 +809,15 @@ namespace Froststrap.UI.Elements.Settings
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
+            if (_remoteDataHandler != null)
+            {
+                App.RemoteData.Unsubscribe(_remoteDataHandler);
+                _remoteDataHandler = null;
+            }
+
+            if (_viewModel?.CurrentPage is IDisposable currentPage)
+                currentPage.Dispose();
+
             NotificationManager = null;
             Instance = null;
             App.SettingsOpen = false;

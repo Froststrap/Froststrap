@@ -11,6 +11,7 @@ namespace Froststrap.UI.Converters
     internal sealed class UrlToBitmapConverter : IValueConverter
     {
         private const int MaxCacheEntries = 256;
+        private const int MaxTokenMappings = 512;
 
         private sealed class CacheEntry
         {
@@ -62,7 +63,20 @@ namespace Froststrap.UI.Converters
             => _tokenToUrlCache.TryGetValue(token, out url);
 
         public static void CacheUrlMapping(string token, string url)
-            => _tokenToUrlCache.TryAdd(token, url);
+        {
+            if (_tokenToUrlCache.Count >= MaxTokenMappings)
+            {
+                foreach (string key in _tokenToUrlCache.Keys)
+                {
+                    _tokenToUrlCache.TryRemove(key, out _);
+
+                    if (_tokenToUrlCache.Count < MaxTokenMappings / 2)
+                        break;
+                }
+            }
+
+            _tokenToUrlCache.TryAdd(token, url);
+        }
 
         public static async Task<Bitmap?> GetBitmapFromCacheOrDownloadAsync(string url)
         {

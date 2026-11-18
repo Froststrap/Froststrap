@@ -17,6 +17,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
         private bool _disposed;
+        private EventHandler? _remoteDataHandler;
 
         public event EventHandler? OpenModsEvent;
         public event EventHandler? OpenModGeneratorEvent;
@@ -72,7 +73,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         public CommunityModsViewModel()
         {
-            App.RemoteData.Subscribe(async (_, _) => await RefreshModsAsync());
+            _remoteDataHandler = async (_, _) => await RefreshModsAsync();
+            App.RemoteData.Subscribe(_remoteDataHandler);
         }
 
         [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
@@ -412,6 +414,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (disposing)
             {
+                if (_remoteDataHandler != null)
+                {
+                    App.RemoteData.Unsubscribe(_remoteDataHandler);
+                    _remoteDataHandler = null;
+                }
+
                 _searchCts?.Cancel();
                 _searchCts?.Dispose();
                 _searchCts = null;
