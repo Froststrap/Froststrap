@@ -66,6 +66,8 @@ namespace Froststrap.Clients.Model
         public IReadOnlyDictionary<string, string> Environment { get; init; } = new Dictionary<string, string>();
 
         public IReadOnlyList<int> AutoclosePids { get; init; } = [];
+
+        public bool RunAsAdmin { get; init; }
     }
 
     internal sealed record LaunchResult
@@ -79,6 +81,8 @@ namespace Froststrap.Clients.Model
         public string? LogHint { get; init; }
 
         public DateTimeOffset StartedAt { get; init; } = DateTimeOffset.UtcNow;
+
+        public Func<CancellationToken, Task>? WaitUntilReadyAsync { get; init; }
     }
 
     internal sealed record KillRequest

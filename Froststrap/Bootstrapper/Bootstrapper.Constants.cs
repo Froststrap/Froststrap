@@ -10,7 +10,7 @@ internal sealed partial class Bootstrapper : IDisposable
     private const double TaskbarProgressMaximum = 1.0;
     private const int DownloadBufferSize = 4096;
     private const int MaxDownloadAttempts = 5;
-    private const string SoberFlatpakId = "org.vinegarhq.Sober";
+    private const string SoberFlatpakId = Clients.Runtimes.SoberClient.FlatpakId;
     public const string BackgroundUpdaterLockName = "BackgroundUpdater";
     private static readonly string[] DxvkDlls = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"];
 

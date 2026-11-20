@@ -26,6 +26,8 @@ namespace Froststrap.Clients.Contracts
 
         IProcessService Processes { get; }
 
+        IClientLauncher Launcher { get; }
+
         DistributionState State { get; }
 
         /// <summary>

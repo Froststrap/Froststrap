@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Launchers;
 using Froststrap.Clients.Layouts;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Registry;
@@ -36,7 +37,7 @@ internal static class ClientCatalog
 
         case HostPlatform.Linux:
             Register(registry, environment, states, new SoberLayout(), SoberCapabilities(), "PlayerState", "Sober");
-            Register(registry, environment, states, new WineStudioLayout(), WineStudioCapabilities(), "StudioState", "Roblox Studio (Wine)");
+            Register(registry, environment, states, new WineStudioLayout(), WineStudioCapabilities(), "StudioState", "Roblox Studio (Wine)", layout => new WineLauncher(layout));
             break;
         }
 
@@ -59,7 +60,8 @@ internal static class ClientCatalog
         IClientLayout layout,
         ClientCapabilities capabilities,
         string stateFileName,
-        string displayName)
+        string displayName,
+        Func<IClientLayout, IClientLauncher>? launcher = null)
     {
         registry.Register(new ClientDescriptor
         {
@@ -70,7 +72,7 @@ internal static class ClientCatalog
             StateFileName = stateFileName,
             Factory = () => layout is SoberLayout
                 ? new SoberClient(layout, capabilities, displayName, environment, states, stateFileName)
-                : new RobloxClient(layout, capabilities, displayName, environment, states, stateFileName)
+                : new RobloxClient(layout, capabilities, displayName, environment, states, stateFileName, launcher?.Invoke(layout))
         });
     }
 

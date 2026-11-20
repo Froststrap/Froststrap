@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Launchers;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Providers;
 using Froststrap.Clients.Registry;
@@ -28,8 +29,10 @@ namespace Froststrap.Clients.Runtimes
             string displayName,
             ClientEnvironment environment,
             IClientStateStore stateStore,
-            string stateFileName)
+            string stateFileName,
+            IClientLauncher? launcher = null)
         {
+            _launcher = launcher;
             Layout = layout;
             Capabilities = capabilities;
             DisplayName = displayName;
@@ -54,6 +57,10 @@ namespace Froststrap.Clients.Runtimes
         public ILogLocator Logs { get; }
 
         public IProcessService Processes { get; }
+
+        public virtual IClientLauncher Launcher => _launcher ??= new NativeLauncher(Layout);
+
+        private IClientLauncher? _launcher;
 
         public DistributionState State => _stateStore.For(_stateFileName).Prop;
 
@@ -98,8 +105,7 @@ namespace Froststrap.Clients.Runtimes
         public Task<LaunchResult> LaunchAsync(
             LaunchRequest request,
             CancellationToken cancellationToken = default)
-            => throw new NotSupportedException(
-                $"Launching '{ClientId}' still runs through the bootstrapper (Step 5).");
+            => Launcher.LaunchAsync(Install, request, cancellationToken);
 
         public virtual Task PrepareEnvironmentAsync() => Task.CompletedTask;
     }

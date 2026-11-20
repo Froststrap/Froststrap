@@ -4,6 +4,7 @@
 
 using Froststrap.AppData;
 using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Launchers;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Sources;
 using Froststrap.RobloxInterfaces;
@@ -535,101 +536,107 @@ internal partial class Bootstrapper : IDisposable
         relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
         IsClientSettingsRelativePath(relativeFile);
 
+    private async Task PrepareJoinAsync()
+    {
+        // reapplied on every launch because roblox can reset the file on its own.
+        AppStorageManager.Apply();
+
+        if (_joinData.JoinType == GameJoinType.Unknown)
+            App.Logger.Warn("Unable to get join data");
+
+        App.Logger.Info($"Join Type: {_joinData.JoinType}");
+        App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
+        App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString(CultureInfo.InvariantCulture) ?? "null"}");
+        App.Logger.Info($"Job ID: {_joinData.JobId ?? "null"}");
+        App.Logger.Info($"Access Code: {_joinData.AccessCode ?? "null"}");
+
+        if (_launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
+        {
+            App.Logger.Info("Joining through roblox:// URI, skipping Better Matchmaking");
+            return;
+        }
+
+        bool isFollowUser = false;
+
+        // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+        // idk why they dont use it when the user is following a friend, but ok
+        if (App.Settings.Prop.EnableBetterMatchmaking &&
+            (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+        {
+            App.Logger.Debug("User is trying to join a friend, showing dialog");
+
+            var result = await Frontend.ShowMessageBox(
+                String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                MessageBoxImage.Question,
+                MessageBoxButton.YesNo
+            );
+
+            isFollowUser = result == MessageBoxResult.Yes;
+        }
+
+        string? serverid = null;
+        bool matchmakingCancelled = false;
+
+        _matchmakingInProgress = true;
+        _skipMatchmaking = false;
+        _matchmakingCts = new CancellationTokenSource();
+
+        Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+
+        try
+        {
+            if (App.Settings.Prop.EnableBetterMatchmaking &&
+                _joinData.JoinType == GameJoinType.RequestGame &&
+                _joinData.PlaceId != null &&
+                !isFollowUser)
+            {
+                if (_skipMatchmaking)
+                {
+                    App.Logger.Info("Matchmaking was skipped due to user cancellation.");
+                    matchmakingCancelled = true;
+                }
+                else
+                {
+                    serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            App.Logger.Info("Better Matchmaking was skipped, joining original server.");
+            matchmakingCancelled = true;
+        }
+        catch (HttpRequestException ex)
+        {
+            _ = Frontend.ShowConnectivityDialog(
+                String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                Strings.Dialog_Connectivity_MatchmakingFailed,
+                MessageBoxImage.Warning,
+                ex
+            );
+        }
+        finally
+        {
+            Dialog?.CancelButtonText = Strings.Common_Cancel;
+            _matchmakingInProgress = false;
+            _matchmakingCts?.Dispose();
+            _matchmakingCts = null;
+        }
+
+        if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+        {
+            string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+            _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
+            _joinData.JobId = serverid;
+        }
+    }
+
     private async Task StartRoblox()
     {
         App.Logger.Info("Starting Roblox");
         if (_launchMode == LaunchMode.Player)
         {
-            // reapplied on every launch because roblox can reset the file on its own.
-            AppStorageManager.Apply();
-
-            if (_joinData.JoinType == GameJoinType.Unknown)
-                App.Logger.Warn("Unable to get join data");
-
-            App.Logger.Info($"Join Type: {_joinData.JoinType}");
-            App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
-            App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString(CultureInfo.InvariantCulture) ?? "null"}");
-            App.Logger.Info($"Job ID: {_joinData.JobId ?? "null"}");
-            App.Logger.Info($"Access Code: {_joinData.AccessCode ?? "null"}");
-
-            bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
-            if (isRobloxUri)
-                App.Logger.Info("Joining through roblox:// URI, skipping Better Matchmaking");
-            else
-            {
-                bool isFollowUser = false;
-
-                // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
-                // idk why they dont use it when the user is following a friend, but ok
-                if (App.Settings.Prop.EnableBetterMatchmaking &&
-                    (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
-                {
-                    App.Logger.Debug("User is trying to join a friend, showing dialog");
-
-                    var result = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
-
-                    isFollowUser = result == MessageBoxResult.Yes;
-                }
-
-                string? serverid = null;
-                bool matchmakingCancelled = false;
-
-                _matchmakingInProgress = true;
-                _skipMatchmaking = false;
-                _matchmakingCts = new CancellationTokenSource();
-
-                Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
-
-                try
-                {
-                    if (App.Settings.Prop.EnableBetterMatchmaking &&
-                        _joinData.JoinType == GameJoinType.RequestGame &&
-                        _joinData.PlaceId != null &&
-                        !isFollowUser)
-                    {
-                        if (_skipMatchmaking)
-                        {
-                            App.Logger.Info("Matchmaking was skipped due to user cancellation.");
-                            matchmakingCancelled = true;
-                        }
-                        else
-                        {
-                            serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    App.Logger.Debug("Better Matchmaking was skipped, joining original server.");
-                    matchmakingCancelled = true;
-                }
-                catch (HttpRequestException ex)
-                {
-                    _ = Frontend.ShowConnectivityDialog(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                        Strings.Dialog_Connectivity_MatchmakingFailed,
-                        MessageBoxImage.Warning,
-                        ex
-                    );
-                }
-                finally
-                {
-                    Dialog?.CancelButtonText = Strings.Common_Cancel;
-                    _matchmakingInProgress = false;
-                    _matchmakingCts?.Dispose();
-                    _matchmakingCts = null;
-                }
-
-                if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
-                {
-                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
-                }
-            }
+            await PrepareJoinAsync();
 
             if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
                 _launchCommandLine = "roblox://navigation/home";
@@ -651,47 +658,16 @@ internal partial class Bootstrapper : IDisposable
 
         App.Logger.Info($"Resolved Roblox path: {expectedPath}");
 
-        string launchArguments = _launchCommandLine;
-
-        if (OperatingSystem.IsMacOS())
+        var request = new LaunchRequest
         {
-            string launch = _launchCommandLine.Trim();
-
-            if (launch.Length == 0 && !IsStudioLaunch)
-                launch = "roblox-player:";
-
-            if (launch.Length == 0)
-            {
-                launchArguments = $"-n \"{expectedPath}\"";
-            }
-            else if (launch.StartsWith('-'))
-            {
-                launchArguments = $"-n \"{expectedPath}\" --args {launch}";
-            }
-            else
-            {
-                App.Logger.Info("Delivering the launch url to Roblox through Launch Services");
-                string safeUrl = launch.Replace("\"", "%22", StringComparison.Ordinal);
-                launchArguments = $"-n -a \"{expectedPath}\" \"{safeUrl}\"";
-            }
-        }
-
-        var startInfo = new ProcessStartInfo()
-        {
-            FileName = OperatingSystem.IsMacOS() ? "open" : expectedPath,
-            Arguments = launchArguments,
-            WorkingDirectory = AppData.Directory,
-            UseShellExecute = OperatingSystem.IsMacOS()
+            Mode = _launchMode,
+            CommandLine = _launchCommandLine,
+            RunAsAdmin = _launchMode == LaunchMode.Player && ShouldRunAsAdmin()
         };
 
-        if (_launchMode == LaunchMode.Player && ShouldRunAsAdmin())
+        if (_launchMode == LaunchMode.StudioAuth && !request.RunAsAdmin)
         {
-            startInfo.Verb = "runas";
-            startInfo.UseShellExecute = true;
-        }
-        else if (_launchMode == LaunchMode.StudioAuth)
-        {
-            Process.Start(startInfo);
+            await TargetClient.LaunchAsync(request);
             return;
         }
 
@@ -705,51 +681,12 @@ internal partial class Bootstrapper : IDisposable
                 await LaunchIntegrationAsync(integration, autoclosePids);
         }
 
-        // v2.2.0 - byfron will trip if we keep a process handle open for over a minute, so we're doing this now
-        try
-        {
-            using var process = Process.Start(startInfo)!;
+        LaunchResult launch = await TargetClient.LaunchAsync(request);
 
-            if (OperatingSystem.IsMacOS() && startInfo.FileName == "open")
-            {
-                _appPid = await GetRobloxProcessIdAsync(expectedName, TimeSpan.FromSeconds(5));
-                if (_appPid == 0)
-                {
-                    _appPid = process.Id;
-                    App.Logger.Warn("Could not locate Roblox process, falling back to open PID.");
-                }
-                else
-                {
-                    App.Logger.Info($"Detected Roblox process PID: {_appPid}");
-                }
-            }
-            else
-            {
-                _appPid = process.Id;
-            }
-        }
-        catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
-        {
-            // 1223 = ERROR_CANCELLED, gets thrown if a UAC prompt is cancelled
+        if (!launch.Started)
             return;
-        }
-        catch (Exception)
-        {
-            // attempt a reinstall on next launch
-            try
-            {
-                if (OperatingSystem.IsMacOS())
-                    Directory.Delete(AppData.ExecutablePath, true);
-                else
-                    File.Delete(AppData.ExecutablePath);
-            }
-            catch (Exception cleanupEx)
-            {
-                App.Logger.Warn($"Failed to remove client to force a reinstall: {cleanupEx.Message}");
-            }
 
-            throw;
-        }
+        _appPid = launch.Pid;
 
         App.Logger.Debug($"Started Roblox (PID {_appPid}). Launching Watcher...");
 
@@ -773,112 +710,7 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task LaunchSober(List<int> autoclosePids)
     {
-        if (App.Settings.Prop.ShowServerDetails)
-            App.SoberSettings.SetPreset("ServerLocationIndicatorEnabled", "false");
-
-        if (App.Settings.Prop.UseDiscordRichPresence)
-        {
-            App.SoberSettings.SetPreset("DiscordRpcEnabled", "false");
-            App.SoberSettings.SetPreset("DiscordRpcShowJoinButton", "false");
-        }
-
-        if (App.Settings.Prop.UseDisableAppPatch)
-            App.SoberSettings.SetPreset("CloseOnLeave", "false");
-
-        App.SoberSettings.Save();
-
-        // reapplied on every launch because roblox can reset the file on its own.
-        AppStorageManager.Apply();
-
-        if (_joinData.JoinType == GameJoinType.Unknown)
-            App.Logger.Warn("Unable to get join data");
-
-        App.Logger.Info($"Join Type: {_joinData.JoinType}");
-        App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
-        App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString(CultureInfo.InvariantCulture) ?? "null"}");
-        App.Logger.Info($"Job ID: {_joinData.JobId ?? "null"}");
-        App.Logger.Info($"Access Code: {_joinData.AccessCode ?? "null"}");
-
-        bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
-        if (isRobloxUri)
-            App.Logger.Info("Joining through roblox:// URI, skipping Better Matchmaking");
-        else
-        {
-            bool isFollowUser = false;
-
-            // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
-            // idk why they dont use it when the user is following a friend, but ok
-            if (App.Settings.Prop.EnableBetterMatchmaking &&
-                (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
-            {
-                App.Logger.Debug("User is trying to join a friend, showing dialog");
-
-                var result = await Frontend.ShowMessageBox(
-                    String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result == MessageBoxResult.Yes)
-                    isFollowUser = true;
-            }
-
-            string? serverid = null;
-            bool matchmakingCancelled = false;
-
-            _matchmakingInProgress = true;
-            _skipMatchmaking = false;
-            _matchmakingCts = new CancellationTokenSource();
-
-            Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
-
-            try
-            {
-                if (App.Settings.Prop.EnableBetterMatchmaking &&
-                    _joinData.JoinType == GameJoinType.RequestGame &&
-                    _joinData.PlaceId != null &&
-                    !isFollowUser)
-                {
-                    if (_skipMatchmaking)
-                    {
-                        App.Logger.Info("Matchmaking was skipped due to user cancellation.");
-                        matchmakingCancelled = true;
-                    }
-                    else
-                    {
-                        serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                App.Logger.Info("Better Matchmaking was Skipped, joining original server.");
-                matchmakingCancelled = true;
-            }
-            catch (HttpRequestException ex)
-            {
-                _ = Frontend.ShowConnectivityDialog(
-                    String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                    Strings.Dialog_Connectivity_MatchmakingFailed,
-                    MessageBoxImage.Warning,
-                    ex
-                );
-            }
-            finally
-            {
-                Dialog?.CancelButtonText = Strings.Common_Cancel;
-                _matchmakingInProgress = false;
-                _matchmakingCts?.Dispose();
-                _matchmakingCts = null;
-            }
-
-            if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
-            {
-                string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-                _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
-                _joinData.JobId = serverid;
-            }
-        }
+        await PrepareJoinAsync();
 
         string? soberUri = GameJoin.BuildSoberUri(_joinData);
         if (soberUri is not null)
@@ -889,91 +721,25 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_StartingSober);
 
-        Utility.Processes.KillSober();
-        App.Logger.Debug($"Launching Sober via flatpak with args: {_launchCommandLine}");
-
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = "flatpak",
-            Arguments = $"run {SoberFlatpakId} {_launchCommandLine}",
-            UseShellExecute = false,
-        };
-
         try
         {
-            // Record time before launch so we can detect the new latest.log
-            var launchTime = DateTime.UtcNow;
+            LaunchResult launch = await TargetClient.LaunchAsync(
+                new LaunchRequest { Mode = _launchMode, CommandLine = _launchCommandLine },
+                _cancelTokenSource.Token);
 
-            using var process = Process.Start(startInfo)!;
-            _appPid = process.Id;
-            App.Logger.Info($"Sober launched with PID {_appPid}");
+            _appPid = launch.Pid;
             App.Logger.Debug("Launching Watcher...");
             await PrepareWatcherIfNeededAsync(autoclosePids);
 
-            CancellationToken readyToken = _cancelTokenSource.Token;
-
-            var readyTask = Task.Run(async () =>
+            try
             {
-                string[] soberReadySignals = ["will_handle_app_startup", "will_handle_start_game"];
-                const int pollIntervalMs = 50;
-                const int timeoutMs = 30_000;
-                var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
-
-                try
-                {
-                    string latestLog = Path.Combine(App.Clients.Player.Install.LogsRoot!, "latest.log");
-
-                    while (DateTime.UtcNow < deadline)
-                    {
-                        if (File.Exists(latestLog) && File.GetLastWriteTimeUtc(latestLog) >= launchTime)
-                            break;
-                        await Task.Delay(pollIntervalMs, readyToken);
-                    }
-
-                    if (!File.Exists(latestLog))
-                    {
-                        App.Logger.Info($"latest.log not found at {latestLog}, closing dialog.");
-                        return;
-                    }
-
-                    App.Logger.Info($"Tailing {latestLog} for ready signal...");
-
-                    using var fs = new FileStream(latestLog, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-                    using var reader = new StreamReader(fs);
-
-                    while (DateTime.UtcNow < deadline)
-                    {
-                        string? line = await reader.ReadLineAsync(readyToken);
-                        if (line is null)
-                        {
-                            await Task.Delay(pollIntervalMs, readyToken);
-                            continue;
-                        }
-                        if (soberReadySignals.Any(signal => line.Contains(signal, StringComparison.Ordinal)))
-                        {
-                            App.Logger.Debug("Sober window ready, closing bootstrapper dialog.");
-                            Dialog?.CloseBootstrapper();
-                            return;
-                        }
-                    }
-
-                    App.Logger.Warn("Timed out waiting for Sober ready signal, closing dialog.");
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Log watcher error: {ex.Message} — closing dialog.");
-                }
-                finally
-                {
-                    Dialog?.CloseBootstrapper();
-                }
-            }, readyToken);
-
-            await readyTask;
+                if (launch.WaitUntilReadyAsync is not null)
+                    await launch.WaitUntilReadyAsync(_cancelTokenSource.Token);
+            }
+            finally
+            {
+                Dialog?.CloseBootstrapper();
+            }
 
             App.Logger.Info("Sober is running, handing off to the watcher");
         }
@@ -1077,42 +843,6 @@ internal partial class Bootstrapper : IDisposable
 
         if (integration.Delay != 0)
             await Task.Delay(integration.Delay);
-    }
-
-    private static async Task<int> GetRobloxProcessIdAsync(string expectedName, TimeSpan timeout)
-    {
-        string processName = expectedName.Replace(".app", "", StringComparison.Ordinal);
-        var startTime = DateTime.Now;
-
-        while (DateTime.Now - startTime < timeout)
-        {
-            var processes = Process.GetProcessesByName(processName);
-            Process? target = null;
-            DateTime latestStartTime = DateTime.MinValue;
-
-            foreach (var p in processes)
-            {
-                try
-                {
-                    if (p.StartTime > latestStartTime)
-                    {
-                        latestStartTime = p.StartTime;
-                        target = p;
-                    }
-                }
-                catch (Exception)
-                {
-                    // process might have exited between enumeration and accessing StartTime
-                }
-            }
-
-            if (target != null)
-            {
-                return target.Id;
-            }
-            await Task.Delay(100);
-        }
-        return 0;
     }
 
     private bool ShouldRunAsAdmin()
@@ -1854,9 +1584,9 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task LaunchStudioViaWineAsync()
     {
-        string baseWineDir = Path.Combine(Paths.Base, "Wine");
+        string baseWineDir = WineLauncher.WineRoot;
         string symlinkPath = Path.Combine(baseWineDir, "kombucha");
-        string wineExe = Path.Combine(symlinkPath, "bin", "wine");
+        string wineExe = WineLauncher.WineExecutable;
 
         if (!File.Exists(wineExe))
         {
@@ -1920,88 +1650,32 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_Starting);
 
-        var env = new Dictionary<string, string>
-        {
-            { "WINEDLLOVERRIDES", "d3d9,d3d10core,d3d11,dxgi=n,b" }
-        };
-
-        if (App.Settings.Prop.StudioRenderer == StudioRenderer.DXVK)
-        {
-            env["DXVK_LOG_LEVEL"] = "warn";
-            env["DXVK_STATE_CACHE_PATH"] = Paths.Cache;
-        }
-
-        if (App.Settings.Prop.StudioDebug)
-        {
-            env["WINEDEBUG"] = "warn+seh,fixme-all,err-kerberos,err-ntlm,err-combase";
-        }
-
-        foreach (var userEnv in App.Settings.Prop.StudioEnvironmentVariables)
-            env[userEnv.Key] = userEnv.Value;
-
-        string baseCommand = $"\"{Path.Combine(_latestVersionDirectory, App.StudioData.ExecutableName)}\" {_launchCommandLine}";
-        string finalCommand = baseCommand;
-
-        string? virtualDesktop = App.Settings.Prop.StudioVirtualDesktop;
-        if (!string.IsNullOrEmpty(virtualDesktop))
-        {
-            string uuid = Guid.NewGuid().ToString();
-            finalCommand = $"explorer /desktop={uuid},{virtualDesktop} {baseCommand}";
-        }
-
-        string? customLauncher = App.Settings.Prop.StudioLauncher;
-        if (!string.IsNullOrEmpty(customLauncher))
-        {
-            finalCommand = customLauncher.Replace("%command%", finalCommand, StringComparison.Ordinal);
-        }
-
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = wineExe,
-            Arguments = finalCommand,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            WorkingDirectory = _latestVersionDirectory
-        };
-
-        startInfo.Environment["WINEPREFIX"] = wineMgr.PrefixDir;
-        foreach (var kv in env)
-            startInfo.Environment[kv.Key] = kv.Value;
-
         var autoclosePids = new List<int>();
         foreach (var integration in App.Settings.Prop.CustomIntegrations)
             if (integration?.PreLaunch == true)
                 await LaunchIntegrationAsync(integration, autoclosePids);
 
-        try
+        LaunchResult launch = await TargetClient.LaunchAsync(new LaunchRequest
         {
-            using var process = Process.Start(startInfo);
-            if (process == null)
-            {
-                App.Logger.Error("Failed to start Roblox Studio process.");
-                await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
-                App.Terminate(ErrorCode.ERROR_CANCELLED);
-                return;
-            }
-            _appPid = process.Id;
-            App.Logger.Info($"Roblox Studio started with Wine (PID {_appPid})");
-        }
-        catch (Exception ex)
+            Mode = _launchMode,
+            CommandLine = _launchCommandLine,
+            WorkingDirectory = _latestVersionDirectory
+        });
+
+        if (!launch.Started)
         {
-            App.Logger.Error($"Failed to launch Studio: {ex.Message}");
             await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
             App.Terminate(ErrorCode.ERROR_CANCELLED);
             return;
         }
 
+        _appPid = launch.Pid;
+
         foreach (var integration in App.Settings.Prop.CustomIntegrations)
             if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)
                 await LaunchIntegrationAsync(integration, autoclosePids);
 
-        string wineLogDir = Path.Combine(wineMgr.PrefixDir, "drive_c", "users", Environment.UserName, "AppData", "Local", "Roblox", "logs");
-        Directory.CreateDirectory(wineLogDir);
-        await PrepareWatcherIfNeededAsync(autoclosePids, logDirectory: wineLogDir);
+        await PrepareWatcherIfNeededAsync(autoclosePids, logDirectory: launch.LogHint);
 
         await Task.Delay(1000);
     }
