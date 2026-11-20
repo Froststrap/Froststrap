@@ -1,0 +1,42 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+using Froststrap.Clients.Model;
+
+namespace Froststrap.Clients.Contracts
+{
+    /// <summary>
+    /// Static description of a client's packaging, paths, logs, and process names.
+    /// Immutable, state-free, and host-independent.
+    /// </summary>
+    internal interface IClientLayout
+    {
+        string ClientId { get; }
+
+        ClientTarget Target { get; }
+
+        /// <summary>Packaging shape, not the host OS.</summary>
+        ExecutableShape Shape { get; }
+
+        /// <summary>Deployment binary type, or null for an externally managed client.</summary>
+        string? BinaryType { get; }
+
+        string? ExecutableName { get; }
+
+        IReadOnlyList<string> ProcessNames { get; }
+
+        LogShape LogFormat { get; }
+
+        /// <summary><c>"_Player_"</c>, <c>"_Studio_"</c>, or null for a plain-log client.</summary>
+        string? LogKindToken { get; }
+
+        /// <summary>Log lines that mean the client window is ready.</summary>
+        IReadOnlyList<string> ReadySignals { get; }
+
+        /// <summary>Filename tokens that are never game logs.</summary>
+        IReadOnlyList<string> ExcludedLogTokens { get; }
+
+        ClientInstall Resolve(ClientResolveContext context);
+    }
+}
