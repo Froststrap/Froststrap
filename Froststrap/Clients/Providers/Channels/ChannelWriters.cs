@@ -22,7 +22,7 @@ namespace Froststrap.Clients.Providers.Channels
     internal sealed class MacDefaultsChannelWriter(string registryName) : IChannelWriter
     {
         public void Write(string robloxDomain, string? channel) =>
-            Utility.MacChannelStore.Apply(registryName, robloxDomain, channel);
+            MacChannelStore.Apply(registryName, robloxDomain, channel);
     }
 
     internal sealed class NullChannelWriter : IChannelWriter

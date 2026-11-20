@@ -914,8 +914,8 @@ internal partial class Bootstrapper : IDisposable
             _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
         // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
-            _latestVersionDirectory = App.Clients.Player.Install.ContentRoot;
+        if (TargetClient.Layout.Shape == ExecutableShape.ExternalManaged)
+            _latestVersionDirectory = TargetClient.Install.ContentRoot;
 
         _versionPackageManifest = await CdnSource.GetPackageManifestAsync(_latestVersionGuid);
 

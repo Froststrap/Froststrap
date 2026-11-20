@@ -44,6 +44,11 @@ internal static class ClientCatalog
         return registry;
     }
 
+    public static IReadOnlyList<string> StaticDirectoryNames { get; } =
+        new IClientLayout[] { new WindowsPlayerLayout(), new WindowsStudioLayout(), new MacBundlePlayerLayout(), new MacBundleStudioLayout() }
+            .Select(layout => layout.BinaryType!)
+            .ToArray();
+
     public static IClientLayout DeploymentLayout(HostPlatform host, ClientTarget target) => (host, target) switch
     {
         (HostPlatform.MacOS, ClientTarget.Player) => new MacBundlePlayerLayout(),

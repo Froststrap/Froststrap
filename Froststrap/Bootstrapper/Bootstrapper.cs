@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.AppData;
+using Froststrap.Clients;
 using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Launchers;
 using Froststrap.Clients.Model;
@@ -40,7 +41,7 @@ internal partial class Bootstrapper : IDisposable
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> _sizedFromResponse = new();
     private readonly GameJoinData _joinData = null!;
 
-    private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
+    private static bool AutomaticallyUpdateSober => App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged && App.Settings.Prop.AutomaticallyUpdateSober;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
 
     private bool MustUpgrade => UpgradeReason != InstallReason.None;
@@ -947,18 +948,18 @@ internal partial class Bootstrapper : IDisposable
 
     private static bool TryDeleteRobloxInDirectory(string dir)
     {
-        string[] executables = [App.PlayerData.ExecutableName, App.StudioData.ExecutableName];
+        IAppData[] clients = [App.PlayerData, App.StudioData];
 
-        foreach (string exe in executables)
+        foreach (IAppData client in clients)
         {
-            string path = Path.Combine(dir, exe);
+            string path = Path.Combine(dir, client.ExecutableName);
 
-            bool exists = OperatingSystem.IsMacOS() ? Directory.Exists(path) : File.Exists(path);
+            bool exists = client.IsBundle ? Directory.Exists(path) : File.Exists(path);
             if (!exists) continue;
 
             try
             {
-                if (OperatingSystem.IsMacOS())
+                if (client.IsBundle)
                     Directory.Delete(path, true);
                 else
                 {
@@ -977,7 +978,9 @@ internal partial class Bootstrapper : IDisposable
 
     public static void CleanupVersionsFolder()
     {
-        if (OperatingSystem.IsLinux())
+        bool externalPlayer = App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged;
+
+        if (externalPlayer)
         {
             bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
             if (!isStudio)
@@ -1004,11 +1007,11 @@ internal partial class Bootstrapper : IDisposable
             string dirName = Path.GetFileName(dir);
 
             // to make static directory work on studio linux
-            if (OperatingSystem.IsLinux() && dirName == "Sober")
+            if (externalPlayer && dirName == Path.GetFileName(App.Clients.Player.Install.InstallRoot))
                 continue;
 
             bool shouldDelete = App.Settings.Prop.StaticDirectory
-                ? dirName != "WindowsPlayer" && dirName != "WindowsStudio64" && dirName != "MacPlayer" && dirName != "MacStudio"
+                ? !ClientCatalog.StaticDirectoryNames.Contains(dirName)
                 : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
 
             if (!shouldDelete)

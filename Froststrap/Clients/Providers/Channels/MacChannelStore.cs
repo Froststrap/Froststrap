@@ -4,7 +4,7 @@
 
 using System.Runtime.Versioning;
 
-namespace Froststrap.Utility
+namespace Froststrap.Clients.Providers.Channels
 {
     [SupportedOSPlatform("macos")]
     internal static partial class MacChannelStore

@@ -10,8 +10,6 @@ namespace Froststrap.AppData
 
         string BinaryType { get; }
 
-        string RegistryName { get; }
-
         string ProcessName { get; }
 
         string ExecutableName { get; }

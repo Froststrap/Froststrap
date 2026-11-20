@@ -13,8 +13,6 @@ namespace Froststrap.AppData
 
         public override string BinaryType => layout.BinaryType!;
 
-        public string RegistryName => "RobloxPlayer";
-
         public string ProcessName => layout.ProcessNames[0];
 
         public override string ExecutableName => layout.ExecutableName!;

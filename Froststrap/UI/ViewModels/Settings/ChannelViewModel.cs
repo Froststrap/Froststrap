@@ -765,7 +765,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         private static string GetBinaryType(bool isStudio) =>
-            (isStudio ? App.Clients.Studio : App.Clients.Player).Layout.BinaryType!;
+            isStudio ? App.StudioData.BinaryType : App.PlayerData.BinaryType;
 
         private async Task ValidateStudioVersionHashAsync(string hash)
         {
