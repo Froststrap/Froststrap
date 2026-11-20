@@ -4,6 +4,7 @@
 
 using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Launchers;
+using Froststrap.Clients.Providers;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Registry;
 using Froststrap.Clients.Runtime;
@@ -60,6 +61,8 @@ namespace Froststrap.Clients.Runtimes
         public override IClientLauncher Launcher => _soberLauncher ??= new SoberLauncher(Layout, FlatpakId);
 
         private SoberLauncher? _soberLauncher;
+
+        public override ISettingsSync? SettingsSync { get; } = new SoberSettingsSync();
 
         public override async Task PrepareEnvironmentAsync()
         {

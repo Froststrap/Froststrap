@@ -20,6 +20,10 @@ namespace Froststrap.Clients.Layouts
 
         public override IReadOnlyList<string> ProcessNames => ["RobloxPlayerBeta"];
 
+        public override CookieFormat CookieFormat => CookieFormat.ProtectedNetscape;
+
+        public override ChannelStore ChannelStore => ChannelStore.Registry;
+
         public override LogShape LogFormat => LogShape.Native;
 
         public override string? LogKindToken => "_Player_";

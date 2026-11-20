@@ -37,6 +37,10 @@ namespace Froststrap.Clients.Layouts
 
         public virtual bool MatchProcessNamePrefix => false;
 
+        public virtual CookieFormat CookieFormat => CookieFormat.None;
+
+        public virtual ChannelStore ChannelStore => ChannelStore.None;
+
         public virtual (string ContentRoot, string ClientSettingsRoot) ModRoots(string versionRoot) => (versionRoot, versionRoot);
 
         public abstract ClientInstall Resolve(ClientResolveContext context);

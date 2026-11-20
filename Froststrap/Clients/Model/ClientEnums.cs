@@ -44,6 +44,21 @@ namespace Froststrap.Clients.Model
         External
     }
 
+    internal enum CookieFormat
+    {
+        None,
+        ProtectedNetscape,
+        BinaryCookies,
+        PlainHeader
+    }
+
+    internal enum ChannelStore
+    {
+        None,
+        Registry,
+        MacDefaults
+    }
+
     internal enum ModSupport
     {
         None,

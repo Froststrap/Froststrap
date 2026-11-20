@@ -396,16 +396,7 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        if (OperatingSystem.IsWindows())
-        {
-            using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
-            key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
-        }
-
-        if (OperatingSystem.IsMacOS())
-        {
-            Utility.MacChannelStore.Apply(AppData.RegistryName, Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
-        }
+        TargetClient.Channel.Write(Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
     }
 
     private bool IsEligibleForBackgroundUpdate()

@@ -28,6 +28,12 @@ namespace Froststrap.Clients.Contracts
 
         IClientLauncher Launcher { get; }
 
+        ICookieStore Cookies { get; }
+
+        ISettingsSync? SettingsSync { get; }
+
+        IChannelWriter Channel { get; }
+
         DistributionState State { get; }
 
         /// <summary>

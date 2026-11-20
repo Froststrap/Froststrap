@@ -4,6 +4,8 @@
 
 using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Launchers;
+using Froststrap.Clients.Providers.Channels;
+using Froststrap.Clients.Providers.Cookies;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Providers;
 using Froststrap.Clients.Registry;
@@ -61,6 +63,16 @@ namespace Froststrap.Clients.Runtimes
         public virtual IClientLauncher Launcher => _launcher ??= new NativeLauncher(Layout);
 
         private IClientLauncher? _launcher;
+
+        public ICookieStore Cookies => _cookies ??= CookieStores.Create(Layout.CookieFormat, () => Install);
+
+        private ICookieStore? _cookies;
+
+        public virtual ISettingsSync? SettingsSync => null;
+
+        public IChannelWriter Channel => _channel ??= ChannelWriters.Create(Layout.ChannelStore, Layout.Target);
+
+        private IChannelWriter? _channel;
 
         public DistributionState State => _stateStore.For(_stateFileName).Prop;
 

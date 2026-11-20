@@ -20,6 +20,10 @@ namespace Froststrap.Clients.Layouts
 
         public override IReadOnlyList<string> ProcessNames => ["RobloxPlayer"];
 
+        public override CookieFormat CookieFormat => CookieFormat.BinaryCookies;
+
+        public override ChannelStore ChannelStore => ChannelStore.MacDefaults;
+
         public override LogShape LogFormat => LogShape.Native;
 
         public override string? LogKindToken => "_Player_";

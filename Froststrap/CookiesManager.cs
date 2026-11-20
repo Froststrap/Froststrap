@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.RobloxInterfaces;
-using System.Runtime.Versioning;
-using System.Security.Cryptography;
 
 namespace Froststrap
 {
@@ -26,16 +24,10 @@ namespace Froststrap
         private static bool Enabled => App.Settings.Prop.AllowCookieAccess;
 
         private string AuthCookie = string.Empty;
-        private const string AuthCookieName = ".ROBLOSECURITY";
-        private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
 
         public string GetAuthCookie() => AuthCookie;
 
-        public static string CookiesPath => OperatingSystem.IsMacOS()
-            ? Path.Combine(App.Clients.Player.Install.CookiesDirectory!, "com.roblox.RobloxPlayer.binarycookies")
-            : OperatingSystem.IsLinux()
-                ? App.Clients.Player.Install.CookiesDirectory!
-                : Path.Combine(App.Clients.Player.Install.CookiesDirectory!, Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
+        public static string CookiesPath => App.Clients.Player.Cookies.CookiesPath ?? string.Empty;
 
         public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
         {
@@ -112,20 +104,7 @@ namespace Froststrap
 
             try
             {
-                string authCookie = string.Empty;
-
-                if (OperatingSystem.IsWindows())
-                {
-                    authCookie = await LoadWindowsCookies();
-                }
-                else if (OperatingSystem.IsMacOS())
-                {
-                    authCookie = await LoadMacCookies();
-                }
-                else if (OperatingSystem.IsLinux())
-                {
-                    authCookie = await LoadLinuxCookies();
-                }
+                string authCookie = await App.Clients.Player.Cookies.ReadAuthCookieAsync();
 
                 if (string.IsNullOrEmpty(authCookie))
                 {
@@ -142,169 +121,6 @@ namespace Froststrap
                 App.Logger.Error($"Failed to load cookies: {ex.Message}");
                 State = CookieState.Failed;
             }
-        }
-
-        [SupportedOSPlatform("windows")]
-        private static async Task<string> LoadWindowsCookies()
-        {
-            string content = await File.ReadAllTextAsync(CookiesPath);
-            var cookies = JsonHelper.Deserialize<RobloxCookies>(content)!;
-
-            byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
-            byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
-
-            string rawCookies = Encoding.UTF8.GetString(unencryptedData);
-            Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
-
-            return authCookieMatch.Success ? authCookieMatch.Groups[1].Value : string.Empty;
-        }
-
-        private static async Task<string> LoadMacCookies()
-        {
-            byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
-            var cookies = ParseBinaryCookies(fileBytes);
-            return ExtractRoblosecurity(cookies) ?? string.Empty;
-        }
-
-        private static async Task<string> LoadLinuxCookies()
-        {
-            string cookieText = await File.ReadAllTextAsync(CookiesPath);
-            if (string.IsNullOrWhiteSpace(cookieText))
-                return string.Empty;
-
-            var cookieParts = cookieText.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var part in cookieParts)
-            {
-                var trimmed = part.Trim();
-                int eqIndex = trimmed.IndexOf('=', StringComparison.Ordinal);
-                if (eqIndex > 0)
-                {
-                    string name = trimmed[..eqIndex].Trim();
-                    string value = trimmed[(eqIndex + 1)..].Trim();
-                    if (name == ".ROBLOSECURITY")
-                        return value;
-                }
-            }
-            return string.Empty;
-        }
-
-        private struct BinaryCookie
-        {
-            public string Name { get; set; }
-            public string Value { get; set; }
-            public string Domain { get; set; }
-            public string Path { get; set; }
-            public int Flags { get; set; }
-            public DateTime? Expiry { get; set; }
-            public DateTime? Creation { get; set; }
-        }
-
-        private static List<BinaryCookie> ParseBinaryCookies(byte[] data)
-        {
-            var cookies = new List<BinaryCookie>();
-            int offset = 0;
-
-            if (data.Length < 4 || data[0] != 0x63 || data[1] != 0x6F || data[2] != 0x6F || data[3] != 0x6B)
-                throw new InvalidOperationException("Not a binarycookies file");
-
-            offset += 4;
-            int numPages = ReadBigEndianInt32(data, ref offset);
-
-            int[] pageSizes = new int[numPages];
-            for (int i = 0; i < numPages; i++)
-                pageSizes[i] = ReadBigEndianInt32(data, ref offset);
-
-            for (int p = 0; p < numPages; p++)
-            {
-                int pageStart = offset;
-                int pageEnd = pageStart + pageSizes[p];
-
-                int pageHeader = ReadLittleEndianInt32(data, pageStart);
-                if (pageHeader != 0x00000100 && pageHeader != 0x00010000)
-                    App.Logger.Error($"Unexpected page header: 0x{pageHeader:X} at offset {pageStart}");
-
-                int numCookies = ReadLittleEndianInt32(data, pageStart + 4);
-                int cookieOffsetsOffset = pageStart + 8;
-
-                for (int c = 0; c < numCookies; c++)
-                {
-                    int cookieOffset = pageStart + ReadLittleEndianInt32(data, cookieOffsetsOffset + c * 4);
-                    try
-                    {
-                        var cookie = ParseSingleCookie(data, cookieOffset);
-                        cookies.Add(cookie);
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to parse cookie {c} in page {p}: {ex.Message}");
-                    }
-                }
-
-                offset = pageEnd;
-            }
-
-            return cookies;
-        }
-
-        private static BinaryCookie ParseSingleCookie(byte[] data, int offset)
-        {
-            int flags = ReadLittleEndianInt32(data, offset + 4);
-            int urlOffset = ReadLittleEndianInt32(data, offset + 16);
-            int nameOffset = ReadLittleEndianInt32(data, offset + 20);
-            int pathOffset = ReadLittleEndianInt32(data, offset + 24);
-            int valueOffset = ReadLittleEndianInt32(data, offset + 28);
-            double expiryTime = BitConverter.ToDouble(data, offset + 40);
-            double creationTime = BitConverter.ToDouble(data, offset + 48);
-
-            string domain = ReadNullTerminatedString(data, offset + urlOffset);
-            string name = ReadNullTerminatedString(data, offset + nameOffset);
-            string path = ReadNullTerminatedString(data, offset + pathOffset);
-            string value = ReadNullTerminatedString(data, offset + valueOffset);
-
-            return new BinaryCookie
-            {
-                Name = name,
-                Value = value,
-                Domain = domain,
-                Path = path,
-                Flags = flags,
-                Expiry = MacTimeToDateTime(expiryTime),
-                Creation = MacTimeToDateTime(creationTime)
-            };
-        }
-
-        private static string ReadNullTerminatedString(byte[] data, int offset)
-        {
-            int end = offset;
-            while (end < data.Length && data[end] != 0) end++;
-            return Encoding.UTF8.GetString(data, offset, end - offset);
-        }
-
-        private static int ReadBigEndianInt32(byte[] data, ref int offset)
-        {
-            int value = (data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3];
-            offset += 4;
-            return value;
-        }
-
-        private static int ReadLittleEndianInt32(byte[] data, int offset)
-        {
-            return data[offset] | (data[offset + 1] << 8) | (data[offset + 2] << 16) | (data[offset + 3] << 24);
-        }
-
-        private static DateTime? MacTimeToDateTime(double macTime)
-        {
-            if (macTime == 0) return null;
-            DateTime epoch = new(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return epoch.AddSeconds(macTime).ToLocalTime();
-        }
-
-        private static string? ExtractRoblosecurity(List<BinaryCookie> cookies)
-        {
-            var cookie = cookies.FirstOrDefault(c =>
-                c.Name == ".ROBLOSECURITY" &&
-                c.Domain.Contains(".roblox.com", StringComparison.Ordinal));
-            return cookie.Value;
         }
     }
 }

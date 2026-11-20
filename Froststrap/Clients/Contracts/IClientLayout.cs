@@ -32,6 +32,10 @@ namespace Froststrap.Clients.Contracts
         /// </summary>
         bool MatchProcessNamePrefix { get; }
 
+        CookieFormat CookieFormat { get; }
+
+        ChannelStore ChannelStore { get; }
+
         LogShape LogFormat { get; }
 
         /// <summary><c>"_Player_"</c>, <c>"_Studio_"</c>, or null for a plain-log client.</summary>

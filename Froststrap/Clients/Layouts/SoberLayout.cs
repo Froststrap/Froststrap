@@ -24,6 +24,8 @@ namespace Froststrap.Clients.Layouts
 
         public override IReadOnlyList<string> ProcessNames => ["sober"];
 
+        public override CookieFormat CookieFormat => CookieFormat.PlainHeader;
+
         public override LogShape LogFormat => LogShape.PlainLog;
 
         public override string? LogKindToken => null;

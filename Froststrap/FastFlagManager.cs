@@ -202,43 +202,10 @@ namespace Froststrap
             if (saved)
             {
                 OriginalProp = new(Prop);
-                if (OperatingSystem.IsLinux())
-                    SyncToSoberConfig();
+                App.Clients.Player.SettingsSync?.SyncFastFlags(Prop);
             }
 
             return saved;
-        }
-
-        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
-        private void SyncToSoberConfig()
-        {
-            try
-            {
-                if (!App.SoberSettings.Loaded)
-                    App.SoberSettings.Load(alertFailure: false);
-
-                var fflagsDict = App.SoberSettings.GetOrCreateFFlagsContainer();
-
-                foreach (var kvp in Prop)
-                {
-                    string val = kvp.Value?.ToString() ?? "";
-                    if (bool.TryParse(val, out bool boolResult))
-                        fflagsDict[kvp.Key] = boolResult;
-                    else if (long.TryParse(val, out long longResult))
-                        fflagsDict[kvp.Key] = longResult;
-                    else if (double.TryParse(val, NumberStyles.Float, CultureInfo.InvariantCulture, out double doubleResult))
-                        fflagsDict[kvp.Key] = doubleResult;
-                    else
-                        fflagsDict[kvp.Key] = val;
-                }
-
-                App.SoberSettings.Save();
-                App.Logger.Info($"Successfully synced {fflagsDict.Count} flags.");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to sync flags: {ex}");
-            }
         }
 
         public override bool Load(bool alertFailure = true)
