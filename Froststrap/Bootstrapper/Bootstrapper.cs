@@ -91,6 +91,21 @@ internal partial class Bootstrapper : IDisposable
 
     private DeploymentCdnSource CdnSource => new(TargetClient.Layout);
 
+    private ModPaths CurrentModPaths
+    {
+        get
+        {
+            var (contentRoot, clientSettingsRoot) = TargetClient.Layout.ModRoots(_latestVersionDirectory);
+
+            return new ModPaths(
+                _latestVersionDirectory,
+                contentRoot,
+                clientSettingsRoot,
+                TargetClient.Capabilities.ModSupport,
+                TargetClient.Capabilities.RestoreStrategy);
+        }
+    }
+
     public string LockName { get; set; } = "Bootstrapper";
 
     public bool QuitIfLockExists { get; set; }
@@ -1345,9 +1360,7 @@ internal partial class Bootstrapper : IDisposable
         if (string.IsNullOrEmpty(_latestVersionDirectory))
             return;
 
-        string clientSettingsRoot = OperatingSystem.IsMacOS()
-            ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "MacOS")
-            : _latestVersionDirectory;
+        string clientSettingsRoot = CurrentModPaths.ClientSettingsRoot;
 
         string clientSettingsDir = Path.Combine(clientSettingsRoot, "ClientSettings");
         Directory.CreateDirectory(clientSettingsDir);
@@ -1756,15 +1769,11 @@ internal partial class Bootstrapper : IDisposable
             .OrderByDescending(x => x.Priority)
             .ToList();
 
-        string appBundleContentsDirectory = Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents");
-        string contentDirectory = OperatingSystem.IsMacOS()
-            ? Path.Combine(appBundleContentsDirectory, "Resources")
-            : _latestVersionDirectory;
-        string clientSettingsBaseDirectory = OperatingSystem.IsMacOS()
-            ? Path.Combine(appBundleContentsDirectory, "MacOS")
-            : _latestVersionDirectory;
+        ModPaths modPaths = CurrentModPaths;
+        string contentDirectory = modPaths.ContentRoot;
+        string clientSettingsBaseDirectory = modPaths.ClientSettingsRoot;
 
-        if (OperatingSystem.IsMacOS())
+        if (modPaths.Restore == RestoreStrategy.VersionBackup)
             EnsureMacResourcesBackup(contentDirectory, _latestVersionGuid);
 
         var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
@@ -1860,7 +1869,7 @@ internal partial class Bootstrapper : IDisposable
 
         App.Logger.Info("Writing AppSettings.xml...");
         if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml"))
-            && (!OperatingSystem.IsLinux() || IsStudioLaunch))
+            && modPaths.Support == ModSupport.BundleFiles)
         {
             Directory.CreateDirectory(_latestVersionDirectory);
             await File.WriteAllTextAsync(
@@ -2073,7 +2082,7 @@ internal partial class Bootstrapper : IDisposable
             string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
             string dest = Path.Combine(clientSettingsBaseDirectory, rel);
 
-            if (!profileApplied && (!OperatingSystem.IsLinux() || IsStudioLaunch) && File.Exists(source))
+            if (!profileApplied && modPaths.Support == ModSupport.BundleFiles && File.Exists(source))
             {
                 try
                 {
@@ -2122,10 +2131,10 @@ internal partial class Bootstrapper : IDisposable
             string actualFile = fileLocation;
             string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && OperatingSystem.IsLinux() && !IsStudioLaunch)
+            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && modPaths.Support != ModSupport.BundleFiles)
                 continue;
 
-            if (OperatingSystem.IsMacOS())
+            if (modPaths.Restore == RestoreStrategy.VersionBackup)
             {
                 bool isClientSettingsFile = IsClientSettingsRelativePath(actualFile);
                 string backupDir = GetResourcesBackupPath(_latestVersionGuid);
@@ -2189,7 +2198,7 @@ internal partial class Bootstrapper : IDisposable
             App.Logger.Info($"Restoring '{internalZipPath}' from package {packageName}");
         }
 
-        if ((!OperatingSystem.IsLinux() || IsStudioLaunch) && fileRestoreMap.Count > 0)
+        if (modPaths.Restore == RestoreStrategy.PackageReextract && fileRestoreMap.Count > 0)
         {
             long restoreBytes = fileRestoreMap.Keys
                 .Select(name => _versionPackageManifest.Find(x => x.Name == name))
@@ -2229,15 +2238,15 @@ internal partial class Bootstrapper : IDisposable
             return;
         }
 
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        ModPaths modPaths = CurrentModPaths;
+
+        if (modPaths.Support != ModSupport.BundleFiles)
         {
-            App.Logger.Info("Skipping mod folder initialization on Linux Player (Sober).");
+            App.Logger.Info($"Skipping mod folder initialization, {TargetClient.DisplayName} does not take mod files.");
             return;
         }
 
-        string contentRoot = OperatingSystem.IsMacOS()
-            ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
-            : _latestVersionDirectory;
+        string contentRoot = modPaths.ContentRoot;
         if (!Directory.Exists(contentRoot))
         {
             App.Logger.Warn($"Content root not found: {contentRoot}, skipping.");

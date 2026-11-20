@@ -35,6 +35,8 @@ namespace Froststrap.Clients.Layouts
 
         public virtual IReadOnlyList<string> RequiredFiles => [];
 
+        public virtual (string ContentRoot, string ClientSettingsRoot) ModRoots(string versionRoot) => (versionRoot, versionRoot);
+
         public abstract ClientInstall Resolve(ClientResolveContext context);
 
         protected string ResolveVersionedRoot(ClientResolveContext context)

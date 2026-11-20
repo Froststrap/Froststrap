@@ -24,18 +24,25 @@ namespace Froststrap.Clients.Layouts
 
         public override string? LogKindToken => "_Studio_";
 
+        public override (string ContentRoot, string ClientSettingsRoot) ModRoots(string versionRoot)
+        {
+            string contents = Path.Combine(versionRoot, ExecutableName!, "Contents");
+            return (Path.Combine(contents, "Resources"), Path.Combine(contents, "MacOS"));
+        }
+
         public override ClientInstall Resolve(ClientResolveContext context)
         {
             ClientInstall install = VersionedInstall(context, isBundle: true);
             string bundle = Path.Combine(install.InstallRoot, ExecutableName!);
+            var (contentRoot, clientSettingsRoot) = ModRoots(install.InstallRoot);
             string support = Path.Combine(context.UserProfile, "Library", "Application Support", "Roblox");
             string userData = Path.Combine(context.UserProfile, "Library", "Roblox");
 
             return install with
             {
                 ExecutablePath = bundle,
-                ContentRoot = Path.Combine(bundle, "Contents", "Resources"),
-                ClientSettingsRoot = Path.Combine(bundle, "Contents", "MacOS"),
+                ContentRoot = contentRoot,
+                ClientSettingsRoot = clientSettingsRoot,
                 SupportRoot = support,
                 UserDataRoot = userData,
                 PluginsDirectory = Path.Combine(support, "Plugins"),

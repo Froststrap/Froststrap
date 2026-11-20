@@ -40,6 +40,9 @@ namespace Froststrap.Clients.Contracts
         /// <summary>Files that must exist in the install root for it to be usable.</summary>
         IReadOnlyList<string> RequiredFiles { get; }
 
+        /// <summary>Where game content and client settings live inside a version directory.</summary>
+        (string ContentRoot, string ClientSettingsRoot) ModRoots(string versionRoot);
+
         ClientInstall Resolve(ClientResolveContext context);
     }
 }

@@ -4,6 +4,7 @@
 
 using Microsoft.Win32;
 using System.IO.Compression;
+using Froststrap.Clients.Model;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap;
@@ -66,7 +67,7 @@ internal partial class Bootstrapper : IDisposable
 
         Directory.CreateDirectory(_latestVersionDirectory);
 
-        if (OperatingSystem.IsMacOS())
+        if (TargetClient.Capabilities.RestoreStrategy == RestoreStrategy.VersionBackup)
         {
             string backupDir = GetResourcesBackupPath(_latestVersionGuid);
             if (Directory.Exists(backupDir))
