@@ -562,6 +562,7 @@
   "Menu_Deployment_Studio_Description": "Change Roblox Studio settings related to downloading specific Roblox versions.",
   "Menu_Deployment_VersionHash_Description": "Enter the Roblox Studio version GUID (e.g. version-xxxxxxxxxxxxxxxx). Only applies to Studio launches.",
   "Menu_Deployment_VersionHash_Title": "Version Hash",
+  "Menu_Diagnostics_Clients_Title": "Clients",
   "Menu_Diagnostics_FroststrapLogs_Description": "Open the folder containing Froststrap's log files.",
   "Menu_Diagnostics_FroststrapLogs_Title": "Froststrap logs",
   "Menu_Diagnostics_Logs_Title": "Logs",

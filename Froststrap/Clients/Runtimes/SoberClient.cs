@@ -64,6 +64,8 @@ namespace Froststrap.Clients.Runtimes
 
         public override ISettingsSync? SettingsSync { get; } = new SoberSettingsSync();
 
+        public override string LaunchLabel => Strings.Common_Sober;
+
         public override async Task PrepareEnvironmentAsync()
         {
             string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", FlatpakId);

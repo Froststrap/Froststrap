@@ -50,6 +50,8 @@ namespace Froststrap.Clients.Runtimes
 
         public string DisplayName { get; }
 
+        public virtual string LaunchLabel => Layout.Target == ClientTarget.Studio ? Strings.Common_Studio : Strings.Common_Player;
+
         public ClientTarget Target => Layout.Target;
 
         public IClientLayout Layout { get; }

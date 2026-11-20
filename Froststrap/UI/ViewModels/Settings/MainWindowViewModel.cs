@@ -93,8 +93,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 Check("State", App.State.HasUnsavedChanges, App.State.DescribeChanges);
                 Check("FastFlags", App.FastFlags.HasUnsavedChanges, App.FastFlags.DescribeChanges);
                 // without Sober's config there's nothing to save, so it never counts
-                if (OperatingSystem.IsLinux() && App.SoberSettings.Loaded)
-                    Check("SoberSettings", App.SoberSettings.HasUnsavedChanges);
+                if (App.Clients.Player.SettingsSync is { } clientSettings)
+                    Check("SoberSettings", clientSettings.HasUnsavedChanges);
                 Check("GlobalSettings", App.GlobalSettings.HasUnsavedChanges);
                 Check("PendingSettingTasks", App.PendingSettingTasks.Count > 0,
                     () => string.Join(", ", App.PendingSettingTasks.Keys));
@@ -366,8 +366,7 @@ namespace Froststrap.UI.ViewModels.Settings
             App.FastFlags.Save();
             App.GlobalSettings.Save();
 
-            if (OperatingSystem.IsLinux())
-                App.SoberSettings.Save();
+            App.Clients.Player.SettingsSync?.Save();
 
             foreach (var pair in App.PendingSettingTasks)
             {
@@ -407,7 +406,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public static bool IsPlayerInstalled => App.IsPlayerInstalled;
 
         public static bool IsStudioInstalled => App.IsStudioInstalled;
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+        public static string PlayerMenuItemText => App.Clients.Player.LaunchLabel;
 
         public string LaunchButtonText
         {
@@ -415,7 +414,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+                    string modeName = App.Clients.Player.LaunchLabel;
                     return IsPlayerInstalled
                         ? $"{Strings.Common_SaveAndLaunch} {modeName}"
                         : $"{Strings.Common_SaveAndInstall} {modeName}";

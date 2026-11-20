@@ -58,7 +58,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+        public static string PlayerMenuItemText => App.Clients.Player.LaunchLabel;
 
         public string LaunchButtonText
         {
@@ -66,7 +66,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
+                    string modeName = App.Clients.Player.LaunchLabel;
                     return IsPlayerInstalled
                         ? $"{Strings.Common_Launch} {modeName}"
                         : $"{Strings.Common_Install} {modeName}";

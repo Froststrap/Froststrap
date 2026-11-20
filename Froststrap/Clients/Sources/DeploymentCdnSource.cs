@@ -19,6 +19,14 @@ namespace Froststrap.Clients.Sources
 
         public bool HasPackageSignatures => !IsBundle;
 
+        public string DeployHistoryUrl => IsBundle
+            ? "https://setup-rbxcdn.github.io/mac/DeployHistory.txt"
+            : "https://setup-rbxcdn.github.io/DeployHistory.txt";
+
+        public string DeployHistoryBinaryType => layout.Target == ClientTarget.Studio
+            ? "Studio"
+            : IsBundle ? "Client" : "WindowsPlayer";
+
         public async Task<Dictionary<string, string>> GetPackageMapAsync()
         {
             if (IsBundle)

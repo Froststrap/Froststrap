@@ -240,7 +240,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get
             {
-                if (OperatingSystem.IsLinux())
+                if (!App.Clients.Player.Capabilities.SupportsStudioLaunch)
                     return !App.IsPlayerInstalled;
                 return !App.IsPlayerInstalled && !App.IsStudioInstalled;
             }
@@ -765,7 +765,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         private static string GetBinaryType(bool isStudio) =>
-            isStudio ? App.StudioData.BinaryType : App.PlayerData.BinaryType;
+            (isStudio ? App.Clients.Studio : App.Clients.Player).Layout.BinaryType!;
 
         private async Task ValidateStudioVersionHashAsync(string hash)
         {

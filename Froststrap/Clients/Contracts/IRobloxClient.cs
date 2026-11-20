@@ -16,6 +16,8 @@ namespace Froststrap.Clients.Contracts
 
         string DisplayName { get; }
 
+        string LaunchLabel { get; }
+
         ClientTarget Target { get; }
 
         IClientLayout Layout { get; }

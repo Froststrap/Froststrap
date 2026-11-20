@@ -89,15 +89,11 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 _versions.Clear();
 
-                bool bundle = App.PlayerData.IsBundle;
+                var source = new Froststrap.Clients.Sources.DeploymentCdnSource(
+                    (_launchMode == LaunchMode.Player ? App.Clients.Player : App.Clients.Studio).Layout);
 
-                string url = bundle
-                    ? "https://setup-rbxcdn.github.io/mac/DeployHistory.txt"
-                    : "https://setup-rbxcdn.github.io/DeployHistory.txt";
-
-                string binaryType = bundle
-                    ? (_launchMode == LaunchMode.Player ? "Client" : "Studio")
-                    : (_launchMode == LaunchMode.Player ? "WindowsPlayer" : "Studio");
+                string url = source.DeployHistoryUrl;
+                string binaryType = source.DeployHistoryBinaryType;
 
                 string content = await App.HttpClient.GetStringAsync(new Uri(url));
                 var entries = ParseDeployHistory(content, binaryType);

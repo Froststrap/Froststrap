@@ -18,6 +18,9 @@ namespace Froststrap.UI.ViewModels.Diagnostics
 
         public ICommand OpenFroststrapLogsCommand { get; } = new RelayCommand(() => OpenFolder(Paths.Logs));
         public ICommand OpenRobloxLogsCommand { get; } = new RelayCommand(() => OpenFolder(App.Clients.Player.Install.LogsRoot!));
+        public string PlayerClient { get; } = App.Clients.Describe(Froststrap.Clients.Model.ClientTarget.Player).Summary;
+        public string StudioClient { get; } = App.Clients.Describe(Froststrap.Clients.Model.ClientTarget.Studio).Summary;
+
         public ICommand TakeScreenshotCommand => new AsyncRelayCommand<Control>(TakeScreenshotAsync);
 
         private string _screenshotStatus = string.Empty;

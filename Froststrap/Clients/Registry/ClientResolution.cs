@@ -21,6 +21,8 @@ namespace Froststrap.Clients.Registry
 
         public required ClientCapabilities Capabilities { get; init; }
 
+        public string Summary => $"{DisplayName} ({ClientId}) on {Host}";
+
         public override string ToString()
             => $"{Target}={ClientId} ({DisplayName}) on {Host} [{Capabilities}]";
     }
