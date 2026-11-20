@@ -37,13 +37,10 @@ namespace Froststrap.Clients.Model
     {
         public required ClientInstall Install { get; init; }
 
-        /// <summary>True when the resolved install root exists for this version.</summary>
+        /// <summary>True when the client's state is saved and the resolved install exists.</summary>
         public bool IsInstalled { get; init; }
 
-        /// <summary>
-        /// True when a distribution state file exists on disk. Callers that used to require
-        /// "state is saved and the directory exists" should check this too.
-        /// </summary>
+        /// <summary>True when a distribution state file exists on disk.</summary>
         public bool IsStateSaved { get; init; }
 
         public InstallReason Reason { get; init; } = InstallReason.Missing;

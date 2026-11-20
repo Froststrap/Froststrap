@@ -123,17 +123,11 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         private void RefreshInstalledStates()
         {
-            if (OperatingSystem.IsLinux())
-            {
-                IsPlayerInstalled = App.LinuxPlayerInstalled;
-            }
-            else if (App.PlayerState.TryGetLoaded(out DistributionState playerState))
-            {
-                IsPlayerInstalled = App.PlayerData.IsInstalledWith(playerState);
-            }
+            if (App.PlayerState.Loaded)
+                IsPlayerInstalled = App.IsPlayerInstalled;
 
-            if (App.StudioState.TryGetLoaded(out DistributionState studioState))
-                IsStudioInstalled = App.StudioData.IsInstalledWith(studioState);
+            if (App.StudioState.Loaded)
+                IsStudioInstalled = App.IsStudioInstalled;
         }
 
         private void ExecuteLaunch()

@@ -404,16 +404,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool IsPlayerInstalled
-        {
-            get
-            {
-                if (OperatingSystem.IsLinux())
-                    return App.LinuxPlayerInstalled;
-                else
-                    return App.IsPlayerInstalled;
-            }
-        }
+        public static bool IsPlayerInstalled => App.IsPlayerInstalled;
 
         public static bool IsStudioInstalled => App.IsStudioInstalled;
         public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;

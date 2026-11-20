@@ -301,7 +301,7 @@ namespace Froststrap.Utility
                     return;
 
                 // make sure we only ever delete roblox's own entry
-                if (!entry.Contains(App.RobloxPlayerAppName, StringComparison.OrdinalIgnoreCase))
+                if (!entry.Contains(App.PlayerData.ExecutableName, StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.Info($"Leaving '{valueName}' alone, it doesn't point at Roblox");
                     return;

@@ -64,7 +64,9 @@ namespace Froststrap.Clients.Runtimes
         public virtual ClientInspection Inspect()
         {
             ClientInstall install = Install;
-            bool installed = !string.IsNullOrEmpty(install.VersionGuid) && Directory.Exists(install.InstallRoot);
+            bool installed = IsStateSaved
+                && !string.IsNullOrEmpty(install.VersionGuid)
+                && Directory.Exists(install.InstallRoot);
 
             return new ClientInspection
             {

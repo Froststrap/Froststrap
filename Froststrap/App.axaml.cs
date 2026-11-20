@@ -55,8 +55,6 @@ internal sealed partial class App : Application
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
-    public static string RobloxPlayerAppName => PlayerData.ExecutableName;
-    public static string RobloxStudioAppName => StudioData.ExecutableName;
 
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
@@ -80,29 +78,9 @@ internal sealed partial class App : Application
 
     public static string? MockCurrentVersion => GetEnvironmentVariable(MockCurrentVersionEnvironmentVariable);
 
-    public static bool IsPlayerInstalled => PlayerData.IsInstalled;
+    public static bool IsPlayerInstalled => Clients.Player.Inspect().IsInstalled;
 
-    public static bool IsStudioInstalled => StudioData.IsInstalled;
-
-    private static bool? _linuxPlayerInstalled;
-
-    public static bool LinuxPlayerInstalled
-    {
-        get
-        {
-            if (!OperatingSystem.IsLinux())
-                return false;
-
-            if (_linuxPlayerInstalled is not bool cached)
-            {
-                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-                _linuxPlayerInstalled = cached;
-            }
-
-            return cached;
-        }
-    }
+    public static bool IsStudioInstalled => Clients.Studio.Inspect().IsInstalled;
 
     public static readonly RobloxPlayerData PlayerData = new(ClientCatalog.DeploymentLayout(ClientEnvironment.DetectHost(), ClientTarget.Player));
 

@@ -241,7 +241,7 @@ namespace Froststrap.UI.ViewModels.Settings
             get
             {
                 if (OperatingSystem.IsLinux())
-                    return !App.LinuxPlayerInstalled;
+                    return !App.IsPlayerInstalled;
                 return !App.IsPlayerInstalled && !App.IsStudioInstalled;
             }
         }

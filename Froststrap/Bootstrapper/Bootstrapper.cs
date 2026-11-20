@@ -610,7 +610,7 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_Starting);
 
-        string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
+        string expectedName = AppData.ExecutableName;
         string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
 
         if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
@@ -1191,7 +1191,7 @@ internal partial class Bootstrapper : IDisposable
 
     private static bool TryDeleteRobloxInDirectory(string dir)
     {
-        string[] executables = [App.RobloxPlayerAppName, App.RobloxStudioAppName];
+        string[] executables = [App.PlayerData.ExecutableName, App.StudioData.ExecutableName];
 
         foreach (string exe in executables)
         {
@@ -2114,7 +2114,7 @@ internal partial class Bootstrapper : IDisposable
         foreach (var userEnv in App.Settings.Prop.StudioEnvironmentVariables)
             env[userEnv.Key] = userEnv.Value;
 
-        string baseCommand = $"\"{Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName)}\" {_launchCommandLine}";
+        string baseCommand = $"\"{Path.Combine(_latestVersionDirectory, App.StudioData.ExecutableName)}\" {_launchCommandLine}";
         string finalCommand = baseCommand;
 
         string? virtualDesktop = App.Settings.Prop.StudioVirtualDesktop;
