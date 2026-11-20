@@ -24,6 +24,8 @@ namespace Froststrap.Clients.Layouts
 
         public override string? LogKindToken => "_Player_";
 
+        public override IReadOnlyList<string> RequiredFiles => ["WebView2Loader.dll", "RobloxPlayerBeta.dll"];
+
         public override ClientInstall Resolve(ClientResolveContext context)
         {
             ClientInstall install = VersionedInstall(context);

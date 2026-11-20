@@ -37,6 +37,9 @@ namespace Froststrap.Clients.Contracts
         /// <summary>Filename tokens that are never game logs.</summary>
         IReadOnlyList<string> ExcludedLogTokens { get; }
 
+        /// <summary>Files that must exist in the install root for it to be usable.</summary>
+        IReadOnlyList<string> RequiredFiles { get; }
+
         ClientInstall Resolve(ClientResolveContext context);
     }
 }

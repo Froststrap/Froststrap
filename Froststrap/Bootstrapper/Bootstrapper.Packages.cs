@@ -12,39 +12,13 @@ internal partial class Bootstrapper : IDisposable
 {
     private async Task SetupPackageDictionaries()
     {
-        if (OperatingSystem.IsMacOS())
-        {
-            PackageDirectoryMap = new Dictionary<string, string>
-            {
-                { "RobloxPlayer.zip", "" },
-                { "RobloxStudioApp.zip", "" }
-            };
-            return;
-        }
-        else if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        if (!TargetClient.Capabilities.RequiresDeploymentApi)
         {
             PackageDirectoryMap = [];
             return;
         }
 
-        await App.RemoteData.WaitUntilDataFetched();
-
-        var localData = App.RemoteData.Prop.PackageMaps[IsStudioLaunch ? "studio" : "player"];
-        var commonData = App.RemoteData.Prop.PackageMaps.CommonPackageMap;
-
-        PackageDirectoryMap = new(commonData);
-
-        foreach (var package in localData)
-            PackageDirectoryMap[package.Key] = package.Value;
-
-        if (OperatingSystem.IsWindows())
-            return;
-
-        foreach (var key in PackageDirectoryMap.Keys.ToList())
-        {
-            if (PackageDirectoryMap[key] != null)
-                PackageDirectoryMap[key] = PackageDirectoryMap[key].Replace('\\', '/');
-        }
+        PackageDirectoryMap = await CdnSource.GetPackageMapAsync();
     }
 
     private async Task UpgradeRoblox()
@@ -308,16 +282,15 @@ internal partial class Bootstrapper : IDisposable
 
         Directory.CreateDirectory(Paths.Downloads);
 
-        string packageUrl = OperatingSystem.IsMacOS()
-            ? Deployment.GetLocation($"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}")
-            : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
+        bool signedPackages = CdnSource.HasPackageSignatures;
+        string packageUrl = CdnSource.GetPackageUrl(_latestVersionGuid, package.Name);
         string robloxPackageLocation = Path.Combine(Paths.LocalAppData, "Roblox", "Downloads", package.Signature);
 
         if (File.Exists(package.DownloadPath))
         {
             string calculatedFastHash = FastHash.FromFile(package.DownloadPath);
 
-            if (OperatingSystem.IsMacOS())
+            if (!signedPackages)
             {
                 var knownState = IsStudioLaunch ? App.StudioState : App.PlayerState;
 
@@ -440,7 +413,7 @@ internal partial class Bootstrapper : IDisposable
 
                 string hash = FastHash.FromStream(fileStream);
 
-                if (OperatingSystem.IsMacOS())
+                if (!signedPackages)
                 {
                     var knownState = IsStudioLaunch ? App.StudioState : App.PlayerState;
                     knownState.Prop.PackageHashes[package.Name] = hash;
@@ -485,7 +458,7 @@ internal partial class Bootstrapper : IDisposable
                 //   on macOS there is no signature to verify, so the download
                 //   must never leave HTTPS (see DownloadPackage's hash check)
                 if (ex is IOException
-                    && !OperatingSystem.IsMacOS()
+                    && signedPackages
                     && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
                 {
                     App.Logger.Info("Retrying download over HTTP...");
@@ -943,21 +916,7 @@ internal partial class Bootstrapper : IDisposable
         if (OperatingSystem.IsLinux() && !IsStudioLaunch)
             _latestVersionDirectory = App.Clients.Player.Install.ContentRoot;
 
-        if (OperatingSystem.IsMacOS())
-        {
-            // Mac uses monolithic zip downloads instead of individual packages
-            string zipName = IsStudioLaunch ? "RobloxStudioApp.zip" : "RobloxPlayer.zip";
-
-            // Construct a fake package manifest response to trick the internal system
-            string fakeManifest = $"v0\n{zipName}\n{_latestVersionGuid}\n0\n0";
-            _versionPackageManifest = new(fakeManifest);
-        }
-        else
-        {
-            string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
-            var pkgManifestData = await App.HttpClient.GetStringAsync(new Uri(pkgManifestUrl));
-            _versionPackageManifest = new(pkgManifestData);
-        }
+        _versionPackageManifest = await CdnSource.GetPackageManifestAsync(_latestVersionGuid);
 
         // this can happen if version is set through arguments
         if (_launchMode == LaunchMode.Unknown)

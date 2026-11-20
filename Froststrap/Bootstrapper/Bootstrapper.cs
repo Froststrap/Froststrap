@@ -3,6 +3,9 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.AppData;
+using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Model;
+using Froststrap.Clients.Sources;
 using Froststrap.RobloxInterfaces;
 using System.Formats.Tar;
 using System.IO.Compression;
@@ -21,8 +24,6 @@ internal partial class Bootstrapper : IDisposable
     #region Properties
     private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
-    private static readonly Regex FlatpakProgressRegex = new(@"Updating\s+(?<current>\d+)/(?<total>\d+)…", RegexOptions.IgnoreCase);
-    private static readonly Regex FlatpakPercentRegex = new(@"(?<percent>\d+)%");
     private readonly CancellationTokenSource _cancelTokenSource = new();
 
     private IAppData AppData = default!;
@@ -41,12 +42,34 @@ internal partial class Bootstrapper : IDisposable
     private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
 
-    private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
-        || App.State.Prop.ForceReinstall
-        || ((!OperatingSystem.IsLinux() || IsStudioLaunch) && (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
-        || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
-        || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "WebView2Loader.dll")))
-        || (OperatingSystem.IsWindows() && !IsStudioLaunch && !File.Exists(Path.Combine(CurrentDirectory, "RobloxPlayerBeta.dll")));
+    private bool MustUpgrade => UpgradeReason != InstallReason.None;
+
+    private InstallReason UpgradeReason
+    {
+        get
+        {
+            if (App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall)
+                return InstallReason.Forced;
+
+            if (!TargetClient.Capabilities.RequiresDeploymentApi)
+                return InstallReason.None;
+
+            if (string.IsNullOrEmpty(AppData.DistributionState.VersionGuid))
+                return InstallReason.FirstInstall;
+
+            bool executableExists = AppData.IsBundle
+                ? Directory.Exists(AppData.ExecutablePath)
+                : File.Exists(AppData.ExecutablePath);
+
+            if (!executableExists)
+                return InstallReason.Missing;
+
+            if (TargetClient.Layout.RequiredFiles.Any(file => !File.Exists(Path.Combine(CurrentDirectory, file))))
+                return InstallReason.Repair;
+
+            return InstallReason.None;
+        }
+    }
 
     private bool _isInstalling;
     private bool _packageExtractionSuccess = true;
@@ -62,6 +85,11 @@ internal partial class Bootstrapper : IDisposable
     private bool _disposed;
 
     public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
+
+    private IRobloxClient TargetClient => IsStudioLaunch ? App.Clients.Studio : App.Clients.Player;
+
+    private DeploymentCdnSource CdnSource => new(TargetClient.Layout);
+
     public string LockName { get; set; } = "Bootstrapper";
 
     public bool QuitIfLockExists { get; set; }
@@ -130,12 +158,11 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_Connecting);
 
-        // Skip the Roblox deployment API connectivity check entirely.
-        if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+        if (!TargetClient.Capabilities.RequiresDeploymentApi)
         {
             _noConnection = true;
-            _latestVersionDirectory = App.Clients.Player.Install.ContentRoot;
-            App.Logger.Info("Linux (Player): skipping connectivity check — Sober manages Roblox.");
+            _latestVersionDirectory = TargetClient.Install.ContentRoot;
+            App.Logger.Info($"{TargetClient.DisplayName} does not use the deployment API, skipping the connectivity check.");
         }
         else
         {
@@ -1327,41 +1354,15 @@ internal partial class Bootstrapper : IDisposable
         }
     }
 
-    private static string? ParseFlatpakInstallStep(string line)
-    {
-        if (string.IsNullOrWhiteSpace(line))
-            return null;
-
-        line = Regex.Replace(line, @"\x1B\[[0-9;?]*[ -/]*[@-~]", string.Empty).Replace('\r', ' ').Trim();
-
-        int installingIndex = line.IndexOf("Installing", StringComparison.OrdinalIgnoreCase);
-        if (installingIndex < 0)
-            return null;
-
-        return line[installingIndex..].Trim();
-    }
+    private static FlatpakSource SoberSource => new(SoberFlatpakId);
 
     private async Task<bool> EnsureSoberInstalledAsync()
     {
         SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
 
-        var flatpakCheck = new ProcessStartInfo
-        {
-            FileName = "flatpak",
-            Arguments = "--version",
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
         try
         {
-            using var checkProcess = Process.Start(flatpakCheck);
-            _ = checkProcess ?? throw new InvalidOperationException("Failed to start flatpak process.");
-
-            await checkProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(30));
-
-            if (checkProcess.ExitCode != 0)
-                throw new InvalidOperationException("Flatpak returned a non-zero exit code.");
+            await FlatpakSource.EnsureFlatpakAvailableAsync();
         }
         catch (TimeoutException ex)
         {
@@ -1384,30 +1385,10 @@ internal partial class Bootstrapper : IDisposable
             return false;
         }
 
-        var soberCheck = new ProcessStartInfo
+        if (await SoberSource.IsInstalledAsync())
         {
-            FileName = "flatpak",
-            Arguments = $"info {SoberFlatpakId}",
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        try
-        {
-            using var soberProcess = Process.Start(soberCheck);
-            if (soberProcess is not null)
-            {
-                await soberProcess.WaitForExitAsync();
-                if (soberProcess.ExitCode == 0)
-                {
-                    App.Logger.Info("Sober is already installed.");
-                    return true;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error(ex, "Failed to check Sober installation status.");
+            App.Logger.Info("Sober is already installed.");
+            return true;
         }
 
         App.Logger.Info("Installing Sober...");
@@ -1420,59 +1401,26 @@ internal partial class Bootstrapper : IDisposable
 
         SetStatus(Strings.Bootstrapper_Status_InstallingSober);
 
-        var installStartInfo = new ProcessStartInfo
-        {
-            FileName = "flatpak",
-            Arguments = $"install --noninteractive flathub {SoberFlatpakId}",
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true
-        };
+        InstallResult result = await SoberSource.InstallAsync(
+            TargetClient.Install,
+            new InlineProgress<InstallProgress>(step => SetStatus(step.Message)));
 
-        using var installProcess = Process.Start(installStartInfo);
-        if (installProcess is null)
+        if (!result.Success)
         {
-            await Frontend.ShowMessageBox(
-                "Failed to start Sober installation via Flatpak.",
-                MessageBoxImage.Error
-            );
-            App.Terminate(ErrorCode.ERROR_CANCELLED);
-            return false;
-        }
-
-        var errorLines = new List<string>();
-
-        async Task ReadInstallStream(StreamReader reader)
-        {
-            while (true)
+            if (result.Error is null)
             {
-                string? line = await reader.ReadLineAsync();
-                if (line is null)
-                    break;
-
-                App.Logger.Info($"[flatpak] {line}");
-
-                string? installStep = ParseFlatpakInstallStep(line);
-                if (!string.IsNullOrEmpty(installStep))
-                    SetStatus(installStep);
-                else if (!string.IsNullOrWhiteSpace(line))
-                    errorLines.Add(line.Trim());
+                await Frontend.ShowMessageBox(
+                    "Failed to start Sober installation via Flatpak.",
+                    MessageBoxImage.Error
+                );
             }
-        }
+            else
+            {
+                string detailsPart = string.IsNullOrWhiteSpace(result.Error) ? "" : $"\n\n{result.Error}";
+                string message = string.Format(CultureInfo.InvariantCulture, Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
+                await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
+            }
 
-        await Task.WhenAll(
-            ReadInstallStream(installProcess.StandardOutput),
-            ReadInstallStream(installProcess.StandardError),
-            installProcess.WaitForExitAsync()
-        );
-
-        if (installProcess.ExitCode != 0)
-        {
-            string details = string.Join('\n', errorLines.TakeLast(8));
-            string detailsPart = string.IsNullOrWhiteSpace(details) ? "" : $"\n\n{details}";
-            string message = string.Format(CultureInfo.InvariantCulture, Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
-            await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
             App.Terminate(ErrorCode.ERROR_CANCELLED);
             return false;
         }
@@ -1484,7 +1432,6 @@ internal partial class Bootstrapper : IDisposable
 
     private async Task UpdateSoberFlatpakAsync()
     {
-        App.Logger.Info($"Running 'flatpak update {SoberFlatpakId}'.");
         SetStatus(Strings.Bootstrapper_Status_UpdatingSober);
 
         if (Dialog is not null)
@@ -1496,163 +1443,9 @@ internal partial class Bootstrapper : IDisposable
             Dialog.TaskbarProgressValue = 0.0;
         }
 
-        var updateStartInfo = new ProcessStartInfo
-        {
-            FileName = "flatpak",
-            Arguments = $"update --user {SoberFlatpakId} --assumeyes",
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true
-        };
-
-        var timeout = TimeSpan.FromMinutes(20);
-        using var cts = new CancellationTokenSource(timeout);
-
-        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
-            cts.Token,
-            _cancelTokenSource.Token
-        );
-
         try
         {
-            using var process = Process.Start(updateStartInfo)
-                ?? throw new InvalidOperationException("Failed to start flatpak update process.");
-
-            var outputTask = Task.Run(async () =>
-            {
-                try
-                {
-                    while (!linkedCts.Token.IsCancellationRequested)
-                    {
-                        string? line = await process.StandardOutput.ReadLineAsync();
-                        if (line is null)
-                            break;
-
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            App.Logger.Info($"[flatpak] {line}");
-
-                            var progressMatch = FlatpakProgressRegex.Match(line);
-                            int current = 0, total = 0;
-                            if (progressMatch.Success)
-                            {
-                                current = int.Parse(progressMatch.Groups["current"].Value, CultureInfo.InvariantCulture);
-                                total = int.Parse(progressMatch.Groups["total"].Value, CultureInfo.InvariantCulture);
-                            }
-
-                            var percentMatch = FlatpakPercentRegex.Match(line);
-                            int percent = -1;
-                            if (percentMatch.Success)
-                            {
-                                percent = int.Parse(percentMatch.Groups["percent"].Value, CultureInfo.InvariantCulture);
-                            }
-
-                            if (progressMatch.Success && percentMatch.Success)
-                            {
-
-                                double segmentSize = 100.0 / total;
-                                double segmentProgress = (current - 1) * segmentSize + (percent / 100.0) * segmentSize;
-                                int overallPercent = (int)Math.Round(segmentProgress);
-                                overallPercent = Math.Clamp(overallPercent, 0, 100);
-
-                                if (Dialog is not null)
-                                {
-                                    Dialog.ProgressValue = overallPercent;
-                                    Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                    SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
-                                }
-
-                            }
-                            else if (progressMatch.Success)
-                            {
-                                double segmentStart = (current - 1) * (100.0 / total);
-                                int overallPercent = (int)Math.Round(segmentStart);
-                                overallPercent = Math.Clamp(overallPercent, 0, 100);
-                                if (Dialog is not null)
-                                {
-                                    Dialog.ProgressValue = overallPercent;
-                                    Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                    SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
-                                }
-                            }
-                            else
-                            {
-                                string trimmed = line.Trim();
-                                if (!string.IsNullOrEmpty(trimmed) && trimmed.Length < 80)
-                                {
-                                    SetStatus(trimmed);
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    App.Logger.Info("Output reading cancelled.");
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn($"Error reading flatpak output: {ex.Message}");
-                }
-            }, linkedCts.Token);
-
-            var errorTask = Task.Run(async () =>
-            {
-                try
-                {
-                    while (!linkedCts.Token.IsCancellationRequested)
-                    {
-                        string? line = await process.StandardError.ReadLineAsync();
-                        if (line is null)
-                            break;
-                        if (!string.IsNullOrWhiteSpace(line))
-                            App.Logger.Warn($"[flatpak-err] {line}");
-                    }
-                }
-                catch (OperationCanceledException) { }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn($"Error reading flatpak stderr: {ex.Message}");
-                }
-            }, linkedCts.Token);
-
-            await Task.WhenAny(
-                process.WaitForExitAsync(linkedCts.Token),
-                Task.Delay(Timeout.Infinite, linkedCts.Token)
-            );
-
-            if (!process.HasExited && linkedCts.IsCancellationRequested)
-            {
-                App.Logger.Warn("Update cancelled by user or timeout. Killing process.");
-                try { process.Kill(true); } catch { }
-            }
-
-            if (!process.HasExited)
-                await process.WaitForExitAsync();
-
-            if (process.ExitCode != 0 && process.ExitCode != -1)
-            {
-                App.Logger.Warn($"flatpak update exited with code {process.ExitCode}.");
-            }
-            else if (process.ExitCode == 0)
-            {
-                App.Logger.Info("Sober update finished successfully.");
-                if (Dialog is not null)
-                {
-                    Dialog.ProgressValue = 100;
-                    Dialog.TaskbarProgressValue = 1.0;
-                    SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
-                }
-            }
-        }
-        catch (OperationCanceledException) when (cts.IsCancellationRequested)
-        {
-            App.Logger.Warn("Update timed out after 20 minutes.");
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error(ex, "Failed to update Sober.");
+            await SoberSource.UpdateAsync(new InlineProgress<InstallProgress>(OnSoberUpdateProgress), _cancelTokenSource.Token);
         }
         finally
         {
@@ -1665,6 +1458,38 @@ internal partial class Bootstrapper : IDisposable
             }
         }
     }
+
+    private void OnSoberUpdateProgress(InstallProgress progress)
+    {
+        if (progress.Phase == InstallPhase.Finalizing)
+        {
+            if (Dialog is not null)
+            {
+                Dialog.ProgressValue = 100;
+                Dialog.TaskbarProgressValue = 1.0;
+                SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
+            }
+
+            return;
+        }
+
+        if (progress.Step <= 0)
+        {
+            SetStatus(progress.Message);
+            return;
+        }
+
+        if (Dialog is null)
+            return;
+
+        Dialog.ProgressValue = (int)progress.Current;
+        Dialog.TaskbarProgressValue = progress.Current / 100.0;
+
+        SetStatus(progress.StepPercent >= 0
+            ? string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberProgress, progress.Step, progress.StepCount, progress.StepPercent)
+            : string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, progress.Step, progress.StepCount));
+    }
+
     private static async Task ExtractTarXzAsync(string archivePath, string outputDir, CancellationToken cancellationToken)
     {
         var psi = new ProcessStartInfo("tar", $"-xJf \"{archivePath}\" -C \"{outputDir}\"")
@@ -2814,14 +2639,6 @@ internal partial class Bootstrapper : IDisposable
         Directory.CreateDirectory(backupDir);
         CopyDirectory(resourcesDir, backupDir, true);
         App.Logger.Info("Resources backup created.");
-    }
-
-    private static string GetMacArchPath()
-    {
-        return System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
-            == System.Runtime.InteropServices.Architecture.Arm64
-            ? "/mac/arm64"
-            : "/mac";
     }
 
     private void BeginDownloadProgress(long totalBytes)

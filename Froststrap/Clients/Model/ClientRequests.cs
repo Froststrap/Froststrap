@@ -19,7 +19,14 @@ namespace Froststrap.Clients.Model
         public DistributionState? Existing { get; init; }
     }
 
-    internal sealed record InstallProgress(InstallPhase Phase, string Message, long Current = 0, long Total = 0)
+    internal sealed record InstallProgress(
+        InstallPhase Phase,
+        string Message,
+        long Current = 0,
+        long Total = 0,
+        int Step = 0,
+        int StepCount = 0,
+        int StepPercent = -1)
     {
         public double? Fraction => Total > 0 ? (double)Current / Total : null;
     }

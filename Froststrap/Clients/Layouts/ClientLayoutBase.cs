@@ -33,6 +33,8 @@ namespace Froststrap.Clients.Layouts
 
         public virtual IReadOnlyList<string> ExcludedLogTokens => ["CrashHandler", "Installer"];
 
+        public virtual IReadOnlyList<string> RequiredFiles => [];
+
         public abstract ClientInstall Resolve(ClientResolveContext context);
 
         protected string ResolveVersionedRoot(ClientResolveContext context)
