@@ -10,10 +10,7 @@ namespace Froststrap
 {
     internal static class AppStorageManager
     {
-        public static string FileLocation =>
-            OperatingSystem.IsLinux()
-                ? Path.Combine(Paths.SoberData, "appData", "LocalStorage", "appStorage.json")
-                : Path.Combine(Paths.Roblox, "LocalStorage", "appStorage.json");
+        public static string FileLocation => App.Clients.Player.Install.AppStoragePath!;
 
         private static readonly JsonSerializerOptions SerializerOptions = new()
         {

@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
 using System.Windows.Input;
 using System.Xml.Linq;
+using Froststrap.Clients.Model;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -40,12 +41,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static ICommand OpenRobloxFolderCommand => new RelayCommand(() =>
         {
-            string targetPath;
-
-            if (OperatingSystem.IsMacOS())
-                targetPath = Path.Combine(Paths.UserProfile, "Library", "Roblox");
-            else
-                targetPath = Paths.Roblox;
+            ClientInstall install = App.Clients.Player.Install;
+            string targetPath = install.IsExternal ? install.InstallRoot : install.UserDataRoot!;
 
             Froststrap.Utility.Threading.ShellExecute(targetPath);
         });

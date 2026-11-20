@@ -2,20 +2,21 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Clients.Contracts;
+
 namespace Froststrap.AppData
 {
-    internal sealed class RobloxStudioData : CommonAppData, IAppData
+    internal sealed class RobloxStudioData(IClientLayout layout) : CommonAppData, IAppData
     {
         public string ProductName => "Roblox Studio";
 
-        // We are using wine to run linux studio, so we need to use the windows binary name.
-        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64";
+        public override string BinaryType => layout.BinaryType!;
 
         public string RegistryName => "RobloxStudio";
 
-        public string ProcessName => OperatingSystem.IsMacOS() ? "RobloxStudio" : "RobloxStudioBeta";
+        public string ProcessName => layout.ProcessNames[0];
 
-        public override string ExecutableName => App.RobloxStudioAppName;
+        public override string ExecutableName => layout.ExecutableName!;
 
         public override JsonManager<DistributionState> DistributionStateManager => App.StudioState;
     }

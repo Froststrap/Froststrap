@@ -193,7 +193,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OpenCompatSettings()
         {
-            string path = new RobloxPlayerData().ExecutablePath;
+            string path = App.PlayerData.ExecutablePath;
 
             if (File.Exists(path))
             {

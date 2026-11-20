@@ -85,7 +85,7 @@ internal partial class Bootstrapper : IDisposable
         _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
     }
 
-    private void SetupAppData() => AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
+    private void SetupAppData() => AppData = IsStudioLaunch ? App.StudioData : App.PlayerData;
 
     private async Task HandleConnectionError(Exception ex)
     {
@@ -134,7 +134,7 @@ internal partial class Bootstrapper : IDisposable
         if (OperatingSystem.IsLinux() && !IsStudioLaunch)
         {
             _noConnection = true;
-            _latestVersionDirectory = Paths.SoberAssetOverlay;
+            _latestVersionDirectory = App.Clients.Player.Install.ContentRoot;
             App.Logger.Info("Linux (Player): skipping connectivity check — Sober manages Roblox.");
         }
         else
@@ -894,7 +894,7 @@ internal partial class Bootstrapper : IDisposable
 
                 try
                 {
-                    string latestLog = Path.Combine(Paths.RobloxLogs, "latest.log");
+                    string latestLog = Path.Combine(App.Clients.Player.Install.LogsRoot!, "latest.log");
 
                     while (DateTime.UtcNow < deadline)
                     {
@@ -990,7 +990,7 @@ internal partial class Bootstrapper : IDisposable
 
         if (string.IsNullOrEmpty(logFileName))
         {
-            string rbxLogDir = logDirectory ?? Paths.RobloxLogs;
+            string rbxLogDir = logDirectory ?? App.Clients.Player.Install.LogsRoot!;
 
             for (int i = 0; i < 60; i++)
             {

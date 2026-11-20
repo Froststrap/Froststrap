@@ -940,7 +940,7 @@ internal partial class Bootstrapper : IDisposable
 
         // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
         if (OperatingSystem.IsLinux() && !IsStudioLaunch)
-            _latestVersionDirectory = Paths.SoberAssetOverlay;
+            _latestVersionDirectory = App.Clients.Player.Install.ContentRoot;
 
         if (OperatingSystem.IsMacOS())
         {

@@ -11,7 +11,7 @@ internal sealed class SoberSettingsManager : JsonManager<Dictionary<string, obje
 
     public override string ClassName => nameof(SoberSettingsManager);
     public override string FileName => "config.json";
-    public override string FileLocation => Path.Combine(Paths.SoberConfig, FileName);
+    public override string FileLocation => Path.Combine(App.Clients.Player.Install.ConfigDirectory!, FileName);
 
     public static readonly IReadOnlyDictionary<string, string> PresetKeys = new Dictionary<string, string>
     {

@@ -43,6 +43,15 @@ internal static class ClientCatalog
         return registry;
     }
 
+    public static IClientLayout DeploymentLayout(HostPlatform host, ClientTarget target) => (host, target) switch
+    {
+        (HostPlatform.MacOS, ClientTarget.Player) => new MacBundlePlayerLayout(),
+        (HostPlatform.MacOS, ClientTarget.Studio) => new MacBundleStudioLayout(),
+        (HostPlatform.Linux, ClientTarget.Studio) => new WineStudioLayout(),
+        (_, ClientTarget.Studio) => new WindowsStudioLayout(),
+        _ => new WindowsPlayerLayout()
+    };
+
     private static void Register(
         ClientRegistry registry,
         ClientEnvironment environment,

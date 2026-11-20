@@ -152,12 +152,14 @@ namespace Froststrap.Integrations
 
             if (logFile is null)
             {
-                if (!Directory.Exists(Paths.RobloxLogs))
+                string logsRoot = App.Clients.Player.Install.LogsRoot!;
+
+                if (!Directory.Exists(logsRoot))
                     return;
 
                 App.Logger.Info("Looking for Roblox log file...");
 
-                logFile = await FindLogFileAsync(Paths.RobloxLogs, DateTime.Now.AddSeconds(-15));
+                logFile = await FindLogFileAsync(logsRoot, DateTime.Now.AddSeconds(-15));
                 if (logFile is null)
                     return;
 

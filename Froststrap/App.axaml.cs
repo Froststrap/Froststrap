@@ -11,6 +11,10 @@ using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
+using Froststrap.Clients;
+using Froststrap.Clients.Model;
+using Froststrap.Clients.Registry;
+using Froststrap.Clients.Runtime;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
@@ -51,8 +55,8 @@ internal sealed partial class App : Application
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
-    public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
-    public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
+    public static string RobloxPlayerAppName => PlayerData.ExecutableName;
+    public static string RobloxStudioAppName => StudioData.ExecutableName;
 
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
@@ -100,9 +104,13 @@ internal sealed partial class App : Application
         }
     }
 
-    public static readonly RobloxPlayerData PlayerData = new();
+    public static readonly RobloxPlayerData PlayerData = new(ClientCatalog.DeploymentLayout(ClientEnvironment.DetectHost(), ClientTarget.Player));
 
-    public static readonly RobloxStudioData StudioData = new();
+    public static readonly RobloxStudioData StudioData = new(ClientCatalog.DeploymentLayout(ClientEnvironment.DetectHost(), ClientTarget.Studio));
+
+    private static ClientRegistry? _clients;
+
+    public static ClientRegistry Clients => _clients ?? throw new InvalidOperationException("Clients are resolved after Paths.Initialize()");
 
     public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -572,6 +580,14 @@ internal sealed partial class App : Application
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
         Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
         Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
+
+        _clients = ClientCatalog.Build(ClientEnvironment.FromHost());
+
+        foreach (ClientTarget target in Enum.GetValues<ClientTarget>())
+        {
+            ClientResolution resolution = _clients.Describe(target);
+            Logger.Info($"Client for {target}: {resolution.ClientId} ({resolution.DisplayName}) on {resolution.Host}");
+        }
 
         var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
 

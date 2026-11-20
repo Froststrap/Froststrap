@@ -32,10 +32,10 @@ namespace Froststrap
         public string GetAuthCookie() => AuthCookie;
 
         public static string CookiesPath => OperatingSystem.IsMacOS()
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
+            ? Path.Combine(App.Clients.Player.Install.CookiesDirectory!, "com.roblox.RobloxPlayer.binarycookies")
             : OperatingSystem.IsLinux()
-                ? Path.Combine(Paths.Roblox, "data", "sober", "cookies")
-                : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
+                ? App.Clients.Player.Install.CookiesDirectory!
+                : Path.Combine(App.Clients.Player.Install.CookiesDirectory!, Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
 
         public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
         {

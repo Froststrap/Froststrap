@@ -169,7 +169,7 @@ static class Versioning
 
     public static string GetRobloxVersionStr(bool studio)
     {
-        IAppData data = studio ? new RobloxStudioData() : new RobloxPlayerData();
+        IAppData data = studio ? App.StudioData : App.PlayerData;
 
         return GetRobloxVersionStr(data);
     }

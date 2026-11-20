@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Clients.Model;
+
 namespace Froststrap
 {
     internal static class StudioPluginManager
@@ -18,7 +20,16 @@ namespace Froststrap
                     return Path.Combine(OverridePluginDirectory, "FroststrapStudioRPC.rbxmx");
 
                 // not sure if this works for macos
-                return Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+                return Path.Combine(PluginsDirectory, "FroststrapStudioRPC.rbxmx");
+            }
+        }
+
+        public static string PluginsDirectory
+        {
+            get
+            {
+                ClientInstall install = App.Clients.Player.Install;
+                return install.PluginsDirectory ?? Path.Combine(install.InstallRoot, "Plugins");
             }
         }
 

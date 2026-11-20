@@ -17,7 +17,7 @@ namespace Froststrap.UI.ViewModels.Diagnostics
         public int TitlebarSpaceHeight { get; } = OperatingSystem.IsMacOS() ? 52 : 40;
 
         public ICommand OpenFroststrapLogsCommand { get; } = new RelayCommand(() => OpenFolder(Paths.Logs));
-        public ICommand OpenRobloxLogsCommand { get; } = new RelayCommand(() => OpenFolder(Paths.RobloxLogs));
+        public ICommand OpenRobloxLogsCommand { get; } = new RelayCommand(() => OpenFolder(App.Clients.Player.Install.LogsRoot!));
         public ICommand TakeScreenshotCommand => new AsyncRelayCommand<Control>(TakeScreenshotAsync);
 
         private string _screenshotStatus = string.Empty;

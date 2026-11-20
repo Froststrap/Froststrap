@@ -8,12 +8,12 @@ namespace Froststrap.Integrations
     {
         private const int MaxFiles = 2000;
 
-        public static readonly IReadOnlyDictionary<string, string?> Directories = new Dictionary<string, string?>
+        public static IReadOnlyDictionary<string, string?> Directories => new Dictionary<string, string?>
         {
             { "FroststrapLogs", Paths.Logs },
             { "FroststrapCache", Paths.Downloads },
-            { "RobloxLogs", Paths.RobloxLogs },
-            { "RobloxCache", Paths.RobloxCache }
+            { "RobloxLogs", App.Clients.Player.Install.LogsRoot! },
+            { "RobloxCache", App.Clients.Player.Install.CacheRoot! }
         };
 
         public static void DoCleaning()
