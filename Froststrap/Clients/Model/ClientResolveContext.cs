@@ -18,6 +18,10 @@ namespace Froststrap.Clients.Model
 
         public required string TempRoot { get; init; }
 
+        public string DataRoot { get; init; } = "";
+
+        public string UserName { get; init; } = "";
+
         /// <summary>
         /// Mirrors the user's "static directory" setting. Passed in rather than read from
         /// settings so a layout never reaches into <c>App.Settings</c>.

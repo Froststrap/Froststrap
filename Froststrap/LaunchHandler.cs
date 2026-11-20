@@ -322,7 +322,7 @@ namespace Froststrap
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
 
-            if (App.Settings.Prop.ConfirmLaunches && Utility.Processes.IsRobloxRunning() && launchMode == LaunchMode.Player)
+            if (App.Settings.Prop.ConfirmLaunches && App.Clients.Player.Processes.IsRunning() && launchMode == LaunchMode.Player)
             {
                 var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
@@ -408,7 +408,7 @@ namespace Froststrap
                 return true;
             }
 
-            var watcher = new Watcher(data);
+            var watcher = new Watcher(data, data.LaunchMode == LaunchMode.Player ? App.Clients.Player : App.Clients.Studio);
 
             if (!watcher.IsActive)
             {

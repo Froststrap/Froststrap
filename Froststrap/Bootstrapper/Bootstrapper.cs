@@ -774,7 +774,7 @@ internal partial class Bootstrapper : IDisposable
         }
     }
 
-    private async Task PrepareWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null, string? logDirectory = null)
+    private async Task PrepareWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null)
     {
         if (!(App.Settings.Prop.EnableActivityTracking
             || App.LaunchSettings.TestModeFlag.Active
@@ -798,23 +798,16 @@ internal partial class Bootstrapper : IDisposable
 
         if (string.IsNullOrEmpty(logFileName))
         {
-            string rbxLogDir = logDirectory ?? App.Clients.Player.Install.LogsRoot!;
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(_cancelTokenSource.Token);
+            timeout.CancelAfter(TimeSpan.FromSeconds(30));
 
-            for (int i = 0; i < 60; i++)
+            try
             {
-                if (Directory.Exists(rbxLogDir))
-                {
-                    logFileName = Directory.GetFiles(rbxLogDir, "*.log")
-                        .Select(f => new FileInfo(f))
-                        .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddSeconds(-5))
-                        .OrderByDescending(f => f.CreationTimeUtc)
-                        .FirstOrDefault()?.FullName;
-                }
-
-                if (logFileName != null)
-                    break;
-
-                await Task.Delay(500, _cancelTokenSource.Token);
+                logFileName = (await TargetClient.Logs.FindLatestAsync(DateTime.Now.AddSeconds(-5), timeout.Token))?.FullName;
+            }
+            catch (OperationCanceledException) when (!_cancelTokenSource.IsCancellationRequested)
+            {
+                App.Logger.Warn("No log file appeared within 30 seconds, the watcher will keep looking");
             }
         }
 
@@ -928,26 +921,26 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        if (OperatingSystem.IsLinux())
+        if (App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged)
         {
             try
             {
-                foreach (var soberProcess in Process.GetProcessesByName("sober"))
+                foreach (var clientProcess in App.Clients.Player.Processes.FindAllPlayer())
                 {
                     try
                     {
-                        App.Logger.Info($"Killing sober process (PID {soberProcess.Id})");
-                        soberProcess.Kill(true);
+                        App.Logger.Info($"Killing {clientProcess.ProcessName} process (PID {clientProcess.Id})");
+                        clientProcess.Kill(true);
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.Error($"Failed to kill sober process (PID {soberProcess.Id}) {ex}");
+                        App.Logger.Error($"Failed to kill {clientProcess.ProcessName} process (PID {clientProcess.Id}) {ex}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Failed to enumerate sober processes. {ex}");
+                App.Logger.Error($"Failed to enumerate {App.Clients.Player.DisplayName} processes. {ex}");
             }
         }
 
@@ -1081,8 +1074,7 @@ internal partial class Bootstrapper : IDisposable
     private static void KillRobloxPlayers()
     {
         var processesToKill = new List<Process>();
-        string playerProcessName = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
-        processesToKill.AddRange(Process.GetProcessesByName(playerProcessName));
+        processesToKill.AddRange(App.Clients.Player.Processes.FindAllPlayer());
         processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
 
         foreach (Process process in processesToKill)
@@ -1688,7 +1680,7 @@ internal partial class Bootstrapper : IDisposable
             if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)
                 await LaunchIntegrationAsync(integration, autoclosePids);
 
-        await PrepareWatcherIfNeededAsync(autoclosePids, logDirectory: launch.LogHint);
+        await PrepareWatcherIfNeededAsync(autoclosePids);
 
         await Task.Delay(1000);
     }

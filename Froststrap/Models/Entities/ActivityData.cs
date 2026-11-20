@@ -10,6 +10,8 @@ using CommunityToolkit.Mvvm.Input;
 using System.Web;
 using System.Windows.Input;
 
+using Froststrap.Clients.Model;
+
 namespace Froststrap.Models.Entities
 {
     internal sealed class ActivityData : IDisposable
@@ -176,24 +178,15 @@ namespace Froststrap.Models.Entities
         {
             try
             {
-                var process = Process.GetProcessesByName("RobloxPlayerBeta");
+                var processes = App.Clients.Player.Processes;
 
-                if (process.Length == 0)
+                if (!processes.IsRunning())
                 {
                     App.Logger.Info($"Roblox not found");
                     return;
                 }
 
-                foreach (var proc in process)
-                {
-                    if ((DateTime.Now - proc.StartTime).TotalSeconds < 3)
-                    {
-                        App.Logger.Info($"Skipping new process");
-                        continue;
-                    }
-
-                    proc.Kill();
-                }
+                _ = processes.KillAllAsync(new KillRequest { Force = true, MinimumAge = TimeSpan.FromSeconds(3) });
             }
             catch (Exception ex)
             {

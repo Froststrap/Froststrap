@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Clients.Contracts;
+
 namespace Froststrap.Integrations
 {
     internal sealed class ActivityWatcher : IDisposable
@@ -100,8 +102,13 @@ namespace Froststrap.Integrations
             }
         }
 
-        public ActivityWatcher(string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
+        private readonly ILogLocator _logs;
+        private readonly CancellationTokenSource _disposeCancellation = new();
+
+        public ActivityWatcher(ILogLocator logs, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
         {
+            _logs = logs;
+
             if (!String.IsNullOrEmpty(logFile))
                 LogLocation = logFile;
 
@@ -117,20 +124,6 @@ namespace Froststrap.Integrations
             LoadGameHistory();
         }
 
-        private string LogKindToken => IsStudioLaunch ? "_Studio_" : "_Player_";
-
-        private bool IsSoberLaunch => OperatingSystem.IsLinux() && !IsStudioLaunch;
-
-        private bool IsGameLog(FileInfo file)
-        {
-            if (IsSoberLaunch)
-                return file.Extension.Equals(".log", StringComparison.OrdinalIgnoreCase) && file.LinkTarget is null;
-
-            return file.Name.Contains(LogKindToken, StringComparison.OrdinalIgnoreCase)
-                && !file.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase)
-                && !file.Name.Contains("Installer", StringComparison.OrdinalIgnoreCase);
-        }
-
         public async void Start()
         {
             FileInfo? logFile = null;
@@ -139,7 +132,7 @@ namespace Froststrap.Integrations
             {
                 var provided = new FileInfo(LogLocation);
 
-                if (IsGameLog(provided))
+                if (_logs.IsGameLog(provided))
                 {
                     logFile = provided;
                 }
@@ -152,14 +145,22 @@ namespace Froststrap.Integrations
 
             if (logFile is null)
             {
-                string logsRoot = App.Clients.Player.Install.LogsRoot!;
+                string? logsRoot = _logs.LogsRoot;
 
-                if (!Directory.Exists(logsRoot))
+                if (string.IsNullOrEmpty(logsRoot) || !Directory.Exists(logsRoot))
                     return;
 
                 App.Logger.Info("Looking for Roblox log file...");
 
-                logFile = await FindLogFileAsync(logsRoot, DateTime.Now.AddSeconds(-15));
+                try
+                {
+                    logFile = await _logs.FindLatestAsync(DateTime.Now.AddSeconds(-15), _disposeCancellation.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+
                 if (logFile is null)
                     return;
 
@@ -182,34 +183,6 @@ namespace Froststrap.Integrations
             }
         }
 
-        private async Task<FileInfo?> FindLogFileAsync(string directory, DateTime createdAfter)
-        {
-            while (!IsDisposed)
-            {
-                try
-                {
-                    FileInfo? newest = new DirectoryInfo(directory)
-                        .GetFiles()
-                        .Where(IsGameLog)
-                        .Where(x => x.CreationTime >= createdAfter)
-                        .OrderByDescending(x => x.CreationTime)
-                        .FirstOrDefault();
-
-                    if (newest is not null)
-                        return newest;
-                }
-                catch (IOException ex)
-                {
-                    App.Logger.Error($"Failed to scan log directory: {ex.Message}");
-                }
-
-                App.Logger.Info($"No recent '{LogKindToken.Trim('_')}' log file yet, waiting 1000...");
-                await Task.Delay(1000);
-            }
-
-            return null;
-        }
-
         private async Task<FileInfo?> TailLogAsync(FileInfo logFile)
         {
             using var stream = logFile.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -229,7 +202,7 @@ namespace Froststrap.Integrations
 
                 await Task.Delay(1000);
 
-                if (IsStudioLaunch && GetNewerStudioLog(logFile) is { } newer)
+                if (_logs.FindNewer(logFile) is { } newer)
                     return newer;
             }
 
@@ -237,29 +210,6 @@ namespace Froststrap.Integrations
         }
 
         private bool IsStudioLaunch => _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth;
-
-        private static FileInfo? GetNewerStudioLog(FileInfo currentLogFile)
-        {
-            string? logDirectory = currentLogFile.DirectoryName;
-            if (string.IsNullOrEmpty(logDirectory) || !Directory.Exists(logDirectory))
-                return null;
-
-            try
-            {
-                return new DirectoryInfo(logDirectory)
-                    .GetFiles()
-                    .Where(x => x.Name.Contains("Studio", StringComparison.OrdinalIgnoreCase))
-                    .Where(x => !x.Name.Contains("CrashHandler", StringComparison.OrdinalIgnoreCase))
-                    .Where(x => x.CreationTimeUtc > currentLogFile.CreationTimeUtc)
-                    .OrderByDescending(x => x.CreationTimeUtc)
-                    .FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to search for a newer Studio log file: {ex.Message}");
-                return null;
-            }
-        }
 
         private void ResetStudioPlaceState()
         {
@@ -870,6 +820,8 @@ namespace Froststrap.Integrations
         public void Dispose()
         {
             IsDisposed = true;
+            _disposeCancellation.Cancel();
+            _disposeCancellation.Dispose();
             if (InRobloxStudio)
                 StopHTTPServer();
             _httpCancellationTokenSource.Dispose();

@@ -23,7 +23,7 @@ namespace Froststrap.Clients.Launchers
         {
             ApplyLaunchSettings();
 
-            Utility.Processes.KillSober();
+            KillRunning();
 
             string commandLine = request.CommandLine ?? string.Empty;
             App.Logger.Debug($"Launching Sober via flatpak with args: {commandLine}");
@@ -51,6 +51,25 @@ namespace Froststrap.Clients.Launchers
                 LogHint = latestLog,
                 WaitUntilReadyAsync = token => WaitForReadySignalAsync(latestLog, launchTime, token)
             });
+        }
+
+        private void KillRunning()
+        {
+            try
+            {
+                using Process? process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "flatpak",
+                    Arguments = $"kill {flatpakId}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+
+                process?.WaitForExit(1000);
+            }
+            catch
+            {
+            }
         }
 
         private static void ApplyLaunchSettings()

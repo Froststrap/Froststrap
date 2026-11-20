@@ -26,6 +26,8 @@ namespace Froststrap.Clients.Layouts
         // Wine may report either the executable basename or the bundle-style name.
         public override IReadOnlyList<string> ProcessNames => ["RobloxStudioBeta", "RobloxStudio"];
 
+        public override bool MatchProcessNamePrefix => true;
+
         public override LogShape LogFormat => LogShape.Native;
 
         public override string? LogKindToken => "_Studio_";
@@ -43,7 +45,7 @@ namespace Froststrap.Clients.Layouts
                 SupportRoot = null,
                 UserDataRoot = null,
                 PluginsDirectory = null,
-                LogsRoot = null,
+                LogsRoot = Path.Combine(context.DataRoot, "Wine", "prefixes", "studio", "drive_c", "users", context.UserName, "AppData", "Local", "Roblox", "logs"),
                 CacheRoot = null,
                 CookiesDirectory = null,
                 ConfigDirectory = null,

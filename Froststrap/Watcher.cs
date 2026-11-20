@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Model;
 using Froststrap.Integrations;
 
 namespace Froststrap
@@ -39,8 +41,12 @@ namespace Froststrap
 
         public bool IsActive => _lock.IsAcquired;
 
-        public Watcher(WatcherData watcherData)
+        private readonly IRobloxClient _client;
+
+        public Watcher(WatcherData watcherData, IRobloxClient client)
         {
+            _client = client;
+
             if (!_lock.IsAcquired)
             {
                 App.Logger.Error("Watcher instance already exists");
@@ -65,7 +71,7 @@ namespace Froststrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
+                ActivityWatcher = new(_client.Logs, _watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
                 if (!string.IsNullOrEmpty(_watcherData.AccessCode))
                 {
@@ -311,52 +317,6 @@ namespace Froststrap
             }
         }
 
-        private static bool IsStudioProcess(Process process)
-        {
-            try
-            {
-                string expected = Path.GetFileNameWithoutExtension(App.StudioData.ProcessName);
-                string actual = Path.GetFileNameWithoutExtension(process.ProcessName);
-
-                if (string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
-                    return true;
-
-                if (OperatingSystem.IsMacOS() && string.Equals(actual, "RobloxStudio", StringComparison.OrdinalIgnoreCase))
-                    return true;
-
-                return OperatingSystem.IsLinux()
-                    && actual.StartsWith("RobloxStudio", StringComparison.OrdinalIgnoreCase);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private static int GetNewestStudioProcessId(IEnumerable<Process> processes)
-        {
-            int newestPid = 0;
-            DateTime newestStartTime = DateTime.MinValue;
-
-            foreach (var process in processes)
-            {
-                if (!IsStudioProcess(process))
-                    continue;
-
-                try
-                {
-                    if (process.StartTime > newestStartTime)
-                    {
-                        newestStartTime = process.StartTime;
-                        newestPid = process.Id;
-                    }
-                }
-                catch (Exception) { }
-            }
-
-            return newestPid;
-        }
-
         private static bool IsProcessRunning(int pid)
         {
             if (pid <= 0)
@@ -389,12 +349,12 @@ namespace Froststrap
             {
                 if (isStudio)
                 {
-                    var studioProcesses = processes.Where(IsStudioProcess).ToList();
+                    var studioProcesses = processes.Where(_client.Processes.IsStudioProcess).ToList();
 
                     if (studioProcesses.Count == 0)
                         return false;
 
-                    int newestStudioPid = GetNewestStudioProcessId(studioProcesses);
+                    int newestStudioPid = _client.Processes.FindNewestStudioPid(studioProcesses);
 
                     if (newestStudioPid != 0)
                     {
@@ -409,19 +369,15 @@ namespace Froststrap
                 if (watcherData.LaunchMode != LaunchMode.Player)
                     return false;
 
-                string? playerName = OperatingSystem.IsLinux() ? "sober"
-                    : OperatingSystem.IsMacOS() ? "RobloxPlayer"
-                    : null;
-
-                if (playerName is null)
+                if (_client.Layout.Shape == ExecutableShape.FlatExecutable)
                     return false;
 
-                var player = processes.FirstOrDefault(x => x.ProcessName == playerName);
+                var player = processes.FirstOrDefault(_client.Processes.Owns);
 
                 if (player is null)
                     return false;
 
-                App.Logger.Info($"Roblox process {watcherData.ProcessId} is no longer running, watching '{playerName}' (PID {player.Id}) instead");
+                App.Logger.Info($"Roblox process {watcherData.ProcessId} is no longer running, watching '{player.ProcessName}' (PID {player.Id}) instead");
                 _fallbackPid = player.Id;
 
                 return true;

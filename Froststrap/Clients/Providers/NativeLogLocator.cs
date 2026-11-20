@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Model;
 
 namespace Froststrap.Clients.Providers;
 
@@ -33,6 +34,9 @@ internal sealed class NativeLogLocator(IClientLayout layout, Func<string?> logsR
 
     public override FileInfo? FindNewer(FileInfo current)
     {
+        if (Layout.Target != ClientTarget.Studio)
+            return null;
+
         string? directory = current.DirectoryName;
 
         if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))

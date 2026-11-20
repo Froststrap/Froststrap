@@ -26,6 +26,12 @@ namespace Froststrap.Clients.Contracts
 
         IReadOnlyList<string> ProcessNames { get; }
 
+        /// <summary>
+        /// True when the host may truncate process names, so a name only has to start with one
+        /// of <see cref="ProcessNames"/>.
+        /// </summary>
+        bool MatchProcessNamePrefix { get; }
+
         LogShape LogFormat { get; }
 
         /// <summary><c>"_Player_"</c>, <c>"_Studio_"</c>, or null for a plain-log client.</summary>

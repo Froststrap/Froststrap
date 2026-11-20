@@ -15,6 +15,8 @@ namespace Froststrap.Clients.Contracts
 
         bool IsRunning();
 
+        bool Owns(Process process);
+
         Process? FindPlayer();
 
         IReadOnlyList<Process> FindAllPlayer();

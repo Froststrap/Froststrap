@@ -19,12 +19,14 @@ namespace Froststrap.Clients.Providers;
 internal sealed class ClientProcessService : IProcessService
 {
     private readonly HashSet<string> _names;
+    private readonly bool _prefix;
 
     public ClientProcessService(IClientLayout layout)
     {
         ProcessNames = layout.ProcessNames;
+        _prefix = layout.MatchProcessNamePrefix;
         _names = new HashSet<string>(
-            layout.ProcessNames.Select(Path.GetFileNameWithoutExtension),
+            layout.ProcessNames.Select(name => Path.GetFileNameWithoutExtension(name)),
             StringComparer.OrdinalIgnoreCase);
     }
 
@@ -32,12 +34,16 @@ internal sealed class ClientProcessService : IProcessService
 
     public bool IsRunning() => FindAllPlayer().Count > 0;
 
-    public Process? FindPlayer() => FindAllPlayer().FirstOrDefault();
+    public Process? FindPlayer()
+    {
+        IReadOnlyList<Process> processes = FindAllPlayer();
+        return processes.Count > 0 ? processes[0] : null;
+    }
 
     public IReadOnlyList<Process> FindAllPlayer()
-        => Utility.Processes.GetProcessesSafe().Where(Matches).ToList();
+        => Utility.Processes.GetProcessesSafe().Where(Owns).ToList();
 
-    public bool IsStudioProcess(Process process) => Matches(process);
+    public bool IsStudioProcess(Process process) => Owns(process);
 
     public int FindNewestStudioPid(IEnumerable<Process> processes)
     {
@@ -46,7 +52,7 @@ internal sealed class ClientProcessService : IProcessService
 
         foreach (Process process in processes)
         {
-            if (!Matches(process))
+            if (!Owns(process))
                 continue;
 
             try
@@ -99,11 +105,16 @@ internal sealed class ClientProcessService : IProcessService
         return Task.CompletedTask;
     }
 
-    private bool Matches(Process process)
+    public bool Owns(Process process)
     {
         try
         {
-            return _names.Contains(Path.GetFileNameWithoutExtension(process.ProcessName));
+            string name = Path.GetFileNameWithoutExtension(process.ProcessName);
+
+            if (_names.Contains(name))
+                return true;
+
+            return _prefix && _names.Any(expected => name.StartsWith(expected, StringComparison.OrdinalIgnoreCase));
         }
         catch
         {

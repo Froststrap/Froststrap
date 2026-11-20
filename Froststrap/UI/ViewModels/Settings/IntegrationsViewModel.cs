@@ -169,7 +169,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async void OpenGameHistory()
         {
-            var activityWatcher = new ActivityWatcher();
+            var activityWatcher = new ActivityWatcher(App.Clients.Player.Logs);
 
             var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
             serverHistoryWindow.Show();

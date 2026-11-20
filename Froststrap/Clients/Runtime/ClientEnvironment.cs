@@ -21,8 +21,12 @@ namespace Froststrap.Clients.Runtime
             string userProfile,
             string localAppData,
             string tempRoot,
-            Func<bool> staticDirectory)
+            Func<bool> staticDirectory,
+            string dataRoot = "",
+            string userName = "")
         {
+            DataRoot = dataRoot;
+            UserName = userName;
             Host = host;
             VersionsRoot = versionsRoot;
             UserProfile = userProfile;
@@ -41,6 +45,10 @@ namespace Froststrap.Clients.Runtime
 
         public string TempRoot { get; }
 
+        public string DataRoot { get; }
+
+        public string UserName { get; }
+
         public static HostPlatform DetectHost()
         {
             if (OperatingSystem.IsWindows())
@@ -58,7 +66,9 @@ namespace Froststrap.Clients.Runtime
             Paths.UserProfile,
             Paths.LocalAppData,
             Path.GetTempPath(),
-            () => App.Settings.Prop.StaticDirectory);
+            () => App.Settings.Prop.StaticDirectory,
+            Paths.Base,
+            Environment.UserName);
 
         /// <summary>
         /// Builds the host-independent context a layout needs. The static-directory setting is
@@ -70,6 +80,8 @@ namespace Froststrap.Clients.Runtime
             UserProfile = UserProfile,
             LocalAppData = LocalAppData,
             TempRoot = TempRoot,
+            DataRoot = DataRoot,
+            UserName = UserName,
             StaticDirectory = _staticDirectory(),
             State = state
         };
