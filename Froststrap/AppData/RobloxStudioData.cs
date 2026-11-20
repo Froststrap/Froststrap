@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Model;
 
 namespace Froststrap.AppData
 {
@@ -17,6 +18,8 @@ namespace Froststrap.AppData
         public string ProcessName => layout.ProcessNames[0];
 
         public override string ExecutableName => layout.ExecutableName!;
+
+        public bool IsBundle => layout.Shape == ExecutableShape.MacBundle;
 
         public override JsonManager<DistributionState> DistributionStateManager => App.StudioState;
     }

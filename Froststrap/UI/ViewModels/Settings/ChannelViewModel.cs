@@ -297,9 +297,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (token.IsCancellationRequested) return;
 
-                string binaryType = isStudio
-                    ? (OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64")
-                    : (OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer");
+                string binaryType = GetBinaryType(isStudio);
 
                 bool isPrivate = await Deployment.IsChannelPrivate(channel);
                 if (token.IsCancellationRequested) return;
@@ -705,7 +703,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 string resourceUrl;
 
-                if (OperatingSystem.IsMacOS())
+                if (App.PlayerData.IsBundle)
                 {
                     if (string.IsNullOrEmpty(binaryType))
                         return (false, "Binary type is required for macOS validation.");
@@ -766,13 +764,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 setState(VersionHashValidationState.Invalid, error);
         }
 
-        private static string GetBinaryType(bool isStudio)
-        {
-            if (OperatingSystem.IsMacOS())
-                return isStudio ? "MacStudio" : "MacPlayer";
-            else
-                return isStudio ? "WindowsStudio64" : "WindowsPlayer";
-        }
+        private static string GetBinaryType(bool isStudio) =>
+            isStudio ? App.StudioData.BinaryType : App.PlayerData.BinaryType;
 
         private async Task ValidateStudioVersionHashAsync(string hash)
         {

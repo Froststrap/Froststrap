@@ -100,5 +100,7 @@ namespace Froststrap.Clients.Runtimes
             CancellationToken cancellationToken = default)
             => throw new NotSupportedException(
                 $"Launching '{ClientId}' still runs through the bootstrapper (Step 5).");
+
+        public virtual Task PrepareEnvironmentAsync() => Task.CompletedTask;
     }
 }

@@ -16,6 +16,8 @@ namespace Froststrap.AppData
 
         string ExecutableName { get; }
 
+        bool IsBundle { get; }
+
         string StaticDirectory { get; }
 
         string DynamicDirectory { get; }

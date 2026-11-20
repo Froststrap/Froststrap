@@ -53,5 +53,68 @@ namespace Froststrap.Clients.Runtimes
                 Reason = installed ? InstallReason.None : InstallReason.Missing
             };
         }
+
+        private const string FlatpakId = "org.vinegarhq.Sober";
+
+        public override async Task PrepareEnvironmentAsync()
+        {
+            string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", FlatpakId);
+            string soberTarget = Install.InstallRoot;
+
+            if (IsSymlinkPointingAt(flatpakDataPath, soberTarget))
+            {
+                App.Logger.Info("Sober symlink already in place, skipping.");
+                return;
+            }
+
+            App.Logger.Info($"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
+
+            Directory.CreateDirectory(soberTarget);
+
+            if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
+            {
+                App.Logger.Info($"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
+                await Utility.Threading.RunAsync("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"");
+
+                App.Logger.Info($"Removing original Sober data directory at {flatpakDataPath}");
+                await Utility.Threading.RunAsync("rm", $"-rf \"{flatpakDataPath}\"");
+            }
+            else if (IsSymlink(flatpakDataPath))
+            {
+                App.Logger.Info($"Removing stale symlink at {flatpakDataPath}");
+                Directory.Delete(flatpakDataPath);
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(flatpakDataPath)!);
+
+            Directory.CreateSymbolicLink(flatpakDataPath, soberTarget);
+            App.Logger.Info($"Created symlink: {flatpakDataPath} -> {soberTarget}");
+        }
+
+        private static bool IsSymlink(string path)
+        {
+            if (!Path.Exists(path))
+                return false;
+
+            try
+            {
+                var attributes = File.GetAttributes(path);
+                return attributes.HasFlag(FileAttributes.ReparsePoint);
+            }
+            catch { return false; }
+        }
+
+        private static bool IsSymlinkPointingAt(string path, string expectedTarget)
+        {
+            if (!IsSymlink(path))
+                return false;
+
+            try
+            {
+                string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
+                return actual == expectedTarget;
+            }
+            catch { return false; }
+        }
     }
 }

@@ -48,5 +48,7 @@ namespace Froststrap.Clients.Contracts
         Task<LaunchResult> LaunchAsync(
             LaunchRequest request,
             CancellationToken cancellationToken = default);
+
+        Task PrepareEnvironmentAsync();
     }
 }

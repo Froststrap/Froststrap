@@ -89,11 +89,13 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 _versions.Clear();
 
-                string url = OperatingSystem.IsMacOS()
+                bool bundle = App.PlayerData.IsBundle;
+
+                string url = bundle
                     ? "https://setup-rbxcdn.github.io/mac/DeployHistory.txt"
                     : "https://setup-rbxcdn.github.io/DeployHistory.txt";
 
-                string binaryType = OperatingSystem.IsMacOS()
+                string binaryType = bundle
                     ? (_launchMode == LaunchMode.Player ? "Client" : "Studio")
                     : (_launchMode == LaunchMode.Player ? "WindowsPlayer" : "Studio");
 
