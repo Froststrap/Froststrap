@@ -232,13 +232,13 @@ internal partial class Bootstrapper : IDisposable
                         backgroundUpdaterLockOpen = false;
                     }
 
-                    if (backgroundUpdaterLockOpen)
-                        return;
-
-                    if (IsEligibleForBackgroundUpdate())
-                        StartBackgroundUpdater();
-                    else
-                        await UpgradeRoblox();
+                    if (!backgroundUpdaterLockOpen)
+                    {
+                        if (IsEligibleForBackgroundUpdate())
+                            StartBackgroundUpdater();
+                        else
+                            await UpgradeRoblox();
+                    }
                 }
 
                 if (_cancelTokenSource.IsCancellationRequested)
@@ -258,20 +258,20 @@ internal partial class Bootstrapper : IDisposable
 
                     try
                     {
-                        if (!Directory.Exists(clientPackagePath))
-                            return;
+                        if (Directory.Exists(clientPackagePath))
+                        {
+                            DirectoryInfo di = new(clientPackagePath);
 
-                        DirectoryInfo di = new(clientPackagePath);
+                            foreach (FileInfo file in di.GetFiles())
+                                file.Delete();
 
-                        foreach (FileInfo file in di.GetFiles())
-                            file.Delete();
+                            foreach (DirectoryInfo dir in di.GetDirectories())
+                                dir.Delete(true);
 
-                        foreach (DirectoryInfo dir in di.GetDirectories())
-                            dir.Delete(true);
+                            App.State.Prop.ForceReinstall = false;
 
-                        App.State.Prop.ForceReinstall = false;
-
-                        App.Logger.Debug($"Successfully cleared contents of {clientPackagePath}");
+                            App.Logger.Debug($"Successfully cleared contents of {clientPackagePath}");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -306,7 +306,7 @@ internal partial class Bootstrapper : IDisposable
                 StudioPluginManager.Sync();
             }
 
-            if (App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
+            if (App.LaunchSettings.NoLaunchFlag.Active || _cancelTokenSource.IsCancellationRequested)
                 return;
 
             // show tips
@@ -2574,7 +2574,7 @@ internal partial class Bootstrapper : IDisposable
             string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
             string dest = Path.Combine(clientSettingsBaseDirectory, rel);
 
-            if (!profileApplied && !OperatingSystem.IsLinux() || IsStudioLaunch && File.Exists(source))
+            if (!profileApplied && (!OperatingSystem.IsLinux() || IsStudioLaunch) && File.Exists(source))
             {
                 try
                 {

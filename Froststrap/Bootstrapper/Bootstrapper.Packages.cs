@@ -95,16 +95,17 @@ internal partial class Bootstrapper : IDisposable
         if (OperatingSystem.IsMacOS())
         {
             string backupDir = GetResourcesBackupPath(_latestVersionGuid);
-            if (!Directory.Exists(backupDir))
-                return;
-            try
+            if (Directory.Exists(backupDir))
             {
-                Directory.Delete(backupDir, true);
-                App.Logger.Info($"Deleted existing mod backup for {_latestVersionGuid}");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Warn($"Failed to delete mod backup: {ex.Message}");
+                try
+                {
+                    Directory.Delete(backupDir, true);
+                    App.Logger.Info($"Deleted existing mod backup for {_latestVersionGuid}");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn($"Failed to delete mod backup: {ex.Message}");
+                }
             }
         }
 
@@ -275,7 +276,7 @@ internal partial class Bootstrapper : IDisposable
         if (!App.Settings.Prop.DebugDisableVersionPackageCleanup) foreach (string hash in cachedPackageHashes)
         {
             if (allPackageHashes.Contains(hash))
-                return;
+                continue;
 
             App.Logger.Info($"Deleting unused package {hash}");
 
