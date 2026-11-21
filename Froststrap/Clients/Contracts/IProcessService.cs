@@ -13,6 +13,8 @@ internal interface IProcessService
 {
     IReadOnlyList<string> ProcessNames { get; }
 
+    bool CanFollowRelaunch { get; }
+
     bool IsRunning();
 
     bool Owns(Process process);

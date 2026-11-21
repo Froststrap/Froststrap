@@ -48,6 +48,8 @@ internal interface IClientLayout
     /// <summary>Log lines that mean the client window is ready.</summary>
     IReadOnlyList<string> ReadySignals { get; }
 
+    IReadOnlyList<string> LeaveSignals { get; }
+
     /// <summary>Filename tokens that are never game logs.</summary>
     IReadOnlyList<string> ExcludedLogTokens { get; }
 

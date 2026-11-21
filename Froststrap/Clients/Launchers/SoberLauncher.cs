@@ -26,7 +26,7 @@ internal sealed class SoberLauncher(IClientLayout layout, FlatpakProcessService 
 
         string commandLine = request.CommandLine ?? string.Empty;
 
-        if (request.JoinData is not null && GameJoin.BuildSoberUri(request.JoinData) is { } soberUri)
+        if (request.JoinData is not null && BuildSoberUri(request.JoinData) is { } soberUri)
         {
             App.Logger.Info($"Translating launch command for Sober: {soberUri}");
             commandLine = soberUri;
@@ -54,6 +54,24 @@ internal sealed class SoberLauncher(IClientLayout layout, FlatpakProcessService 
             Pid = process.Id,
             WaitUntilReadyAsync = token => WaitForReadySignalAsync(latestLog, launchTime, token)
         });
+    }
+
+    /// Rebuilds parsed launch data into a <c>roblox://experiences/start</c> deeplink,
+    /// the only launch format Sober understands. Returns null when there is nothing
+    /// to join, so the original launch command is left untouched.
+    private static string? BuildSoberUri(GameJoinData joinData)
+    {
+        if (joinData.PlaceId is not long placeId || placeId <= 0)
+            return null;
+
+        bool isPlayTogether = joinData.JoinType == GameJoinType.RequestPlayTogetherGame;
+        string uri = $"roblox://experiences/start?placeId={placeId}";
+
+        if (joinData.AccessCode is not null)
+            uri += $"&accessCode={joinData.AccessCode}";
+        else if (!isPlayTogether && joinData.JobId is not null)
+            uri += $"&gameInstanceId={joinData.JobId}";
+        return uri;
     }
 
     private void ApplyLaunchSettings()

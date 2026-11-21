@@ -319,7 +319,7 @@ internal sealed class Watcher : IDisposable
             if (watcherData.LaunchMode != LaunchMode.Player)
                 return false;
 
-            if (_client.Layout.Shape == ExecutableShape.FlatExecutable)
+            if (!_client.Processes.CanFollowRelaunch)
                 return false;
 
             var player = processes.FirstOrDefault(_client.Processes.Owns);

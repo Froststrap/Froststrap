@@ -31,6 +31,8 @@ internal abstract class ClientLayoutBase : IClientLayout
 
     public virtual IReadOnlyList<string> ReadySignals => [];
 
+    public virtual IReadOnlyList<string> LeaveSignals => [];
+
     public virtual IReadOnlyList<string> ExcludedLogTokens => ["CrashHandler", "Installer"];
 
     public virtual IReadOnlyList<string> RequiredFiles => [];

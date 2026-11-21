@@ -38,6 +38,12 @@ internal sealed class SoberLayout : ClientLayoutBase
         "will_handle_start_game"
     ];
 
+    public override IReadOnlyList<string> LeaveSignals =>
+    [
+        "app_interface$json: {\"type\":\"game_left\"}",
+        "app: lifecycle: will_do_clean_exit"
+    ];
+
     public override IReadOnlyList<string> ExcludedLogTokens => [];
 
     public override ClientInstall Resolve(ClientResolveContext context)

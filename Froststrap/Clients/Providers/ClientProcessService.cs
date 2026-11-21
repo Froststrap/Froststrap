@@ -28,12 +28,15 @@ internal class ClientProcessService : IProcessService
         ProcessNames = layout.ProcessNames;
         _crashHandlerName = layout.CrashHandlerProcessName;
         _prefix = layout.MatchProcessNamePrefix;
+        CanFollowRelaunch = layout.Shape != ExecutableShape.FlatExecutable;
         _names = new HashSet<string>(
             layout.ProcessNames.Select(name => Path.GetFileNameWithoutExtension(name)),
             StringComparer.OrdinalIgnoreCase);
     }
 
     public IReadOnlyList<string> ProcessNames { get; }
+
+    public bool CanFollowRelaunch { get; }
 
     public bool IsRunning() => FindAllPlayer().Count > 0;
 
