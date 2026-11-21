@@ -39,8 +39,12 @@ internal sealed class PlainCookieStore(Func<ClientInstall> install) : CookieStor
     private static bool WriteLinuxCookieFile(string plainCookie, string filePath)
     {
         string content = $".ROBLOSECURITY={plainCookie};";
+
         BackupFile(filePath);
+
         File.WriteAllText(filePath, content);
+        File.SetUnixFileMode(filePath, UnixFileMode.UserRead | UnixFileMode.UserWrite);
+
         return true;
     }
 }
