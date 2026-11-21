@@ -36,6 +36,10 @@ namespace Froststrap.Clients.Contracts
 
         IChannelWriter Channel { get; }
 
+        IHostRegistration Registration { get; }
+
+        IRuntimeEnvironment? RuntimeEnvironment { get; }
+
         DistributionState State { get; }
 
         /// <summary>

@@ -36,6 +36,8 @@ namespace Froststrap.Clients.Contracts
 
         ChannelStore ChannelStore { get; }
 
+        HostIntegration HostIntegration { get; }
+
         LogShape LogFormat { get; }
 
         /// <summary><c>"_Player_"</c>, <c>"_Studio_"</c>, or null for a plain-log client.</summary>

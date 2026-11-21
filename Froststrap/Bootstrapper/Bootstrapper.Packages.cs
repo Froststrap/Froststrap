@@ -69,7 +69,7 @@ internal partial class Bootstrapper : IDisposable
 
         if (TargetClient.Capabilities.RestoreStrategy == RestoreStrategy.VersionBackup)
         {
-            string backupDir = GetResourcesBackupPath(_latestVersionGuid);
+            string backupDir = Mods.ModEngine.GetResourcesBackupPath(_latestVersionGuid);
             if (Directory.Exists(backupDir))
             {
                 try
@@ -212,9 +212,9 @@ internal partial class Bootstrapper : IDisposable
             }
         }
 
-        if (OperatingSystem.IsMacOS())
+        if (TargetClient.Layout.Shape == ExecutableShape.MacBundle)
         {
-            string[] appNames = ["RobloxPlayer.app", "RobloxStudio.app"];
+            string[] appNames = [App.PlayerData.ExecutableName, App.StudioData.ExecutableName];
             foreach (string appName in appNames)
             {
                 string appPath = Path.Combine(_latestVersionDirectory, appName);
@@ -563,7 +563,7 @@ internal partial class Bootstrapper : IDisposable
 
                 App.Logger.Info($"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
 
-                if (OperatingSystem.IsLinux() && IsStudioLaunch)
+                if (TargetClient.RuntimeEnvironment is not null)
                 {
                     await ExtractZipLinux(package.DownloadPath, targetFolder, fileFilter, _cancelTokenSource.Token);
                 }

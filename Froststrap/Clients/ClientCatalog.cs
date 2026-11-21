@@ -9,6 +9,7 @@ using Froststrap.Clients.Model;
 using Froststrap.Clients.Registry;
 using Froststrap.Clients.Runtimes;
 using Froststrap.Clients.Runtime;
+using Froststrap.Clients.Sources;
 
 namespace Froststrap.Clients;
 
@@ -37,7 +38,7 @@ internal static class ClientCatalog
 
         case HostPlatform.Linux:
             Register(registry, environment, states, new SoberLayout(), SoberCapabilities(), "PlayerState", "Sober");
-            Register(registry, environment, states, new WineStudioLayout(), WineStudioCapabilities(), "StudioState", "Roblox Studio (Wine)", layout => new WineLauncher(layout));
+            Register(registry, environment, states, new WineStudioLayout(), WineStudioCapabilities(), "StudioState", "Roblox Studio (Wine)", layout => new WineLauncher(layout), () => new WineEnvironment());
             break;
         }
 
@@ -66,7 +67,8 @@ internal static class ClientCatalog
         ClientCapabilities capabilities,
         string stateFileName,
         string displayName,
-        Func<IClientLayout, IClientLauncher>? launcher = null)
+        Func<IClientLayout, IClientLauncher>? launcher = null,
+        Func<IRuntimeEnvironment>? runtimeEnvironment = null)
     {
         registry.Register(new ClientDescriptor
         {
@@ -77,7 +79,7 @@ internal static class ClientCatalog
             StateFileName = stateFileName,
             Factory = () => layout is SoberLayout
                 ? new SoberClient(layout, capabilities, displayName, environment, states, stateFileName)
-                : new RobloxClient(layout, capabilities, displayName, environment, states, stateFileName, launcher?.Invoke(layout))
+                : new RobloxClient(layout, capabilities, displayName, environment, states, stateFileName, launcher?.Invoke(layout), runtimeEnvironment?.Invoke())
         });
     }
 

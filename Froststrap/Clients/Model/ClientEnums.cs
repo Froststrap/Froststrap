@@ -52,6 +52,12 @@ namespace Froststrap.Clients.Model
         PlainHeader
     }
 
+    internal enum HostIntegration
+    {
+        None,
+        WindowsRegistry
+    }
+
     internal enum ChannelStore
     {
         None,

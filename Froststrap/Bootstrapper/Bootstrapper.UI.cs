@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using Froststrap.Clients.Contracts;
+
 namespace Froststrap;
 
-internal partial class Bootstrapper
+internal partial class Bootstrapper : IInstallReporter
 {
     public IBootstrapperDialog? Dialog { get; set; }
 
@@ -13,6 +15,16 @@ internal partial class Bootstrapper
     private double _taskbarProgressMaximum;
     private long _totalDownloadedBytes;
     private long _totalPackagedBytes;
+
+    void IInstallReporter.SetIndeterminate(bool includeTaskbar)
+    {
+        Dialog?.ProgressIndeterminate = true;
+
+        if (includeTaskbar)
+            Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+    }
+
+    Task IInstallReporter.DownloadAsync(string url, string destination) => DownloadFileWithProgressAsync(url, destination);
 
     public void SetStatus(string message)
     {

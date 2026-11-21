@@ -32,9 +32,11 @@ namespace Froststrap.Clients.Runtimes
             ClientEnvironment environment,
             IClientStateStore stateStore,
             string stateFileName,
-            IClientLauncher? launcher = null)
+            IClientLauncher? launcher = null,
+            IRuntimeEnvironment? runtimeEnvironment = null)
         {
             _launcher = launcher;
+            RuntimeEnvironment = runtimeEnvironment;
             Layout = layout;
             Capabilities = capabilities;
             DisplayName = displayName;
@@ -71,6 +73,12 @@ namespace Froststrap.Clients.Runtimes
         private ICookieStore? _cookies;
 
         public virtual ISettingsSync? SettingsSync => null;
+
+        public IRuntimeEnvironment? RuntimeEnvironment { get; }
+
+        public IHostRegistration Registration => _registration ??= HostRegistrations.Create(Layout.HostIntegration, Layout.Target);
+
+        private IHostRegistration? _registration;
 
         public IChannelWriter Channel => _channel ??= ChannelWriters.Create(Layout.ChannelStore, Layout.Target);
 

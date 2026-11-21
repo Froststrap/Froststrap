@@ -24,6 +24,8 @@ namespace Froststrap.Clients.Layouts
 
         public override ChannelStore ChannelStore => ChannelStore.Registry;
 
+        public override HostIntegration HostIntegration => HostIntegration.WindowsRegistry;
+
         public override LogShape LogFormat => LogShape.Native;
 
         public override string? LogKindToken => "_Player_";

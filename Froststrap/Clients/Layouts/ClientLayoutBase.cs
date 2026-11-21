@@ -41,6 +41,8 @@ namespace Froststrap.Clients.Layouts
 
         public virtual ChannelStore ChannelStore => ChannelStore.None;
 
+        public virtual HostIntegration HostIntegration => HostIntegration.None;
+
         public virtual (string ContentRoot, string ClientSettingsRoot) ModRoots(string versionRoot) => (versionRoot, versionRoot);
 
         public abstract ClientInstall Resolve(ClientResolveContext context);

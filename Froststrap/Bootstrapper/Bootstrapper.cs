@@ -8,15 +8,12 @@ using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Launchers;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Sources;
+using Froststrap.Mods;
 using Froststrap.RobloxInterfaces;
-using System.Formats.Tar;
 using System.IO.Compression;
-using Microsoft.Win32;
 using System.ComponentModel;
 using System.Data;
 using System.Net.Http.Json;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Web;
 
 namespace Froststrap;
@@ -24,7 +21,6 @@ namespace Froststrap;
 internal partial class Bootstrapper : IDisposable
 {
     #region Properties
-    private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
     private readonly CancellationTokenSource _cancelTokenSource = new();
 
@@ -329,22 +325,9 @@ internal partial class Bootstrapper : IDisposable
             }
 
             // check registry entries for every launch, just in case the stock bootstrapper changes it back
-            if (OperatingSystem.IsWindows())
-            {
-                if (IsStudioLaunch)
-                {
-                    WindowsRegistry.RegisterStudio();
-                    App.Logger.Debug("Studio launch detected, syncing RPC plugin...");
-                    StudioPluginManager.Sync();
-                }
-                else
-                {
-                    WindowsRegistry.RegisterPlayer();
-                }
+            TargetClient.Registration.Register(_latestVersionDirectory);
 
-                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
-            }
-            else if (IsStudioLaunch)
+            if (IsStudioLaunch)
             {
                 App.Logger.Debug("Studio launch detected, syncing RPC plugin...");
                 StudioPluginManager.Sync();
@@ -359,10 +342,10 @@ internal partial class Bootstrapper : IDisposable
             else if (!allModificationsApplied)
                 Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
 
-            if (!OperatingSystem.IsLinux())
-                await StartRoblox();
-            else if (IsStudioLaunch)
+            if (TargetClient.RuntimeEnvironment is not null)
                 await LaunchStudioViaWineAsync();
+            else if (TargetClient.Layout.Shape != ExecutableShape.ExternalManaged)
+                await StartRoblox();
             else
             {
                 if (!await EnsureSoberInstalledAsync())
@@ -534,14 +517,6 @@ internal partial class Bootstrapper : IDisposable
         App.Logger.Warn("No server found in any region within timeout.");
         return "";
     }
-
-    private static bool ShouldSkipBaseModFile(string relativeFile) =>
-        relativeFile == "README.txt" ||
-        relativeFile == "info.json" ||
-        relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-        relativeFile.EndsWith(".dll", StringComparison.Ordinal) ||
-        relativeFile.EndsWith(".exe", StringComparison.Ordinal) ||
-        IsClientSettingsRelativePath(relativeFile);
 
     private async Task PrepareJoinAsync()
     {
@@ -845,26 +820,7 @@ internal partial class Bootstrapper : IDisposable
             await Task.Delay(integration.Delay);
     }
 
-    private bool ShouldRunAsAdmin()
-    {
-        if (!OperatingSystem.IsWindows())
-            return false;
-
-        foreach (var root in WindowsRegistry.Roots)
-        {
-            using var key = root.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers");
-
-            if (key is null)
-                continue;
-
-            string? flags = (string?)key.GetValue(AppData.ExecutablePath);
-
-            if (flags is not null && flags.Contains("RUNASADMIN", StringComparison.OrdinalIgnoreCase))
-                return true;
-        }
-
-        return false;
-    }
+    private bool ShouldRunAsAdmin() => TargetClient.Registration.RequestsAdmin(AppData.ExecutablePath);
 
     public bool Cancel()
     {
@@ -889,8 +845,7 @@ internal partial class Bootstrapper : IDisposable
         {
             try
             {
-                if (OperatingSystem.IsWindows())
-                    WindowsRegistry.RegisterClientLocation(IsStudioLaunch, null);
+                TargetClient.Registration.ClearLocation();
 
                 if (Directory.Exists(_latestVersionDirectory))
                     Directory.Delete(_latestVersionDirectory, true);
@@ -1047,22 +1002,11 @@ internal partial class Bootstrapper : IDisposable
 
     private void MigrateCompatibilityFlags()
     {
-        if (!OperatingSystem.IsWindows())
-            return;
-
         string oldClientLocation = Path.Combine(Paths.Versions, AppData.DistributionState.VersionGuid, AppData.ExecutableName);
         string newClientLocation = Path.Combine(_latestVersionDirectory, AppData.ExecutableName);
 
         // move old compatibility flags for the old location
-        using RegistryKey appFlagsKey = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers");
-        string? appFlags = appFlagsKey.GetValue(oldClientLocation) as string;
-
-        if (appFlags is not null)
-        {
-            App.Logger.Info($"Migrating app compatibility flags from {oldClientLocation} to {newClientLocation}...");
-            appFlagsKey.SetValueSafe(newClientLocation, appFlags);
-            appFlagsKey.DeleteValueSafe(oldClientLocation);
-        }
+        TargetClient.Registration.MigrateCompatibilityFlags(oldClientLocation, newClientLocation);
     }
 
     private static void KillRobloxPlayers()
@@ -1221,431 +1165,10 @@ internal partial class Bootstrapper : IDisposable
             : string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, progress.Step, progress.StepCount));
     }
 
-    private static async Task ExtractTarXzAsync(string archivePath, string outputDir, CancellationToken cancellationToken)
-    {
-        var psi = new ProcessStartInfo("tar", $"-xJf \"{archivePath}\" -C \"{outputDir}\"")
-        {
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-        };
-        using var process = Process.Start(psi);
-        _ = process ?? throw new InvalidOperationException("Failed to start tar");
-        await process.WaitForExitAsync(cancellationToken);
-        if (process.ExitCode != 0)
-        {
-            var err = await process.StandardError.ReadToEndAsync(cancellationToken);
-            throw new InvalidOperationException($"tar extraction failed: {err}");
-        }
-    }
-
-    private async Task SetupDxvkAndRendererAsync()
-    {
-        var renderer = App.Settings.Prop.StudioRenderer;
-        string targetRenderer = renderer switch
-        {
-            StudioRenderer.D3D11 => "D3D11",
-            StudioRenderer.D3D11FL10 => "D3D11FL10",
-            StudioRenderer.DXVK => "D3D11",
-            StudioRenderer.Vulkan => "Vulkan",
-            StudioRenderer.OpenGL => "OpenGL",
-            _ => "D3D11"
-        };
-
-        SetRendererFastFlags(targetRenderer);
-
-        if (renderer == StudioRenderer.DXVK)
-        {
-            string url = "https://github.com/doitsujin/dxvk/releases/download/v2.7.1/dxvk-2.7.1.tar.gz";
-            await InstallDxvkAsync(url);
-        }
-        else
-        {
-            CleanupDxvkDlls();
-        }
-
-        ApplyRendererFlagsToVersionDirectory();
-    }
-
-    private static void SetRendererFastFlags(string prefer)
-    {
-        string[] renderers = ["D3D11", "D3D11FL10", "Vulkan", "OpenGL"];
-        foreach (var r in renderers)
-        {
-            bool isPreferred = r == prefer;
-            App.FastFlags.SetValue($"FFlagDebugGraphicsPrefer{r}", isPreferred ? "True" : "False");
-            App.FastFlags.SetValue($"FFlagDebugGraphicsDisable{r}", isPreferred ? "False" : "True");
-        }
-    }
-
-    private async Task InstallDxvkAsync(string url)
-    {
-        string cacheFile = Path.Combine(Paths.Downloads, $"dxvk-2.7.1.tar.gz");
-        Directory.CreateDirectory(Paths.Downloads);
-
-        bool needsInstall = !DxvkDlls.Any(dll => File.Exists(Path.Combine(_latestVersionDirectory, dll)));
-
-        if (needsInstall)
-        {
-            if (!File.Exists(cacheFile))
-            {
-                SetStatus(Strings.Bootstrapper_Status_DownloadingDXVK);
-                await DownloadFileWithProgressAsync(url, cacheFile);
-                Dialog?.ProgressIndeterminate = true;
-            }
-
-            SetStatus(Strings.Bootstrapper_Status_ExtractingDXVK);
-            await ExtractDxvkArchive(cacheFile, _latestVersionDirectory);
-        }
-    }
-
-    private static async Task ExtractDxvkArchive(string archivePath, string outputDir)
-    {
-        await Task.Run(() =>
-        {
-            using var fileStream = File.OpenRead(archivePath);
-            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
-            using var tarReader = new TarReader(gzipStream);
-
-            System.Formats.Tar.TarEntry? entry;
-            while ((entry = tarReader.GetNextEntry()) != null)
-            {
-                if (entry.EntryType is TarEntryType.Directory)
-                    continue;
-
-                string entryName = entry.Name.Replace('\\', '/');
-                if (entryName.Contains("/x64/", StringComparison.OrdinalIgnoreCase) && entryName.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-                {
-                    string fileName = Path.GetFileName(entryName);
-                    if (DxvkDlls.Contains(fileName))
-                    {
-                        string targetPath = Path.Combine(outputDir, fileName);
-                        using var fs = File.Create(targetPath);
-                        entry.DataStream?.CopyTo(fs);
-                    }
-                }
-            }
-        });
-    }
-
-    private void CleanupDxvkDlls()
-    {
-        foreach (var dll in DxvkDlls)
-        {
-            string path = Path.Combine(_latestVersionDirectory, dll);
-            if (File.Exists(path))
-            {
-                try { File.Delete(path); }
-                catch (Exception ex) { App.Logger.Error($"Failed to delete {dll} in CleanupDxvkDlls: {ex.Message}"); }
-            }
-        }
-    }
-
-    private void ApplyRendererFlagsToVersionDirectory()
-    {
-        if (string.IsNullOrEmpty(_latestVersionDirectory))
-            return;
-
-        string clientSettingsRoot = CurrentModPaths.ClientSettingsRoot;
-
-        string clientSettingsDir = Path.Combine(clientSettingsRoot, "ClientSettings");
-        Directory.CreateDirectory(clientSettingsDir);
-        string destPath = Path.Combine(clientSettingsDir, "ClientAppSettings.json");
-
-        Dictionary<string, object> existing = [];
-        if (File.Exists(destPath))
-        {
-            try
-            {
-                string existingJson = File.ReadAllText(destPath);
-                existing = JsonHelper.Deserialize<Dictionary<string, object>>(existingJson) ?? [];
-            }
-            catch { }
-        }
-
-        var rendererFlags = App.FastFlags.Prop
-            .Where(kv => kv.Key.StartsWith("FFlagDebugGraphicsPrefer", StringComparison.Ordinal) || kv.Key.StartsWith("FFlagDebugGraphicsDisable", StringComparison.Ordinal))
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
-
-        foreach (var kv in rendererFlags)
-            existing[kv.Key] = kv.Value;
-
-        string mergedJson = JsonHelper.Serialize(existing, _indentedJsonOptions);
-        File.WriteAllText(destPath, mergedJson);
-    }
-
-    private async Task SetupWebView2Async(WineManager wineMgr)
-    {
-        if (!OperatingSystem.IsLinux() || !IsStudioLaunch)
-            return;
-
-        string? installedVersion = await wineMgr.QueryRegistryValueAsync(@"HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView", "DisplayVersion", _cancelTokenSource.Token);
-        bool isInstalled = !string.IsNullOrEmpty(installedVersion);
-
-        if (App.Settings.Prop.EnableWebView2 == isInstalled)
-        {
-            App.Logger.Info(App.Settings.Prop.EnableWebView2
-                ? "WebView2 already installed, skipping."
-                : "WebView2 already not installed, skipping.");
-            return;
-        }
-
-        if (App.Settings.Prop.EnableWebView2)
-        {
-            App.Logger.Info("Downloading WebView2 Runtime via Wine...");
-            SetStatus(Strings.Bootstrapper_Status_DownloadingWebView2);
-
-            try
-            {
-                if (!await wineMgr.RegistryKeyExistsAsync(@"HKCU\Software\Wine\AppDefaults\msedgewebview2.exe", _cancelTokenSource.Token))
-                    await wineMgr.AddRegistryValueAsync(@"HKCU\Software\Wine\AppDefaults\msedgewebview2.exe", "Version", "win7", cancellationToken: _cancelTokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to set WebView2 AppDefaults override: {ex.Message}");
-            }
-
-            string? version = await GetWebView2LatestVersionAsync();
-            if (version is null)
-            {
-                App.Logger.Warn("Could not resolve the latest WebView2 Runtime version, skipping install.");
-                return;
-            }
-
-            var download = await GetWebView2RuntimeDownloadAsync(version);
-            if (download is null)
-            {
-                App.Logger.Warn("Could not resolve a WebView2 Runtime download, skipping install.");
-                return;
-            }
-
-            string tempFile = Path.Combine(Path.GetTempPath(), download.Value.FileId);
-            try
-            {
-                await DownloadFileWithProgressAsync(download.Value.Url, tempFile);
-                Dialog?.ProgressIndeterminate = true;
-
-                SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
-
-                int exitCode = await wineMgr.RunAsync(tempFile,
-                    ["--msedgewebview", "--do-not-launch-msedge", "--system-level"],
-                    cancellationToken: _cancelTokenSource.Token);
-
-                App.Logger.Info(exitCode == 0
-                    ? $"WebView2 Runtime {version} installed successfully."
-                    : $"WebView2 installer exited with code {exitCode}.");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to install WebView2: {ex.Message}");
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                    File.Delete(tempFile);
-            }
-        }
-        else
-        {
-            App.Logger.Info("Uninstalling WebView2 Runtime via Wine...");
-            SetStatus(Strings.Bootstrapper_Status_UninstallingWebView2);
-
-            string uninstallerPath = Path.Combine(wineMgr.PrefixDir, "drive_c", "Program Files (x86)",
-                "Microsoft", "EdgeWebView", "Application", installedVersion!, "Installer", "setup.exe");
-
-            if (!File.Exists(uninstallerPath))
-            {
-                App.Logger.Warn($"WebView2 uninstaller not found at {uninstallerPath}, skipping uninstall.");
-                return;
-            }
-
-            try
-            {
-                int exitCode = await wineMgr.RunAsync(uninstallerPath,
-                    ["--msedgewebview", "--uninstall", "--system-level", "--force-uninstall"],
-                    cancellationToken: _cancelTokenSource.Token);
-
-                string? stillInstalled = await wineMgr.QueryRegistryValueAsync(@"HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft EdgeWebView", "DisplayVersion", _cancelTokenSource.Token);
-                App.Logger.Info(string.IsNullOrEmpty(stillInstalled)
-                    ? "WebView2 Runtime uninstalled successfully."
-                    : $"WebView2 uninstaller exited with code {exitCode}, but WebView2 still appears installed.");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to uninstall WebView2: {ex.Message}");
-            }
-        }
-    }
-    private static readonly Lazy<HttpClient> _webView2HttpClient = new(CreateWebView2HttpClient);
-    private static readonly X509Certificate2 _webView2RootCert = X509Certificate2.CreateFromPem(WebView2MicrosoftRootPem);
-    private static HttpClient CreateWebView2HttpClient()
-    {
-        HttpClientHandler? handler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (_, cert, chain, sslPolicyErrors) =>
-            {
-                if (sslPolicyErrors == SslPolicyErrors.None)
-                    return true;
-
-                if (cert is null || chain is null)
-                    return false;
-
-                chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
-                chain.ChainPolicy.CustomTrustStore.Add(_webView2RootCert);
-                chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-
-                return chain.Build(cert);
-            }
-        };
-
-        try
-        {
-            var client = new HttpClient(handler);
-            handler = null;
-            return client;
-        }
-        finally
-        {
-            handler?.Dispose();
-        }
-    }
-
-    private async Task<string?> GetWebView2LatestVersionAsync()
-    {
-        try
-        {
-            string requestUrl = "https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-stable-win-x64/versions/latest?action=select";
-            using var content = new StringContent(
-                "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\"}}",
-                Encoding.UTF8, "application/json");
-
-            using var response = await _webView2HttpClient.Value.PostAsync(new Uri(requestUrl), content, _cancelTokenSource.Token);
-            if (!response.IsSuccessStatusCode)
-            {
-                App.Logger.Warn($"Bad status: {(int)response.StatusCode} {response.StatusCode}");
-                return null;
-            }
-
-            var data = await JsonHelper.ReadFromJsonAsync<WebView2LatestResponse>(response.Content, cancellationToken: _cancelTokenSource.Token);
-            return data?.ContentId?.Version;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Warn($"Failed to query latest version: {ex.Message}");
-            return null;
-        }
-    }
-
-    private async Task<(string Url, string FileId)?> GetWebView2RuntimeDownloadAsync(string version)
-    {
-        try
-        {
-            string requestUrl = $"https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-stable-win-x64/versions/{version}/files?action=GenerateDownloadInfo";
-            using var response = await _webView2HttpClient.Value.PostAsync(new Uri(requestUrl), null, _cancelTokenSource.Token);
-            if (!response.IsSuccessStatusCode)
-            {
-                App.Logger.Warn($"Bad status: {(int)response.StatusCode} {response.StatusCode}");
-                return null;
-            }
-
-            var downloads = await JsonHelper.ReadFromJsonAsync<List<WebView2Download>>(response.Content, cancellationToken: _cancelTokenSource.Token);
-            if (downloads is null)
-                return null;
-
-            foreach (var d in downloads)
-            {
-                if (d.Url is null || d.FileId is null)
-                    continue;
-
-                string trimmed = d.FileId.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
-                    ? d.FileId[..^4]
-                    : d.FileId;
-
-                if (trimmed.Split('_').Length == 3)
-                    return (d.Url, d.FileId);
-            }
-
-            App.Logger.Warn("No standalone Runtime entry found among CDP download results.");
-            return null;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Warn($"Failed to query downloads: {ex.Message}");
-            return null;
-        }
-    }
-
-    private async Task<GithubRelease?> GetLatestKombuchaReleaseAsync()
-    {
-        const string url = $"https://api.github.com/repos/vinegarhq/kombucha/releases/latest";
-        return await JsonHelper.GetFromJsonAsync<GithubRelease>(App.HttpClient, url, _cancelTokenSource.Token);
-    }
-
     private async Task LaunchStudioViaWineAsync()
     {
-        string baseWineDir = WineLauncher.WineRoot;
-        string symlinkPath = Path.Combine(baseWineDir, "kombucha");
-        string wineExe = WineLauncher.WineExecutable;
-
-        if (!File.Exists(wineExe))
-        {
-            App.Logger.Info("Kombucha not found – downloading Kombucha.");
-
-            var release = await GetLatestKombuchaReleaseAsync();
-            _ = release ?? throw new InvalidOperationException("Could not fetch latest Kombucha release.");
-
-            var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz", StringComparison.Ordinal) == true);
-            _ = asset ?? throw new InvalidOperationException("No .tar.xz asset found in Kombucha release.");
-
-            SetStatus(Strings.Bootstrapper_Status_DownloadingWine);
-
-            string tempFile = Path.GetTempFileName();
-            try
-            {
-                await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, tempFile);
-                if (Dialog != null)
-                {
-                    Dialog.ProgressIndeterminate = true;
-                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-                }
-
-                string versionTag = release.TagName.TrimStart('v');
-                string extractDir = Path.Combine(baseWineDir, "kombucha_versions", $"kombucha-{versionTag}");
-                if (Directory.Exists(extractDir))
-                    Directory.Delete(extractDir, true);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(extractDir)!);
-
-                SetStatus(Strings.Bootstrapper_Status_ExtractingWine);
-                await ExtractTarXzAsync(tempFile, Path.GetDirectoryName(extractDir)!, _cancelTokenSource.Token);
-
-                if (File.Exists(symlinkPath))
-                    File.Delete(symlinkPath);
-                if (Directory.Exists(symlinkPath))
-                    Directory.Delete(symlinkPath, true);
-
-                Directory.CreateSymbolicLink(symlinkPath, extractDir);
-                App.Logger.Info($"Kombucha {versionTag} installed.");
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                    File.Delete(tempFile);
-            }
-        }
-        else
-        {
-            App.Logger.Info("Wine already installed.");
-        }
-
-        var wineMgr = new WineManager(baseWineDir);
-
-        SetStatus(Strings.Bootstrapper_Status_InitializingWinePrefix);
-        await wineMgr.EnsurePrefixAsync(_cancelTokenSource.Token);
-
-        await SetupDxvkAndRendererAsync();
-
-        await SetupWebView2Async(wineMgr);
+        if (TargetClient.RuntimeEnvironment is { } runtimeEnvironment)
+            await runtimeEnvironment.PrepareAsync(_latestVersionDirectory, CurrentModPaths.ClientSettingsRoot, this, _cancelTokenSource.Token);
 
         SetStatus(Strings.Bootstrapper_Status_Starting);
 
@@ -1734,581 +1257,43 @@ internal partial class Bootstrapper : IDisposable
         Process.Start(Paths.Process, "--background-updater");
     }
 
-    private async Task<bool> ApplyModifications()
+    private Task<bool> ApplyModifications() => new ModEngine(
+        new ModContext
+        {
+            ModPaths = CurrentModPaths,
+            VersionDirectory = _latestVersionDirectory,
+            VersionGuid = _latestVersionGuid,
+            IsStudio = IsStudioLaunch,
+            AppData = AppData,
+            PackageDirectoryMap = PackageDirectoryMap
+        },
+        SetStatus,
+        RestoreFromPackagesAsync,
+        _cancelTokenSource.Token).ApplyAsync();
+
+    private async Task RestoreFromPackagesAsync(Dictionary<string, List<string>> fileRestoreMap)
     {
-        bool success = true;
-        SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
-        App.Logger.Info("Checking file mods...");
+        long restoreBytes = fileRestoreMap.Keys
+            .Select(name => _versionPackageManifest.Find(x => x.Name == name))
+            .Where(p => p is not null)
+            .Sum(p => (long)p!.PackedSize);
 
-        File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
+        BeginDownloadProgress(restoreBytes);
 
-        Directory.CreateDirectory(Paths.Modifications);
-
-        var allMods = App.State.Prop.Mods.ToList();
-        var allModFolderNames = allMods.Select(m => m.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-        var activeMods = App.State.Prop.Mods
-            .Where(m => m.Enabled && (
-                m.Target == ModTarget.Both ||
-                (IsStudioLaunch && m.Target == ModTarget.Studio) ||
-                (!IsStudioLaunch && m.Target == ModTarget.Player)))
-            .OrderByDescending(x => x.Priority)
-            .ToList();
-
-        ModPaths modPaths = CurrentModPaths;
-        string contentDirectory = modPaths.ContentRoot;
-        string clientSettingsBaseDirectory = modPaths.ClientSettingsRoot;
-
-        if (modPaths.Restore == RestoreStrategy.VersionBackup)
-            EnsureMacResourcesBackup(contentDirectory, _latestVersionGuid);
-
-        var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
-
-        string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
-
-        string? customFontPath = null;
-        string? customFontFilename = null;
-        string? customFontModFolder = null;
-
-        foreach (var mod in activeMods)
+        foreach (var entry in fileRestoreMap)
         {
-            string modTtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf");
-            string modOtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf");
-
-            if (File.Exists(modTtf))
+            var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
+            if (package is not null)
             {
-                customFontPath = modTtf;
-                customFontFilename = "CustomFont.ttf";
-                customFontModFolder = mod.FolderName;
-                break;
+                await DownloadPackage(package);
+
+                SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
+                await ExtractPackage(package, entry.Value);
             }
-            else if (File.Exists(modOtf))
-            {
-                customFontPath = modOtf;
-                customFontFilename = "CustomFont.otf";
-                customFontModFolder = mod.FolderName;
-                break;
-            }
-        }
-
-        if (customFontPath == null && File.Exists(Paths.CustomFont))
-        {
-            customFontPath = Paths.CustomFont;
-            customFontFilename = "CustomFont.ttf";
-        }
-
-        if (customFontPath != null && customFontFilename != null)
-        {
-            string fontFamiliesFolder;
-            if (customFontModFolder != null)
-            {
-                fontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModFolder, "content", "fonts", "families");
-            }
-            else
-            {
-                fontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
-            }
-
-            App.Logger.Info($"Begin font check using '{customFontFilename}' from '{customFontPath}' saving to '{fontFamiliesFolder}'");
-            Directory.CreateDirectory(fontFamiliesFolder);
-
-            string contentFolder = Path.Combine(contentDirectory, "content");
-            Directory.CreateDirectory(contentFolder);
-            string fontsFolder = Path.Combine(contentFolder, "fonts");
-            Directory.CreateDirectory(fontsFolder);
-            string familiesFolder = Path.Combine(fontsFolder, "families");
-            Directory.CreateDirectory(familiesFolder);
-
-            string rbxAssetPath = $"rbxasset://fonts/{customFontFilename}";
-
-            foreach (string jsonFilePath in Directory.GetFiles(familiesFolder))
-            {
-                string jsonFilename = Path.GetFileName(jsonFilePath);
-                string modFilepath = Path.Combine(fontFamiliesFolder, jsonFilename);
-                if (File.Exists(modFilepath))
-                    continue;
-                var fontFamilyData = JsonHelper.Deserialize<FontFamily>(await File.ReadAllTextAsync(jsonFilePath));
-                if (fontFamilyData is null)
-                    continue;
-                bool shouldWrite = false;
-                foreach (var fontFace in fontFamilyData.Faces)
-                {
-                    if (fontFace.AssetId != rbxAssetPath)
-                    {
-                        fontFace.AssetId = rbxAssetPath;
-                        shouldWrite = true;
-                    }
-                }
-                if (shouldWrite)
-                    await File.WriteAllTextAsync(modFilepath, JsonHelper.Serialize(fontFamilyData, _indentedJsonOptions));
-            }
-            App.Logger.Info("End font check");
-        }
-        else
-        {
-            string flatFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
-            if (Directory.Exists(flatFontFamiliesFolder))
-            {
-                Directory.Delete(flatFontFamiliesFolder, true);
-            }
-        }
-
-        App.Logger.Info("Writing AppSettings.xml...");
-        if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml"))
-            && modPaths.Support == ModSupport.BundleFiles)
-        {
-            Directory.CreateDirectory(_latestVersionDirectory);
-            await File.WriteAllTextAsync(
-                Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
-                AppSettings.Replace("roblox.com", Deployment.RobloxDomain, StringComparison.Ordinal)
-            );
-        }
-
-        var allModFiles = new Dictionary<string, (string SourcePath, int Priority, string ModName, FileInfo Info)>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var mod in activeMods)
-        {
-            string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
-            if (!Directory.Exists(modSource))
-            {
-                App.Logger.Warn($"Skipping mod '{mod.FolderName}': directory not found");
-                continue;
-            }
-
-            App.Logger.Info($"Processing mod '{mod.FolderName}' (priority: {mod.Priority})");
-
-            foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
-            {
-                string relativeFile = Path.GetRelativePath(modSource, file);
-
-                if (relativeFile == "README.txt" ||
-                    relativeFile.EndsWith("info.json", StringComparison.Ordinal) ||
-                    relativeFile.EndsWith(".lock", StringComparison.Ordinal) ||
-                    IsClientSettingsRelativePath(relativeFile))
-                    continue;
-
-                string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal))
-                    continue;
-
-                var info = new FileInfo(file);
-
-                allModFiles[relativeFile] = (file, mod.Priority, mod.FolderName, info);
-            }
-        }
-
-        if (Directory.Exists(Paths.Modifications))
-        {
-            App.Logger.Info("Processing PresetModifications (Flat folder)...");
-
-            foreach (string file in Directory.GetFiles(Paths.Modifications))
-            {
-                string relativeFile = Path.GetFileName(file);
-                if (ShouldSkipBaseModFile(relativeFile))
-                    continue;
-
-                var info = new FileInfo(file);
-                allModFiles[relativeFile] = (file, int.MaxValue, "BaseModification", info);
-            }
-
-            foreach (string dir in Directory.GetDirectories(Paths.Modifications))
-            {
-                string dirName = Path.GetFileName(dir);
-                if (allModFolderNames.Contains(dirName, StringComparer.OrdinalIgnoreCase))
-                    continue;
-
-                if (!Directory.Exists(dir))
-                {
-                    App.Logger.Warn($"Skipping missing directory: {dir}");
-                    continue;
-                }
-
-                foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
-                {
-                    string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
-                    if (ShouldSkipBaseModFile(relativeFile))
-                        continue;
-
-                    var info = new FileInfo(file);
-                    allModFiles[relativeFile] = (file, int.MaxValue, "BaseModification", info);
-                }
-            }
-        }
-
-        var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var mod in activeMods)
-        {
-            string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
-            if (!Directory.Exists(modSource)) continue;
-
-            foreach (string file in Directory.GetFiles(modSource, "*_Delete.*", SearchOption.AllDirectories))
-            {
-                string relativeFile = Path.GetRelativePath(modSource, file);
-                string actualFile = relativeFile;
-                string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-                if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal))
-                {
-                    string directory = Path.GetDirectoryName(relativeFile) ?? "";
-                    string originalName = fileNameWithoutExt[..^7];
-                    actualFile = Path.Combine(directory, originalName + Path.GetExtension(relativeFile));
-                }
-                filesToDelete.Add(actualFile);
-            }
-        }
-
-        foreach (string relPath in filesToDelete)
-            allModFiles.Remove(relPath);
-
-        foreach (string relPath in filesToDelete)
-        {
-            string targetFile = Path.Combine(contentDirectory, relPath);
-            if (File.Exists(targetFile))
-            {
-                Filesystem.AssertReadOnly(targetFile);
-                File.Delete(targetFile);
-                App.Logger.Info($"{relPath} deleted via _Delete flag");
-
-                string? parentDir = Path.GetDirectoryName(targetFile);
-                while (!string.IsNullOrEmpty(parentDir) &&
-                       parentDir.TrimEnd(Path.DirectorySeparatorChar) != contentDirectory.TrimEnd(Path.DirectorySeparatorChar))
-                {
-                    if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
-                    {
-                        Directory.Delete(parentDir);
-                        parentDir = Path.GetDirectoryName(parentDir);
-                    }
-                    else break;
-                }
-            }
-
-            lock (currentModManifest)
-                currentModManifest[relPath + "_Delete"] = new ModFileEntry { Size = 0, LastModified = DateTime.Now };
-        }
-
-        var fileTasks = new List<Task<bool>>();
-        using var semaphore = new SemaphoreSlim(8);
-
-        foreach (var entry in allModFiles)
-        {
-            if (_cancelTokenSource.IsCancellationRequested) return true;
-
-            string relativeFile = entry.Key;
-            var (sourceFile, priority, modName, sourceInfo) = entry.Value;
-            string fileVersionFolder = Path.Combine(contentDirectory, relativeFile);
-
-            fileTasks.Add(Task.Run(async () =>
-            {
-                await semaphore.WaitAsync();
-                try
-                {
-                    bool needsCopy = true;
-
-                    if (File.Exists(fileVersionFolder))
-                    {
-                        var targetInfo = new FileInfo(fileVersionFolder);
-
-                        if (targetInfo.Length == sourceInfo.Length &&
-                            targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
-                        {
-                            needsCopy = false;
-                        }
-                        else
-                        {
-                            var sourceHashTask = Task.Run(() => FastHash.FromFile(sourceFile));
-                            var targetHashTask = Task.Run(() => FastHash.FromFile(fileVersionFolder));
-                            await Task.WhenAll(sourceHashTask, targetHashTask);
-
-                            if (await sourceHashTask == await targetHashTask)
-                            {
-                                needsCopy = false;
-
-                                File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-                            }
-                        }
-                    }
-
-                    if (needsCopy)
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-                        Filesystem.AssertReadOnly(fileVersionFolder);
-                        File.Copy(sourceFile, fileVersionFolder, true);
-                        File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-                        Filesystem.AssertReadOnly(fileVersionFolder);
-                        App.Logger.Info($"{relativeFile} applied");
-                    }
-
-                    lock (currentModManifest)
-                    {
-                        currentModManifest[relativeFile] = new ModFileEntry
-                        {
-                            Size = sourceInfo.Length,
-                            LastModified = sourceInfo.LastWriteTime
-                        };
-                    }
-
-                    return true;
-                }
-
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to apply ({relativeFile}) from mod '{modName}': {ex.Message}");
-                    return false;
-                }
-                finally { semaphore.Release(); }
-            }));
-        }
-
-        var fileResults = await Task.WhenAll(fileTasks);
-        success = success && fileResults.All(r => r);
-
-        if (App.Settings.Prop.UseFastFlagManager)
-        {
-            bool profileApplied = false;
-            string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
-            string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-            string dest = Path.Combine(clientSettingsBaseDirectory, rel);
-
-            if (!profileApplied && modPaths.Support == ModSupport.BundleFiles && File.Exists(source))
-            {
-                try
-                {
-                    bool match = File.Exists(dest) &&
-                        (await Task.Run(() => FastHash.FromFile(source)) == await Task.Run(() => FastHash.FromFile(dest)));
-                    if (!match)
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                        File.Copy(source, dest, true);
-                        App.Logger.Info("FastFlags Applied (normal source).");
-                    }
-
-                    if (File.Exists(dest))
-                    {
-                        var info = new FileInfo(dest);
-                        lock (currentModManifest)
-                            currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
-                    }
-                }
-                catch (Exception ex) { App.Logger.Error(ex); }
-            }
-        }
-        else
-        {
-            string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-            string dest = Path.Combine(clientSettingsBaseDirectory, rel);
-            if (File.Exists(dest))
-            {
-                try
-                {
-                    File.Delete(dest);
-                    lock (currentModManifest)
-                        currentModManifest.Remove(rel);
-                    App.Logger.Info("ClientSettings deleted because UseFastFlagManager is false.");
-                }
-                catch (Exception ex) { App.Logger.Error(ex); }
-            }
-        }
-
-        var fileRestoreMap = new Dictionary<string, List<string>>();
-        foreach (string fileLocation in AppData.DistributionState.ModManifest)
-        {
-            if (currentModManifest.ContainsKey(fileLocation))
-                continue;
-
-            string actualFile = fileLocation;
-            string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
-
-            if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete", StringComparison.Ordinal) && modPaths.Support != ModSupport.BundleFiles)
-                continue;
-
-            if (modPaths.Restore == RestoreStrategy.VersionBackup)
-            {
-                bool isClientSettingsFile = IsClientSettingsRelativePath(actualFile);
-                string backupDir = GetResourcesBackupPath(_latestVersionGuid);
-                string sourceFile = Path.Combine(backupDir, actualFile);
-                string targetRoot = isClientSettingsFile
-                    ? clientSettingsBaseDirectory
-                    : contentDirectory;
-                string destFile = Path.Combine(targetRoot, actualFile);
-                if (File.Exists(sourceFile))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFile)!);
-                    File.Copy(sourceFile, destFile, true);
-                    App.Logger.Info($"Restored '{actualFile}' from backup");
-                }
-                else
-                {
-                    if (isClientSettingsFile && File.Exists(destFile))
-                    {
-                        File.Delete(destFile);
-                        App.Logger.Info($"Deleted stale ClientSettings file '{actualFile}'");
-                    }
-                    else
-                    {
-                        App.Logger.Warn($"Backup file not found: {actualFile}");
-                    }
-                }
-                continue;
-            }
-
-            string? packageName = null;
-            string? packageDir = null;
-
-            foreach (var kvp in PackageDirectoryMap)
-            {
-                if (!string.IsNullOrEmpty(kvp.Value) && actualFile.StartsWith(kvp.Value, StringComparison.OrdinalIgnoreCase))
-                {
-                    packageName = kvp.Key;
-                    packageDir = kvp.Value;
-                    break;
-                }
-            }
-
-            if (string.IsNullOrEmpty(packageName) || string.IsNullOrEmpty(packageDir))
-            {
-                string versionFileLocation = Path.Combine(_latestVersionDirectory, actualFile);
-                if (File.Exists(versionFileLocation))
-                {
-                    Filesystem.AssertReadOnly(versionFileLocation);
-                    File.Delete(versionFileLocation);
-                    App.Logger.Info($"Deleted orphaned file {actualFile}");
-                }
-                continue;
-            }
-
-            string internalZipPath = actualFile[packageDir.Length..].TrimStart(Path.DirectorySeparatorChar);
-
-            if (!fileRestoreMap.ContainsKey(packageName))
-                fileRestoreMap[packageName] = [];
-
-            fileRestoreMap[packageName].Add(internalZipPath);
-            App.Logger.Info($"Restoring '{internalZipPath}' from package {packageName}");
-        }
-
-        if (modPaths.Restore == RestoreStrategy.PackageReextract && fileRestoreMap.Count > 0)
-        {
-            long restoreBytes = fileRestoreMap.Keys
-                .Select(name => _versionPackageManifest.Find(x => x.Name == name))
-                .Where(p => p is not null)
-                .Sum(p => (long)p!.PackedSize);
-
-            BeginDownloadProgress(restoreBytes);
-
-            foreach (var entry in fileRestoreMap)
-            {
-                var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
-                if (package is not null)
-                {
-                    await DownloadPackage(package);
-
-                    SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
-                    await ExtractPackage(package, entry.Value);
-                }
-            }
-        }
-
-        if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
-        {
-            AppData.DistributionState.ModManifest = [.. currentModManifest.Keys];
-            AppData.DistributionStateManager.Save();
-        }
-
-        App.Logger.Info("Finished checking file mods");
-        return success;
-    }
-
-    private void InitializeModFolders()
-    {
-        if (string.IsNullOrEmpty(_latestVersionDirectory) || !Directory.Exists(_latestVersionDirectory))
-        {
-            App.Logger.Warn("Version directory does not exist, skipping.");
-            return;
-        }
-
-        ModPaths modPaths = CurrentModPaths;
-
-        if (modPaths.Support != ModSupport.BundleFiles)
-        {
-            App.Logger.Info($"Skipping mod folder initialization, {TargetClient.DisplayName} does not take mod files.");
-            return;
-        }
-
-        string contentRoot = modPaths.ContentRoot;
-        if (!Directory.Exists(contentRoot))
-        {
-            App.Logger.Warn($"Content root not found: {contentRoot}, skipping.");
-            return;
-        }
-
-        string[] topFolders = ["ExtraContent", "content", "PlatformContent"];
-
-        string modsRoot = Paths.Modifications;
-        Directory.CreateDirectory(modsRoot);
-
-        App.Logger.Info("Initializing mod folders for ExtraContent, content, and PlatformContent...");
-
-        foreach (string topFolder in topFolders)
-        {
-            string sourceFolder = Path.Combine(contentRoot, topFolder);
-            if (!Directory.Exists(sourceFolder))
-            {
-                App.Logger.Warn($"Top folder '{topFolder}' not found, skipping.");
-                continue;
-            }
-
-            var directories = Directory.GetDirectories(sourceFolder, "*", SearchOption.AllDirectories);
-            var allDirs = new List<string> { topFolder };
-            allDirs.AddRange(directories.Select(d => Path.GetRelativePath(contentRoot, d)));
-
-            foreach (string relPath in allDirs)
-            {
-                string target = Path.Combine(modsRoot, relPath);
-                Directory.CreateDirectory(target);
-            }
-
-            App.Logger.Info($"Mirrored {allDirs.Count} directories for '{topFolder}'.");
-        }
-
-        App.Logger.Info("Mod folder initialization complete.");
-    }
-
-    private static bool IsClientSettingsRelativePath(string relativePath)
-    {
-        string normalizedPath = relativePath.Replace('\\', '/');
-        return normalizedPath.StartsWith("ClientSettings/", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string GetResourcesBackupPath(string versionGuid)
-    {
-        return Path.Combine(Paths.Base, "ModBackup", versionGuid);
-    }
-
-    private static void CopyDirectory(string sourceDir, string destDir, bool overwrite = true)
-    {
-        Directory.CreateDirectory(destDir);
-        foreach (string file in Directory.GetFiles(sourceDir, "*", SearchOption.AllDirectories))
-        {
-            string relative = Path.GetRelativePath(sourceDir, file);
-            string dest = Path.Combine(destDir, relative);
-            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-            File.Copy(file, dest, overwrite);
         }
     }
 
-    private static void EnsureMacResourcesBackup(string resourcesDir, string versionGuid)
-    {
-        string backupDir = GetResourcesBackupPath(versionGuid);
-
-        if (Directory.Exists(backupDir))
-        {
-            App.Logger.Info($"Resources backup for version {versionGuid} already exists.");
-            return;
-        }
-
-        App.Logger.Info($"Creating Resources backup for version {versionGuid}...");
-        Directory.CreateDirectory(backupDir);
-        CopyDirectory(resourcesDir, backupDir, true);
-        App.Logger.Info("Resources backup created.");
-    }
+    private void InitializeModFolders() => ModEngine.InitializeModFolders(_latestVersionDirectory, CurrentModPaths, TargetClient.DisplayName);
 
     private void BeginDownloadProgress(long totalBytes)
     {
