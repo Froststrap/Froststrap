@@ -17,6 +17,8 @@ internal sealed class ActivityWatcher : IDisposable
     private const string GameJoinedEntry = "[FLog::Network] serverId:";
     private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
     private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
+    private const string GameLeavingEntrySober = "app_interface$json: {\"type\":\"game_left\"}";
+    private const string AppCloseEntrySober = "app: lifecycle: will_do_clean_exit";
     private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
     private const string GameServerUptimeEntry = "[FLog::Output] Server Prefix: ";
 
@@ -255,32 +257,20 @@ internal sealed class ActivityWatcher : IDisposable
 
     private void ProcessStudioLogEntry(string logMessage)
     {
-        if (!InStudioPlace)
-        {
-            if (logMessage.StartsWith(StudioPlaceOpenEntry, StringComparison.Ordinal))
-            {
-                App.Logger.Info("Studio place opened");
-                InStudioPlace = true;
+        string expected = InStudioPlace ? StudioPlaceCloseEntry : StudioPlaceOpenEntry;
+        if (!logMessage.StartsWith(expected, StringComparison.Ordinal))
+            return;
 
-                OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
-            }
-        }
-        else
-        {
-            if (logMessage.StartsWith(StudioPlaceCloseEntry, StringComparison.Ordinal))
-            {
-                App.Logger.Info("Studio place closed");
-                InStudioPlace = false;
-
-                OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
-            }
-        }
+        InStudioPlace = !InStudioPlace;
+        App.Logger.Info(InStudioPlace ? "Studio place opened" : "Studio place closed");
+        (InStudioPlace ? OnStudioPlaceOpened : OnStudioPlaceClosed)?.Invoke(this, EventArgs.Empty);
     }
 
     private async void ProcessPlayerLogEntry(string logMessage)
     {
         if (logMessage.StartsWith(GameLeavingEntry, StringComparison.Ordinal) ||
-            _client.Layout.LeaveSignals.Any(signal => logMessage.StartsWith(signal, StringComparison.Ordinal)))
+            logMessage.StartsWith(GameLeavingEntrySober, StringComparison.Ordinal) ||
+            logMessage.StartsWith(AppCloseEntrySober, StringComparison.Ordinal))
         {
             App.Logger.Debug("User is back into the desktop app");
 
