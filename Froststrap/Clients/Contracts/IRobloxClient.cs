@@ -64,5 +64,7 @@ namespace Froststrap.Clients.Contracts
             CancellationToken cancellationToken = default);
 
         Task PrepareEnvironmentAsync();
+
+        bool ResetInstalledPackages();
     }
 }

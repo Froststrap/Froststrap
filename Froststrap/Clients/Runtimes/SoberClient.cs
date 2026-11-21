@@ -66,6 +66,34 @@ namespace Froststrap.Clients.Runtimes
 
         public override string LaunchLabel => Strings.Common_Sober;
 
+        public override bool ResetInstalledPackages()
+        {
+            string clientPackagePath = Path.Combine(Install.InstallRoot, "data", "sober", "packages", "x86_64", "com.roblox.client");
+
+            try
+            {
+                if (Directory.Exists(clientPackagePath))
+                {
+                    DirectoryInfo di = new(clientPackagePath);
+
+                    foreach (FileInfo file in di.GetFiles())
+                        file.Delete();
+
+                    foreach (DirectoryInfo dir in di.GetDirectories())
+                        dir.Delete(true);
+
+                    App.Logger.Debug($"Successfully cleared contents of {clientPackagePath}");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to purge packages: {ex.Message}");
+            }
+
+            return false;
+        }
+
         public override async Task PrepareEnvironmentAsync()
         {
             string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", FlatpakId);

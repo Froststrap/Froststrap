@@ -288,35 +288,14 @@ internal partial class Bootstrapper : IDisposable
                 // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
                 allModificationsApplied = await ApplyModifications();
             }
-            else if (OperatingSystem.IsLinux())
+            else if (!TargetClient.Capabilities.RequiresDeploymentApi)
             {
                 if (MustUpgrade)
                 {
-                    App.Logger.Debug("Linux: Force reinstall enabled.");
+                    App.Logger.Debug($"{TargetClient.DisplayName}: Force reinstall enabled.");
 
-                    string clientPackagePath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-
-                    try
-                    {
-                        if (Directory.Exists(clientPackagePath))
-                        {
-                            DirectoryInfo di = new(clientPackagePath);
-
-                            foreach (FileInfo file in di.GetFiles())
-                                file.Delete();
-
-                            foreach (DirectoryInfo dir in di.GetDirectories())
-                                dir.Delete(true);
-
-                            App.State.Prop.ForceReinstall = false;
-
-                            App.Logger.Debug($"Successfully cleared contents of {clientPackagePath}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to purge packages: {ex.Message}");
-                    }
+                    if (TargetClient.ResetInstalledPackages())
+                        App.State.Prop.ForceReinstall = false;
                 }
 
                 PackageDirectoryMap ??= [];

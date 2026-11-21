@@ -130,5 +130,7 @@ namespace Froststrap.Clients.Runtimes
             => Launcher.LaunchAsync(Install, request, cancellationToken);
 
         public virtual Task PrepareEnvironmentAsync() => Task.CompletedTask;
+
+        public virtual bool ResetInstalledPackages() => false;
     }
 }
