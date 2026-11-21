@@ -70,34 +70,49 @@ internal sealed class BinaryCookieStore(Func<ClientInstall> install) : CookieSto
     private static byte[] SerializeBinaryCookies(List<BinaryCookie> cookies)
     {
         var records = cookies.Select(BuildCookieRecord).ToList();
-        int numCookies = records.Count;
-        int pageHeaderSize = 4 + 4 + numCookies * 4;
-        int totalPageSize = pageHeaderSize + records.Sum(b => b.Length);
+        int pageHeaderSize = 4 + 4 + records.Count * 4 + 4;
 
-        using var ms = new MemoryStream();
-        using var writer = new BinaryWriter(ms);
-
-        writer.Write(0x00000100);
-        writer.Write(numCookies);
-        int offset = pageHeaderSize;
-        foreach (var rec in records)
+        using var pageStream = new MemoryStream();
+        using (var writer = new BinaryWriter(pageStream, Encoding.UTF8, leaveOpen: true))
         {
-            writer.Write(offset);
-            offset += rec.Length;
+            writer.Write(PageHeader);
+            writer.Write(records.Count);
+
+            int offset = pageHeaderSize;
+            foreach (var record in records)
+            {
+                writer.Write(offset);
+                offset += record.Length;
+            }
+
+            writer.Write(0);
+
+            foreach (var record in records)
+                writer.Write(record);
         }
-        foreach (var rec in records)
-            writer.Write(rec);
 
-        var pageData = ms.ToArray();
+        byte[] page = pageStream.ToArray();
 
-        using var finalMs = new MemoryStream();
-        using var finalWriter = new BinaryWriter(finalMs);
-        finalWriter.Write([0x63, 0x6F, 0x6F, 0x6B]);
-        finalWriter.Write(IPAddress.HostToNetworkOrder(1));
-        finalWriter.Write(IPAddress.HostToNetworkOrder(totalPageSize));
-        finalWriter.Write(pageData);
-        return finalMs.ToArray();
+        int checksum = 0;
+        for (int i = 0; i < page.Length; i += 4)
+            checksum += page[i];
+
+        using var fileStream = new MemoryStream();
+        using var fileWriter = new BinaryWriter(fileStream);
+        fileWriter.Write(FileMagic);
+        fileWriter.Write(IPAddress.HostToNetworkOrder(1));
+        fileWriter.Write(IPAddress.HostToNetworkOrder(page.Length));
+        fileWriter.Write(page);
+        fileWriter.Write(IPAddress.HostToNetworkOrder(checksum));
+        fileWriter.Write(FileFooter);
+        return fileStream.ToArray();
     }
+
+    private static readonly byte[] FileMagic = [0x63, 0x6F, 0x6F, 0x6B];
+
+    private static readonly byte[] PageHeader = [0x00, 0x00, 0x01, 0x00];
+
+    private static readonly byte[] FileFooter = [0x07, 0x17, 0x20, 0x05, 0x00, 0x00, 0x00, 0x4B];
 
     private static byte[] BuildCookieRecord(BinaryCookie cookie)
     {
@@ -106,25 +121,26 @@ internal sealed class BinaryCookieStore(Func<ClientInstall> install) : CookieSto
         byte[] pathBytes = Encoding.UTF8.GetBytes(cookie.Path + "\0");
         byte[] valueBytes = Encoding.UTF8.GetBytes(cookie.Value + "\0");
 
-        int fixedSize = 52;
+        const int fixedSize = 56;
         int totalSize = fixedSize + domainBytes.Length + nameBytes.Length + pathBytes.Length + valueBytes.Length;
         byte[] record = new byte[totalSize];
         using var ms = new MemoryStream(record);
         using var writer = new BinaryWriter(ms);
-
-        writer.Write(0);
-        writer.Write(cookie.Flags);
-        writer.Write(new byte[12]);
 
         int urlOffset = fixedSize;
         int nameOffset = urlOffset + domainBytes.Length;
         int pathOffset = nameOffset + nameBytes.Length;
         int valueOffset = pathOffset + pathBytes.Length;
 
+        writer.Write(totalSize);
+        writer.Write(0);
+        writer.Write(cookie.Flags);
+        writer.Write(0);
         writer.Write(urlOffset);
         writer.Write(nameOffset);
         writer.Write(pathOffset);
         writer.Write(valueOffset);
+        writer.Write(0L);
         writer.Write(cookie.Expiry ?? 0.0);
         writer.Write(cookie.Creation ?? 0.0);
 
