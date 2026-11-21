@@ -8,7 +8,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
+using System.Net.Security;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using SkiaSharp;
 using Color = Avalonia.Media.Color;
 
@@ -26,11 +28,25 @@ namespace Froststrap.Integrations
         private static readonly HttpClient DownloadClient = new(new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.All,
-            CheckCertificateRevocationList = true
+            CheckCertificateRevocationList = true,
+            ServerCertificateCustomValidationCallback = AllowUnknownRevocation
         })
         {
             Timeout = TimeSpan.FromMinutes(5)
         };
+
+        private static bool AllowUnknownRevocation(HttpRequestMessage request, X509Certificate2? certificate, X509Chain? chain, SslPolicyErrors errors)
+        {
+            if (errors == SslPolicyErrors.None)
+                return true;
+
+            if (errors != SslPolicyErrors.RemoteCertificateChainErrors || chain is null)
+                return false;
+
+            return chain.ChainStatus.All(status => status.Status is X509ChainStatusFlags.NoError
+                or X509ChainStatusFlags.RevocationStatusUnknown
+                or X509ChainStatusFlags.OfflineRevocation);
+        }
 
         private static readonly SpriteBlacklist SpriteBlacklistInstance = new()
         {
