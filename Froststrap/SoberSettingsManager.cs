@@ -86,14 +86,6 @@ internal sealed class SoberSettingsManager : JsonManager<Dictionary<string, obje
 
     public override bool Load(bool alertFailure = true)
     {
-        if (!OperatingSystem.IsLinux())
-        {
-            App.Logger.Warn("Not on Linux, Sober settings not applicable.");
-            Loaded = false;
-            Prop = [];
-            return false;
-        }
-
         App.Logger.Info($"Loading from {FileLocation}...");
 
         if (!File.Exists(FileLocation))

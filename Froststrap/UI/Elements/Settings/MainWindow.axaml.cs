@@ -567,7 +567,7 @@ namespace Froststrap.UI.Elements.Settings
                 "shortcuts"
             };
 
-            if (OperatingSystem.IsLinux())
+            if (UI.ViewModels.GlobalViewModel.HasClientSettingsPage)
                 allPageTags.Add("linuxsettings");
 
             if (!_viewModel.GBSEnabled)

@@ -619,8 +619,7 @@ internal sealed partial class App : Application
                 FastFlags.Load();
                 GlobalSettings.Load();
 
-                if (OperatingSystem.IsLinux())
-                    SoberSettings.Load(alertFailure: false);
+                Clients.Player.SettingsSync?.Load();
 
                 _ = AssertWindowsAUMIDAsync();
 

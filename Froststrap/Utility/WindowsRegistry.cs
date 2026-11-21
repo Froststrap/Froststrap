@@ -285,35 +285,5 @@ namespace Froststrap.Utility
                 }
             });
         }
-
-        /// <summary>
-        /// Removes the autostart entry the Roblox player registers for itself when LaunchAtStartup is on
-        /// </summary>
-        public static void RemoveRobloxStartupEntry()
-        {
-            const string valueName = "RobloxPlayerBeta";
-
-            try
-            {
-                using var runKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
-
-                if (runKey?.GetValue(valueName) is not string entry)
-                    return;
-
-                // make sure we only ever delete roblox's own entry
-                if (!entry.Contains(App.PlayerData.ExecutableName, StringComparison.OrdinalIgnoreCase))
-                {
-                    App.Logger.Info($"Leaving '{valueName}' alone, it doesn't point at Roblox");
-                    return;
-                }
-
-                App.Logger.Info($"Removing startup entry '{entry}'");
-                runKey.DeleteValue(valueName);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to remove startup entry: {ex}");
-            }
-        }
     }
 }

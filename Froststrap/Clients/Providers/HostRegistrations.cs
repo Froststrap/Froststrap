@@ -11,11 +11,11 @@ using Microsoft.Win32;
 namespace Froststrap.Clients.Providers
 {
     [SupportedOSPlatform("windows")]
-    internal sealed class WindowsHostRegistration(ClientTarget target) : IHostRegistration
+    internal sealed class WindowsHostRegistration(IClientLayout layout) : IHostRegistration
     {
         private const string AppCompatLayersKey = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers";
 
-        private bool IsStudio => target == ClientTarget.Studio;
+        private bool IsStudio => layout.Target == ClientTarget.Studio;
 
         public void Register(string? versionDirectory)
         {
@@ -28,6 +28,33 @@ namespace Froststrap.Clients.Providers
         }
 
         public void ClearLocation() => WindowsRegistry.RegisterClientLocation(IsStudio, null);
+
+        public void RemoveStartupEntry()
+        {
+            string valueName = layout.ProcessNames[0];
+
+            try
+            {
+                using var runKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
+
+                if (runKey?.GetValue(valueName) is not string entry)
+                    return;
+
+                // make sure we only ever delete roblox's own entry
+                if (!entry.Contains(layout.ExecutableName!, StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.Info($"Leaving '{valueName}' alone, it doesn't point at Roblox");
+                    return;
+                }
+
+                App.Logger.Info($"Removing startup entry '{entry}'");
+                runKey.DeleteValue(valueName);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to remove startup entry: {ex}");
+            }
+        }
 
         public bool RequestsAdmin(string executablePath)
         {
@@ -71,6 +98,10 @@ namespace Froststrap.Clients.Providers
         {
         }
 
+        public void RemoveStartupEntry()
+        {
+        }
+
         public bool RequestsAdmin(string executablePath) => false;
 
         public void MigrateCompatibilityFlags(string oldExecutablePath, string newExecutablePath)
@@ -80,9 +111,9 @@ namespace Froststrap.Clients.Providers
 
     internal static class HostRegistrations
     {
-        public static IHostRegistration Create(HostIntegration integration, ClientTarget target) => integration switch
+        public static IHostRegistration Create(IClientLayout layout) => layout.HostIntegration switch
         {
-            HostIntegration.WindowsRegistry when OperatingSystem.IsWindows() => new WindowsHostRegistration(target),
+            HostIntegration.WindowsRegistry when OperatingSystem.IsWindows() => new WindowsHostRegistration(layout),
             _ => new NullHostRegistration()
         };
     }

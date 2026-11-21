@@ -21,6 +21,8 @@ namespace Froststrap.Clients.Contracts
 
         IReadOnlyList<Process> FindAllPlayer();
 
+        Process[] FindCrashHandlers();
+
         bool IsStudioProcess(Process process);
 
         int FindNewestStudioPid(IEnumerable<Process> processes);

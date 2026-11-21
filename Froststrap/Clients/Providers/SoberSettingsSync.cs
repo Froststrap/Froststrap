@@ -10,6 +10,8 @@ namespace Froststrap.Clients.Providers
     {
         public bool HasUnsavedChanges => App.SoberSettings.Loaded && App.SoberSettings.HasUnsavedChanges;
 
+        public void Load() => App.SoberSettings.Load(alertFailure: false);
+
         public void Save() => App.SoberSettings.Save();
 
         public void SyncFastFlags(IReadOnlyDictionary<string, object> flags)

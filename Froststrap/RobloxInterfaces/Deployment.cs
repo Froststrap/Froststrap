@@ -175,7 +175,7 @@ namespace Froststrap.RobloxInterfaces
             {
                 string location;
 
-                if (OperatingSystem.IsMacOS())
+                if (App.PlayerData.IsBundle)
                 {
                     location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
 

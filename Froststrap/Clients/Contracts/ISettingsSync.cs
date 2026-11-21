@@ -8,6 +8,8 @@ namespace Froststrap.Clients.Contracts
     {
         bool HasUnsavedChanges { get; }
 
+        void Load();
+
         void SyncFastFlags(IReadOnlyDictionary<string, object> flags);
 
         void Save();

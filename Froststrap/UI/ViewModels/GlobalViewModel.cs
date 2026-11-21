@@ -16,6 +16,8 @@ namespace Froststrap.UI.ViewModels
         public static bool IsWindowsOrLinux => IsWindows || IsLinux;
         public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
 
+        public static bool HasClientSettingsPage => App.Clients.Player.SettingsSync is not null || App.Clients.Studio.RuntimeEnvironment is not null;
+
         public static ICommand OpenWebpageCommand => new RelayCommand<string>(OpenWebpage);
 
         private static void OpenWebpage(string? location)

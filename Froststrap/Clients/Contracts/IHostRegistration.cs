@@ -10,6 +10,8 @@ namespace Froststrap.Clients.Contracts
 
         void ClearLocation();
 
+        void RemoveStartupEntry();
+
         bool RequestsAdmin(string executablePath);
 
         void MigrateCompatibilityFlags(string oldExecutablePath, string newExecutablePath);

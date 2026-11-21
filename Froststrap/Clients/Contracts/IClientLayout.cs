@@ -32,6 +32,8 @@ namespace Froststrap.Clients.Contracts
         /// </summary>
         bool MatchProcessNamePrefix { get; }
 
+        string? CrashHandlerProcessName { get; }
+
         CookieFormat CookieFormat { get; }
 
         ChannelStore ChannelStore { get; }

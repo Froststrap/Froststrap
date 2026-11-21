@@ -291,7 +291,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     NavigateToBootstrapperCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.LinuxSettingsViewModel":
-                    if (OperatingSystem.IsLinux())
+                    if (GlobalViewModel.HasClientSettingsPage)
                         NavigateToLinuxSettingsCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModsViewModel":

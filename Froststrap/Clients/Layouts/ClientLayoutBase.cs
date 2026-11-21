@@ -37,6 +37,8 @@ namespace Froststrap.Clients.Layouts
 
         public virtual bool MatchProcessNamePrefix => false;
 
+        public virtual string? CrashHandlerProcessName => "RobloxCrashHandler";
+
         public virtual CookieFormat CookieFormat => CookieFormat.None;
 
         public virtual ChannelStore ChannelStore => ChannelStore.None;

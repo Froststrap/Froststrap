@@ -60,7 +60,7 @@ namespace Froststrap
             if (OperatingSystem.IsWindowsVersionAtLeast(5, 0) && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
                 WindowManipulation = new(_watcherData.ProcessId);
 
-            if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
+            if (_client.RuntimeEnvironment is not null && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
             {
                 _ = Task.Run(async () =>
                 {
@@ -119,7 +119,7 @@ namespace Froststrap
                     {
                         if (App.Settings.Prop.AutoCloseCrashHandler)
                         {
-                            foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
+                            foreach (var crashProc in _client.Processes.FindCrashHandlers())
                             {
                                 try
                                 {

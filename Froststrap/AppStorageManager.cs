@@ -30,8 +30,8 @@ namespace Froststrap
             });
 
             // clear registry
-            if (!background && OperatingSystem.IsWindows())
-                WindowsRegistry.RemoveRobloxStartupEntry();
+            if (!background)
+                App.Clients.Player.Registration.RemoveStartupEntry();
         }
 
         private static void ApplyBackgroundApp(JsonObject storage, bool enabled)

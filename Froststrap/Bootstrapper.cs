@@ -764,7 +764,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
     {
         var processesToKill = new List<Process>();
         processesToKill.AddRange(App.Clients.Player.Processes.FindAllPlayer());
-        processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
+        processesToKill.AddRange(App.Clients.Player.Processes.FindCrashHandlers());
 
         foreach (Process process in processesToKill)
         {

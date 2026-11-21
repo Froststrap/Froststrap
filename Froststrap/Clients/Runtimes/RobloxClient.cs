@@ -76,7 +76,7 @@ namespace Froststrap.Clients.Runtimes
 
         public IRuntimeEnvironment? RuntimeEnvironment { get; }
 
-        public IHostRegistration Registration => _registration ??= HostRegistrations.Create(Layout.HostIntegration, Layout.Target);
+        public IHostRegistration Registration => _registration ??= HostRegistrations.Create(Layout);
 
         private IHostRegistration? _registration;
 

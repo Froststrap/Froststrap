@@ -21,9 +21,12 @@ internal sealed class ClientProcessService : IProcessService
     private readonly HashSet<string> _names;
     private readonly bool _prefix;
 
+    private readonly string? _crashHandlerName;
+
     public ClientProcessService(IClientLayout layout)
     {
         ProcessNames = layout.ProcessNames;
+        _crashHandlerName = layout.CrashHandlerProcessName;
         _prefix = layout.MatchProcessNamePrefix;
         _names = new HashSet<string>(
             layout.ProcessNames.Select(name => Path.GetFileNameWithoutExtension(name)),
@@ -33,6 +36,8 @@ internal sealed class ClientProcessService : IProcessService
     public IReadOnlyList<string> ProcessNames { get; }
 
     public bool IsRunning() => FindAllPlayer().Count > 0;
+
+    public Process[] FindCrashHandlers() => _crashHandlerName is null ? [] : Process.GetProcessesByName(_crashHandlerName);
 
     public Process? FindPlayer()
     {

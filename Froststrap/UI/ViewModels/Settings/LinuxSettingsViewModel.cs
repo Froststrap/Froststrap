@@ -110,9 +110,9 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get
             {
-                if (!OperatingSystem.IsLinux()) return false;
-                string baseWineDir = Path.Combine(Paths.Base, "Wine");
-                string wineBinary = Path.Combine(baseWineDir, "kombucha", "bin", "wine");
+                if (App.Clients.Studio.RuntimeEnvironment is null) return false;
+                string baseWineDir = Clients.Launchers.WineLauncher.WineRoot;
+                string wineBinary = Clients.Launchers.WineLauncher.WineExecutable;
                 if (!File.Exists(wineBinary)) return false;
 
                 var wineMgr = new WineManager(baseWineDir);
