@@ -12,7 +12,7 @@ namespace Froststrap.Utility
     {
         private static bool TryDeleteRobloxInDirectory(string dir)
         {
-            IAppData[] clients = [App.PlayerData, App.StudioData];
+            IAppData[] clients = [App.Clients.PlayerDeployment, App.Clients.StudioDeployment];
 
             foreach (IAppData client in clients)
             {

@@ -703,7 +703,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 string resourceUrl;
 
-                if (App.PlayerData.IsBundle)
+                if (App.Clients.PlayerDeployment.IsBundle)
                 {
                     if (string.IsNullOrEmpty(binaryType))
                         return (false, "Binary type is required for macOS validation.");
@@ -765,7 +765,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         private static string GetBinaryType(bool isStudio) =>
-            isStudio ? App.StudioData.BinaryType : App.PlayerData.BinaryType;
+            isStudio ? App.Clients.StudioDeployment.BinaryType : App.Clients.PlayerDeployment.BinaryType;
 
         private async Task ValidateStudioVersionHashAsync(string hash)
         {

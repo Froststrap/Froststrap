@@ -26,7 +26,7 @@ namespace Froststrap.RobloxInterfaces
 
         public static string ChannelToken { get; set; } = string.Empty;
 
-        public static string BinaryType => App.PlayerData.BinaryType;
+        public static string BinaryType => App.Clients.PlayerDeployment.BinaryType;
 
         public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
 
@@ -175,7 +175,7 @@ namespace Froststrap.RobloxInterfaces
             {
                 string location;
 
-                if (App.PlayerData.IsBundle)
+                if (App.Clients.PlayerDeployment.IsBundle)
                 {
                     location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
 

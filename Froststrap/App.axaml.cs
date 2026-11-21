@@ -55,7 +55,6 @@ internal sealed partial class App : Application
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
-
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly()
@@ -81,10 +80,6 @@ internal sealed partial class App : Application
     public static bool IsPlayerInstalled => Clients.Player.Inspect().IsInstalled;
 
     public static bool IsStudioInstalled => Clients.Studio.Inspect().IsInstalled;
-
-    public static readonly RobloxPlayerData PlayerData = new(ClientCatalog.DeploymentLayout(ClientEnvironment.DetectHost(), ClientTarget.Player));
-
-    public static readonly RobloxStudioData StudioData = new(ClientCatalog.DeploymentLayout(ClientEnvironment.DetectHost(), ClientTarget.Studio));
 
     private static ClientRegistry? _clients;
 

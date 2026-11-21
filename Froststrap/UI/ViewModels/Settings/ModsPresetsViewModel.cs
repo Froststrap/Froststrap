@@ -193,7 +193,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OpenCompatSettings()
         {
-            string path = App.PlayerData.ExecutablePath;
+            string path = App.Clients.PlayerDeployment.ExecutablePath;
 
             if (File.Exists(path))
             {

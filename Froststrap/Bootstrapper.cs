@@ -132,7 +132,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
     }
 
-    private void SetupAppData() => AppData = IsStudioLaunch ? App.StudioData : App.PlayerData;
+    private void SetupAppData() => AppData = IsStudioLaunch ? App.Clients.StudioDeployment : App.Clients.PlayerDeployment;
 
     private async Task HandleConnectionError(Exception ex)
     {
@@ -1287,7 +1287,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
         if (TargetClient.Layout.Shape == ExecutableShape.MacBundle)
         {
-            string[] appNames = [App.PlayerData.ExecutableName, App.StudioData.ExecutableName];
+            string[] appNames = [App.Clients.PlayerDeployment.ExecutableName, App.Clients.StudioDeployment.ExecutableName];
             foreach (string appName in appNames)
             {
                 string appPath = Path.Combine(_latestVersionDirectory, appName);
