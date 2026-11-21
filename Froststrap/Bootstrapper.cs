@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.AppData;
+using Froststrap.Bootstrapping;
 using Froststrap.Clients;
 using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Launchers;
@@ -19,10 +20,8 @@ using Microsoft.Win32;
 
 namespace Froststrap;
 
-internal sealed class Bootstrapper : IPackageReporter, IDisposable
+internal sealed class Bootstrapper : IDisposable
 {
-    private const int ProgressBarMaximum = 10000;
-    private const double TaskbarProgressMaximum = 1.0;
     private const string SoberFlatpakId = Clients.Runtimes.SoberClient.FlatpakId;
     public const string BackgroundUpdaterLockName = "BackgroundUpdater";
 
@@ -42,6 +41,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
     private readonly System.Collections.Concurrent.ConcurrentDictionary<string, byte> _sizedFromResponse = new();
     private readonly GameJoinData _joinData = null!;
+    private readonly JoinPreparation _join;
 
     private static bool AutomaticallyUpdateSober => App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged && App.Settings.Prop.AutomaticallyUpdateSober;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
@@ -75,12 +75,8 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         }
     }
 
-    private bool _isInstalling;
-    private bool _packageExtractionSuccess = true;
+    private DeploymentInstaller? _installer;
 
-    private bool _matchmakingInProgress;
-    private volatile bool _skipMatchmaking;
-    private CancellationTokenSource? _matchmakingCts;
 
     private bool _noConnection;
 
@@ -109,6 +105,12 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         }
     }
 
+    public IBootstrapperDialog? Dialog { get; set; }
+
+    private readonly BootstrapperProgress _progress;
+
+    private SoberFlatpakFlow SoberFlatpak => new(() => Dialog, _progress);
+
     public string LockName { get; set; } = "Bootstrapper";
 
     public bool QuitIfLockExists { get; set; }
@@ -122,6 +124,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
     public Bootstrapper(LaunchMode launchMode)
     {
         _launchMode = launchMode;
+        _progress = new BootstrapperProgress(() => Dialog, () => AppData.ProductName);
 
         SetupAppData();
 
@@ -130,7 +133,10 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         App.Logger.Info($"Using {(IsStudioLaunch ? "Studio" : "Player")} channel: {Deployment.Channel}");
 
         _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
+        _join = new JoinPreparation(_joinData, () => Dialog, _progress);
     }
+
+    public void SetStatus(string message) => _progress.SetStatus(message);
 
     private void SetupAppData() => AppData = IsStudioLaunch ? App.Clients.StudioDeployment : App.Clients.PlayerDeployment;
 
@@ -173,7 +179,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         Dialog?.CancelEnabled = true;
 
         if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
-            await UpdateSoberFlatpakAsync();
+            await SoberFlatpak.UpdateAsync(_cancelTokenSource.Token);
 
         SetStatus(Strings.Bootstrapper_Status_Connecting);
 
@@ -322,7 +328,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
                 return;
 
             // show tips
-            if (!_packageExtractionSuccess)
+            if (!_progress.ExtractionSucceeded)
                 Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
             else if (!allModificationsApplied)
                 Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
@@ -333,7 +339,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
                 await StartRoblox();
             else
             {
-                if (!await EnsureSoberInstalledAsync())
+                if (!await SoberFlatpak.EnsureInstalledAsync(TargetClient.Install))
                     return;
                 await LaunchSober([]);
             }
@@ -368,107 +374,12 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         TargetClient.Channel.Write(Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
     }
 
-    private async Task PrepareJoinAsync()
-    {
-        // reapplied on every launch because roblox can reset the file on its own.
-        AppStorageManager.Apply();
-
-        if (_joinData.JoinType == GameJoinType.Unknown)
-            App.Logger.Warn("Unable to get join data");
-
-        App.Logger.Info($"Join Type: {_joinData.JoinType}");
-        App.Logger.Info($"Join Origin: {_joinData.JoinOrigin ?? "null"}");
-        App.Logger.Info($"Place ID: {_joinData.PlaceId?.ToString(CultureInfo.InvariantCulture) ?? "null"}");
-        App.Logger.Info($"Job ID: {_joinData.JobId ?? "null"}");
-        App.Logger.Info($"Access Code: {_joinData.AccessCode ?? "null"}");
-
-        if (_launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
-        {
-            App.Logger.Info("Joining through roblox:// URI, skipping Better Matchmaking");
-            return;
-        }
-
-        bool isFollowUser = false;
-
-        // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
-        // idk why they dont use it when the user is following a friend, but ok
-        if (App.Settings.Prop.EnableBetterMatchmaking &&
-            (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
-        {
-            App.Logger.Debug("User is trying to join a friend, showing dialog");
-
-            var result = await Frontend.ShowMessageBox(
-                String.Format(CultureInfo.InvariantCulture, Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
-                MessageBoxImage.Question,
-                MessageBoxButton.YesNo
-            );
-
-            isFollowUser = result == MessageBoxResult.Yes;
-        }
-
-        string? serverid = null;
-        bool matchmakingCancelled = false;
-
-        _matchmakingInProgress = true;
-        _skipMatchmaking = false;
-        _matchmakingCts = new CancellationTokenSource();
-
-        Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
-
-        try
-        {
-            if (App.Settings.Prop.EnableBetterMatchmaking &&
-                _joinData.JoinType == GameJoinType.RequestGame &&
-                _joinData.PlaceId != null &&
-                !isFollowUser)
-            {
-                if (_skipMatchmaking)
-                {
-                    App.Logger.Info("Matchmaking was skipped due to user cancellation.");
-                    matchmakingCancelled = true;
-                }
-                else
-                {
-                    serverid = await Integrations.BetterMatchmaking.FindServerAsync((long)_joinData.PlaceId, SetStatus, _matchmakingCts.Token);
-                }
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            App.Logger.Info("Better Matchmaking was skipped, joining original server.");
-            matchmakingCancelled = true;
-        }
-        catch (HttpRequestException ex)
-        {
-            _ = Frontend.ShowConnectivityDialog(
-                String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                Strings.Dialog_Connectivity_MatchmakingFailed,
-                MessageBoxImage.Warning,
-                ex
-            );
-        }
-        finally
-        {
-            Dialog?.CancelButtonText = Strings.Common_Cancel;
-            _matchmakingInProgress = false;
-            _matchmakingCts?.Dispose();
-            _matchmakingCts = null;
-        }
-
-        if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
-        {
-            string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-            _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl), StringComparison.Ordinal);
-            _joinData.JobId = serverid;
-        }
-    }
-
     private async Task StartRoblox()
     {
         App.Logger.Info("Starting Roblox");
         if (_launchMode == LaunchMode.Player)
         {
-            await PrepareJoinAsync();
+            _launchCommandLine = await _join.PrepareAsync(_launchCommandLine);
 
             if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
                 _launchCommandLine = "roblox://navigation/home";
@@ -505,13 +416,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
         var autoclosePids = new List<int>();
 
-        // the code you're gonna read ahead is horrible. sorry for the hack, but it works ¯\_(ツ)_/¯
-        // check if prelaunch is checked
-        foreach (var integration in App.Settings.Prop.CustomIntegrations)
-        {
-            if (integration?.PreLaunch == true)
-                await LaunchIntegrationAsync(integration, autoclosePids);
-        }
+        await CustomIntegrationLauncher.LaunchPreLaunchAsync(autoclosePids);
 
         LaunchResult launch = await TargetClient.LaunchAsync(request);
 
@@ -524,14 +429,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
         if (!IsStudioLaunch)
         {
-            // launch custom integrations now if normal roblox
-            foreach (var integration in App.Settings.Prop.CustomIntegrations)
-            {
-                if (integration == null || integration.PreLaunch || integration.SpecifyGame)
-                    continue;
-
-                await LaunchIntegrationAsync(integration, autoclosePids);
-            }
+            await CustomIntegrationLauncher.LaunchPostLaunchAsync(autoclosePids);
         }
 
         await PrepareWatcherIfNeededAsync(autoclosePids);
@@ -542,7 +440,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
     private async Task LaunchSober(List<int> autoclosePids)
     {
-        await PrepareJoinAsync();
+        _launchCommandLine = await _join.PrepareAsync(_launchCommandLine);
 
         string? soberUri = GameJoin.BuildSoberUri(_joinData);
         if (soberUri is not null)
@@ -640,48 +538,12 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         App.Logger.Info($"Watcher prepared for pid {_appPid} ({_launchMode})");
     }
 
-    private static async Task LaunchIntegrationAsync(CustomIntegration integration, List<int> autoclosePids)
-    {
-        App.Logger.Info($"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
-
-        int pid = 0;
-
-        try
-        {
-            var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = integration.Location,
-                Arguments = integration.LaunchArgs.Replace("\r\n", " ", StringComparison.Ordinal),
-                WorkingDirectory = Path.GetDirectoryName(integration.Location),
-                UseShellExecute = true
-            })!;
-
-            pid = process.Id;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"Failed to launch integration '{integration.Name}'! {ex.Message}");
-        }
-
-        if (integration.AutoClose && pid != 0)
-            autoclosePids.Add(pid);
-
-        if (integration.Delay != 0)
-            await Task.Delay(integration.Delay);
-    }
-
     private bool ShouldRunAsAdmin() => TargetClient.Registration.RequestsAdmin(AppData.ExecutablePath);
 
     public bool Cancel()
     {
-        if (_matchmakingInProgress)
-        {
-            App.Logger.Info("Skipping Better MatchMaking.");
-            _skipMatchmaking = true;
-            _matchmakingCts?.Cancel();
-            SetStatus(Strings.Bootstrapper_Status_SkippingMatchmaking);
+        if (_join.TrySkipMatchmaking())
             return true;
-        }
 
         if (_cancelTokenSource.IsCancellationRequested)
             return false;
@@ -691,7 +553,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
         Dialog?.CancelEnabled = false;
 
-        if (_isInstalling)
+        if (_installer?.IsInstalling == true)
         {
             try
             {
@@ -751,182 +613,15 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
     #region Roblox Install
 
-    private void MigrateCompatibilityFlags()
-    {
-        string oldClientLocation = Path.Combine(Paths.Versions, AppData.DistributionState.VersionGuid, AppData.ExecutableName);
-        string newClientLocation = Path.Combine(_latestVersionDirectory, AppData.ExecutableName);
-
-        // move old compatibility flags for the old location
-        TargetClient.Registration.MigrateCompatibilityFlags(oldClientLocation, newClientLocation);
-    }
-
-    private static void KillRobloxPlayers()
-    {
-        var processesToKill = new List<Process>();
-        processesToKill.AddRange(App.Clients.Player.Processes.FindAllPlayer());
-        processesToKill.AddRange(App.Clients.Player.Processes.FindCrashHandlers());
-
-        foreach (Process process in processesToKill)
-        {
-            try
-            {
-                process.Kill();
-                process.WaitForExit();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, $"Failed to close process {process.Id}");
-            }
-        }
-    }
-
-    private static FlatpakSource SoberSource => new(SoberFlatpakId);
-
-    private async Task<bool> EnsureSoberInstalledAsync()
-    {
-        SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
-
-        try
-        {
-            await FlatpakSource.EnsureFlatpakAvailableAsync();
-        }
-        catch (TimeoutException ex)
-        {
-            App.Logger.Error(ex, "Timed out while checking Flatpak installation.");
-            await Frontend.ShowMessageBox(
-                "Timed out while checking Flatpak installation. Please make sure Flatpak is working and try again.",
-                MessageBoxImage.Error
-            );
-            App.Terminate(ErrorCode.ERROR_CANCELLED);
-            return false;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error(ex, "Flatpak not found.");
-            await Frontend.ShowMessageBox(
-                "Flatpak is required on Linux.\n\nPlease install Flatpak first, then launch Froststrap again.",
-                MessageBoxImage.Error
-            );
-            App.Terminate(ErrorCode.ERROR_CANCELLED);
-            return false;
-        }
-
-        if (await SoberSource.IsInstalledAsync())
-        {
-            App.Logger.Info("Sober is already installed.");
-            return true;
-        }
-
-        App.Logger.Info("Installing Sober...");
-
-        if (Dialog is not null)
-        {
-            Dialog.ProgressIndeterminate = true;
-            Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-        }
-
-        SetStatus(Strings.Bootstrapper_Status_InstallingSober);
-
-        InstallResult result = await SoberSource.InstallAsync(
-            TargetClient.Install,
-            new InlineProgress<InstallProgress>(step => SetStatus(step.Message)));
-
-        if (!result.Success)
-        {
-            if (result.Error is null)
-            {
-                await Frontend.ShowMessageBox(
-                    "Failed to start Sober installation via Flatpak.",
-                    MessageBoxImage.Error
-                );
-            }
-            else
-            {
-                string detailsPart = string.IsNullOrWhiteSpace(result.Error) ? "" : $"\n\n{result.Error}";
-                string message = string.Format(CultureInfo.InvariantCulture, Strings.Sober_FlatpakInstallFailed, SoberFlatpakId, detailsPart);
-                await Frontend.ShowMessageBox(message, MessageBoxImage.Error);
-            }
-
-            App.Terminate(ErrorCode.ERROR_CANCELLED);
-            return false;
-        }
-
-        App.Logger.Info("Sober installation complete.");
-        SetStatus(Strings.Bootstrapper_Status_StartingSober);
-        return true;
-    }
-
-    private async Task UpdateSoberFlatpakAsync()
-    {
-        SetStatus(Strings.Bootstrapper_Status_UpdatingSober);
-
-        if (Dialog is not null)
-        {
-            Dialog.ProgressIndeterminate = false;
-            Dialog.ProgressMaximum = 100;
-            Dialog.ProgressValue = 0;
-            Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
-            Dialog.TaskbarProgressValue = 0.0;
-        }
-
-        try
-        {
-            await SoberSource.UpdateAsync(new InlineProgress<InstallProgress>(OnSoberUpdateProgress), _cancelTokenSource.Token);
-        }
-        finally
-        {
-            if (Dialog is not null)
-            {
-                Dialog.ProgressIndeterminate = true;
-                Dialog.ProgressValue = 0;
-                Dialog.TaskbarProgressValue = 0.0;
-                Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
-            }
-        }
-    }
-
-    private void OnSoberUpdateProgress(InstallProgress progress)
-    {
-        if (progress.Phase == InstallPhase.Finalizing)
-        {
-            if (Dialog is not null)
-            {
-                Dialog.ProgressValue = 100;
-                Dialog.TaskbarProgressValue = 1.0;
-                SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
-            }
-
-            return;
-        }
-
-        if (progress.Step <= 0)
-        {
-            SetStatus(progress.Message);
-            return;
-        }
-
-        if (Dialog is null)
-            return;
-
-        Dialog.ProgressValue = (int)progress.Current;
-        Dialog.TaskbarProgressValue = progress.Current / 100.0;
-
-        SetStatus(progress.StepPercent >= 0
-            ? string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberProgress, progress.Step, progress.StepCount, progress.StepPercent)
-            : string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, progress.Step, progress.StepCount));
-    }
-
     private async Task LaunchStudioViaWineAsync()
     {
         if (TargetClient.RuntimeEnvironment is { } runtimeEnvironment)
-            await runtimeEnvironment.PrepareAsync(_latestVersionDirectory, CurrentModPaths.ClientSettingsRoot, this, _cancelTokenSource.Token);
+            await runtimeEnvironment.PrepareAsync(_latestVersionDirectory, CurrentModPaths.ClientSettingsRoot, _progress, _cancelTokenSource.Token);
 
         SetStatus(Strings.Bootstrapper_Status_Starting);
 
         var autoclosePids = new List<int>();
-        foreach (var integration in App.Settings.Prop.CustomIntegrations)
-            if (integration?.PreLaunch == true)
-                await LaunchIntegrationAsync(integration, autoclosePids);
+        await CustomIntegrationLauncher.LaunchPreLaunchAsync(autoclosePids);
 
         LaunchResult launch = await TargetClient.LaunchAsync(new LaunchRequest
         {
@@ -944,54 +639,11 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
         _appPid = launch.Pid;
 
-        foreach (var integration in App.Settings.Prop.CustomIntegrations)
-            if (integration != null && !integration.PreLaunch && !integration.SpecifyGame)
-                await LaunchIntegrationAsync(integration, autoclosePids);
+        await CustomIntegrationLauncher.LaunchPostLaunchAsync(autoclosePids);
 
         await PrepareWatcherIfNeededAsync(autoclosePids);
 
         await Task.Delay(1000);
-    }
-
-    public async Task DownloadFileWithProgressAsync(string url, string destination)
-    {
-        using var response = await App.HttpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-
-        long totalBytes = response.Content.Headers.ContentLength ?? -1;
-        if (totalBytes <= 0)
-            throw new InvalidOperationException("Unable to determine file size for progress reporting.");
-
-        _totalDownloadedBytes = 0;
-        _progressIncrement = (double)ProgressBarMaximum / totalBytes;
-        _taskbarProgressIncrement = TaskbarProgressMaximum / totalBytes;
-
-        if (Dialog != null)
-        {
-            Dialog.ProgressIndeterminate = false;
-            Dialog.ProgressMaximum = ProgressBarMaximum;
-            Dialog.ProgressValue = 0;
-            Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
-            Dialog.TaskbarProgressValue = 0.0;
-        }
-
-        await using var stream = await response.Content.ReadAsStreamAsync();
-        await using var fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None);
-
-        var buffer = new byte[81920];
-        long totalRead = 0;
-        int bytesRead;
-
-        while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length))) > 0)
-        {
-            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-            totalRead += bytesRead;
-            Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
-            UpdateProgressBar(false);
-        }
-
-        if (totalRead != totalBytes)
-            throw new IOException($"Downloaded {totalRead} bytes but expected {totalBytes}");
     }
 
     private static void StartBackgroundUpdater()
@@ -1029,7 +681,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
             .Where(p => p is not null)
             .Sum(p => (long)p!.PackedSize);
 
-        BeginDownloadProgress(restoreBytes);
+        _progress.BeginDownloadProgress(restoreBytes);
 
         foreach (var entry in fileRestoreMap)
         {
@@ -1042,24 +694,6 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
                 await ExtractPackage(package, entry.Value);
             }
         }
-    }
-
-    private void InitializeModFolders() => ModEngine.InitializeModFolders(_latestVersionDirectory, CurrentModPaths, TargetClient.DisplayName);
-
-    private void BeginDownloadProgress(long totalBytes)
-    {
-        Interlocked.Exchange(ref _totalDownloadedBytes, 0);
-        Interlocked.Exchange(ref _totalPackagedBytes, Math.Max(0, totalBytes));
-        RecalculateProgressIncrements();
-
-        if (Dialog is null)
-            return;
-
-        Dialog.ProgressIndeterminate = false;
-        Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
-        Dialog.ProgressMaximum = ProgressBarMaximum;
-        Dialog.ProgressValue = 0;
-        Dialog.TaskbarProgressValue = 0.0;
     }
 
     public void Dispose()
@@ -1076,7 +710,7 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
         if (disposing)
         {
             _cancelTokenSource?.Dispose();
-            _matchmakingCts?.Dispose();
+            _join.Dispose();
             _appLock?.Dispose();
         }
 
@@ -1097,262 +731,30 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
 
     private async Task UpgradeRoblox()
     {
-        if (!App.Settings.Prop.UpdateRoblox)
-        {
-            SetStatus(Strings.Bootstrapper_Status_CancelUpgrade);
-            App.Logger.Info("Upgrading disabled, cancelling the upgrade.");
-
-            if (!Directory.Exists(_latestVersionDirectory))
-                _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
-            else
+        _installer = new DeploymentInstaller(
+            new InstallContext
             {
-                await Task.Delay(2000);
-                return;
-            }
-        }
+                Client = TargetClient,
+                AppData = AppData,
+                IsStudio = IsStudioLaunch,
+                VersionGuid = _latestVersionGuid,
+                VersionDirectory = _latestVersionDirectory,
+                Manifest = _versionPackageManifest,
+                PackageDirectoryMap = PackageDirectoryMap,
+                ModPaths = CurrentModPaths
+            },
+            PackageStore,
+            _progress,
+            () => Dialog,
+            _cancelTokenSource.Token);
 
-        SetStatus(string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
-            ? Strings.Bootstrapper_Status_Installing
-            : Strings.Bootstrapper_Status_Upgrading);
-
-        Directory.CreateDirectory(Paths.Base);
-        Directory.CreateDirectory(Paths.Downloads);
-        Directory.CreateDirectory(Paths.Versions);
-
-        _isInstalling = true;
-
-        // make sure nothing is running before continuing upgrade
-        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !IsStudioLaunch)
-            KillRobloxPlayers();
-
-        // get a fully clean install
-        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(_latestVersionDirectory))
-        {
-            try
-            {
-                Directory.Delete(_latestVersionDirectory, true);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "Failed to delete the latest version directory");
-            }
-        }
-
-        Directory.CreateDirectory(_latestVersionDirectory);
-
-        if (TargetClient.Capabilities.RestoreStrategy == RestoreStrategy.VersionBackup)
-        {
-            string backupDir = Mods.ModEngine.GetResourcesBackupPath(_latestVersionGuid);
-            if (Directory.Exists(backupDir))
-            {
-                try
-                {
-                    Directory.Delete(backupDir, true);
-                    App.Logger.Info($"Deleted existing mod backup for {_latestVersionGuid}");
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warn($"Failed to delete mod backup: {ex.Message}");
-                }
-            }
-        }
-
-        var cachedPackageHashes = Directory.GetFiles(Paths.Downloads).Select(x => Path.GetFileName(x)).ToList();
-
-        // package manifest states packed size and uncompressed size in exact bytes
-        long totalSizeRequired = 0;
-
-        // packed size only matters if we don't already have the package cached on disk
-        var installPackages = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").ToList();
-
-        totalSizeRequired += installPackages.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => (long)x.PackedSize);
-        totalSizeRequired += installPackages.Sum(x => (long)x.Size);
-
-        long freeDiskSpace = Filesystem.GetFreeDiskSpace(Paths.Base);
-
-        App.Logger.Info($"Disk space check for '{Paths.Base}': {freeDiskSpace} bytes free, {totalSizeRequired} bytes required");
-
-        if (freeDiskSpace < 0)
-            App.Logger.Warn("Could not determine free disk space, skipping the disk space check.");
-        else if (freeDiskSpace < totalSizeRequired)
-        {
-            await Frontend.ShowMessageBox(Strings.Bootstrapper_NotEnoughSpace, MessageBoxImage.Error);
-            App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
-            return;
-        }
-
-        if (Dialog is not null)
-        {
-            Dialog.ProgressIndeterminate = false;
-            Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
-
-            Dialog.ProgressMaximum = ProgressBarMaximum;
-
-            // compute total bytes to download
-            _totalPackagedBytes = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").Sum(package => package.PackedSize);
-            _progressIncrement = (double)ProgressBarMaximum / _totalPackagedBytes;
-
-            _taskbarProgressMaximum = TaskbarProgressMaximum;
-
-            _taskbarProgressIncrement = _taskbarProgressMaximum / (double)_totalPackagedBytes;
-        }
-
-        var packageTasks = new List<Task>();
-
-        // from largest to smallest, this is so larger packages (which need more time) get queued first
-        var packages = _versionPackageManifest.Where(p => p.Name != "RobloxPlayerInstaller.exe").OrderByDescending(p => p.PackedSize);
-
-        using var downloadSemaphore = new SemaphoreSlim(App.Settings.Prop.MaxThreadDownload > 0 ? App.Settings.Prop.MaxThreadDownload : 1);
-        foreach (var package in packages)
-        {
-            await downloadSemaphore.WaitAsync(_cancelTokenSource.Token);
-
-
-            var task = Task.Run(async () =>
-            {
-                try
-                {
-                    await DownloadPackage(package);
-
-                    // we'll extract the runtime installer later if we need to
-                    if (package.Name != "WebView2RuntimeInstaller.zip")
-                        await ExtractPackage(package);
-                }
-                finally
-                {
-                    downloadSemaphore.Release();
-                }
-            }, _cancelTokenSource.Token);
-
-            packageTasks.Add(task);
-        }
-        await Task.WhenAll(packageTasks);
-
-        if (_cancelTokenSource.IsCancellationRequested) return;
-
-        if (Dialog is not null)
-        {
-            Dialog.ProgressIndeterminate = true;
-            Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-            SetStatus(Strings.Bootstrapper_Status_Configuring);
-        }
-
-        if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
-        {
-            using var hklmKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
-            using var hkcuKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
-
-            // reset prompt state if the user has it installed
-            if (hklmKey is not null || hkcuKey is not null)
-                App.State.Prop.PromptWebView2Install = true;
-            else
-            {
-                var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
-
-                if (result != MessageBoxResult.Yes)
-                    App.State.Prop.PromptWebView2Install = false;
-                else
-                {
-                    App.Logger.Info("Installing WebView2 runtime...");
-
-                    var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
-
-                    if (package is null)
-                    {
-                        App.Logger.Info("Aborted runtime install because package does not exist, has WebView2 been added in this Roblox version yet?");
-                        return;
-                    }
-
-                    string baseDirectory = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
-
-                    await ExtractPackage(package);
-
-                    SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
-
-                    var startInfo = new ProcessStartInfo()
-                    {
-                        WorkingDirectory = baseDirectory,
-                        FileName = Path.Combine(baseDirectory, "MicrosoftEdgeWebview2Setup.exe"),
-                        Arguments = "/silent /install"
-                    };
-
-                    await Process.Start(startInfo)!.WaitForExitAsync();
-
-                    App.Logger.Info("Finished installing runtime");
-
-                    Directory.Delete(baseDirectory, true);
-                }
-            }
-        }
-
-        if (TargetClient.Layout.Shape == ExecutableShape.MacBundle)
-        {
-            string[] appNames = [App.Clients.PlayerDeployment.ExecutableName, App.Clients.StudioDeployment.ExecutableName];
-            foreach (string appName in appNames)
-            {
-                string appPath = Path.Combine(_latestVersionDirectory, appName);
-                if (!Directory.Exists(appPath)) continue;
-
-                string macOSDir = Path.Combine(appPath, "Contents", "MacOS");
-                if (Directory.Exists(macOSDir)) foreach (string file in Directory.GetFiles(macOSDir))
-                {
-                    var fileInfo = new FileInfo(file);
-                    fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
-                }
-                using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
-                await process!.WaitForExitAsync();
-            }
-        }
-
-        // finishing and cleanup
-        MigrateCompatibilityFlags();
-
-        AppData.DistributionState.VersionGuid = _latestVersionGuid;
-
-        AppData.DistributionState.PackageHashes.Clear();
-
-        foreach (var package in _versionPackageManifest)
-            AppData.DistributionState.PackageHashes.Add(package.Name, package.Signature);
-
-        VersionsCleaner.Run();
-
-        var allPackageHashes = new List<string>();
-
-        allPackageHashes.AddRange(App.PlayerState.Prop.PackageHashes.Values);
-        allPackageHashes.AddRange(App.StudioState.Prop.PackageHashes.Values);
-
-        if (!App.Settings.Prop.DebugDisableVersionPackageCleanup) foreach (string hash in cachedPackageHashes)
-        {
-            if (allPackageHashes.Contains(hash))
-                continue;
-
-            App.Logger.Info($"Deleting unused package {hash}");
-
-            try
-            {
-                File.Delete(Path.Combine(Paths.Downloads, hash));
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, $"Failed to delete {hash}!");
-            }
-        }
-
-        App.State.Prop.ForceReinstall = false;
-        App.State.Save();
-        AppData.DistributionStateManager.Save();
-
-        if (OperatingSystem.IsWindows())
-            WindowsRegistry.UpdateEstimatedSize();
-
-        if (!IsStudioLaunch) InitializeModFolders();
-        _isInstalling = false;
+        await _installer.InstallAsync();
     }
 
     private DeploymentPackages PackageStore => new(
         TargetClient,
         IsStudioLaunch ? App.StudioState : App.PlayerState,
-        this,
+        _progress,
         _sizedFromResponse,
         _latestVersionGuid,
         _latestVersionDirectory,
@@ -1369,241 +771,14 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
     /// <returns></returns>
     private async Task GetLatestVersionInfo()
     {
+        VersionResolution resolution = await VersionResolver.ResolveAsync(IsStudioLaunch, AppData, _launchCommandLine, _latestVersionGuid, _latestVersion);
 
-        // before we do anything, we need to query our channel
-        // if it's set in the launch uri, we need to use it and set the registry key for it
-        // else, check if the registry key for it exists, and use it
+        _launchCommandLine = resolution.LaunchCommandLine;
+        _latestVersionGuid = resolution.VersionGuid;
+        _latestVersion = resolution.Version;
 
-        var match = Regex.Match(
-            App.LaunchSettings.RobloxLaunchArgs,
-            "channel:([a-zA-Z0-9-_]+)",
-            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant
-        );
-
-        void EnrollChannel(string channel = "production")
-        {
-            Deployment.Channel = channel;
-            if (IsStudioLaunch)
-                App.Settings.Prop.StudioChannel = channel;
-            else
-                App.Settings.Prop.PlayerChannel = channel;
-            App.Settings.Save();
-        }
-
-        void RevertChannel()
-        {
-            Deployment.Channel = Deployment.DefaultChannel;
-            Deployment.ChannelToken = string.Empty;
-            if (IsStudioLaunch)
-                App.Settings.Prop.StudioChannel = Deployment.DefaultChannel;
-            else
-                App.Settings.Prop.PlayerChannel = Deployment.DefaultChannel;
-            App.Settings.Save();
-        }
-
-#pragma warning disable CA1308
-        string enrolledChannel = match.Groups.Count == 2
-            ? match.Groups[1].Value.ToLowerInvariant()
-            : Deployment.DefaultChannel;
-#pragma warning restore CA1308
-
-        bool behindProductionCheck = App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt;
-
-        // Private channels
-        string? tokenChannel = null;
-
-        if (App.Cookies.Loaded)
-        {
-            UserChannel? userChannel = await Deployment.GetUserChannel(AppData.BinaryType);
-
-            if (
-                userChannel?.Token is not null &&
-                userChannel.AssignmentType != 1 // might need a change in future
-            )
-            {
-                // prevent roblox from thinking its different channel
-                // have to do to prevent issues with channel fflags
-                if (!string.IsNullOrEmpty(enrolledChannel))
-                    _launchCommandLine = _launchCommandLine.Replace(
-                        $"channel:{enrolledChannel}",
-                        $"channel:{userChannel.Channel}",
-                        StringComparison.OrdinalIgnoreCase);
-
-                Deployment.ChannelToken = userChannel.Token;
-                tokenChannel = userChannel.Channel;
-                enrolledChannel = userChannel.Channel;
-            }
-        }
-
-        bool channelFlag = App.LaunchSettings.ChannelFlag.Active && !string.IsNullOrEmpty(App.LaunchSettings.ChannelFlag.Data);
-
-        if (!channelFlag)
-        {
-            switch (App.Settings.Prop.ChannelChangeMode)
-            {
-                case ChannelChangeMode.Automatic:
-                    App.Logger.Info("Enrolling into channel");
-                    EnrollChannel(enrolledChannel);
-                    break;
-
-                case ChannelChangeMode.Prompt:
-                    App.Logger.Debug("Prompting channel enrollment");
-
-                    if (!match.Success || match.Groups.Count != 2 || string.Equals(match.Groups[1].Value, Deployment.Channel, StringComparison.OrdinalIgnoreCase))
-                    {
-                        App.Logger.Warn("Channel is either equal or incorrectly formatted");
-                        break;
-                    }
-
-                    string displayChannel = !String.IsNullOrEmpty(match.Groups[1].Value)
-                        ? match.Groups[1].Value
-                        : Deployment.DefaultChannel;
-
-                    var promptResult = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
-
-                    if (promptResult == MessageBoxResult.Yes)
-                        EnrollChannel(enrolledChannel);
-                    break;
-
-                case ChannelChangeMode.Ignore:
-                    App.Logger.Debug("Ignoring channel enrollment");
-                    break;
-            }
-        }
-        else
-        {
-            string channelFlagData = App.LaunchSettings.ChannelFlag.Data!;
-            if (String.IsNullOrEmpty(channelFlagData))
-                return;
-
-            App.Logger.Debug($"Forcing channel {channelFlagData}");
-            EnrollChannel(channelFlagData);
-        }
-
-        if (!string.IsNullOrEmpty(Deployment.ChannelToken)
-            && !string.Equals(Deployment.Channel, tokenChannel, StringComparison.OrdinalIgnoreCase))
-        {
-            App.Logger.Info($"Dropping channel token for '{tokenChannel}' because the active channel is '{Deployment.Channel}'");
-            Deployment.ChannelToken = string.Empty;
-        }
-
-        bool overrideUsed = false;
-
-        if (IsStudioLaunch && App.Settings.Prop.StudioVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
-        {
-            _latestVersionGuid = App.Settings.Prop.StudioVersionOverrideHash.Trim();
-            App.Logger.Debug($"Studio version override active: pinned to {_latestVersionGuid}");
-            overrideUsed = true;
-        }
-        else if (!IsStudioLaunch && App.Settings.Prop.PlayerVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.PlayerVersionOverrideHash))
-        {
-            string overrideHash = App.Settings.Prop.PlayerVersionOverrideHash.Trim();
-            var (valid, error) = await UI.ViewModels.Settings.ChannelViewModel.ValidateHashCore(overrideHash, true, AppData.BinaryType);
-
-            if (valid)
-            {
-                _latestVersionGuid = overrideHash;
-                App.Logger.Debug($"Player version override active: pinned to {_latestVersionGuid}");
-                overrideUsed = true;
-            }
-            else
-            {
-                App.Logger.Warn($"Player version override invalid: {error}. Falling back to channel.");
-
-                await Frontend.ShowMessageBox(
-                    string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_InvalidOverride, overrideHash, error),
-                    MessageBoxImage.Warning,
-                    MessageBoxButton.OK
-                );
-
-                App.Settings.Prop.PlayerVersionOverrideEnabled = false;
-                App.Settings.Prop.PlayerVersionOverrideHash = string.Empty;
-                App.Settings.Save();
-            }
-        }
-
-        if (!overrideUsed && (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data)))
-        {
-            ClientVersion clientVersion;
-
-            try
-            {
-                clientVersion = await Deployment.GetInfo(Deployment.Channel, behindProductionCheck, false, AppData.BinaryType);
-            }
-            catch (InvalidChannelException ex)
-            {
-                // If channel does not exist
-                if (ex.StatusCode == HttpStatusCode.NotFound)
-                {
-                    App.Logger.Warn($"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {Deployment.Channel}");
-                }
-                // If channel is not available to the user (private/internal release channel)
-                else if (ex.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    App.Logger.Warn($"Reverting enrolled channel to {Deployment.DefaultChannel} because {Deployment.Channel} is restricted for public use.");
-
-                    // Only prompt if user has channel switching mode set to something other than Automatic.
-                    if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
-                    {
-                        await Frontend.ShowMessageBox(
-                            String.Format(CultureInfo.InvariantCulture,
-                                Strings.Bootstrapper_Dialog_UnauthorizedChannel,
-                                Deployment.Channel,
-                                Deployment.DefaultChannel
-                            ),
-                            MessageBoxImage.Information
-                        );
-                    }
-                }
-                else
-                {
-                    throw;
-                }
-
-                RevertChannel();
-                clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck, false, AppData.BinaryType);
-            }
-
-            if (clientVersion.IsBehindDefaultChannel && App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt)
-            {
-                MessageBoxResult action = await Frontend.ShowMessageBox(
-                        String.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
-                        MessageBoxImage.Warning,
-                        MessageBoxButton.YesNo
-                    );
-
-                if (action == MessageBoxResult.Yes)
-                {
-                    App.Logger.Debug($"Changed Roblox channel from {Deployment.Channel} to {Deployment.DefaultChannel}");
-
-                    RevertChannel();
-                    clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck: false, binaryTypeOverride: AppData.BinaryType);
-                }
-            }
-
-            _latestVersionGuid = clientVersion.VersionGuid;
-            _latestVersion = Utility.Versioning.ParseVersionSafe(clientVersion.Version);
-        }
-        else if (!overrideUsed)
-        {
-            string? versionData = App.LaunchSettings.VersionFlag.Data;
-            if (string.IsNullOrEmpty(versionData))
-            {
-                App.Logger.Error("VersionFlag.Data was unexpectedly null or empty. Falling back to default channel.");
-                var fallbackInfo = await Deployment.GetInfo(Deployment.DefaultChannel, false, false, AppData.BinaryType);
-                _latestVersionGuid = fallbackInfo.VersionGuid;
-                _latestVersion = Utility.Versioning.ParseVersionSafe(fallbackInfo.Version);
-            }
-            else
-            {
-                App.Logger.Debug($"Version set to {versionData} from arguments");
-                _latestVersionGuid = versionData;
-            }
-        }
+        if (resolution.Stop)
+            return;
 
         SyncLaunchChannel();
 
@@ -1629,120 +804,5 @@ internal sealed class Bootstrapper : IPackageReporter, IDisposable
             _launchMode = isPlayer ? LaunchMode.Player : LaunchMode.Studio;
             SetupAppData(); // we need to set it up again
         }
-    }
-
-    public IBootstrapperDialog? Dialog { get; set; }
-
-    private double _progressIncrement;
-    private double _taskbarProgressIncrement;
-    private double _taskbarProgressMaximum;
-    private long _totalDownloadedBytes;
-    private long _totalPackagedBytes;
-
-    void IInstallReporter.SetIndeterminate(bool includeTaskbar)
-    {
-        Dialog?.ProgressIndeterminate = true;
-
-        if (includeTaskbar)
-            Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-    }
-
-    Task IInstallReporter.DownloadAsync(string url, string destination) => DownloadFileWithProgressAsync(url, destination);
-
-    void IPackageReporter.AddDownloaded(long bytes, bool updateProgressBar)
-    {
-        Interlocked.Add(ref _totalDownloadedBytes, bytes);
-
-        if (updateProgressBar)
-            UpdateProgressBar();
-    }
-
-    void IPackageReporter.AddTotal(long bytes) => AddProgressTotal(bytes);
-
-    void IPackageReporter.MarkExtractionFailed() => _packageExtractionSuccess = false;
-
-    async Task IPackageReporter.OnChecksumFailedAsync(Exception exception)
-    {
-        await Frontend.ShowConnectivityDialog(
-            Strings.Dialog_Connectivity_UnableToDownload,
-            String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
-            MessageBoxImage.Error,
-            exception
-        );
-
-        App.Terminate(ErrorCode.ERROR_CANCELLED);
-    }
-
-    public void SetStatus(string message)
-    {
-        message = message.Replace("{product}", AppData.ProductName, StringComparison.Ordinal);
-        Dialog?.Message = message;
-    }
-
-    private void UpdateProgressBar(bool updateStatus = true)
-    {
-        if (Dialog is null) return;
-
-        long current = Math.Max(0, Interlocked.Read(ref _totalDownloadedBytes));
-        long total = Interlocked.Read(ref _totalPackagedBytes);
-
-        if (updateStatus && total > 0)
-        {
-            SetStatus(string.Format(CultureInfo.InvariantCulture,
-                Strings.Bootstrapper_Status_DownloadingPackages,
-                FormatBytes(Math.Min(current, total)), FormatBytes(total)));
-        }
-
-        if (double.IsFinite(_progressIncrement))
-        {
-            int progressValue = (int)Math.Floor(_progressIncrement * current);
-            progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
-            Dialog.ProgressValue = progressValue;
-        }
-
-        if (double.IsFinite(_taskbarProgressIncrement))
-        {
-            double taskbarProgressValue = _taskbarProgressIncrement * current;
-            taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
-            Dialog.TaskbarProgressValue = taskbarProgressValue;
-        }
-    }
-
-    private void RecalculateProgressIncrements()
-    {
-        long total = Interlocked.Read(ref _totalPackagedBytes);
-
-        _taskbarProgressMaximum = TaskbarProgressMaximum;
-
-        if (total <= 0)
-        {
-            _progressIncrement = 0;
-            _taskbarProgressIncrement = 0;
-            return;
-        }
-
-        _progressIncrement = (double)ProgressBarMaximum / total;
-        _taskbarProgressIncrement = _taskbarProgressMaximum / total;
-    }
-
-    private void AddProgressTotal(long bytes)
-    {
-        if (bytes <= 0) return;
-
-        Interlocked.Add(ref _totalPackagedBytes, bytes);
-        RecalculateProgressIncrements();
-    }
-
-    private static string FormatBytes(long bytes)
-    {
-        string[] sizes = ["B", "KB", "MB", "GB"];
-        double len = bytes;
-        int order = 0;
-        while (len >= 1024 && order < sizes.Length - 1)
-        {
-            order++;
-            len /= 1024;
-        }
-        return $"{len:0.##} {sizes[order]}";
     }
 }
