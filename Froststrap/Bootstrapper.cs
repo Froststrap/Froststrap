@@ -599,7 +599,7 @@ internal sealed class Bootstrapper : IDisposable
             ModPaths = CurrentModPaths,
             VersionDirectory = _latestVersionDirectory,
             VersionGuid = _latestVersionGuid,
-            IsStudio = IsStudioLaunch,
+            Target = TargetClient.Target,
             AppData = AppData,
             PackageDirectoryMap = PackageDirectoryMap
         },
@@ -685,7 +685,7 @@ internal sealed class Bootstrapper : IDisposable
 
     private DeploymentPackages PackageStore => new(
         TargetClient,
-        IsStudioLaunch ? App.StudioState : App.PlayerState,
+        AppData.DistributionStateManager,
         _progress,
         _sizedFromResponse,
         _latestVersionGuid,
@@ -703,7 +703,7 @@ internal sealed class Bootstrapper : IDisposable
     /// <returns></returns>
     private async Task GetLatestVersionInfo()
     {
-        VersionResolution resolution = await VersionResolver.ResolveAsync(IsStudioLaunch, AppData, _launchCommandLine, _latestVersionGuid, _latestVersion);
+        VersionResolution resolution = await VersionResolver.ResolveAsync(TargetClient.Target, AppData, _launchCommandLine, _latestVersionGuid, _latestVersion);
 
         _launchCommandLine = resolution.LaunchCommandLine;
         _latestVersionGuid = resolution.VersionGuid;
@@ -719,8 +719,7 @@ internal sealed class Bootstrapper : IDisposable
         else
             _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
-        // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
-        if (TargetClient.Layout.Shape == ExecutableShape.ExternalManaged)
+        if (!TargetClient.Capabilities.RequiresDeploymentApi)
             _latestVersionDirectory = TargetClient.Install.ContentRoot;
 
         _versionPackageManifest = await CdnSource.GetPackageManifestAsync(_latestVersionGuid);

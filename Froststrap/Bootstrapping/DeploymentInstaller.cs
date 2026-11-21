@@ -230,10 +230,7 @@ internal sealed class DeploymentInstaller(
 
         VersionsCleaner.Run();
 
-        var allPackageHashes = new List<string>();
-
-        allPackageHashes.AddRange(App.PlayerState.Prop.PackageHashes.Values);
-        allPackageHashes.AddRange(App.StudioState.Prop.PackageHashes.Values);
+        var allPackageHashes = App.Clients.AllStates.SelectMany(state => state.PackageHashes.Values).ToList();
 
         if (!App.Settings.Prop.DebugDisableVersionPackageCleanup) foreach (string hash in cachedPackageHashes)
         {

@@ -42,14 +42,14 @@ internal static class VersionsCleaner
 
     public static void Run()
     {
-        bool externalPlayer = App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged;
+        bool externalPlayer = !App.Clients.Player.Capabilities.RequiresDeploymentApi;
 
         if (externalPlayer)
         {
             bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
             if (!isStudio)
             {
-                App.Logger.Info("Skipping cleanup on Linux (Player) to protect Sober's data directory.");
+                App.Logger.Info($"Skipping cleanup on {App.Clients.Player.DisplayName} launches to protect its data directory.");
                 return;
             }
         }
@@ -76,7 +76,7 @@ internal static class VersionsCleaner
 
             bool shouldDelete = App.Settings.Prop.StaticDirectory
                 ? !ClientCatalog.StaticDirectoryNames.Contains(dirName)
-                : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
+                : App.Clients.AllStates.All(state => dirName != state.VersionGuid);
 
             if (!shouldDelete)
                 continue;

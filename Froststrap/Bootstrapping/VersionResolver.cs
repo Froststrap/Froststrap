@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.AppData;
+using Froststrap.Clients.Model;
 using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Bootstrapping;
@@ -11,7 +12,7 @@ internal sealed record VersionResolution(string VersionGuid, Version? Version, s
 
 internal static class VersionResolver
 {
-    public static async Task<VersionResolution> ResolveAsync(bool isStudio, IAppData appData, string launchCommandLine, string versionGuid, Version? version)
+    public static async Task<VersionResolution> ResolveAsync(ClientTarget target, IAppData appData, string launchCommandLine, string versionGuid, Version? version)
     {
         // before we do anything, we need to query our channel
         // if it's set in the launch uri, we need to use it and set the registry key for it
@@ -26,7 +27,7 @@ internal static class VersionResolver
         void EnrollChannel(string channel = "production")
         {
             Deployment.Channel = channel;
-            if (isStudio)
+            if (target == ClientTarget.Studio)
                 App.Settings.Prop.StudioChannel = channel;
             else
                 App.Settings.Prop.PlayerChannel = channel;
@@ -37,7 +38,7 @@ internal static class VersionResolver
         {
             Deployment.Channel = Deployment.DefaultChannel;
             Deployment.ChannelToken = string.Empty;
-            if (isStudio)
+            if (target == ClientTarget.Studio)
                 App.Settings.Prop.StudioChannel = Deployment.DefaultChannel;
             else
                 App.Settings.Prop.PlayerChannel = Deployment.DefaultChannel;
@@ -136,13 +137,13 @@ internal static class VersionResolver
 
         bool overrideUsed = false;
 
-        if (isStudio && App.Settings.Prop.StudioVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
+        if (target == ClientTarget.Studio && App.Settings.Prop.StudioVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
         {
             versionGuid = App.Settings.Prop.StudioVersionOverrideHash.Trim();
             App.Logger.Debug($"Studio version override active: pinned to {versionGuid}");
             overrideUsed = true;
         }
-        else if (!isStudio && App.Settings.Prop.PlayerVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.PlayerVersionOverrideHash))
+        else if (target == ClientTarget.Player && App.Settings.Prop.PlayerVersionOverrideEnabled && !string.IsNullOrEmpty(App.Settings.Prop.PlayerVersionOverrideHash))
         {
             string overrideHash = App.Settings.Prop.PlayerVersionOverrideHash.Trim();
             var (valid, error) = await UI.ViewModels.Settings.ChannelViewModel.ValidateHashCore(overrideHash, true, appData.BinaryType);

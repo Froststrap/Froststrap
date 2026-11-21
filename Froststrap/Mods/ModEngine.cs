@@ -16,7 +16,7 @@ internal sealed record ModContext
 
     public required string VersionGuid { get; init; }
 
-    public required bool IsStudio { get; init; }
+    public required ClientTarget Target { get; init; }
 
     public required IAppData AppData { get; init; }
 
@@ -54,8 +54,8 @@ internal sealed class ModEngine(
         var activeMods = App.State.Prop.Mods
             .Where(m => m.Enabled && (
                 m.Target == ModTarget.Both ||
-                (context.IsStudio && m.Target == ModTarget.Studio) ||
-                (!context.IsStudio && m.Target == ModTarget.Player)))
+                (context.Target == ClientTarget.Studio && m.Target == ModTarget.Studio) ||
+                (context.Target == ClientTarget.Player && m.Target == ModTarget.Player)))
             .OrderByDescending(x => x.Priority)
             .ToList();
 

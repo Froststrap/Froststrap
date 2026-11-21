@@ -73,6 +73,8 @@ internal sealed class ClientRegistry(HostPlatform host)
     /// <summary>The client that runs Studio launches on this host.</summary>
     public IRobloxClient Studio => Resolve(ClientTarget.Studio);
 
+    public IReadOnlyList<DistributionState> AllStates => [Player.State, Studio.State];
+
     public IAppData PlayerDeployment => _playerDeployment ??= new RobloxPlayerData(ClientCatalog.DeploymentLayout(host, ClientTarget.Player));
 
     public IAppData StudioDeployment => _studioDeployment ??= new RobloxStudioData(ClientCatalog.DeploymentLayout(host, ClientTarget.Studio));
