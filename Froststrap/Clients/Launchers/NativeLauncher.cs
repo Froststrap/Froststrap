@@ -14,8 +14,6 @@ internal sealed class NativeLauncher(IClientLayout layout) : IClientLauncher
 
     private static readonly TimeSpan BundlePidTimeout = TimeSpan.FromSeconds(5);
 
-    public ReadySignalKind ReadySignal => ReadySignalKind.Process;
-
     public async Task<LaunchResult> LaunchAsync(
         ClientInstall install,
         LaunchRequest request,

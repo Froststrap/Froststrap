@@ -12,8 +12,6 @@ namespace Froststrap.Clients.Contracts;
 /// </summary>
 internal interface IClientLauncher
 {
-    ReadySignalKind ReadySignal { get; }
-
     Task<LaunchResult> LaunchAsync(
         ClientInstall install,
         LaunchRequest request,

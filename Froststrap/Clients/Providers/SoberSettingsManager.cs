@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap;
+namespace Froststrap.Clients.Providers;
 
 internal sealed class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 {

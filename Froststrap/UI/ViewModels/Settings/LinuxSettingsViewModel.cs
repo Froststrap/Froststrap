@@ -6,11 +6,15 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
+using Froststrap.Clients.Contracts;
+
 namespace Froststrap.UI.ViewModels.Settings;
 
 internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
 {
-    public static bool SoberEnabled => App.SoberSettings.Loaded;
+    private static ISettingsSync? Settings => App.Clients.Player.SettingsSync;
+
+    public static bool SoberEnabled => Settings?.Loaded == true;
 
     public LinuxSettingsViewModel()
     {
@@ -31,44 +35,44 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
 
     public static bool SoberAllowGamepadPermission
     {
-        get => App.SoberSettings.GetPreset("AllowGamepadPermission") == "true";
-        set => App.SoberSettings.SetPreset("AllowGamepadPermission", value);
+        get => Settings?.GetPreset("AllowGamepadPermission") == "true";
+        set => Settings?.SetPreset("AllowGamepadPermission", value);
     }
 
     public static bool SoberEnableGamemode
     {
-        get => App.SoberSettings.GetPreset("EnableGamemode") == "true";
-        set => App.SoberSettings.SetPreset("EnableGamemode", value);
+        get => Settings?.GetPreset("EnableGamemode") == "true";
+        set => Settings?.SetPreset("EnableGamemode", value);
     }
 
     public static bool SoberEnableHiDpi
     {
-        get => App.SoberSettings.GetPreset("EnableHiDpi") == "true";
-        set => App.SoberSettings.SetPreset("EnableHiDpi", value);
+        get => Settings?.GetPreset("EnableHiDpi") == "true";
+        set => Settings?.SetPreset("EnableHiDpi", value);
     }
 
     public static bool SoberTouchMode
     {
-        get => App.SoberSettings.GetPreset("TouchMode") == "on";
-        set => App.SoberSettings.SetPreset("TouchMode", value ? "on" : "off");
+        get => Settings?.GetPreset("TouchMode") == "on";
+        set => Settings?.SetPreset("TouchMode", value ? "on" : "off");
     }
 
     public static bool SoberUseConsoleExperience
     {
-        get => App.SoberSettings.GetPreset("UseConsoleExperience") == "true";
-        set => App.SoberSettings.SetPreset("UseConsoleExperience", value);
+        get => Settings?.GetPreset("UseConsoleExperience") == "true";
+        set => Settings?.SetPreset("UseConsoleExperience", value);
     }
 
     public static bool SoberUseLibsecret
     {
-        get => App.SoberSettings.GetPreset("UseLibsecret") == "true";
-        set => App.SoberSettings.SetPreset("UseLibsecret", value);
+        get => Settings?.GetPreset("UseLibsecret") == "true";
+        set => Settings?.SetPreset("UseLibsecret", value);
     }
 
     public static bool SoberUseOpengl
     {
-        get => App.SoberSettings.GetPreset("UseOpengl") == "true";
-        set => App.SoberSettings.SetPreset("UseOpengl", value);
+        get => Settings?.GetPreset("UseOpengl") == "true";
+        set => Settings?.SetPreset("UseOpengl", value);
     }
 
     public ICommand OpenWineCfgCommand { get; }

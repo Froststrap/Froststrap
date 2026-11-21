@@ -95,8 +95,6 @@ internal sealed partial class App : Application
 
     public static readonly JsonManager<State> State = new();
 
-    public static readonly SoberSettingsManager SoberSettings = new();
-
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
     public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));

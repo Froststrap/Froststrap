@@ -6,7 +6,13 @@ namespace Froststrap.Clients.Contracts;
 
 internal interface ISettingsSync
 {
+    bool Loaded { get; }
+
     bool HasUnsavedChanges { get; }
+
+    string? GetPreset(string name);
+
+    void SetPreset(string name, object? value);
 
     void Load();
 

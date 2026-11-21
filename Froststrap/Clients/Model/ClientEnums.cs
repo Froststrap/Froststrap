@@ -79,14 +79,6 @@ internal enum RestoreStrategy
     PackageReextract
 }
 
-internal enum UpdatePolicy
-{
-    DeploymentCdn,
-    ExternalTool,
-    SelfManaged,
-    Disabled
-}
-
 internal enum InstallReason
 {
     /// <summary>The client is present and nothing needs to happen.</summary>
@@ -105,11 +97,4 @@ internal enum InstallPhase
     Extracting,
     Verifying,
     Finalizing
-}
-
-internal enum ReadySignalKind
-{
-    None,
-    LogLine,
-    Process
 }

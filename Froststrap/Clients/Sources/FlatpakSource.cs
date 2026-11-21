@@ -11,8 +11,6 @@ internal sealed partial class FlatpakSource(string appId)
     private static readonly TimeSpan FlatpakCheckTimeout = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan UpdateTimeout = TimeSpan.FromMinutes(20);
 
-    public string AppId => appId;
-
     public static async Task EnsureFlatpakAvailableAsync()
     {
         var startInfo = new ProcessStartInfo

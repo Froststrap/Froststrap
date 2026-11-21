@@ -7,14 +7,12 @@ using Froststrap.Clients.Model;
 
 namespace Froststrap.Clients.Launchers;
 
-internal sealed class SoberLauncher(IClientLayout layout, string flatpakId) : IClientLauncher
+internal sealed class SoberLauncher(IClientLayout layout, string flatpakId, ISettingsSync settings) : IClientLauncher
 {
     private const string LatestLogName = "latest.log";
     private const int ReadyPollIntervalMs = 50;
 
     private static readonly TimeSpan ReadyTimeout = TimeSpan.FromSeconds(30);
-
-    public ReadySignalKind ReadySignal => ReadySignalKind.LogLine;
 
     public Task<LaunchResult> LaunchAsync(
         ClientInstall install,
@@ -72,21 +70,21 @@ internal sealed class SoberLauncher(IClientLayout layout, string flatpakId) : IC
         }
     }
 
-    private static void ApplyLaunchSettings()
+    private void ApplyLaunchSettings()
     {
         if (App.Settings.Prop.ShowServerDetails)
-            App.SoberSettings.SetPreset("ServerLocationIndicatorEnabled", "false");
+            settings.SetPreset("ServerLocationIndicatorEnabled", "false");
 
         if (App.Settings.Prop.UseDiscordRichPresence)
         {
-            App.SoberSettings.SetPreset("DiscordRpcEnabled", "false");
-            App.SoberSettings.SetPreset("DiscordRpcShowJoinButton", "false");
+            settings.SetPreset("DiscordRpcEnabled", "false");
+            settings.SetPreset("DiscordRpcShowJoinButton", "false");
         }
 
         if (App.Settings.Prop.UseDisableAppPatch)
-            App.SoberSettings.SetPreset("CloseOnLeave", "false");
+            settings.SetPreset("CloseOnLeave", "false");
 
-        App.SoberSettings.Save();
+        settings.Save();
     }
 
     private async Task WaitForReadySignalAsync(string latestLog, DateTime launchTime, CancellationToken cancellationToken)

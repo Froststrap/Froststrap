@@ -13,8 +13,6 @@ internal sealed class WineLauncher(IClientLayout layout) : IClientLauncher
 
     public static string WineExecutable => Path.Combine(WineRoot, "kombucha", "bin", "wine");
 
-    public ReadySignalKind ReadySignal => ReadySignalKind.Process;
-
     public Task<LaunchResult> LaunchAsync(
         ClientInstall install,
         LaunchRequest request,

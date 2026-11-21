@@ -88,13 +88,7 @@ internal static class ClientCatalog
         RequiresDeploymentApi = true,
         ModSupport = ModSupport.BundleFiles,
         RestoreStrategy = RestoreStrategy.PackageReextract,
-        SupportsFastFlagsSync = true,
-        SupportsChannelSelection = true,
-        SupportsBackgroundUpdate = true,
-        SupportsRepair = true,
-        SupportsAdminLaunch = true,
-        SupportsStudioLaunch = true,
-        ReadySignalKind = ReadySignalKind.Process
+        SupportsStudioLaunch = true
     };
 
     private static ClientCapabilities StudioCapabilities() => new()
@@ -102,19 +96,12 @@ internal static class ClientCatalog
         RequiresDeploymentApi = true,
         ModSupport = ModSupport.BundleFiles,
         RestoreStrategy = RestoreStrategy.PackageReextract,
-        SupportsFastFlagsSync = true,
-        SupportsChannelSelection = true,
-        SupportsBackgroundUpdate = true,
-        SupportsRepair = true,
-        SupportsAdminLaunch = false,
-        SupportsStudioLaunch = true,
-        ReadySignalKind = ReadySignalKind.Process
+        SupportsStudioLaunch = true
     };
 
     private static ClientCapabilities MacPlayerCapabilities() => PlayerCapabilities() with
     {
-        RestoreStrategy = RestoreStrategy.VersionBackup,
-        SupportsAdminLaunch = false
+        RestoreStrategy = RestoreStrategy.VersionBackup
     };
 
     private static ClientCapabilities MacStudioCapabilities() => StudioCapabilities() with
@@ -127,17 +114,8 @@ internal static class ClientCatalog
         RequiresDeploymentApi = false,
         ModSupport = ModSupport.OverlayOnly,
         RestoreStrategy = RestoreStrategy.None,
-        SupportsFastFlagsSync = false,
-        SupportsChannelSelection = false,
-        SupportsBackgroundUpdate = true,
-        SupportsRepair = false,
-        SupportsAdminLaunch = false,
-        SupportsStudioLaunch = false,
-        ReadySignalKind = ReadySignalKind.LogLine
+        SupportsStudioLaunch = false
     };
 
-    private static ClientCapabilities WineStudioCapabilities() => StudioCapabilities() with
-    {
-        SupportsAdminLaunch = false
-    };
+    private static ClientCapabilities WineStudioCapabilities() => StudioCapabilities();
 }

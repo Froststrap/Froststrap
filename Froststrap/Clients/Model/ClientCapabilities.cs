@@ -16,19 +16,7 @@ internal sealed record ClientCapabilities
 
     public RestoreStrategy RestoreStrategy { get; init; } = RestoreStrategy.None;
 
-    public bool SupportsFastFlagsSync { get; init; }
-
-    public bool SupportsChannelSelection { get; init; }
-
-    public bool SupportsBackgroundUpdate { get; init; }
-
-    public bool SupportsRepair { get; init; }
-
-    public bool SupportsAdminLaunch { get; init; }
-
     public bool SupportsStudioLaunch { get; init; }
-
-    public ReadySignalKind ReadySignalKind { get; init; } = ReadySignalKind.Process;
 
     public static ClientCapabilities None { get; } = new();
 }

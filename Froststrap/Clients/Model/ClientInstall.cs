@@ -9,8 +9,7 @@ namespace Froststrap.Clients.Model;
 /// pure: whether the files actually exist is reported by <c>IRobloxClient.Inspect</c>.
 /// </summary>
 /// <remarks>
-/// The path members replace the old <c>Paths.Roblox</c> family, which meant different
-/// things per host. They are separated here so no consumer has to guess:
+/// The path members are separated so no consumer has to guess what a directory means:
 /// <list type="bullet">
 /// <item><see cref="SupportRoot"/> is the client's support directory.</item>
 /// <item><see cref="UserDataRoot"/> is the directory users open to see client files.</item>

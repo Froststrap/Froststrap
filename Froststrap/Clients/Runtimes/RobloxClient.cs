@@ -106,24 +106,6 @@ internal class RobloxClient : IRobloxClient
         };
     }
 
-    public Task<ClientInspection> InspectAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult(Inspect());
-
-    /// <summary>
-    /// Not implemented yet. The CDN install pipeline still lives in the bootstrapper and is
-    /// extracted in Step 4 of the plan; wiring it here first would duplicate it.
-    /// </summary>
-    public Task<InstallResult> EnsureInstalledAsync(
-        InstallRequest request,
-        IProgress<InstallProgress>? progress = null,
-        CancellationToken cancellationToken = default)
-        => throw new NotSupportedException(
-            $"Installation for '{ClientId}' still runs through the bootstrapper (Step 4).");
-
-    /// <summary>
-    /// Not implemented yet. Launch mechanics, readiness, and matchmaking stay in the
-    /// bootstrapper until Step 5.
-    /// </summary>
     public Task<LaunchResult> LaunchAsync(
         LaunchRequest request,
         CancellationToken cancellationToken = default)

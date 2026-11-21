@@ -52,13 +52,6 @@ internal interface IRobloxClient
     /// <summary>Synchronous install check, for UI that cannot await.</summary>
     ClientInspection Inspect();
 
-    Task<ClientInspection> InspectAsync(CancellationToken cancellationToken = default);
-
-    Task<InstallResult> EnsureInstalledAsync(
-        InstallRequest request,
-        IProgress<InstallProgress>? progress = null,
-        CancellationToken cancellationToken = default);
-
     Task<LaunchResult> LaunchAsync(
         LaunchRequest request,
         CancellationToken cancellationToken = default);

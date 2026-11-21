@@ -8,20 +8,28 @@ namespace Froststrap.Clients.Providers;
 
 internal sealed class SoberSettingsSync : ISettingsSync
 {
-    public bool HasUnsavedChanges => App.SoberSettings.Loaded && App.SoberSettings.HasUnsavedChanges;
+    private readonly SoberSettingsManager _settings = new();
 
-    public void Load() => App.SoberSettings.Load(alertFailure: false);
+    public bool Loaded => _settings.Loaded;
 
-    public void Save() => App.SoberSettings.Save();
+    public string? GetPreset(string name) => _settings.GetPreset(name);
+
+    public void SetPreset(string name, object? value) => _settings.SetPreset(name, value);
+
+    public bool HasUnsavedChanges => _settings.Loaded && _settings.HasUnsavedChanges;
+
+    public void Load() => _settings.Load(alertFailure: false);
+
+    public void Save() => _settings.Save();
 
     public void SyncFastFlags(IReadOnlyDictionary<string, object> flags)
     {
         try
         {
-            if (!App.SoberSettings.Loaded)
-                App.SoberSettings.Load(alertFailure: false);
+            if (!_settings.Loaded)
+                _settings.Load(alertFailure: false);
 
-            var fflagsDict = App.SoberSettings.GetOrCreateFFlagsContainer();
+            var fflagsDict = _settings.GetOrCreateFFlagsContainer();
 
             foreach (var kvp in flags)
             {
@@ -36,7 +44,7 @@ internal sealed class SoberSettingsSync : ISettingsSync
                     fflagsDict[kvp.Key] = val;
             }
 
-            App.SoberSettings.Save();
+            _settings.Save();
             App.Logger.Info($"Successfully synced {fflagsDict.Count} flags.");
         }
         catch (Exception ex)

@@ -4,21 +4,6 @@
 
 namespace Froststrap.Clients.Model;
 
-internal sealed record InstallRequest
-{
-    public required ClientTarget Target { get; init; }
-
-    public InstallReason Reason { get; init; } = InstallReason.Missing;
-
-    public string? Channel { get; init; }
-
-    public bool Force { get; init; }
-
-    public bool Background { get; init; }
-
-    public DistributionState? Existing { get; init; }
-}
-
 internal sealed record InstallProgress(
     InstallPhase Phase,
     string Message,
@@ -26,10 +11,7 @@ internal sealed record InstallProgress(
     long Total = 0,
     int Step = 0,
     int StepCount = 0,
-    int StepPercent = -1)
-{
-    public double? Fraction => Total > 0 ? (double)Current / Total : null;
-}
+    int StepPercent = -1);
 
 internal sealed record InstallResult
 {
@@ -79,8 +61,6 @@ internal sealed record LaunchResult
     public string? ProcessName { get; init; }
 
     public string? LogHint { get; init; }
-
-    public DateTimeOffset StartedAt { get; init; } = DateTimeOffset.UtcNow;
 
     public Func<CancellationToken, Task>? WaitUntilReadyAsync { get; init; }
 }
