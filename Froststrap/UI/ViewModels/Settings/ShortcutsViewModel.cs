@@ -16,8 +16,8 @@ namespace Froststrap.UI.ViewModels.Settings
         // Shortcut.cs resolves the correct filename internally
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{ProjectInfo.Name}.lnk");
         public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{ProjectInfo.Name}.lnk");
-        public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Player));
-        public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Studio));
+        public ShortcutTask PlayerIconTask { get; } = ShortcutTask.ForLaunch(LaunchMode.Player, Strings.LaunchMenu_LaunchRoblox);
+        public ShortcutTask StudioIconTask { get; } = ShortcutTask.ForLaunch(LaunchMode.Studio, Strings.LaunchMenu_LaunchRobloxStudio);
         public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "--settings");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
 

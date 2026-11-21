@@ -18,6 +18,9 @@ namespace Froststrap.Models.SettingTasks
             OriginalState = File.Exists(Shortcut.ResolvePath(_shortcutPath));
         }
 
+        public static ShortcutTask ForLaunch(LaunchMode mode, string label) =>
+            new(mode.ToString(), Paths.Desktop, $"{label}.lnk", LaunchEntry.GetCliArgs(mode));
+
         public override void Execute()
         {
             if (NewState)
