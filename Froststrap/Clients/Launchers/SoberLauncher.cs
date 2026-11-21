@@ -4,10 +4,11 @@
 
 using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Model;
+using Froststrap.Clients.Providers;
 
 namespace Froststrap.Clients.Launchers;
 
-internal sealed class SoberLauncher(IClientLayout layout, string flatpakId, ISettingsSync settings) : IClientLauncher
+internal sealed class SoberLauncher(IClientLayout layout, FlatpakProcessService processes, ISettingsSync settings) : IClientLauncher
 {
     private const string LatestLogName = "latest.log";
     private const int ReadyPollIntervalMs = 50;
@@ -21,7 +22,7 @@ internal sealed class SoberLauncher(IClientLayout layout, string flatpakId, ISet
     {
         ApplyLaunchSettings();
 
-        KillRunning();
+        processes.KillApp();
 
         string commandLine = request.CommandLine ?? string.Empty;
 
@@ -35,7 +36,7 @@ internal sealed class SoberLauncher(IClientLayout layout, string flatpakId, ISet
         var startInfo = new ProcessStartInfo
         {
             FileName = "flatpak",
-            Arguments = $"run {flatpakId} {commandLine}",
+            Arguments = $"run {processes.FlatpakId} {commandLine}",
             UseShellExecute = false,
         };
 
@@ -55,25 +56,6 @@ internal sealed class SoberLauncher(IClientLayout layout, string flatpakId, ISet
             LogHint = latestLog,
             WaitUntilReadyAsync = token => WaitForReadySignalAsync(latestLog, launchTime, token)
         });
-    }
-
-    private void KillRunning()
-    {
-        try
-        {
-            using Process? process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "flatpak",
-                Arguments = $"kill {flatpakId}",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            });
-
-            process?.WaitForExit(1000);
-        }
-        catch
-        {
-        }
     }
 
     private void ApplyLaunchSettings()

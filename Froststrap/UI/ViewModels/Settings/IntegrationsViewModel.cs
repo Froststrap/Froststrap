@@ -169,7 +169,7 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
 
     private async void OpenGameHistory()
     {
-        var activityWatcher = new ActivityWatcher(App.Clients.Player.Logs);
+        var activityWatcher = new ActivityWatcher(App.Clients.Player);
 
         var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
         serverHistoryWindow.Show();

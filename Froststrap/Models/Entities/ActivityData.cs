@@ -186,7 +186,7 @@ internal sealed class ActivityData : IDisposable
                 return;
             }
 
-            _ = processes.KillAllAsync(new KillRequest { Force = true, MinimumAge = TimeSpan.FromSeconds(3) });
+            _ = App.Clients.Player.CloseAllAsync(new KillRequest { Force = true, MinimumAge = TimeSpan.FromSeconds(3) });
         }
         catch (Exception ex)
         {

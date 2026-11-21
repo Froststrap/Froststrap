@@ -70,7 +70,7 @@ internal sealed class DeploymentInstaller(
 
         // make sure nothing is running before continuing upgrade
         if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !context.IsStudio)
-            KillRobloxPlayers();
+            await KillRobloxPlayersAsync();
 
         // get a fully clean install
         if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(context.VersionDirectory))
@@ -291,23 +291,9 @@ internal sealed class DeploymentInstaller(
         context.Client.Registration.MigrateCompatibilityFlags(oldClientLocation, newClientLocation);
     }
 
-    private static void KillRobloxPlayers()
+    private static async Task KillRobloxPlayersAsync()
     {
-        var processesToKill = new List<Process>();
-        processesToKill.AddRange(App.Clients.Player.Processes.FindAllPlayer());
-        processesToKill.AddRange(App.Clients.Player.Processes.FindCrashHandlers());
-
-        foreach (Process process in processesToKill)
-        {
-            try
-            {
-                process.Kill();
-                process.WaitForExit();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, $"Failed to close process {process.Id}");
-            }
-        }
+        await App.Clients.Player.CloseAllAsync(new KillRequest { Force = true, WaitForExit = true });
+        await App.Clients.Player.CloseCrashHandlersAsync();
     }
 }

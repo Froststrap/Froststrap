@@ -80,4 +80,6 @@ internal sealed record KillRequest
     public TimeSpan MinimumAge { get; init; } = TimeSpan.Zero;
 
     public bool Force { get; init; }
+
+    public bool WaitForExit { get; init; }
 }

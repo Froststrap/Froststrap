@@ -45,7 +45,6 @@ internal class RobloxClient : IRobloxClient
         _stateFileName = stateFileName;
 
         Logs = ClientLogLocators.Create(layout, () => Install.LogsRoot);
-        Processes = new ClientProcessService(layout);
     }
 
     public string ClientId => Layout.ClientId;
@@ -67,7 +66,9 @@ internal class RobloxClient : IRobloxClient
 
     public ILogLocator Logs { get; }
 
-    public IProcessService Processes { get; }
+    public virtual IProcessService Processes => _processes ??= new ClientProcessService(Layout);
+
+    private IProcessService? _processes;
 
     public virtual IClientLauncher Launcher => _launcher ??= new NativeLauncher(Layout);
 
@@ -115,6 +116,17 @@ internal class RobloxClient : IRobloxClient
         LaunchRequest request,
         CancellationToken cancellationToken = default)
         => Launcher.LaunchAsync(Install, request, cancellationToken);
+
+    public void Kill(int pid) => Processes.Kill(pid);
+
+    public Task CloseAsync(int pid, TimeSpan gracePeriod, CancellationToken cancellationToken = default)
+        => Processes.CloseAsync(pid, gracePeriod, cancellationToken);
+
+    public Task CloseAllAsync(KillRequest request, CancellationToken cancellationToken = default)
+        => Processes.CloseAllAsync(request, cancellationToken);
+
+    public Task CloseCrashHandlersAsync(CancellationToken cancellationToken = default)
+        => Processes.CloseCrashHandlersAsync(cancellationToken);
 
     public virtual Task PrepareEnvironmentAsync() => Task.CompletedTask;
 

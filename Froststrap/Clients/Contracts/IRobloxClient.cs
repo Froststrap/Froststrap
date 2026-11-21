@@ -58,6 +58,14 @@ internal interface IRobloxClient
         LaunchRequest request,
         CancellationToken cancellationToken = default);
 
+    void Kill(int pid);
+
+    Task CloseAsync(int pid, TimeSpan gracePeriod, CancellationToken cancellationToken = default);
+
+    Task CloseAllAsync(KillRequest request, CancellationToken cancellationToken = default);
+
+    Task CloseCrashHandlersAsync(CancellationToken cancellationToken = default);
+
     Task PrepareEnvironmentAsync();
 
     bool ResetInstalledPackages();

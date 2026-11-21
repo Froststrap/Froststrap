@@ -16,7 +16,7 @@ namespace Froststrap.Clients.Providers;
 /// A Studio client's <see cref="FindAllPlayer"/> therefore returns Studio processes; no
 /// caller should ask a Studio client for a player process.
 /// </remarks>
-internal sealed class ClientProcessService : IProcessService
+internal class ClientProcessService : IProcessService
 {
     private readonly HashSet<string> _names;
     private readonly bool _prefix;
@@ -37,7 +37,7 @@ internal sealed class ClientProcessService : IProcessService
 
     public bool IsRunning() => FindAllPlayer().Count > 0;
 
-    public Process[] FindCrashHandlers() => _crashHandlerName is null ? [] : Process.GetProcessesByName(_crashHandlerName);
+    private Process[] FindCrashHandlers() => _crashHandlerName is null ? [] : Process.GetProcessesByName(_crashHandlerName);
 
     public Process? FindPlayer()
     {
@@ -77,7 +77,91 @@ internal sealed class ClientProcessService : IProcessService
         return newestPid;
     }
 
-    public Task KillAllAsync(KillRequest request, CancellationToken cancellationToken = default)
+    public virtual void Kill(int pid)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(pid);
+
+            App.Logger.Info($"Killing process '{process.ProcessName}' (pid={pid})");
+
+            if (process.HasExited)
+            {
+                App.Logger.Info($"PID {pid} has already exited");
+                return;
+            }
+
+            process.Kill();
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"PID {pid} could not be closed");
+            App.Logger.Error(ex);
+        }
+    }
+
+    public async Task CloseAsync(int pid, TimeSpan gracePeriod, CancellationToken cancellationToken = default)
+    {
+        using var process = Process.GetProcessById(pid);
+
+        if (!process.CloseMainWindow())
+            App.Logger.Warn($"Roblox (PID {pid}) has no main window to close");
+
+        using (var wait = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+        {
+            wait.CancelAfter(gracePeriod);
+
+            try
+            {
+                await process.WaitForExitAsync(wait.Token);
+                return;
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+            }
+        }
+
+        // a join can land right as the wait times out
+        cancellationToken.ThrowIfCancellationRequested();
+
+        App.Logger.Warn($"Roblox (PID {pid}) didn't close, ending it");
+
+        Kill(pid);
+
+        // Kill only starts termination; stay "closing" until it's gone
+        if (!await Task.Run(() => process.WaitForExit(TimeSpan.FromSeconds(3))))
+            App.Logger.Warn($"Roblox (PID {pid}) still hasn't exited");
+    }
+
+    public async Task CloseCrashHandlersAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var crashProc in FindCrashHandlers())
+        {
+            try
+            {
+                App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
+
+                crashProc.Kill();
+                using var cts = new CancellationTokenSource();
+                var delay = Task.Delay(3000, cts.Token);
+                var wait = crashProc.WaitForExitAsync(cancellationToken);
+                await Task.WhenAny(wait, delay);
+                await cts.CancelAsync();
+
+                App.Logger.Info(
+                    crashProc.HasExited
+                        ? $"Crash handler {crashProc.Id} exited successfully"
+                        : $"Crash handler {crashProc.Id} is still running"
+                );
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to close crash handler {crashProc.Id}: {ex}");
+            }
+        }
+    }
+
+    public async Task CloseAllAsync(KillRequest request, CancellationToken cancellationToken = default)
     {
         foreach (Process process in FindAllPlayer())
         {
@@ -100,6 +184,9 @@ internal sealed class ClientProcessService : IProcessService
                     process.Kill();
                 else
                     process.CloseMainWindow();
+
+                if (request.WaitForExit)
+                    await process.WaitForExitAsync(cancellationToken);
             }
             catch (Exception ex)
             {
@@ -107,7 +194,6 @@ internal sealed class ClientProcessService : IProcessService
             }
         }
 
-        return Task.CompletedTask;
     }
 
     public bool Owns(Process process)

@@ -83,31 +83,15 @@ internal sealed class ActivityWatcher : IDisposable
 
     public bool IsDisposed;
 
-    public static void CloseProcess(int pid)
-    {
-        try
-        {
-            using var process = Process.GetProcessById(pid);
-            if (process.HasExited)
-            {
-                App.Logger.Info($"PID {pid} has already exited");
-                return;
-            }
-
-            process.Kill();
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"PID {pid} could not be closed {ex}");
-        }
-    }
+    private readonly IRobloxClient _client;
 
     private readonly ILogLocator _logs;
     private readonly CancellationTokenSource _disposeCancellation = new();
 
-    public ActivityWatcher(ILogLocator logs, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
+    public ActivityWatcher(IRobloxClient client, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
     {
-        _logs = logs;
+        _client = client;
+        _logs = client.Logs;
 
         if (!String.IsNullOrEmpty(logFile))
             LogLocation = logFile;
@@ -494,7 +478,7 @@ internal sealed class ActivityWatcher : IDisposable
                     await Task.Delay(3000);
 
                     autoRejoinData.RejoinServer(false);
-                    CloseProcess(_robloxPID);
+                    _client.Kill(_robloxPID);
                 }
 
                 _shouldAutoRejoin = false;

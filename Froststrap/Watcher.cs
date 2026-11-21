@@ -71,7 +71,7 @@ internal sealed class Watcher : IDisposable
 
         if (App.Settings.Prop.EnableActivityTracking)
         {
-            ActivityWatcher = new(_client.Logs, _watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
+            ActivityWatcher = new(_client, _watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
             if (!string.IsNullOrEmpty(_watcherData.AccessCode))
             {
@@ -118,32 +118,7 @@ internal sealed class Watcher : IDisposable
                 try
                 {
                     if (App.Settings.Prop.AutoCloseCrashHandler)
-                    {
-                        foreach (var crashProc in _client.Processes.FindCrashHandlers())
-                        {
-                            try
-                            {
-                                App.Logger.Info($"Found crash handler: {crashProc.ProcessName} (PID {crashProc.Id})");
-
-                                crashProc.Kill();
-                                using var cts = new CancellationTokenSource();
-                                var delay = Task.Delay(3000, cts.Token);
-                                var wait = crashProc.WaitForExitAsync();
-                                await Task.WhenAny(wait, delay);
-                                await cts.CancelAsync();
-
-                                App.Logger.Info(
-                                    crashProc.HasExited
-                                        ? $"Crash handler {crashProc.Id} exited successfully"
-                                        : $"Crash handler {crashProc.Id} is still running"
-                                );
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.Error($"Failed to close crash handler {crashProc.Id}: {ex}");
-                            }
-                        }
-                    }
+                        await _client.CloseCrashHandlersAsync();
                 }
                 catch (Exception ex)
                 {
@@ -290,32 +265,7 @@ internal sealed class Watcher : IDisposable
         }
     }
 
-    public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
-    public static void CloseProcess(int pid, bool force = false)
-    {
-        try
-        {
-            using var process = Process.GetProcessById(pid);
-
-            App.Logger.Info($"Killing process '{process.ProcessName}' (pid={pid}, force={force})");
-
-            if (process.HasExited)
-            {
-                App.Logger.Info($"PID {pid} has already exited");
-                return;
-            }
-
-            if (force)
-                process.Kill();
-            else
-                process.CloseMainWindow();
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error($"PID {pid} could not be closed");
-            App.Logger.Error(ex);
-        }
-    }
+    public void KillRobloxProcess() => _client.Kill(_watcherData!.ProcessId);
 
     private static bool IsProcessRunning(int pid)
     {
@@ -423,7 +373,7 @@ internal sealed class Watcher : IDisposable
         if (_watcherData.AutoclosePids is not null)
         {
             foreach (int pid in _watcherData.AutoclosePids)
-                CloseProcess(pid);
+                Utility.Processes.Close(pid);
         }
 
         if (App.LaunchSettings.TestModeFlag.Active)
@@ -449,54 +399,11 @@ internal sealed class Watcher : IDisposable
 
         try
         {
-            using var process = Process.GetProcessById(pid);
-
-            if (!process.CloseMainWindow())
-                App.Logger.Warn($"Roblox (PID {pid}) has no main window to close");
-
-            using (var wait = CancellationTokenSource.CreateLinkedTokenSource(joined.Token))
-            {
-                wait.CancelAfter(TimeSpan.FromSeconds(5));
-
-                try
-                {
-                    await process.WaitForExitAsync(wait.Token);
-                    return;
-                }
-                catch (OperationCanceledException) when (joined.IsCancellationRequested)
-                {
-                    App.Logger.Info("Joined another game, leaving Roblox open");
-                    return;
-                }
-                catch (OperationCanceledException)
-                {
-                    // still running after 5 seconds
-                }
-            }
-
-            // a join can land right as the wait times out
-            if (joined.IsCancellationRequested)
-            {
-                App.Logger.Info("Joined another game, leaving Roblox open");
-                return;
-            }
-
-            // forced on purpose: this setting means "don't keep Roblox running after leaving"
-            App.Logger.Warn($"Roblox (PID {pid}) didn't close, ending it");
-
-            try
-            {
-                process.Kill();
-            }
-            catch (Exception) when (HasExited(process))
-            {
-                // exited on its own just before Kill
-                return;
-            }
-
-            // Kill only starts termination; stay "closing" until it's gone
-            if (!await Task.Run(() => process.WaitForExit(TimeSpan.FromSeconds(3))))
-                App.Logger.Warn($"Roblox (PID {pid}) still hasn't exited");
+            await _client.CloseAsync(pid, TimeSpan.FromSeconds(5), joined.Token);
+        }
+        catch (OperationCanceledException) when (joined.IsCancellationRequested)
+        {
+            App.Logger.Info("Joined another game, leaving Roblox open");
         }
         catch (ArgumentException)
         {
@@ -517,18 +424,6 @@ internal sealed class Watcher : IDisposable
                 _closeCancel = null;
 
             Interlocked.Exchange(ref _closingRoblox, 0);
-        }
-    }
-
-    private static bool HasExited(Process process)
-    {
-        try
-        {
-            return process.HasExited;
-        }
-        catch (InvalidOperationException)
-        {
-            return true;
         }
     }
 

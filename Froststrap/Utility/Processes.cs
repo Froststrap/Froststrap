@@ -19,6 +19,29 @@ static class Processes
         }
     }
 
+    public static void Close(int pid)
+    {
+        try
+        {
+            using var process = Process.GetProcessById(pid);
+
+            App.Logger.Info($"Closing process '{process.ProcessName}' (pid={pid})");
+
+            if (process.HasExited)
+            {
+                App.Logger.Info($"PID {pid} has already exited");
+                return;
+            }
+
+            process.CloseMainWindow();
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"PID {pid} could not be closed");
+            App.Logger.Error(ex);
+        }
+    }
+
     public static void KillBackgroundUpdater()
     {
         using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");

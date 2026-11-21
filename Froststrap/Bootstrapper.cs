@@ -565,40 +565,7 @@ internal sealed class Bootstrapper : IDisposable
             }
         }
         else if (_appPid != 0)
-        {
-            try
-            {
-                using var process = Process.GetProcessById(_appPid);
-                process.Kill();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Warn($"Failed to kill process {_appPid}: {ex.Message}");
-            }
-        }
-
-        if (App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged)
-        {
-            try
-            {
-                foreach (var clientProcess in App.Clients.Player.Processes.FindAllPlayer())
-                {
-                    try
-                    {
-                        App.Logger.Info($"Killing {clientProcess.ProcessName} process (PID {clientProcess.Id})");
-                        clientProcess.Kill(true);
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to kill {clientProcess.ProcessName} process (PID {clientProcess.Id}) {ex}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to enumerate {App.Clients.Player.DisplayName} processes. {ex}");
-            }
-        }
+            TargetClient.Kill(_appPid);
 
         _appLock?.Dispose();
 

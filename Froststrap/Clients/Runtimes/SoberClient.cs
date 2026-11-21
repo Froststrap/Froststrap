@@ -58,7 +58,11 @@ internal sealed class SoberClient(
 
     public const string FlatpakId = "org.vinegarhq.Sober";
 
-    public override IClientLauncher Launcher => _soberLauncher ??= new SoberLauncher(Layout, FlatpakId, SettingsSync!);
+    public override IClientLauncher Launcher => _soberLauncher ??= new SoberLauncher(Layout, (FlatpakProcessService)Processes, SettingsSync!);
+
+    public override IProcessService Processes => _soberProcesses ??= new FlatpakProcessService(Layout, FlatpakId);
+
+    private FlatpakProcessService? _soberProcesses;
 
     private SoberLauncher? _soberLauncher;
 
