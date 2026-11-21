@@ -5,27 +5,26 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Froststrap.UI.ViewModels
+namespace Froststrap.UI.ViewModels;
+
+internal static class GlobalViewModel
 {
-    internal static class GlobalViewModel
+    public static bool IsWindows => OperatingSystem.IsWindows();
+    public static bool IsMacOS => OperatingSystem.IsMacOS();
+    public static bool IsLinux => OperatingSystem.IsLinux();
+
+    public static bool IsWindowsOrLinux => IsWindows || IsLinux;
+    public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
+
+    public static bool HasClientSettingsPage => App.Clients.Player.SettingsSync is not null || App.Clients.Studio.RuntimeEnvironment is not null;
+
+    public static ICommand OpenWebpageCommand => new RelayCommand<string>(OpenWebpage);
+
+    private static void OpenWebpage(string? location)
     {
-        public static bool IsWindows => OperatingSystem.IsWindows();
-        public static bool IsMacOS => OperatingSystem.IsMacOS();
-        public static bool IsLinux => OperatingSystem.IsLinux();
+        if (string.IsNullOrEmpty(location))
+            return;
 
-        public static bool IsWindowsOrLinux => IsWindows || IsLinux;
-        public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
-
-        public static bool HasClientSettingsPage => App.Clients.Player.SettingsSync is not null || App.Clients.Studio.RuntimeEnvironment is not null;
-
-        public static ICommand OpenWebpageCommand => new RelayCommand<string>(OpenWebpage);
-
-        private static void OpenWebpage(string? location)
-        {
-            if (string.IsNullOrEmpty(location))
-                return;
-
-            Froststrap.Utility.Threading.ShellExecute(location);
-        }
+        Froststrap.Utility.Threading.ShellExecute(location);
     }
 }

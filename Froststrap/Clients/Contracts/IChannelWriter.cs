@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface IChannelWriter
 {
-    internal interface IChannelWriter
-    {
-        void Write(string robloxDomain, string? channel);
-    }
+    void Write(string robloxDomain, string? channel);
 }

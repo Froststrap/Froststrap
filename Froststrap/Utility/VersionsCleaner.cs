@@ -6,106 +6,105 @@ using Froststrap.AppData;
 using Froststrap.Clients;
 using Froststrap.Clients.Model;
 
-namespace Froststrap.Utility
+namespace Froststrap.Utility;
+
+internal static class VersionsCleaner
 {
-    internal static class VersionsCleaner
+    private static bool TryDeleteRobloxInDirectory(string dir)
     {
-        private static bool TryDeleteRobloxInDirectory(string dir)
+        IAppData[] clients = [App.Clients.PlayerDeployment, App.Clients.StudioDeployment];
+
+        foreach (IAppData client in clients)
         {
-            IAppData[] clients = [App.Clients.PlayerDeployment, App.Clients.StudioDeployment];
+            string path = Path.Combine(dir, client.ExecutableName);
 
-            foreach (IAppData client in clients)
+            bool exists = client.IsBundle ? Directory.Exists(path) : File.Exists(path);
+            if (!exists) continue;
+
+            try
             {
-                string path = Path.Combine(dir, client.ExecutableName);
-
-                bool exists = client.IsBundle ? Directory.Exists(path) : File.Exists(path);
-                if (!exists) continue;
-
-                try
+                if (client.IsBundle)
+                    Directory.Delete(path, true);
+                else
                 {
-                    if (client.IsBundle)
-                        Directory.Delete(path, true);
-                    else
-                    {
-                        File.SetAttributes(path, FileAttributes.Normal);
-                        File.Delete(path);
-                    }
-                }
-                catch (Exception)
-                {
-                    return false;
+                    File.SetAttributes(path, FileAttributes.Normal);
+                    File.Delete(path);
                 }
             }
-
-            return true;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public static void Run()
+        return true;
+    }
+
+    public static void Run()
+    {
+        bool externalPlayer = App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged;
+
+        if (externalPlayer)
         {
-            bool externalPlayer = App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged;
-
-            if (externalPlayer)
+            bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
+            if (!isStudio)
             {
-                bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
-                if (!isStudio)
-                {
-                    App.Logger.Info("Skipping cleanup on Linux (Player) to protect Sober's data directory.");
-                    return;
-                }
-            }
-
-            if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-            {
-                App.Logger.Info("Background updater tried to cleanup, stopping!");
+                App.Logger.Info("Skipping cleanup on Linux (Player) to protect Sober's data directory.");
                 return;
             }
+        }
 
-            if (!Directory.Exists(Paths.Versions))
+        if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
+        {
+            App.Logger.Info("Background updater tried to cleanup, stopping!");
+            return;
+        }
+
+        if (!Directory.Exists(Paths.Versions))
+        {
+            App.Logger.Info("Versions directory does not exist, skipping cleanup.");
+            return;
+        }
+
+        foreach (string dir in Directory.GetDirectories(Paths.Versions))
+        {
+            string dirName = Path.GetFileName(dir);
+
+            // to make static directory work on studio linux
+            if (externalPlayer && dirName == Path.GetFileName(App.Clients.Player.Install.InstallRoot))
+                continue;
+
+            bool shouldDelete = App.Settings.Prop.StaticDirectory
+                ? !ClientCatalog.StaticDirectoryNames.Contains(dirName)
+                : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
+
+            if (!shouldDelete)
+                continue;
+
+            // check if it's still being used first
+            // we dont want to accidentally delete the files of a running roblox instance
+            if (!TryDeleteRobloxInDirectory(dir))
+                continue;
+
+            try
             {
-                App.Logger.Info("Versions directory does not exist, skipping cleanup.");
-                return;
+                Directory.Delete(dir, true);
             }
-
-            foreach (string dir in Directory.GetDirectories(Paths.Versions))
+            catch (UnauthorizedAccessException)
             {
-                string dirName = Path.GetFileName(dir);
-
-                // to make static directory work on studio linux
-                if (externalPlayer && dirName == Path.GetFileName(App.Clients.Player.Install.InstallRoot))
-                    continue;
-
-                bool shouldDelete = App.Settings.Prop.StaticDirectory
-                    ? !ClientCatalog.StaticDirectoryNames.Contains(dirName)
-                    : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
-
-                if (!shouldDelete)
-                    continue;
-
-                // check if it's still being used first
-                // we dont want to accidentally delete the files of a running roblox instance
-                if (!TryDeleteRobloxInDirectory(dir))
-                    continue;
-
                 try
                 {
+                    Filesystem.AssertReadOnlyDirectory(dir);
                     Directory.Delete(dir, true);
                 }
-                catch (UnauthorizedAccessException)
-                {
-                    try
-                    {
-                        Filesystem.AssertReadOnlyDirectory(dir);
-                        Directory.Delete(dir, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error(ex, $"Failed to delete {dir}");
-                    }
-                }
-                catch (IOException ex)
+                catch (Exception ex)
                 {
                     App.Logger.Error(ex, $"Failed to delete {dir}");
                 }
+            }
+            catch (IOException ex)
+            {
+                App.Logger.Error(ex, $"Failed to delete {dir}");
             }
         }
     }

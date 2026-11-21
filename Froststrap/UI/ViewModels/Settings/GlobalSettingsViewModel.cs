@@ -10,414 +10,413 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using Froststrap.Clients.Model;
 
-namespace Froststrap.UI.ViewModels.Settings
+namespace Froststrap.UI.ViewModels.Settings;
+
+internal interface IDialogServiceGlobal
 {
-    internal interface IDialogServiceGlobal
+    Task OpenGlobalSettingsEditorAsync();
+}
+
+internal sealed class DefaultGlobalDialogService : IDialogServiceGlobal
+{
+    public Task OpenGlobalSettingsEditorAsync()
     {
-        Task OpenGlobalSettingsEditorAsync();
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
+{
+    private readonly IDialogServiceGlobal _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+
+    public GlobalSettingsViewModel() : this(new DefaultGlobalDialogService())
+    {
     }
 
-    internal sealed class DefaultGlobalDialogService : IDialogServiceGlobal
+    public ICommand OpenGlobalSettingsEditorCommand => new AsyncRelayCommand(async () =>
     {
-        public Task OpenGlobalSettingsEditorAsync()
+        App.Logger.Info("Opening Global Settings Editor...");
+        await _dialogService.OpenGlobalSettingsEditorAsync();
+    });
+
+    public static ICommand OpenRobloxFolderCommand => new RelayCommand(() =>
+    {
+        ClientInstall install = App.Clients.Player.Install;
+        string targetPath = install.IsExternal ? install.InstallRoot : install.UserDataRoot!;
+
+        Froststrap.Utility.Threading.ShellExecute(targetPath);
+    });
+    public static IAsyncRelayCommand ImportCommand => new AsyncRelayCommand<Control>(async c => await ImportSettings(c));
+    public static IAsyncRelayCommand ExportCommand => new AsyncRelayCommand<Control>(async c => await ExportSettings(c));
+
+    private static async Task ExportSettings(Control? control)
+    {
+        App.Logger.Info("Exporting settings");
+        if (control is null) return;
+
+        var topLevel = TopLevel.GetTopLevel(control);
+        if (topLevel is not Window parentWindow) return;
+        var storageProvider = parentWindow.StorageProvider;
+
+        var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            return Task.CompletedTask;
+            Title = "Export GBS Settings",
+            SuggestedFileName = "GlobalBasicSettings_13.xml",
+            DefaultExtension = ".xml",
+            FileTypeChoices =
+            [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
+        });
+
+        if (file != null)
+        {
+            string localPath = file.Path.LocalPath;
+            bool success = GBSEditor.ExportSettings(localPath);
+
+            if (success)
+            {
+                _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
+            }
+            else
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Export_Fail, MessageBoxImage.Error);
+            }
         }
     }
 
-    internal sealed class GlobalSettingsViewModel(IDialogServiceGlobal dialogService) : NotifyPropertyChangedViewModel
+    private static async Task ImportSettings(Control? control)
     {
-        private readonly IDialogServiceGlobal _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+        App.Logger.Info("Importing settings");
+        if (control is null) return;
 
-        public GlobalSettingsViewModel() : this(new DefaultGlobalDialogService())
-        {
-        }
+        var topLevel = TopLevel.GetTopLevel(control);
+        if (topLevel is not Window parentWindow) return;
+        var storageProvider = parentWindow.StorageProvider;
 
-        public ICommand OpenGlobalSettingsEditorCommand => new AsyncRelayCommand(async () =>
+        var result = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
-            App.Logger.Info("Opening Global Settings Editor...");
-            await _dialogService.OpenGlobalSettingsEditorAsync();
+            Title = "Import GBS Settings",
+            AllowMultiple = false,
+            FileTypeFilter = [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
         });
 
-        public static ICommand OpenRobloxFolderCommand => new RelayCommand(() =>
+        if (result.Count == 0) return;
+        var selectedFile = result[0];
+
+        string localPath = selectedFile.Path.LocalPath;
+
+        try
         {
-            ClientInstall install = App.Clients.Player.Install;
-            string targetPath = install.IsExternal ? install.InstallRoot : install.UserDataRoot!;
-
-            Froststrap.Utility.Threading.ShellExecute(targetPath);
-        });
-        public static IAsyncRelayCommand ImportCommand => new AsyncRelayCommand<Control>(async c => await ImportSettings(c));
-        public static IAsyncRelayCommand ExportCommand => new AsyncRelayCommand<Control>(async c => await ExportSettings(c));
-
-        private static async Task ExportSettings(Control? control)
-        {
-            App.Logger.Info("Exporting settings");
-            if (control is null) return;
-
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
-            var storageProvider = parentWindow.StorageProvider;
-
-            var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            var doc = XDocument.Load(localPath);
+            if (doc.Root?.Name != "roblox")
             {
-                Title = "Export GBS Settings",
-                SuggestedFileName = "GlobalBasicSettings_13.xml",
-                DefaultExtension = ".xml",
-                FileTypeChoices =
-                [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
-            });
-
-            if (file != null)
-            {
-                string localPath = file.Path.LocalPath;
-                bool success = GBSEditor.ExportSettings(localPath);
-
-                if (success)
-                {
-                    _ = Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
-                }
-                else
-                {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Export_Fail, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        private static async Task ImportSettings(Control? control)
-        {
-            App.Logger.Info("Importing settings");
-            if (control is null) return;
-
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
-            var storageProvider = parentWindow.StorageProvider;
-
-            var result = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-            {
-                Title = "Import GBS Settings",
-                AllowMultiple = false,
-                FileTypeFilter = [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
-            });
-
-            if (result.Count == 0) return;
-            var selectedFile = result[0];
-
-            string localPath = selectedFile.Path.LocalPath;
-
-            try
-            {
-                var doc = XDocument.Load(localPath);
-                if (doc.Root?.Name != "roblox")
-                {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotGBS, MessageBoxImage.Warning);
-                    return;
-                }
-            }
-            catch
-            {
-                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotXML, MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotGBS, MessageBoxImage.Warning);
                 return;
             }
-
-            var confirm = await Frontend.ShowMessageBox(
-                Strings.Menu_GlobalSettings_Import_Confirmation,
-                MessageBoxImage.Warning,
-                MessageBoxButton.YesNo);
-
-            if (confirm == MessageBoxResult.Yes)
-            {
-                bool success = App.GlobalSettings.ImportSettings(localPath);
-                if (success)
-                {
-                    App.GlobalSettings.Load();
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Success, MessageBoxImage.Information);
-                }
-                else
-                {
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Fail, MessageBoxImage.Error);
-                }
-            }
+        }
+        catch
+        {
+            _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotXML, MessageBoxImage.Warning);
+            return;
         }
 
-        public bool IsWarningVisible
+        var confirm = await Frontend.ShowMessageBox(
+            Strings.Menu_GlobalSettings_Import_Confirmation,
+            MessageBoxImage.Warning,
+            MessageBoxButton.YesNo);
+
+        if (confirm == MessageBoxResult.Yes)
         {
-            get
+            bool success = App.GlobalSettings.ImportSettings(localPath);
+            if (success)
             {
-                return !ReadOnly && (Fullscreen || MaxQualityEnabled || VignetteEnabled || FramerateCap != -1);
+                App.GlobalSettings.Load();
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Success, MessageBoxImage.Information);
+            }
+            else
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Fail, MessageBoxImage.Error);
             }
         }
+    }
 
-        public string WarningTooltipText
+    public bool IsWarningVisible
+    {
+        get
         {
-            get
-            {
-                if (ReadOnly) return string.Empty;
-
-                var activeSettings = new List<string>();
-
-                if (Fullscreen) activeSettings.Add("Fullscreen");
-                if (MaxQualityEnabled) activeSettings.Add("Max Quality");
-                if (VignetteEnabled) activeSettings.Add("Vignette");
-                if (FramerateCap != -1) activeSettings.Add("Framerate Cap");
-
-                if (activeSettings.Count == 0) return string.Empty;
-
-                string settingsList = activeSettings.Count > 1
-                    ? string.Join(", ", activeSettings.Take(activeSettings.Count - 1)) + " and " + activeSettings.Last()
-                    : activeSettings[0];
-
-                return $"Read-only must be enabled for {settingsList} to not be forgotten";
-            }
+            return !ReadOnly && (Fullscreen || MaxQualityEnabled || VignetteEnabled || FramerateCap != -1);
         }
+    }
 
-        private void UpdateWarningState()
+    public string WarningTooltipText
+    {
+        get
         {
-            OnPropertyChanged(nameof(IsWarningVisible));
-            OnPropertyChanged(nameof(WarningTooltipText));
+            if (ReadOnly) return string.Empty;
+
+            var activeSettings = new List<string>();
+
+            if (Fullscreen) activeSettings.Add("Fullscreen");
+            if (MaxQualityEnabled) activeSettings.Add("Max Quality");
+            if (VignetteEnabled) activeSettings.Add("Vignette");
+            if (FramerateCap != -1) activeSettings.Add("Framerate Cap");
+
+            if (activeSettings.Count == 0) return string.Empty;
+
+            string settingsList = activeSettings.Count > 1
+                ? string.Join(", ", activeSettings.Take(activeSettings.Count - 1)) + " and " + activeSettings.Last()
+                : activeSettings[0];
+
+            return $"Read-only must be enabled for {settingsList} to not be forgotten";
         }
+    }
 
-        public bool ReadOnly
+    private void UpdateWarningState()
+    {
+        OnPropertyChanged(nameof(IsWarningVisible));
+        OnPropertyChanged(nameof(WarningTooltipText));
+    }
+
+    public bool ReadOnly
+    {
+        get => GBSEditor.GetReadOnly();
+        set
         {
-            get => GBSEditor.GetReadOnly();
-            set
-            {
-                if (value)
-                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_ReadonlyMessage, MessageBoxImage.Warning);
+            if (value)
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_ReadonlyMessage, MessageBoxImage.Warning);
 
-                App.GlobalSettings.SetReadOnly(value);
-                OnPropertyChanged(nameof(ReadOnly));
-                UpdateWarningState();
-            }
+            App.GlobalSettings.SetReadOnly(value);
+            OnPropertyChanged(nameof(ReadOnly));
+            UpdateWarningState();
         }
+    }
 
-        public int FramerateCap
+    public int FramerateCap
+    {
+        get
         {
-            get
+            if (int.TryParse(App.GlobalSettings.GetPreset("Rendering.FramerateCap"), out int framerate))
             {
-                if (int.TryParse(App.GlobalSettings.GetPreset("Rendering.FramerateCap"), out int framerate))
-                {
-                    return framerate;
-                }
-                else
-                    return 60;
+                return framerate;
             }
-            set
-            {
-                if (value < 1)
-                    value = -1;
-
-                App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
-                OnPropertyChanged(nameof(FramerateCap));
-                UpdateWarningState();
-            }
+            else
+                return 60;
         }
-
-        public int GraphicsQuality
+        set
         {
-            get => int.TryParse(App.GlobalSettings.GetPreset("Rendering.SavedQualityLevel"),
-                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
-            set
-            {
-                App.GlobalSettings.SetPreset("Rendering.SavedQualityLevel",
-                    value.ToString(CultureInfo.InvariantCulture));
-                OnPropertyChanged(nameof(GraphicsQuality));
-            }
+            if (value < 1)
+                value = -1;
+
+            App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
+            OnPropertyChanged(nameof(FramerateCap));
+            UpdateWarningState();
         }
+    }
 
-        public bool Fullscreen
+    public int GraphicsQuality
+    {
+        get => int.TryParse(App.GlobalSettings.GetPreset("Rendering.SavedQualityLevel"),
+            NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+        set
         {
-            get => App.GlobalSettings.GetPreset("Rendering.Fullscreen")?.ToUpperInvariant() == "TRUE";
-            set
-            {
-                App.GlobalSettings.SetPreset("Rendering.Fullscreen", value);
-                OnPropertyChanged(nameof(Fullscreen));
-                UpdateWarningState();
-            }
-        }
-
-        public bool MaxQualityEnabled
-        {
-            get => App.GlobalSettings.GetPreset("Rendering.MaxQualityEnabled")?.ToUpperInvariant() == "TRUE";
-            set
-            {
-                App.GlobalSettings.SetPreset("Rendering.MaxQualityEnabled", value);
-                OnPropertyChanged(nameof(MaxQualityEnabled));
-                UpdateWarningState();
-            }
-        }
-
-        public bool VignetteEnabled
-        {
-            get
-            {
-                bool setting1 = App.GlobalSettings.GetPreset("Rendering.VignetteEnabled")?.ToUpperInvariant() == "TRUE";
-                bool setting2 = App.GlobalSettings.GetPreset("Rendering.VignetteEnableOption")?.ToUpperInvariant() == "TRUE";
-
-                return setting1 && setting2;
-            }
-            set
-            {
-                string val = value.ToString().ToUpperInvariant();
-
-                App.GlobalSettings.SetPreset("Rendering.VignetteEnabled", val);
-                App.GlobalSettings.SetPreset("Rendering.VignetteEnableOption", val);
-
-                OnPropertyChanged(nameof(VignetteEnabled));
-                UpdateWarningState();
-            }
-        }
-
-        public static double MasterVolume
-        {
-            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolume"),
-                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("Audio.MasterVolume",
+            App.GlobalSettings.SetPreset("Rendering.SavedQualityLevel",
                 value.ToString(CultureInfo.InvariantCulture));
+            OnPropertyChanged(nameof(GraphicsQuality));
         }
-        public static double MasterVolumeStudio
+    }
+
+    public bool Fullscreen
+    {
+        get => App.GlobalSettings.GetPreset("Rendering.Fullscreen")?.ToUpperInvariant() == "TRUE";
+        set
         {
-            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio"),
-                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio",
+            App.GlobalSettings.SetPreset("Rendering.Fullscreen", value);
+            OnPropertyChanged(nameof(Fullscreen));
+            UpdateWarningState();
+        }
+    }
+
+    public bool MaxQualityEnabled
+    {
+        get => App.GlobalSettings.GetPreset("Rendering.MaxQualityEnabled")?.ToUpperInvariant() == "TRUE";
+        set
+        {
+            App.GlobalSettings.SetPreset("Rendering.MaxQualityEnabled", value);
+            OnPropertyChanged(nameof(MaxQualityEnabled));
+            UpdateWarningState();
+        }
+    }
+
+    public bool VignetteEnabled
+    {
+        get
+        {
+            bool setting1 = App.GlobalSettings.GetPreset("Rendering.VignetteEnabled")?.ToUpperInvariant() == "TRUE";
+            bool setting2 = App.GlobalSettings.GetPreset("Rendering.VignetteEnableOption")?.ToUpperInvariant() == "TRUE";
+
+            return setting1 && setting2;
+        }
+        set
+        {
+            string val = value.ToString().ToUpperInvariant();
+
+            App.GlobalSettings.SetPreset("Rendering.VignetteEnabled", val);
+            App.GlobalSettings.SetPreset("Rendering.VignetteEnableOption", val);
+
+            OnPropertyChanged(nameof(VignetteEnabled));
+            UpdateWarningState();
+        }
+    }
+
+    public static double MasterVolume
+    {
+        get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolume"),
+            NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+        set => App.GlobalSettings.SetPreset("Audio.MasterVolume",
+            value.ToString(CultureInfo.InvariantCulture));
+    }
+    public static double MasterVolumeStudio
+    {
+        get => double.TryParse(App.GlobalSettings.GetPreset("Audio.MasterVolumeStudio"),
+            NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+        set => App.GlobalSettings.SetPreset("Audio.MasterVolumeStudio",
+            value.ToString(CultureInfo.InvariantCulture));
+    }
+    public static double PartyVoiceVolume
+    {
+        get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume"),
+            NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+        set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume",
+            value.ToString(CultureInfo.InvariantCulture));
+    }
+    public static double VoiceChatVolume
+    {
+        get => double.TryParse(App.GlobalSettings.GetPreset("Audio.VoiceChatVolume"),
+            NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+        set => App.GlobalSettings.SetPreset("Audio.VoiceChatVolume",
+            value.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public static double MouseSensitivity
+    {
+        get => double.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
+            NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
+        set => App.GlobalSettings.SetPreset("User.MouseSensitivity",
+            value.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public static bool ShiftLock
+    {
+        get => App.GlobalSettings.GetPreset("User.ShiftLock") == "1";
+        set => App.GlobalSettings.SetPreset("User.ShiftLock", value ? "1" : "0");
+    }
+
+    public string MouseSensitivityFirstPersonX
+    {
+        get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityFirstPerson", "X");
+        set
+        {
+            App.GlobalSettings.SetVectorValue("User.MouseSensitivityFirstPerson", "X", value);
+            OnPropertyChanged(nameof(MouseSensitivityFirstPersonX));
+        }
+    }
+
+    public string MouseSensitivityFirstPersonY
+    {
+        get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityFirstPerson", "Y");
+        set
+        {
+            App.GlobalSettings.SetVectorValue("User.MouseSensitivityFirstPerson", "Y", value);
+            OnPropertyChanged(nameof(MouseSensitivityFirstPersonY));
+        }
+    }
+    public string MouseSensitivityThirdPersonX
+    {
+        get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityThirdPerson", "X");
+        set
+        {
+            App.GlobalSettings.SetVectorValue("User.MouseSensitivityThirdPerson", "X", value);
+            OnPropertyChanged(nameof(MouseSensitivityThirdPersonX));
+        }
+    }
+
+    public string MouseSensitivityThirdPersonY
+    {
+        get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityThirdPerson", "Y");
+        set
+        {
+            App.GlobalSettings.SetVectorValue("User.MouseSensitivityThirdPerson", "Y", value);
+            OnPropertyChanged(nameof(MouseSensitivityThirdPersonY));
+        }
+    }
+
+    public static bool CameraYInverted
+    {
+        get => App.GlobalSettings.GetPreset("User.CameraYInverted")?.ToUpperInvariant() == "TRUE";
+        set => App.GlobalSettings.SetPreset("User.CameraYInverted", value);
+    }
+
+    public static int HapticStrength
+    {
+        get => int.TryParse(App.GlobalSettings.GetPreset("User.HapticStrength"),
+            NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+        set => App.GlobalSettings.SetPreset("User.HapticStrength",
+            value.ToString(CultureInfo.InvariantCulture));
+    }
+
+    public int UITransparency
+    {
+
+        get => int.TryParse(App.GlobalSettings.GetPreset("UI.Transparency"),
+            NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
+        set
+        {
+            App.GlobalSettings.SetPreset("UI.Transparency",
                 value.ToString(CultureInfo.InvariantCulture));
+            OnPropertyChanged(nameof(UITransparency));
         }
-        public static double PartyVoiceVolume
-        {
-            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.PartyVoiceVolume"),
-                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("Audio.PartyVoiceVolume",
-                value.ToString(CultureInfo.InvariantCulture));
-        }
-        public static double VoiceChatVolume
-        {
-            get => double.TryParse(App.GlobalSettings.GetPreset("Audio.VoiceChatVolume"),
-                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("Audio.VoiceChatVolume",
-                value.ToString(CultureInfo.InvariantCulture));
-        }
+    }
 
-        public static double MouseSensitivity
-        {
-            get => double.TryParse(App.GlobalSettings.GetPreset("User.MouseSensitivity"),
-                NumberStyles.Float, CultureInfo.InvariantCulture, out var v) ? v : 1.0;
-            set => App.GlobalSettings.SetPreset("User.MouseSensitivity",
-                value.ToString(CultureInfo.InvariantCulture));
-        }
+    public static bool ReducedMotion
+    {
+        get => App.GlobalSettings.GetPreset("UI.ReducedMotion")?.ToUpperInvariant() == "TRUE";
+        set => App.GlobalSettings.SetPreset("UI.ReducedMotion", value);
+    }
 
-        public static bool ShiftLock
-        {
-            get => App.GlobalSettings.GetPreset("User.ShiftLock") == "1";
-            set => App.GlobalSettings.SetPreset("User.ShiftLock", value ? "1" : "0");
-        }
+    public static IReadOnlyDictionary<FontSize, string?> FontSizes => GBSEditor.FontSizes;
+    public static FontSize SelectedFontSize
+    {
+        get => FontSizes.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.FontSize")).Key;
+        set => App.GlobalSettings.SetPreset("UI.FontSize", FontSizes[value]);
+    }
 
-        public string MouseSensitivityFirstPersonX
-        {
-            get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityFirstPerson", "X");
-            set
-            {
-                App.GlobalSettings.SetVectorValue("User.MouseSensitivityFirstPerson", "X", value);
-                OnPropertyChanged(nameof(MouseSensitivityFirstPersonX));
-            }
-        }
+    public static IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => GBSEditor.PlayerListLayOuts;
+    public static PlayerListLayOut SelectedPlayerListLayOut
+    {
+        get => PlayerListLayOuts.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.PlayerListLayOut")).Key;
+        set => App.GlobalSettings.SetPreset("UI.PlayerListLayOut", PlayerListLayOuts[value]);
+    }
 
-        public string MouseSensitivityFirstPersonY
-        {
-            get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityFirstPerson", "Y");
-            set
-            {
-                App.GlobalSettings.SetVectorValue("User.MouseSensitivityFirstPerson", "Y", value);
-                OnPropertyChanged(nameof(MouseSensitivityFirstPersonY));
-            }
-        }
-        public string MouseSensitivityThirdPersonX
-        {
-            get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityThirdPerson", "X");
-            set
-            {
-                App.GlobalSettings.SetVectorValue("User.MouseSensitivityThirdPerson", "X", value);
-                OnPropertyChanged(nameof(MouseSensitivityThirdPersonX));
-            }
-        }
+    public static bool PerformanceStatsVisible
+    {
+        get => App.GlobalSettings.GetPreset("Misc.PerformanceStatsVisible")?.ToUpperInvariant() == "TRUE";
+        set => App.GlobalSettings.SetPreset("Misc.PerformanceStatsVisible", value);
+    }
 
-        public string MouseSensitivityThirdPersonY
-        {
-            get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityThirdPerson", "Y");
-            set
-            {
-                App.GlobalSettings.SetVectorValue("User.MouseSensitivityThirdPerson", "Y", value);
-                OnPropertyChanged(nameof(MouseSensitivityThirdPersonY));
-            }
-        }
+    public static bool ChatTranslationEnabled
+    {
+        get => App.GlobalSettings.GetPreset("Misc.ChatTranslationEnabled")?.ToUpperInvariant() == "TRUE";
+        set => App.GlobalSettings.SetPreset("Misc.ChatTranslationEnabled", value);
+    }
 
-        public static bool CameraYInverted
-        {
-            get => App.GlobalSettings.GetPreset("User.CameraYInverted")?.ToUpperInvariant() == "TRUE";
-            set => App.GlobalSettings.SetPreset("User.CameraYInverted", value);
-        }
+    public static bool ChatTranslationFTUXShown
+    {
+        get => App.GlobalSettings.GetPreset("Misc.ChatTranslationFTUXShown")?.ToUpperInvariant() == "TRUE";
+        set => App.GlobalSettings.SetPreset("Misc.ChatTranslationFTUXShown", value);
+    }
 
-        public static int HapticStrength
-        {
-            get => int.TryParse(App.GlobalSettings.GetPreset("User.HapticStrength"),
-                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
-            set => App.GlobalSettings.SetPreset("User.HapticStrength",
-                value.ToString(CultureInfo.InvariantCulture));
-        }
-
-        public int UITransparency
-        {
-
-            get => int.TryParse(App.GlobalSettings.GetPreset("UI.Transparency"),
-                NumberStyles.Integer, CultureInfo.InvariantCulture, out var v) ? v : 1;
-            set
-            {
-                App.GlobalSettings.SetPreset("UI.Transparency",
-                    value.ToString(CultureInfo.InvariantCulture));
-                OnPropertyChanged(nameof(UITransparency));
-            }
-        }
-
-        public static bool ReducedMotion
-        {
-            get => App.GlobalSettings.GetPreset("UI.ReducedMotion")?.ToUpperInvariant() == "TRUE";
-            set => App.GlobalSettings.SetPreset("UI.ReducedMotion", value);
-        }
-
-        public static IReadOnlyDictionary<FontSize, string?> FontSizes => GBSEditor.FontSizes;
-        public static FontSize SelectedFontSize
-        {
-            get => FontSizes.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.FontSize")).Key;
-            set => App.GlobalSettings.SetPreset("UI.FontSize", FontSizes[value]);
-        }
-
-        public static IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => GBSEditor.PlayerListLayOuts;
-        public static PlayerListLayOut SelectedPlayerListLayOut
-        {
-            get => PlayerListLayOuts.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.PlayerListLayOut")).Key;
-            set => App.GlobalSettings.SetPreset("UI.PlayerListLayOut", PlayerListLayOuts[value]);
-        }
-
-        public static bool PerformanceStatsVisible
-        {
-            get => App.GlobalSettings.GetPreset("Misc.PerformanceStatsVisible")?.ToUpperInvariant() == "TRUE";
-            set => App.GlobalSettings.SetPreset("Misc.PerformanceStatsVisible", value);
-        }
-
-        public static bool ChatTranslationEnabled
-        {
-            get => App.GlobalSettings.GetPreset("Misc.ChatTranslationEnabled")?.ToUpperInvariant() == "TRUE";
-            set => App.GlobalSettings.SetPreset("Misc.ChatTranslationEnabled", value);
-        }
-
-        public static bool ChatTranslationFTUXShown
-        {
-            get => App.GlobalSettings.GetPreset("Misc.ChatTranslationFTUXShown")?.ToUpperInvariant() == "TRUE";
-            set => App.GlobalSettings.SetPreset("Misc.ChatTranslationFTUXShown", value);
-        }
-
-        public static bool VREnabled
-        {
-            get => App.GlobalSettings.GetPreset("User.VREnabled")?.ToUpperInvariant() == "TRUE";
-            set => App.GlobalSettings.SetPreset("User.VREnabled", value);
-        }
+    public static bool VREnabled
+    {
+        get => App.GlobalSettings.GetPreset("User.VREnabled")?.ToUpperInvariant() == "TRUE";
+        set => App.GlobalSettings.SetPreset("User.VREnabled", value);
     }
 }

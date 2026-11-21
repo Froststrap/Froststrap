@@ -2,16 +2,15 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface IPackageReporter : IInstallReporter
 {
-    internal interface IPackageReporter : IInstallReporter
-    {
-        void AddDownloaded(long bytes, bool updateProgressBar = true);
+    void AddDownloaded(long bytes, bool updateProgressBar = true);
 
-        void AddTotal(long bytes);
+    void AddTotal(long bytes);
 
-        void MarkExtractionFailed();
+    void MarkExtractionFailed();
 
-        Task OnChecksumFailedAsync(Exception exception);
-    }
+    Task OnChecksumFailedAsync(Exception exception);
 }

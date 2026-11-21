@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Utility
+namespace Froststrap.Utility;
+
+internal sealed class InlineProgress<T>(Action<T> handler) : IProgress<T>
 {
-    internal sealed class InlineProgress<T>(Action<T> handler) : IProgress<T>
-    {
-        public void Report(T value) => handler(value);
-    }
+    public void Report(T value) => handler(value);
 }

@@ -2,16 +2,15 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface ISettingsSync
 {
-    internal interface ISettingsSync
-    {
-        bool HasUnsavedChanges { get; }
+    bool HasUnsavedChanges { get; }
 
-        void Load();
+    void Load();
 
-        void SyncFastFlags(IReadOnlyDictionary<string, object> flags);
+    void SyncFastFlags(IReadOnlyDictionary<string, object> flags);
 
-        void Save();
-    }
+    void Save();
 }

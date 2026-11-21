@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface IInstallReporter
 {
-    internal interface IInstallReporter
-    {
-        void SetStatus(string message);
+    void SetStatus(string message);
 
-        void SetIndeterminate(bool includeTaskbar = false);
+    void SetIndeterminate(bool includeTaskbar = false);
 
-        Task DownloadAsync(string url, string destination);
-    }
+    Task DownloadAsync(string url, string destination);
 }

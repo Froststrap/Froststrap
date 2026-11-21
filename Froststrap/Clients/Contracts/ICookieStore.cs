@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface ICookieStore
 {
-    internal interface ICookieStore
-    {
-        string? CookiesPath { get; }
+    string? CookiesPath { get; }
 
-        Task<string> ReadAuthCookieAsync();
+    Task<string> ReadAuthCookieAsync();
 
-        bool WriteAuthCookie(string plainCookie);
-    }
+    bool WriteAuthCookie(string plainCookie);
 }

@@ -2,288 +2,287 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.RobloxInterfaces
+namespace Froststrap.RobloxInterfaces;
+
+internal static class Deployment
 {
-    internal static class Deployment
+    public const string DefaultRobloxDomain = RobloxDefaults.Domain;
+
+    public const string DefaultChannel = RobloxDefaults.Channel;
+
+    public static event EventHandler<string>? ChannelChanged;
+
+    private static string _channel = DefaultChannel;
+    public static string Channel
     {
-        public const string DefaultRobloxDomain = RobloxDefaults.Domain;
-
-        public const string DefaultChannel = RobloxDefaults.Channel;
-
-        public static event EventHandler<string>? ChannelChanged;
-
-        private static string _channel = DefaultChannel;
-        public static string Channel
+        get => _channel;
+        set
         {
-            get => _channel;
-            set
+            if (_channel == value) return;
+            _channel = value;
+            ChannelChanged?.Invoke(null, value);
+        }
+    }
+
+    public static string ChannelToken { get; set; } = string.Empty;
+
+    public static string BinaryType => App.Clients.PlayerDeployment.BinaryType;
+
+    public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
+
+    public static bool IsDefaultChannel => Channel.Equals(DefaultChannel, StringComparison.OrdinalIgnoreCase) || Channel.Equals("live", StringComparison.OrdinalIgnoreCase);
+
+    public static bool IsDefaultRobloxDomain => RobloxDomain.Equals(DefaultRobloxDomain, StringComparison.OrdinalIgnoreCase);
+
+    public static string BaseUrl { get; private set; } = null!;
+
+    public static readonly List<HttpStatusCode?> BadChannelCodes = [
+        HttpStatusCode.Unauthorized,
+        HttpStatusCode.Forbidden,
+        HttpStatusCode.NotFound
+    ];
+
+    private static readonly Dictionary<string, ClientVersion> ClientVersionCache = [];
+
+    private static readonly List<string> BaseUrls =
+    [
+        "https://setup.rbxcdn.com",
+        "https://setup-ak.rbxcdn.com",
+        "https://setup-aws.rbxcdn.com",
+        "https://setup-cfly.rbxcdn.com",
+        "https://s3.amazonaws.com/setup.roblox.com"
+    ];
+
+    private const int SecondaryMirrorDelayMs = 300;
+
+    private static async Task<string> ProbeMirror(string url, int delayMs, CancellationToken token)
+    {
+        if (delayMs > 0)
+            await Task.Delay(delayMs, token);
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"{url}/versionStudio");
+        using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+        response.EnsureSuccessStatusCode();
+
+        return url;
+    }
+
+    /// <summary>
+    /// This function serves double duty as the setup mirror enumerator, and as our connectivity check.
+    /// Returns null for success.
+    /// </summary>
+    public static async Task<Exception?> InitializeConnectivity()
+    {
+        const string FALLBACK_URL = "https://setup.rbxcdn.com";
+
+        using var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+        var pending = BaseUrls
+            .Select((url, index) => ProbeMirror(url, index == 0 ? 0 : SecondaryMirrorDelayMs, tokenSource.Token))
+            .ToList();
+
+        App.Logger.Info("Testing for best regional download mirror...");
+
+        Exception? lastError = null;
+
+        while (pending.Count > 0)
+        {
+            var finished = await Task.WhenAny(pending);
+            pending.Remove(finished);
+
+            string url;
+
+            try
             {
-                if (_channel == value) return;
-                _channel = value;
-                ChannelChanged?.Invoke(null, value);
+                url = await finished;
             }
+            catch (Exception ex)
+            {
+                lastError = ex;
+                continue;
+            }
+
+            BaseUrl = url;
+            App.Logger.Info($"Optimal BaseUrl: {BaseUrl}");
+
+            await tokenSource.CancelAsync();
+            return null;
         }
 
-        public static string ChannelToken { get; set; } = string.Empty;
+        BaseUrl = FALLBACK_URL;
+        App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
 
-        public static string BinaryType => App.Clients.PlayerDeployment.BinaryType;
+        return lastError ?? new InvalidOperationException("No regional mirrors were responsive.");
+    }
 
-        public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
+    public static string GetLocation(string resource)
+    {
+        string location = BaseUrl;
+        if (!IsDefaultChannel)
+            location += "/channel/common";
+        location += resource;
+        return location;
+    }
 
-        public static bool IsDefaultChannel => Channel.Equals(DefaultChannel, StringComparison.OrdinalIgnoreCase) || Channel.Equals("live", StringComparison.OrdinalIgnoreCase);
-
-        public static bool IsDefaultRobloxDomain => RobloxDomain.Equals(DefaultRobloxDomain, StringComparison.OrdinalIgnoreCase);
-
-        public static string BaseUrl { get; private set; } = null!;
-
-        public static readonly List<HttpStatusCode?> BadChannelCodes = [
-            HttpStatusCode.Unauthorized,
-            HttpStatusCode.Forbidden,
-            HttpStatusCode.NotFound
-        ];
-
-        private static readonly Dictionary<string, ClientVersion> ClientVersionCache = [];
-
-        private static readonly List<string> BaseUrls =
-        [
-            "https://setup.rbxcdn.com",
-            "https://setup-ak.rbxcdn.com",
-            "https://setup-aws.rbxcdn.com",
-            "https://setup-cfly.rbxcdn.com",
-            "https://s3.amazonaws.com/setup.roblox.com"
-        ];
-
-        private const int SecondaryMirrorDelayMs = 300;
-
-        private static async Task<string> ProbeMirror(string url, int delayMs, CancellationToken token)
+    public async static Task<UserChannel?> GetUserChannel(string binaryType)
+    {
+        try
         {
-            if (delayMs > 0)
-                await Task.Delay(delayMs, token);
-
-            using var request = new HttpRequestMessage(HttpMethod.Get, $"{url}/versionStudio");
-            using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+            Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettings", "v2/user-channel?binaryType=" + binaryType);
+            HttpResponseMessage response = await App.Cookies.AuthGet(apiUrl);
             response.EnsureSuccessStatusCode();
 
-            return url;
+            string content = await response.Content.ReadAsStringAsync();
+            UserChannel channelInfo = JsonHelper.Deserialize<UserChannel>(content)!;
+            return channelInfo;
         }
-
-        /// <summary>
-        /// This function serves double duty as the setup mirror enumerator, and as our connectivity check.
-        /// Returns null for success.
-        /// </summary>
-        public static async Task<Exception?> InitializeConnectivity()
+        catch (HttpRequestException ex)
         {
-            const string FALLBACK_URL = "https://setup.rbxcdn.com";
-
-            using var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-
-            var pending = BaseUrls
-                .Select((url, index) => ProbeMirror(url, index == 0 ? 0 : SecondaryMirrorDelayMs, tokenSource.Token))
-                .ToList();
-
-            App.Logger.Info("Testing for best regional download mirror...");
-
-            Exception? lastError = null;
-
-            while (pending.Count > 0)
-            {
-                var finished = await Task.WhenAny(pending);
-                pending.Remove(finished);
-
-                string url;
-
-                try
-                {
-                    url = await finished;
-                }
-                catch (Exception ex)
-                {
-                    lastError = ex;
-                    continue;
-                }
-
-                BaseUrl = url;
-                App.Logger.Info($"Optimal BaseUrl: {BaseUrl}");
-
-                await tokenSource.CancelAsync();
-                return null;
-            }
-
-            BaseUrl = FALLBACK_URL;
-            App.Logger.Warn($"No mirrors responded. Falling back to default: {BaseUrl}");
-
-            return lastError ?? new InvalidOperationException("No regional mirrors were responsive.");
+            App.Logger.Error($"Failed to get user channel: {ex}");
         }
+        return null;
+    }
 
-        public static string GetLocation(string resource)
-        {
-            string location = BaseUrl;
-            if (!IsDefaultChannel)
-                location += "/channel/common";
-            location += resource;
-            return location;
-        }
-
-        public async static Task<UserChannel?> GetUserChannel(string binaryType)
-        {
-            try
-            {
-                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettings", "v2/user-channel?binaryType=" + binaryType);
-                HttpResponseMessage response = await App.Cookies.AuthGet(apiUrl);
-                response.EnsureSuccessStatusCode();
-
-                string content = await response.Content.ReadAsStringAsync();
-                UserChannel channelInfo = JsonHelper.Deserialize<UserChannel>(content)!;
-                return channelInfo;
-            }
-            catch (HttpRequestException ex)
-            {
-                App.Logger.Error($"Failed to get user channel: {ex}");
-            }
-            return null;
-        }
-
-        public static async Task<bool> IsChannelPrivate(string channel)
-        {
-            if (channel == "production")
-                channel = "live";
-            if (channel == "live")
-                return false;
-
-            try
-            {
-                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", $"v2/client-version/{BinaryType}/channel/{channel}");
-                var response = await App.HttpClient.GetAsync(apiUrl);
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException ex)
-            {
-                if (BadChannelCodes.Contains(ex.StatusCode))
-                    return true;
-            }
+    public static async Task<bool> IsChannelPrivate(string channel)
+    {
+        if (channel == "production")
+            channel = "live";
+        if (channel == "live")
             return false;
-        }
 
-        public static async Task<DateTime?> GetVersionTimestamp(string version)
+        try
         {
-            const string header = "last-modified";
-
-            if (string.IsNullOrEmpty(BaseUrl))
-                await InitializeConnectivity();
-
-            try
-            {
-                string location;
-
-                if (App.Clients.PlayerDeployment.IsBundle)
-                {
-                    location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
-
-                    using var request = new HttpRequestMessage(HttpMethod.Head, location);
-                    using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                    response.EnsureSuccessStatusCode();
-
-                    if (response.Content.Headers.TryGetValues(header, out var values))
-                    {
-                        string lastModified = values.First();
-                        DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
-                        return dateTime;
-                    }
-                }
-                else
-                {
-                    location = GetLocation($"/{version}-rbxPkgManifest.txt");
-                    var response = await App.HttpClient.GetAsync(new Uri(location));
-                    response.EnsureSuccessStatusCode();
-
-                    if (response.Content.Headers.TryGetValues(header, out var values))
-                    {
-                        string lastModified = values.First();
-                        DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
-                        return dateTime;
-                    }
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                App.Logger.Error($"Failed to get timestamp for {version}: {ex}");
-            }
-            return null;
+            Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", $"v2/client-version/{BinaryType}/channel/{channel}");
+            var response = await App.HttpClient.GetAsync(apiUrl);
+            response.EnsureSuccessStatusCode();
         }
-
-        public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false, string? binaryTypeOverride = null)
+        catch (HttpRequestException ex)
         {
+            if (BadChannelCodes.Contains(ex.StatusCode))
+                return true;
+        }
+        return false;
+    }
 
-            if (string.IsNullOrEmpty(channel))
-                channel = Channel;
+    public static async Task<DateTime?> GetVersionTimestamp(string version)
+    {
+        const string header = "last-modified";
 
-            bool isDefaultChannel = string.Equals(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase);
+        if (string.IsNullOrEmpty(BaseUrl))
+            await InitializeConnectivity();
 
-            App.Logger.Info($"Getting deploy info for channel {channel}");
+        try
+        {
+            string location;
 
-            string activeBinaryType = binaryTypeOverride ?? BinaryType;
-            string cacheKey = $"{channel}-{activeBinaryType}";
-
-            ClientVersion clientVersion;
-
-            if (ClientVersionCache.TryGetValue(cacheKey, out var value))
+            if (App.Clients.PlayerDeployment.IsBundle)
             {
-                App.Logger.Info("Deploy information is cached");
-                clientVersion = value;
+                location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
+
+                using var request = new HttpRequestMessage(HttpMethod.Head, location);
+                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                if (response.Content.Headers.TryGetValues(header, out var values))
+                {
+                    string lastModified = values.First();
+                    DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
+                    return dateTime;
+                }
             }
             else
             {
-                string path = $"v2/client-version/{activeBinaryType}";
-                if (!isDefaultChannel)
-                    path += $"/channel/{channel}";
+                location = GetLocation($"/{version}-rbxPkgManifest.txt");
+                var response = await App.HttpClient.GetAsync(new Uri(location));
+                response.EnsureSuccessStatusCode();
+
+                if (response.Content.Headers.TryGetValues(header, out var values))
+                {
+                    string lastModified = values.First();
+                    DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
+                    return dateTime;
+                }
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            App.Logger.Error($"Failed to get timestamp for {version}: {ex}");
+        }
+        return null;
+    }
+
+    public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false, string? binaryTypeOverride = null)
+    {
+
+        if (string.IsNullOrEmpty(channel))
+            channel = Channel;
+
+        bool isDefaultChannel = string.Equals(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase);
+
+        App.Logger.Info($"Getting deploy info for channel {channel}");
+
+        string activeBinaryType = binaryTypeOverride ?? BinaryType;
+        string cacheKey = $"{channel}-{activeBinaryType}";
+
+        ClientVersion clientVersion;
+
+        if (ClientVersionCache.TryGetValue(cacheKey, out var value))
+        {
+            App.Logger.Info("Deploy information is cached");
+            clientVersion = value;
+        }
+        else
+        {
+            string path = $"v2/client-version/{activeBinaryType}";
+            if (!isDefaultChannel)
+                path += $"/channel/{channel}";
+
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("clientsettingscdn", path));
+                if (!string.IsNullOrEmpty(ChannelToken))
+                    request.Headers.Add("Roblox-Channel-Token", ChannelToken);
+
+                clientVersion = await Http.SendJson<ClientVersion>(request);
+            }
+            catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
+            {
+                throw new InvalidChannelException(httpEx.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error($"Failed to contact clientsettingscdn! {ex}");
+                App.Logger.Warn("Falling back to clientsettings...");
 
                 try
                 {
-                    using var request = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("clientsettingscdn", path));
+                    using var fallbackRequest = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("clientsettings", path));
                     if (!string.IsNullOrEmpty(ChannelToken))
-                        request.Headers.Add("Roblox-Channel-Token", ChannelToken);
+                        fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
 
-                    clientVersion = await Http.SendJson<ClientVersion>(request);
+                    clientVersion = await Http.SendJson<ClientVersion>(fallbackRequest);
                 }
                 catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
                 {
                     throw new InvalidChannelException(httpEx.StatusCode);
                 }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to contact clientsettingscdn! {ex}");
-                    App.Logger.Warn("Falling back to clientsettings...");
-
-                    try
-                    {
-                        using var fallbackRequest = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("clientsettings", path));
-                        if (!string.IsNullOrEmpty(ChannelToken))
-                            fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
-
-                        clientVersion = await Http.SendJson<ClientVersion>(fallbackRequest);
-                    }
-                    catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
-                    {
-                        throw new InvalidChannelException(httpEx.StatusCode);
-                    }
-                }
-
-                if (!isDefaultChannel && behindProductionCheck)
-                {
-                    var defaultClientVersion = await GetInfo(DefaultChannel, binaryTypeOverride: activeBinaryType);
-                    if (Utility.Versioning.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
-                        clientVersion.IsBehindDefaultChannel = true;
-                }
-                else
-                    clientVersion.IsBehindDefaultChannel = false;
-
-                ClientVersionCache[cacheKey] = clientVersion;
             }
 
-            if (includeTimestamp && clientVersion.Timestamp is null)
-                clientVersion.Timestamp = await GetVersionTimestamp(clientVersion.VersionGuid);
+            if (!isDefaultChannel && behindProductionCheck)
+            {
+                var defaultClientVersion = await GetInfo(DefaultChannel, binaryTypeOverride: activeBinaryType);
+                if (Utility.Versioning.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
+                    clientVersion.IsBehindDefaultChannel = true;
+            }
+            else
+                clientVersion.IsBehindDefaultChannel = false;
 
-            return clientVersion;
+            ClientVersionCache[cacheKey] = clientVersion;
         }
+
+        if (includeTimestamp && clientVersion.Timestamp is null)
+            clientVersion.Timestamp = await GetVersionTimestamp(clientVersion.VersionGuid);
+
+        return clientVersion;
     }
 }

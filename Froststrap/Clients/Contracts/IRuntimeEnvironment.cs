@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface IRuntimeEnvironment
 {
-    internal interface IRuntimeEnvironment
-    {
-        Task PrepareAsync(string versionDirectory, string clientSettingsRoot, IInstallReporter reporter, CancellationToken cancellationToken);
-    }
+    Task PrepareAsync(string versionDirectory, string clientSettingsRoot, IInstallReporter reporter, CancellationToken cancellationToken);
 }

@@ -2,18 +2,17 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Clients.Contracts
+namespace Froststrap.Clients.Contracts;
+
+internal interface IHostRegistration
 {
-    internal interface IHostRegistration
-    {
-        void Register(string? versionDirectory);
+    void Register(string? versionDirectory);
 
-        void ClearLocation();
+    void ClearLocation();
 
-        void RemoveStartupEntry();
+    void RemoveStartupEntry();
 
-        bool RequestsAdmin(string executablePath);
+    bool RequestsAdmin(string executablePath);
 
-        void MigrateCompatibilityFlags(string oldExecutablePath, string newExecutablePath);
-    }
+    void MigrateCompatibilityFlags(string oldExecutablePath, string newExecutablePath);
 }
