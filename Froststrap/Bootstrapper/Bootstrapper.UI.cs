@@ -6,7 +6,7 @@ using Froststrap.Clients.Contracts;
 
 namespace Froststrap;
 
-internal partial class Bootstrapper : IInstallReporter
+internal partial class Bootstrapper : IPackageReporter
 {
     public IBootstrapperDialog? Dialog { get; set; }
 
@@ -25,6 +25,30 @@ internal partial class Bootstrapper : IInstallReporter
     }
 
     Task IInstallReporter.DownloadAsync(string url, string destination) => DownloadFileWithProgressAsync(url, destination);
+
+    void IPackageReporter.AddDownloaded(long bytes, bool updateProgressBar)
+    {
+        Interlocked.Add(ref _totalDownloadedBytes, bytes);
+
+        if (updateProgressBar)
+            UpdateProgressBar();
+    }
+
+    void IPackageReporter.AddTotal(long bytes) => AddProgressTotal(bytes);
+
+    void IPackageReporter.MarkExtractionFailed() => _packageExtractionSuccess = false;
+
+    async Task IPackageReporter.OnChecksumFailedAsync(Exception exception)
+    {
+        await Frontend.ShowConnectivityDialog(
+            Strings.Dialog_Connectivity_UnableToDownload,
+            String.Format(CultureInfo.InvariantCulture, Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
+            MessageBoxImage.Error,
+            exception
+        );
+
+        App.Terminate(ErrorCode.ERROR_CANCELLED);
+    }
 
     public void SetStatus(string message)
     {
