@@ -35,8 +35,6 @@ internal sealed class ChannelViewModel : NotifyPropertyChangedViewModel, IDispos
         MoveStorageDirectoryCommand = new AsyncRelayCommand(MoveStorageDirectoryAsync, () => !_isMoving);
     }
 
-    public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
-
     public bool AutomaticUpdatesEnabled
     {
         get => !UpdaterManager.IsCiBuild && SelectedUpdateCheck != UpdateCheck.Disabled;

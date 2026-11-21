@@ -270,16 +270,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool GetFlagAsBool(string flagKey, string falseValue = "False")
-        {
-            return _flagsService.GetPreset(flagKey) != falseValue;
-        }
-
-        public void SetFlagFromBool(string flagKey, bool value, string falseValue = "False")
-        {
-            _flagsService.SetPreset(flagKey, value ? null : falseValue);
-        }
-
         public bool ResetConfiguration
         {
             get => _preResetFlags is not null;

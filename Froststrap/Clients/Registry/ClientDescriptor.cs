@@ -23,8 +23,6 @@ internal sealed record ClientDescriptor
 
     public required Func<IRobloxClient> Factory { get; init; }
 
-    public bool RequiresUserSelection { get; init; }
-
     /// <summary>
     /// Existing state file name, kept stable so no migration is needed when a client moves
     /// behind this seam.

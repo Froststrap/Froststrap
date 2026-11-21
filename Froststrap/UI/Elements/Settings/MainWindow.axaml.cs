@@ -532,24 +532,6 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             _notifications[i].Transform.Y = i * (NotificationHeight + NotificationSpacing);
     }
 
-    public void ShowLoading(string message = "Loading...")
-    {
-        var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
-        var loadingText = this.FindControl<TextBlock>("LoadingOverlayText");
-
-        if (loadingOverlay != null && loadingText != null)
-        {
-            loadingText.Text = message;
-            loadingOverlay.IsVisible = true;
-        }
-    }
-
-    public void HideLoading()
-    {
-        var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
-        loadingOverlay?.IsVisible = false;
-    }
-
     [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Deliberate: the view models and pages are long-lived UI objects owned by the indexed page tree")]
     private async Task IndexMissingPagesAsync()
     {

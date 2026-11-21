@@ -52,8 +52,6 @@ internal sealed class SoberLauncher(IClientLayout layout, FlatpakProcessService 
         {
             Started = true,
             Pid = process.Id,
-            ProcessName = layout.ProcessNames[0],
-            LogHint = latestLog,
             WaitUntilReadyAsync = token => WaitForReadySignalAsync(latestLog, launchTime, token)
         });
     }

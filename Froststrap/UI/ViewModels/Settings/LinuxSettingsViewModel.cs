@@ -63,12 +63,6 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
         set => Settings?.SetPreset("UseConsoleExperience", value);
     }
 
-    public static bool SoberUseLibsecret
-    {
-        get => Settings?.GetPreset("UseLibsecret") == "true";
-        set => Settings?.SetPreset("UseLibsecret", value);
-    }
-
     public static bool SoberUseOpengl
     {
         get => Settings?.GetPreset("UseOpengl") == "true";

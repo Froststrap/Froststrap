@@ -13,8 +13,6 @@ internal sealed class RobloxPlayerData(IClientLayout layout) : CommonAppData, IA
 
     public override string BinaryType => layout.BinaryType!;
 
-    public string ProcessName => layout.ProcessNames[0];
-
     public override string ExecutableName => layout.ExecutableName!;
 
     public bool IsBundle => layout.Shape == ExecutableShape.MacBundle;

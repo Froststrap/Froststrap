@@ -22,8 +22,6 @@ namespace Froststrap.Extensions
             { EmojiType.Windows8, "2b01c6caabbe95afc92aa63b9bf100f3" },
         };
 
-        public static string GetHash(this EmojiType emojiType) => Hashes[emojiType];
-
         public static string GetUrl(this EmojiType emojiType)
         {
             if (emojiType == EmojiType.Default)

@@ -29,30 +29,6 @@ namespace Froststrap.UI.Elements.Settings.Pages
             App.FrostRPC?.SetPage("Global Settings");
         }
 
-        private void ValidateUInt32(object? sender, TextInputEventArgs e)
-        {
-            if (sender is TextBox textBox && !string.IsNullOrEmpty(e.Text))
-            {
-                string currentText = textBox.Text ?? string.Empty;
-                int caretIndex = textBox.CaretIndex;
-                string newText = currentText.Insert(caretIndex, e.Text);
-
-                e.Handled = !uint.TryParse(newText, out _);
-            }
-        }
-
-        private void ValidateFloat(object? sender, TextInputEventArgs e)
-        {
-            if (sender is TextBox textBox && !string.IsNullOrEmpty(e.Text))
-            {
-                string currentText = textBox.Text ?? string.Empty;
-                int caretIndex = textBox.CaretIndex;
-                string newText = currentText.Insert(caretIndex, e.Text);
-
-                e.Handled = !Regex.IsMatch(newText, @"^-?\d*\.?\d*$");
-            }
-        }
-
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnAttachedToVisualTree(e);

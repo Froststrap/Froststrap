@@ -22,12 +22,6 @@ namespace Froststrap
 
         public bool Loaded { get; protected set; }
 
-        public bool TryGetLoaded(out T value)
-        {
-            value = _prop;
-            return Loaded;
-        }
-
         public virtual string ClassName { get; } = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
 
         public virtual string ProfilesLocation => Path.Combine(Paths.Base, "Profiles.json");

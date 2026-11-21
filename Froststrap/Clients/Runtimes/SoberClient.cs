@@ -24,36 +24,19 @@ internal sealed class SoberClient(
     string stateFileName)
     : RobloxClient(layout, capabilities, displayName, environment, stateStore, stateFileName)
 {
-    public override ClientInspection Inspect()
+    public override bool IsInstalled()
     {
-        ClientInstall install = Install;
-        string clientPath = Path.Combine(install.InstallRoot, "data", "sober", "packages", "x86_64", "com.roblox.client");
+        string clientPath = Path.Combine(Install.InstallRoot, "data", "sober", "packages", "x86_64", "com.roblox.client");
 
-        bool installed;
         try
         {
-            installed = Directory.Exists(clientPath)
+            return Directory.Exists(clientPath)
                 && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return new ClientInspection
-            {
-                Install = install,
-                IsInstalled = false,
-                IsStateSaved = IsStateSaved,
-                Reason = InstallReason.Missing,
-                Error = ex.Message
-            };
+            return false;
         }
-
-        return new ClientInspection
-        {
-            Install = install,
-            IsInstalled = installed,
-            IsStateSaved = IsStateSaved,
-            Reason = installed ? InstallReason.None : InstallReason.Missing
-        };
     }
 
     public const string FlatpakId = "org.vinegarhq.Sober";

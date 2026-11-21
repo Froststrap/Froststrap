@@ -127,17 +127,6 @@ internal sealed class ModsPresetsViewModel : NotifyPropertyChangedViewModel
     public ICommand OpenModsFolderCommand => new RelayCommand(OpenModsFolder);
     public ModPresetTask OldAvatarBackgroundTask { get; } = new("OldAvatarBackground", @"ExtraContent\places\Mobile.rbxl", "OldAvatarBackground.rbxl");
 
-    public ModPresetTask OldCharacterSoundsTask { get; } = new("OldCharacterSounds", new()
-    {
-        { @"content\sounds\action_footsteps_plastic.mp3", "Sounds.OldWalk.mp3"  },
-        { @"content\sounds\action_jump.mp3",              "Sounds.OldJump.mp3"  },
-        { @"content\sounds\action_get_up.mp3",            "Sounds.OldGetUp.mp3" },
-        { @"content\sounds\action_falling.mp3",           "Sounds.Empty.mp3"    },
-        { @"content\sounds\action_jump_land.mp3",         "Sounds.Empty.mp3"    },
-        { @"content\sounds\action_swim.mp3",              "Sounds.Empty.mp3"    },
-        { @"content\sounds\impact_water.mp3",             "Sounds.Empty.mp3"    }
-    });
-
     public EmojiModPresetTask EmojiFontTask { get; } = new();
 
     public EnumModPresetTask<Enums.CursorType> CursorTypeTask { get; } = new("CursorType", new()

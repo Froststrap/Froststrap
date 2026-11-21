@@ -11,7 +11,6 @@ namespace Froststrap.UI.Converters
     internal sealed class UrlToBitmapConverter : IValueConverter
     {
         private const int MaxCacheEntries = 256;
-        private const int MaxTokenMappings = 512;
 
         private sealed class CacheEntry
         {
@@ -23,7 +22,6 @@ namespace Froststrap.UI.Converters
         private static readonly Dictionary<string, CacheEntry> _imageCache = new(StringComparer.Ordinal);
         private static readonly LinkedList<string> _cacheOrder = new();
         private static readonly ConcurrentDictionary<string, Task<Bitmap?>> _inFlight = new();
-        private static readonly ConcurrentDictionary<string, string> _tokenToUrlCache = new();
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
@@ -57,25 +55,6 @@ namespace Froststrap.UI.Converters
                 bitmap = null;
                 return false;
             }
-        }
-
-        public static bool TryGetCachedUrl(string token, out string? url)
-            => _tokenToUrlCache.TryGetValue(token, out url);
-
-        public static void CacheUrlMapping(string token, string url)
-        {
-            if (_tokenToUrlCache.Count >= MaxTokenMappings)
-            {
-                foreach (string key in _tokenToUrlCache.Keys)
-                {
-                    _tokenToUrlCache.TryRemove(key, out _);
-
-                    if (_tokenToUrlCache.Count < MaxTokenMappings / 2)
-                        break;
-                }
-            }
-
-            _tokenToUrlCache.TryAdd(token, url);
         }
 
         public static async Task<Bitmap?> GetBitmapFromCacheOrDownloadAsync(string url)

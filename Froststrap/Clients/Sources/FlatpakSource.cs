@@ -57,7 +57,7 @@ internal sealed partial class FlatpakSource(string appId)
         }
     }
 
-    public async Task<InstallResult> InstallAsync(ClientInstall install, IProgress<InstallProgress>? progress = null)
+    public async Task<InstallResult> InstallAsync(IProgress<InstallProgress>? progress = null)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -72,7 +72,7 @@ internal sealed partial class FlatpakSource(string appId)
         using var process = Process.Start(startInfo);
 
         if (process is null)
-            return new InstallResult { Install = install, Success = false };
+            return new InstallResult { Success = false };
 
         var errorLines = new List<string>();
 
@@ -100,11 +100,10 @@ internal sealed partial class FlatpakSource(string appId)
             process.WaitForExitAsync());
 
         if (process.ExitCode == 0)
-            return new InstallResult { Install = install, Success = true };
+            return new InstallResult { Success = true };
 
         return new InstallResult
         {
-            Install = install,
             Success = false,
             Error = string.Join('\n', errorLines.TakeLast(8))
         };

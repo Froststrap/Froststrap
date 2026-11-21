@@ -17,8 +17,6 @@ internal interface IProcessService
 
     bool Owns(Process process);
 
-    Process? FindPlayer();
-
     IReadOnlyList<Process> FindAllPlayer();
 
     bool IsStudioProcess(Process process);

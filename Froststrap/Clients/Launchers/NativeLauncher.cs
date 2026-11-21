@@ -90,8 +90,7 @@ internal sealed class NativeLauncher(IClientLayout layout) : IClientLauncher
         return new LaunchResult
         {
             Started = true,
-            Pid = pid,
-            ProcessName = layout.ProcessNames[0]
+            Pid = pid
         };
     }
 

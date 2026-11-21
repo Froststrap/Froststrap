@@ -39,12 +39,6 @@ internal class ClientProcessService : IProcessService
 
     private Process[] FindCrashHandlers() => _crashHandlerName is null ? [] : Process.GetProcessesByName(_crashHandlerName);
 
-    public Process? FindPlayer()
-    {
-        IReadOnlyList<Process> processes = FindAllPlayer();
-        return processes.Count > 0 ? processes[0] : null;
-    }
-
     public IReadOnlyList<Process> FindAllPlayer()
         => Utility.Processes.GetProcessesSafe().Where(Owns).ToList();
 

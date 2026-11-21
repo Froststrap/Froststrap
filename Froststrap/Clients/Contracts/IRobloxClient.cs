@@ -30,8 +30,6 @@ internal interface IRobloxClient
 
     IProcessService Processes { get; }
 
-    IClientLauncher Launcher { get; }
-
     ICookieStore Cookies { get; }
 
     ISettingsSync? SettingsSync { get; }
@@ -46,13 +44,12 @@ internal interface IRobloxClient
 
     /// <summary>
     /// The install resolved from the current state. Pure path composition: no I/O and no
-    /// settings reads inside the layout. Use <see cref="Inspect"/> to learn whether it
+    /// settings reads inside the layout. Use <see cref="IsInstalled"/> to learn whether it
     /// exists.
     /// </summary>
     ClientInstall Install { get; }
 
-    /// <summary>Synchronous install check, for UI that cannot await.</summary>
-    ClientInspection Inspect();
+    bool IsInstalled();
 
     Task<LaunchResult> LaunchAsync(
         LaunchRequest request,

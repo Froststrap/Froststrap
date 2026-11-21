@@ -190,8 +190,6 @@ internal sealed class FastFlagManager : JsonManager<Dictionary<string, object>>
         return mapping.First().Key;
     }
 
-    public static bool IsPreset(string flag) => PresetFlags.Values.Any(v => string.Equals(v, flag, StringComparison.OrdinalIgnoreCase));
-
     public override bool Save()
     {
         foreach (var key in Prop.Keys.ToList())

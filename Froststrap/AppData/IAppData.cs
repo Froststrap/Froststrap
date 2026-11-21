@@ -10,25 +10,17 @@ internal interface IAppData
 
     string BinaryType { get; }
 
-    string ProcessName { get; }
-
     string ExecutableName { get; }
 
     bool IsBundle { get; }
 
     string StaticDirectory { get; }
 
-    string DynamicDirectory { get; }
-
     string Directory { get; }
-
-    bool IsInstalled { get; }
 
     string ExecutablePath { get; }
 
     JsonManager<DistributionState> DistributionStateManager { get; }
 
     DistributionState DistributionState { get; }
-
-    IReadOnlyList<string> ModManifest { get; }
 }

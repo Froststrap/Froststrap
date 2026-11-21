@@ -52,9 +52,6 @@ internal sealed partial class App : Application
         DiagnosticsOpen = true;
     }
 
-    private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
-    private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
-
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly()
@@ -71,15 +68,9 @@ internal sealed partial class App : Application
 
     public FroststrapRichPresence? RichPresence { get; private set; }
 
-    public static string? MockReleaseTag => GetEnvironmentVariable(MockReleaseTagEnvironmentVariable);
+    public static bool IsPlayerInstalled => Clients.Player.IsInstalled();
 
-    public static bool IsMockReleaseEnabled => !string.IsNullOrWhiteSpace(MockReleaseTag);
-
-    public static string? MockCurrentVersion => GetEnvironmentVariable(MockCurrentVersionEnvironmentVariable);
-
-    public static bool IsPlayerInstalled => Clients.Player.Inspect().IsInstalled;
-
-    public static bool IsStudioInstalled => Clients.Studio.Inspect().IsInstalled;
+    public static bool IsStudioInstalled => Clients.Studio.IsInstalled();
 
     private static ClientRegistry? _clients;
 

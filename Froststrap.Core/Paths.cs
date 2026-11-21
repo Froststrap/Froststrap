@@ -6,16 +6,12 @@ namespace Froststrap;
 
 static class Paths
 {
-    public static string Temp => Path.Combine(Path.GetTempPath(), ProjectInfo.Name);
     public static string UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
     public static string LocalAppData => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
     public static string RoamingAppData => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
     public static string Desktop => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
     public static string WindowsStartMenu => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
     public static string Process => Environment.ProcessPath!;
-
-    public static string TempUpdates => Path.Combine(Temp, "Updates");
-    public static string TempLogs => Path.Combine(Temp, "Logs");
 
     public static string ConfigRoot { get; private set; } = "";
     public static string DataRoot { get; private set; } = "";

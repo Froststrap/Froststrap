@@ -368,7 +368,7 @@ internal sealed class Bootstrapper : IDisposable
     {
         if (TargetClient.Layout.Shape == ExecutableShape.ExternalManaged)
         {
-            if (!await SoberFlatpak.EnsureInstalledAsync(TargetClient.Install))
+            if (!await SoberFlatpak.EnsureInstalledAsync())
                 return;
         }
         else

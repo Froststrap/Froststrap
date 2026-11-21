@@ -17,7 +17,7 @@ internal sealed class SoberFlatpakFlow(Func<IBootstrapperDialog?> dialog, Bootst
 
     private IBootstrapperDialog? Dialog => dialog();
 
-    public async Task<bool> EnsureInstalledAsync(ClientInstall install)
+    public async Task<bool> EnsureInstalledAsync()
     {
         reporter.SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
 
@@ -63,7 +63,6 @@ internal sealed class SoberFlatpakFlow(Func<IBootstrapperDialog?> dialog, Bootst
         reporter.SetStatus(Strings.Bootstrapper_Status_InstallingSober);
 
         InstallResult result = await SoberSource.InstallAsync(
-            install,
             new InlineProgress<InstallProgress>(step => reporter.SetStatus(step.Message)));
 
         if (!result.Success)

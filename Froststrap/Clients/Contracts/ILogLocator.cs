@@ -17,11 +17,7 @@ internal interface ILogLocator
 
     LogShape LogFormat { get; }
 
-    string? LogKindToken { get; }
-
     IReadOnlyList<string> ReadySignals { get; }
-
-    IReadOnlyList<string> ExcludedTokens { get; }
 
     bool IsGameLog(FileInfo file);
 

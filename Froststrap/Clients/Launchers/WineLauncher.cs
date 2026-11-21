@@ -38,9 +38,6 @@ internal sealed class WineLauncher(IClientLayout layout) : IClientLauncher
         foreach (var userEnv in App.Settings.Prop.StudioEnvironmentVariables)
             env[userEnv.Key] = userEnv.Value;
 
-        foreach (var requestEnv in request.Environment)
-            env[requestEnv.Key] = requestEnv.Value;
-
         string baseCommand = $"\"{Path.Combine(versionDirectory, layout.ExecutableName!)}\" {request.CommandLine}";
         string finalCommand = baseCommand;
 
@@ -93,9 +90,7 @@ internal sealed class WineLauncher(IClientLayout layout) : IClientLauncher
         return Task.FromResult(new LaunchResult
         {
             Started = true,
-            Pid = pid,
-            ProcessName = layout.ProcessNames[0],
-            LogHint = logsDirectory
+            Pid = pid
         });
     }
 }

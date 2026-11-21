@@ -27,8 +27,6 @@ internal sealed class MainWindowViewModel : ObservableObject
 {
     private bool _isNotLinux = !OperatingSystem.IsLinux();
     public bool IsNotLinux { get => _isNotLinux; }
-    private bool _isNotMacOS = !OperatingSystem.IsMacOS();
-    public bool IsNotMacOS { get => _isNotMacOS; }
 
     private int _titlebarSpaceHeight = OperatingSystem.IsMacOS() ? 52 : 40;
     public int TitlebarSpaceHeight { get => _titlebarSpaceHeight; }

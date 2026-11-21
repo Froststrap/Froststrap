@@ -96,20 +96,12 @@ internal class RobloxClient : IRobloxClient
 
     protected bool IsStateSaved => _stateStore.For(_stateFileName).IsSaved;
 
-    public virtual ClientInspection Inspect()
+    public virtual bool IsInstalled()
     {
         ClientInstall install = Install;
-        bool installed = IsStateSaved
+        return IsStateSaved
             && !string.IsNullOrEmpty(install.VersionGuid)
             && Directory.Exists(install.InstallRoot);
-
-        return new ClientInspection
-        {
-            Install = install,
-            IsInstalled = installed,
-            IsStateSaved = _stateStore.For(_stateFileName).IsSaved,
-            Reason = installed ? InstallReason.None : InstallReason.Missing
-        };
     }
 
     public Task<LaunchResult> LaunchAsync(
