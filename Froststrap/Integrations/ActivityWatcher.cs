@@ -220,13 +220,9 @@ internal sealed class ActivityWatcher : IDisposable
             return;
 
         if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
-        {
             ProcessStudioLogEntry(logMessage);
-        }
         else
-        {
             ProcessPlayerLogEntry(logMessage);
-        }
     }
 
     private static string? ExtractLogMessage(string entry)
@@ -339,20 +335,20 @@ internal sealed class ActivityWatcher : IDisposable
                 int jsonStart = logMessage.IndexOf('{', StringComparison.Ordinal);
                 string jsonString = logMessage[jsonStart..];
                 using JsonDocument doc = JsonDocument.Parse(jsonString);
-                if (doc.RootElement.TryGetProperty("params", out JsonElement paramsElement) && paramsElement.TryGetProperty("request", out JsonElement requestElement))
+                if (
+                    doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
+                    && paramsElement.TryGetProperty("request", out JsonElement requestElement)
+                    && requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement)
+                    && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement)
+                    && requestTypeElement.GetString() == "RequestPrivateGame"
+                )
                 {
-                    if (requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement) && requestTypeElement.GetString() == "RequestPrivateGame")
+                    string? accessCode = accessCodeElement.GetString();
+                    if (!string.IsNullOrEmpty(accessCode))
                     {
-                        if (requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement))
-                        {
-                            string? accessCode = accessCodeElement.GetString();
-                            if (!string.IsNullOrEmpty(accessCode))
-                            {
-                                Data.AccessCode = accessCode;
-                                Data.ServerType = ServerType.Private;
-                                App.Logger.Info($"Captured private server access code: {accessCode}");
-                            }
-                        }
+                        Data.AccessCode = accessCode;
+                        Data.ServerType = ServerType.Private;
+                        App.Logger.Info($"Captured private server access code: {accessCode}");
                     }
                 }
             }
@@ -363,15 +359,11 @@ internal sealed class ActivityWatcher : IDisposable
             {
                 var universeMatch = Regex.Match(logMessage, GameJoiningUniversePattern, RegexOptions.IgnoreCase);
                 if (universeMatch.Success)
-                {
                     Data.UniverseId = long.Parse(universeMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                }
 
                 var userMatch = Regex.Match(logMessage, GameJoiningUniverseUserIDPattern, RegexOptions.IgnoreCase);
                 if (userMatch.Success)
-                {
                     Data.UserId = long.Parse(userMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                }
 
                 if (Data.UniverseId == 0)
                 {
@@ -394,9 +386,7 @@ internal sealed class ActivityWatcher : IDisposable
                 {
                     var lastActivity = History.First();
                     if (Data.UniverseId == lastActivity.UniverseId && Data.IsTeleport)
-                    {
                         Data.RootActivity = lastActivity.RootActivity ?? lastActivity;
-                    }
                 }
             }
             else if (logMessage.StartsWith(GameJoiningUDMUXEntry, StringComparison.Ordinal))
@@ -609,12 +599,12 @@ internal sealed class ActivityWatcher : IDisposable
     {
         _httpCancellationTokenSource.Cancel();
 
-        if (_httpListener != null)
-        {
-            try { _httpListener.Close(); }
-            catch { }
-            _httpListener = null;
-        }
+        if (_httpListener is null)
+            return;
+
+        try { _httpListener.Close(); }
+        catch { }
+        _httpListener = null;
     }
 
     private async Task ListenForHTTPRequests(CancellationToken token)
