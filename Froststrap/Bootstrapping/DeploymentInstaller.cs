@@ -18,8 +18,6 @@ internal sealed record InstallContext
 
     public required IAppData AppData { get; init; }
 
-    public required bool IsStudio { get; init; }
-
     public required string VersionGuid { get; init; }
 
     public required string VersionDirectory { get; init; }
@@ -69,8 +67,8 @@ internal sealed class DeploymentInstaller(
         IsInstalling = true;
 
         // make sure nothing is running before continuing upgrade
-        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !context.IsStudio)
-            await KillRobloxPlayersAsync();
+        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && context.Client.Target == ClientTarget.Player)
+            await CloseRunningClientAsync();
 
         // get a fully clean install
         if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(context.VersionDirectory))
@@ -218,24 +216,7 @@ internal sealed class DeploymentInstaller(
             }
         }
 
-        if (context.Client.Layout.Shape == ExecutableShape.MacBundle)
-        {
-            string[] appNames = [App.Clients.PlayerDeployment.ExecutableName, App.Clients.StudioDeployment.ExecutableName];
-            foreach (string appName in appNames)
-            {
-                string appPath = Path.Combine(context.VersionDirectory, appName);
-                if (!Directory.Exists(appPath)) continue;
-
-                string macOSDir = Path.Combine(appPath, "Contents", "MacOS");
-                if (Directory.Exists(macOSDir)) foreach (string file in Directory.GetFiles(macOSDir))
-                {
-                    var fileInfo = new FileInfo(file);
-                    fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
-                }
-                using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
-                await process!.WaitForExitAsync();
-            }
-        }
+        await context.Client.FinalizeInstallAsync(context.VersionDirectory);
 
         // finishing and cleanup
         MigrateCompatibilityFlags();
@@ -278,7 +259,7 @@ internal sealed class DeploymentInstaller(
         if (OperatingSystem.IsWindows())
             WindowsRegistry.UpdateEstimatedSize();
 
-        if (!context.IsStudio) ModEngine.InitializeModFolders(context.VersionDirectory, context.ModPaths, context.Client.DisplayName);
+        if (context.Client.Target == ClientTarget.Player) ModEngine.InitializeModFolders(context.VersionDirectory, context.ModPaths, context.Client.DisplayName);
         IsInstalling = false;
     }
 
@@ -291,9 +272,9 @@ internal sealed class DeploymentInstaller(
         context.Client.Registration.MigrateCompatibilityFlags(oldClientLocation, newClientLocation);
     }
 
-    private static async Task KillRobloxPlayersAsync()
+    private async Task CloseRunningClientAsync()
     {
-        await App.Clients.Player.CloseAllAsync(new KillRequest { Force = true, WaitForExit = true });
-        await App.Clients.Player.CloseCrashHandlersAsync();
+        await context.Client.CloseAllAsync(new KillRequest { Force = true, WaitForExit = true });
+        await context.Client.CloseCrashHandlersAsync();
     }
 }

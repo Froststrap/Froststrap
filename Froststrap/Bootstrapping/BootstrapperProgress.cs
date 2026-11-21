@@ -29,6 +29,29 @@ internal sealed class BootstrapperProgress(Func<IBootstrapperDialog?> dialog, Fu
             Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
     }
 
+    void IInstallReporter.SetProgress(double percent)
+    {
+        if (Dialog is null)
+            return;
+
+        Dialog.ProgressIndeterminate = false;
+        Dialog.ProgressMaximum = 100;
+        Dialog.ProgressValue = (int)percent;
+        Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+        Dialog.TaskbarProgressValue = percent / 100.0;
+    }
+
+    void IInstallReporter.ClearProgress()
+    {
+        if (Dialog is null)
+            return;
+
+        Dialog.ProgressIndeterminate = true;
+        Dialog.ProgressValue = 0;
+        Dialog.TaskbarProgressValue = 0.0;
+        Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
+    }
+
     Task IInstallReporter.DownloadAsync(string url, string destination) => DownloadFileWithProgressAsync(url, destination);
 
     void IPackageReporter.AddDownloaded(long bytes, bool updateProgressBar)

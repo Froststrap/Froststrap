@@ -42,7 +42,6 @@ internal sealed class Bootstrapper : IDisposable
     private readonly GameJoinData _joinData = null!;
     private readonly JoinPreparation _join;
 
-    private static bool AutomaticallyUpdateSober => App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged && App.Settings.Prop.AutomaticallyUpdateSober;
     private string CurrentDirectory => _latestVersionDirectory ?? AppData.Directory;
 
     private bool MustUpgrade => UpgradeReason != InstallReason.None;
@@ -108,7 +107,6 @@ internal sealed class Bootstrapper : IDisposable
 
     private readonly BootstrapperProgress _progress;
 
-    private SoberFlatpakFlow SoberFlatpak => new(() => Dialog, _progress);
 
     public string LockName { get; set; } = "Bootstrapper";
 
@@ -177,8 +175,8 @@ internal sealed class Bootstrapper : IDisposable
         App.Logger.Info("Running bootstrapper");
         Dialog?.CancelEnabled = true;
 
-        if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
-            await SoberFlatpak.UpdateAsync(_cancelTokenSource.Token);
+        if (_launchMode == LaunchMode.Player)
+            await TargetClient.UpdateAsync(_progress, _cancelTokenSource.Token);
 
         SetStatus(Strings.Bootstrapper_Status_Connecting);
 
@@ -366,12 +364,16 @@ internal sealed class Bootstrapper : IDisposable
 
     private async Task LaunchClientAsync()
     {
-        if (TargetClient.Layout.Shape == ExecutableShape.ExternalManaged)
+        InstallResult installed = await TargetClient.EnsureInstalledAsync(_progress);
+
+        if (!installed.Success)
         {
-            if (!await SoberFlatpak.EnsureInstalledAsync())
-                return;
+            await Frontend.ShowMessageBox(installed.Error ?? string.Empty, MessageBoxImage.Error);
+            App.Terminate(ErrorCode.ERROR_CANCELLED);
+            return;
         }
-        else
+
+        if (TargetClient.Capabilities.RequiresDeploymentApi)
         {
             string expectedName = AppData.ExecutableName;
             string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
@@ -667,7 +669,6 @@ internal sealed class Bootstrapper : IDisposable
             {
                 Client = TargetClient,
                 AppData = AppData,
-                IsStudio = IsStudioLaunch,
                 VersionGuid = _latestVersionGuid,
                 VersionDirectory = _latestVersionDirectory,
                 Manifest = _versionPackageManifest,

@@ -63,6 +63,12 @@ internal interface IRobloxClient
 
     Task CloseCrashHandlersAsync(CancellationToken cancellationToken = default);
 
+    Task<InstallResult> EnsureInstalledAsync(IInstallReporter reporter);
+
+    Task UpdateAsync(IInstallReporter reporter, CancellationToken cancellationToken = default);
+
+    Task FinalizeInstallAsync(string versionDirectory);
+
     Task PrepareEnvironmentAsync();
 
     bool ResetInstalledPackages();

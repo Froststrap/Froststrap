@@ -8,6 +8,8 @@ using Froststrap.Clients.Providers;
 using Froststrap.Clients.Model;
 using Froststrap.Clients.Registry;
 using Froststrap.Clients.Runtime;
+using Froststrap.Clients.Sources;
+using Froststrap.Utility;
 
 namespace Froststrap.Clients.Runtimes;
 
@@ -52,6 +54,94 @@ internal sealed class SoberClient(
     public override ISettingsSync? SettingsSync { get; } = new SoberSettingsSync();
 
     public override string LaunchLabel => Strings.Common_Sober;
+
+    private static FlatpakSource Source => new(FlatpakId);
+
+    public override async Task<InstallResult> EnsureInstalledAsync(IInstallReporter reporter)
+    {
+        reporter.SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
+
+        try
+        {
+            await FlatpakSource.EnsureFlatpakAvailableAsync();
+        }
+        catch (TimeoutException ex)
+        {
+            App.Logger.Error(ex, "Timed out while checking Flatpak installation.");
+            return new InstallResult { Error = "Timed out while checking Flatpak installation. Please make sure Flatpak is working and try again." };
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error(ex, "Flatpak not found.");
+            return new InstallResult { Error = "Flatpak is required on Linux.\n\nPlease install Flatpak first, then launch Froststrap again." };
+        }
+
+        if (await Source.IsInstalledAsync())
+        {
+            App.Logger.Info("Sober is already installed.");
+            return new InstallResult { Success = true };
+        }
+
+        App.Logger.Info("Installing Sober...");
+
+        reporter.SetIndeterminate(includeTaskbar: true);
+        reporter.SetStatus(Strings.Bootstrapper_Status_InstallingSober);
+
+        InstallResult result = await Source.InstallAsync(
+            new InlineProgress<InstallProgress>(step => reporter.SetStatus(step.Message)));
+
+        if (!result.Success)
+        {
+            string message = result.Error is null
+                ? "Failed to start Sober installation via Flatpak."
+                : string.Format(CultureInfo.InvariantCulture, Strings.Sober_FlatpakInstallFailed, FlatpakId, string.IsNullOrWhiteSpace(result.Error) ? "" : $"\n\n{result.Error}");
+
+            return new InstallResult { Error = message };
+        }
+
+        App.Logger.Info("Sober installation complete.");
+        return new InstallResult { Success = true };
+    }
+
+    public override async Task UpdateAsync(IInstallReporter reporter, CancellationToken cancellationToken = default)
+    {
+        if (!App.Settings.Prop.AutomaticallyUpdateSober)
+            return;
+
+        reporter.SetStatus(Strings.Bootstrapper_Status_UpdatingSober);
+        reporter.SetProgress(0);
+
+        try
+        {
+            await Source.UpdateAsync(new InlineProgress<InstallProgress>(progress => OnUpdateProgress(reporter, progress)), cancellationToken);
+        }
+        finally
+        {
+            reporter.ClearProgress();
+        }
+    }
+
+    private static void OnUpdateProgress(IInstallReporter reporter, InstallProgress progress)
+    {
+        if (progress.Phase == InstallPhase.Finalizing)
+        {
+            reporter.SetProgress(100);
+            reporter.SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
+            return;
+        }
+
+        if (progress.Step <= 0)
+        {
+            reporter.SetStatus(progress.Message);
+            return;
+        }
+
+        reporter.SetProgress(progress.Current);
+
+        reporter.SetStatus(progress.StepPercent >= 0
+            ? string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberProgress, progress.Step, progress.StepCount, progress.StepPercent)
+            : string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_UpdatingSoberBasic, progress.Step, progress.StepCount));
+    }
 
     public override string StartingStatus => Strings.Bootstrapper_Status_StartingSober;
 

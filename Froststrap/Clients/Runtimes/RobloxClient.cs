@@ -120,6 +120,31 @@ internal class RobloxClient : IRobloxClient
     public Task CloseCrashHandlersAsync(CancellationToken cancellationToken = default)
         => Processes.CloseCrashHandlersAsync(cancellationToken);
 
+    public virtual Task<InstallResult> EnsureInstalledAsync(IInstallReporter reporter)
+        => Task.FromResult(new InstallResult { Success = true });
+
+    public virtual Task UpdateAsync(IInstallReporter reporter, CancellationToken cancellationToken = default)
+        => Task.CompletedTask;
+
+    public virtual async Task FinalizeInstallAsync(string versionDirectory)
+    {
+        if (Layout.Shape != ExecutableShape.MacBundle)
+            return;
+
+        string appPath = Path.Combine(versionDirectory, Layout.ExecutableName!);
+        if (!Directory.Exists(appPath))
+            return;
+
+        string macOSDir = Path.Combine(appPath, "Contents", "MacOS");
+        if (Directory.Exists(macOSDir)) foreach (string file in Directory.GetFiles(macOSDir))
+        {
+            var fileInfo = new FileInfo(file);
+            fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
+        }
+        using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
+        await process!.WaitForExitAsync();
+    }
+
     public virtual Task PrepareEnvironmentAsync() => Task.CompletedTask;
 
     public virtual bool ResetInstalledPackages() => false;

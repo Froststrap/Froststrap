@@ -10,5 +10,9 @@ internal interface IInstallReporter
 
     void SetIndeterminate(bool includeTaskbar = false);
 
+    void SetProgress(double percent);
+
+    void ClearProgress();
+
     Task DownloadAsync(string url, string destination);
 }
