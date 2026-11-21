@@ -43,6 +43,8 @@ internal sealed record LaunchRequest
 
     public string? CommandLine { get; init; }
 
+    public GameJoinData? JoinData { get; init; }
+
     public string? WorkingDirectory { get; init; }
 
     public IReadOnlyDictionary<string, string> Environment { get; init; } = new Dictionary<string, string>();

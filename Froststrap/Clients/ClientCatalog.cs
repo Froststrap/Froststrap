@@ -88,7 +88,8 @@ internal static class ClientCatalog
         RequiresDeploymentApi = true,
         ModSupport = ModSupport.BundleFiles,
         RestoreStrategy = RestoreStrategy.PackageReextract,
-        SupportsStudioLaunch = true
+        SupportsStudioLaunch = true,
+        SupportsCustomIntegrations = true
     };
 
     private static ClientCapabilities StudioCapabilities() => new()
@@ -96,7 +97,8 @@ internal static class ClientCatalog
         RequiresDeploymentApi = true,
         ModSupport = ModSupport.BundleFiles,
         RestoreStrategy = RestoreStrategy.PackageReextract,
-        SupportsStudioLaunch = true
+        SupportsStudioLaunch = true,
+        SupportsCustomIntegrations = true
     };
 
     private static ClientCapabilities MacPlayerCapabilities() => PlayerCapabilities() with
@@ -114,7 +116,8 @@ internal static class ClientCatalog
         RequiresDeploymentApi = false,
         ModSupport = ModSupport.OverlayOnly,
         RestoreStrategy = RestoreStrategy.None,
-        SupportsStudioLaunch = false
+        SupportsStudioLaunch = false,
+        SupportsCustomIntegrations = false
     };
 
     private static ClientCapabilities WineStudioCapabilities() => StudioCapabilities();

@@ -18,6 +18,8 @@ internal interface IRobloxClient
 
     string LaunchLabel { get; }
 
+    string StartingStatus { get; }
+
     ClientTarget Target { get; }
 
     IClientLayout Layout { get; }
@@ -59,4 +61,6 @@ internal interface IRobloxClient
     Task PrepareEnvironmentAsync();
 
     bool ResetInstalledPackages();
+
+    string DescribeLaunchFailure(string details);
 }

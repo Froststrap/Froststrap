@@ -54,6 +54,11 @@ internal class RobloxClient : IRobloxClient
 
     public virtual string LaunchLabel => Layout.Target == ClientTarget.Studio ? Strings.Common_Studio : Strings.Common_Player;
 
+    public virtual string StartingStatus => Strings.Bootstrapper_Status_Starting;
+
+    public virtual string DescribeLaunchFailure(string details) =>
+        string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_LaunchFailed, DisplayName, details);
+
     public ClientTarget Target => Layout.Target;
 
     public IClientLayout Layout { get; }

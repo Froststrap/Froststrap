@@ -67,7 +67,7 @@ internal sealed class NativeLauncher(IClientLayout layout) : IClientLauncher
         }
         catch (Win32Exception ex) when (ex.NativeErrorCode == ErrorCancelled)
         {
-            return new LaunchResult { Started = false };
+            throw new OperationCanceledException(ex.Message, ex);
         }
         catch (Exception)
         {

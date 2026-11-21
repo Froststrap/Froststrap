@@ -24,6 +24,12 @@ internal sealed class SoberLauncher(IClientLayout layout, string flatpakId, ISet
         KillRunning();
 
         string commandLine = request.CommandLine ?? string.Empty;
+
+        if (request.JoinData is not null && GameJoin.BuildSoberUri(request.JoinData) is { } soberUri)
+        {
+            App.Logger.Info($"Translating launch command for Sober: {soberUri}");
+            commandLine = soberUri;
+        }
         App.Logger.Debug($"Launching Sober via flatpak with args: {commandLine}");
 
         var startInfo = new ProcessStartInfo

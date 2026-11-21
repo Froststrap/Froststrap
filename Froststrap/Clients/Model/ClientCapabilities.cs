@@ -18,5 +18,7 @@ internal sealed record ClientCapabilities
 
     public bool SupportsStudioLaunch { get; init; }
 
+    public bool SupportsCustomIntegrations { get; init; }
+
     public static ClientCapabilities None { get; } = new();
 }

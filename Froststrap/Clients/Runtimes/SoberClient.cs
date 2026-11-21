@@ -66,6 +66,11 @@ internal sealed class SoberClient(
 
     public override string LaunchLabel => Strings.Common_Sober;
 
+    public override string StartingStatus => Strings.Bootstrapper_Status_StartingSober;
+
+    public override string DescribeLaunchFailure(string details) =>
+        string.Format(CultureInfo.InvariantCulture, Strings.Sober_LaunchFailed, FlatpakId, details);
+
     public override bool ResetInstalledPackages()
     {
         string clientPackagePath = Path.Combine(Install.InstallRoot, "data", "sober", "packages", "x86_64", "com.roblox.client");

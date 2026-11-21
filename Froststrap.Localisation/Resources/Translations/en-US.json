@@ -18,6 +18,7 @@
   "Bootstrapper_ExtractionFailed_Message": "Some content may be missing. Force a Roblox reinstallation in settings to fix this.",
   "Bootstrapper_ExtractionFailed_Title": "Failed to extract all files",
   "Bootstrapper_JsonManagerSaveFailed": "Failed to save {0}: {1}",
+  "Bootstrapper_LaunchFailed": "Failed to launch {0}. {1}",
   "Bootstrapper_ModificationsFailed_Message": "Not all modifications will be present in the current launch.",
   "Bootstrapper_ModificationsFailed_Title": "Failed to apply all modifications",
   "Bootstrapper_NotEnoughSpace": "Froststrap does not have enough disk space to download and install Roblox. Please free up some disk space and try again.",

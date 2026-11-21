@@ -22,7 +22,6 @@ namespace Froststrap;
 
 internal sealed class Bootstrapper : IDisposable
 {
-    private const string SoberFlatpakId = Clients.Runtimes.SoberClient.FlatpakId;
     public const string BackgroundUpdaterLockName = "BackgroundUpdater";
 
     #region Properties
@@ -333,16 +332,7 @@ internal sealed class Bootstrapper : IDisposable
             else if (!allModificationsApplied)
                 Backend.NativeNotify.SendMessage(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
 
-            if (TargetClient.RuntimeEnvironment is not null)
-                await LaunchStudioViaWineAsync();
-            else if (TargetClient.Layout.Shape != ExecutableShape.ExternalManaged)
-                await StartRoblox();
-            else
-            {
-                if (!await SoberFlatpak.EnsureInstalledAsync(TargetClient.Install))
-                    return;
-                await LaunchSober([]);
-            }
+            await LaunchClientAsync();
 
             Dialog?.CloseBootstrapper();
         }
@@ -374,9 +364,34 @@ internal sealed class Bootstrapper : IDisposable
         TargetClient.Channel.Write(Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
     }
 
-    private async Task StartRoblox()
+    private async Task LaunchClientAsync()
     {
-        App.Logger.Info("Starting Roblox");
+        if (TargetClient.Layout.Shape == ExecutableShape.ExternalManaged)
+        {
+            if (!await SoberFlatpak.EnsureInstalledAsync(TargetClient.Install))
+                return;
+        }
+        else
+        {
+            string expectedName = AppData.ExecutableName;
+            string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
+
+            if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
+            {
+                App.Logger.Warn($"{expectedName} not found at {expectedPath}, triggering upgrade...");
+                await UpgradeRoblox();
+            }
+
+            if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
+                throw new FileNotFoundException($"Roblox application not found at expected path after upgrade: {expectedPath}");
+
+            App.Logger.Info($"Resolved Roblox path: {expectedPath}");
+        }
+
+        if (TargetClient.RuntimeEnvironment is { } runtimeEnvironment)
+            await runtimeEnvironment.PrepareAsync(_latestVersionDirectory, CurrentModPaths.ClientSettingsRoot, _progress, _cancelTokenSource.Token);
+
+        App.Logger.Info($"Starting {TargetClient.DisplayName}");
         if (_launchMode == LaunchMode.Player)
         {
             _launchCommandLine = await _join.PrepareAsync(_launchCommandLine);
@@ -385,108 +400,90 @@ internal sealed class Bootstrapper : IDisposable
                 _launchCommandLine = "roblox://navigation/home";
         }
 
-        SetStatus(Strings.Bootstrapper_Status_Starting);
-
-        string expectedName = AppData.ExecutableName;
-        string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
-
-        if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
-        {
-            App.Logger.Warn($"{expectedName} not found at {expectedPath}, triggering upgrade...");
-            await UpgradeRoblox();
-        }
-
-        if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
-            throw new FileNotFoundException($"Roblox application not found at expected path after upgrade: {expectedPath}");
-
-        App.Logger.Info($"Resolved Roblox path: {expectedPath}");
+        SetStatus(TargetClient.StartingStatus);
 
         var request = new LaunchRequest
         {
             Mode = _launchMode,
             CommandLine = _launchCommandLine,
+            JoinData = _joinData,
+            WorkingDirectory = _latestVersionDirectory,
             RunAsAdmin = _launchMode == LaunchMode.Player && ShouldRunAsAdmin()
         };
 
         if (_launchMode == LaunchMode.StudioAuth && !request.RunAsAdmin)
         {
-            await TargetClient.LaunchAsync(request);
+            await TryLaunchAsync(request);
             return;
         }
 
         var autoclosePids = new List<int>();
+        bool runIntegrations = TargetClient.Capabilities.SupportsCustomIntegrations;
 
-        await CustomIntegrationLauncher.LaunchPreLaunchAsync(autoclosePids);
+        if (runIntegrations)
+            await CustomIntegrationLauncher.LaunchPreLaunchAsync(autoclosePids);
 
-        LaunchResult launch = await TargetClient.LaunchAsync(request);
-
-        if (!launch.Started)
+        if (await TryLaunchAsync(request) is not { } launch)
             return;
 
         _appPid = launch.Pid;
 
-        App.Logger.Debug($"Started Roblox (PID {_appPid}). Launching Watcher...");
+        App.Logger.Debug($"Started {TargetClient.DisplayName} (PID {_appPid}). Launching Watcher...");
 
-        if (!IsStudioLaunch)
-        {
+        if (runIntegrations && _launchMode == LaunchMode.Player)
             await CustomIntegrationLauncher.LaunchPostLaunchAsync(autoclosePids);
-        }
 
         await PrepareWatcherIfNeededAsync(autoclosePids);
 
-        // allow for window to show, since the log is created pretty far beforehand
-        await Task.Delay(1000);
-    }
-
-    private async Task LaunchSober(List<int> autoclosePids)
-    {
-        _launchCommandLine = await _join.PrepareAsync(_launchCommandLine);
-
-        string? soberUri = GameJoin.BuildSoberUri(_joinData);
-        if (soberUri is not null)
+        if (launch.WaitUntilReadyAsync is null)
         {
-            App.Logger.Info($"Translating launch command for Sober: {soberUri}");
-            _launchCommandLine = soberUri;
+            // allow for window to show, since the log is created pretty far beforehand
+            await Task.Delay(1000);
+            return;
         }
-
-        SetStatus(Strings.Bootstrapper_Status_StartingSober);
 
         try
         {
-            LaunchResult launch = await TargetClient.LaunchAsync(
-                new LaunchRequest { Mode = _launchMode, CommandLine = _launchCommandLine },
-                _cancelTokenSource.Token);
-
-            _appPid = launch.Pid;
-            App.Logger.Debug("Launching Watcher...");
-            await PrepareWatcherIfNeededAsync(autoclosePids);
-
-            try
-            {
-                if (launch.WaitUntilReadyAsync is not null)
-                    await launch.WaitUntilReadyAsync(_cancelTokenSource.Token);
-            }
-            finally
-            {
-                Dialog?.CloseBootstrapper();
-            }
-
-            App.Logger.Info("Sober is running, handing off to the watcher");
+            await launch.WaitUntilReadyAsync(_cancelTokenSource.Token);
+            App.Logger.Info($"{TargetClient.DisplayName} is running, handing off to the watcher");
         }
         catch (OperationCanceledException)
         {
-            App.Logger.Info("Sober launch cancelled by user.");
+            App.Logger.Info($"{TargetClient.DisplayName} launch cancelled by user.");
+        }
+        finally
+        {
+            Dialog?.CloseBootstrapper();
+        }
+    }
+
+    private async Task<LaunchResult?> TryLaunchAsync(LaunchRequest request)
+    {
+        string details = "";
+
+        try
+        {
+            LaunchResult launch = await TargetClient.LaunchAsync(request, _cancelTokenSource.Token);
+
+            if (launch.Started)
+                return launch;
+
+            App.Logger.Error($"Failed to start {TargetClient.DisplayName}");
+        }
+        catch (OperationCanceledException)
+        {
+            App.Logger.Info($"{TargetClient.DisplayName} launch cancelled by user.");
+            return null;
         }
         catch (Exception ex)
         {
-            App.Logger.Error($"Failed to launch Sober via flatpak! {ex}");
-            string detailsPart = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
-            await Frontend.ShowMessageBox(
-                string.Format(CultureInfo.InvariantCulture, Strings.Sober_LaunchFailed, SoberFlatpakId, detailsPart),
-                MessageBoxImage.Error
-            );
-            App.Terminate(ErrorCode.ERROR_CANCELLED);
+            App.Logger.Error($"Failed to launch {TargetClient.DisplayName}! {ex}");
+            details = string.IsNullOrWhiteSpace(ex.Message) ? "" : $"\n\n{ex.Message}";
         }
+
+        await Frontend.ShowMessageBox(TargetClient.DescribeLaunchFailure(details), MessageBoxImage.Error);
+        App.Terminate(ErrorCode.ERROR_CANCELLED);
+        return null;
     }
 
     private async Task PrepareWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null)
@@ -612,39 +609,6 @@ internal sealed class Bootstrapper : IDisposable
     #endregion
 
     #region Roblox Install
-
-    private async Task LaunchStudioViaWineAsync()
-    {
-        if (TargetClient.RuntimeEnvironment is { } runtimeEnvironment)
-            await runtimeEnvironment.PrepareAsync(_latestVersionDirectory, CurrentModPaths.ClientSettingsRoot, _progress, _cancelTokenSource.Token);
-
-        SetStatus(Strings.Bootstrapper_Status_Starting);
-
-        var autoclosePids = new List<int>();
-        await CustomIntegrationLauncher.LaunchPreLaunchAsync(autoclosePids);
-
-        LaunchResult launch = await TargetClient.LaunchAsync(new LaunchRequest
-        {
-            Mode = _launchMode,
-            CommandLine = _launchCommandLine,
-            WorkingDirectory = _latestVersionDirectory
-        });
-
-        if (!launch.Started)
-        {
-            await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
-            App.Terminate(ErrorCode.ERROR_CANCELLED);
-            return;
-        }
-
-        _appPid = launch.Pid;
-
-        await CustomIntegrationLauncher.LaunchPostLaunchAsync(autoclosePids);
-
-        await PrepareWatcherIfNeededAsync(autoclosePids);
-
-        await Task.Delay(1000);
-    }
 
     private static void StartBackgroundUpdater()
     {
