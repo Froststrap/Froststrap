@@ -241,7 +241,7 @@ internal partial class Bootstrapper : IDisposable
                 }
             }
 
-            CleanupVersionsFolder(); // cleanup after background updater
+            VersionsCleaner.Run(); // cleanup after background updater
 
             bool allModificationsApplied = true;
 
@@ -274,7 +274,7 @@ internal partial class Bootstrapper : IDisposable
 
                     if (!backgroundUpdaterLockOpen)
                     {
-                        if (IsEligibleForBackgroundUpdate())
+                        if (BackgroundUpdatePolicy.IsEligible(IsStudioLaunch, MustUpgrade, _latestVersion, AppData))
                             StartBackgroundUpdater();
                         else
                             await UpgradeRoblox();
@@ -383,141 +383,6 @@ internal partial class Bootstrapper : IDisposable
         TargetClient.Channel.Write(Deployment.RobloxDomain, Deployment.IsDefaultChannel ? null : Deployment.Channel);
     }
 
-    private bool IsEligibleForBackgroundUpdate()
-    {
-        if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-        {
-            App.Logger.Debug("Not eligible: Is the background updater process");
-            return false;
-        }
-
-        if (!App.Settings.Prop.BackgroundUpdatesEnabled)
-        {
-            App.Logger.Debug("Not eligible: Background updates disabled");
-            return false;
-        }
-
-        if (IsStudioLaunch)
-        {
-            App.Logger.Debug("Not eligible: Studio launch");
-            return false;
-        }
-
-        if (MustUpgrade)
-        {
-            App.Logger.Debug("Not eligible: Must upgrade is true");
-            return false;
-        }
-
-        if (!string.IsNullOrEmpty(Deployment.ChannelToken))
-        {
-            App.Logger.Debug("Not eligible: Private channel enrollment");
-            return false;
-        }
-
-        // at least 3GB of free space
-        const long minimumFreeSpace = 3_000_000_000;
-        long space = Filesystem.GetFreeDiskSpace(Paths.Base);
-        if (space < minimumFreeSpace)
-        {
-            App.Logger.Info($"Not eligible: User has {space} free space, at least {minimumFreeSpace} is required");
-            return false;
-        }
-
-        if (_latestVersion == default)
-        {
-            App.Logger.Info("Not eligible: Latest version is undefined");
-            return false;
-        }
-
-        Version? currentVersion = Utility.Versioning.GetRobloxVersion(AppData);
-        if (currentVersion == default)
-        {
-            App.Logger.Info("Not eligible: Current version is undefined");
-            return false;
-        }
-
-        // always normally upgrade for downgrades
-        if (currentVersion.Minor > _latestVersion.Minor)
-        {
-            App.Logger.Info("Not eligible: Downgrade");
-            return false;
-        }
-
-        // only background update if we're:
-        // - one major update behind
-        // - the same major update
-        int diff = _latestVersion.Minor - currentVersion.Minor;
-        if (diff == 0 || diff == 1)
-        {
-            App.Logger.Info("Eligible");
-            return true;
-        }
-
-        App.Logger.Info($"Not eligible: Major version diff is {diff}");
-        return false;
-    }
-
-    private async Task<string> GetBetterMatchmakingServerID(CancellationToken cancellationToken = default)
-    {
-        string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
-
-        using var fetcher = new Integrations.RobloxServerFetcher();
-
-        if (!string.IsNullOrEmpty(selectedRegion) &&
-            !selectedRegion.Equals(Strings.Common_Auto, StringComparison.OrdinalIgnoreCase))
-        {
-            App.Logger.Debug($"User selected specific region: {selectedRegion}");
-
-            SetStatus(string.Format(CultureInfo.InvariantCulture, Strings.Bootstrapper_Status_SearchingServers, selectedRegion));
-
-            var result = await fetcher.FindBestServerInSelectedRegionAsync(
-                (long)_joinData.PlaceId!,
-                selectedRegion,
-                cancellationToken: cancellationToken);
-
-            if (result.Found)
-            {
-                App.Logger.Info($"Found server in selected region {selectedRegion}: {result.ServerId}");
-                return result.ServerId!;
-            }
-
-            App.Logger.Info($"No servers found in selected region {selectedRegion}. Falling back to Auto mode.");
-        }
-
-        if (cancellationToken.IsCancellationRequested)
-        {
-            App.Logger.Debug("Matchmaking was cancelled before auto mode could start.");
-            return "";
-        }
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
-
-        var topRegions = await fetcher.GetClosestRegionsForAutoModeAsync(cancellationToken);
-
-        if (cancellationToken.IsCancellationRequested)
-            return "";
-
-        if (topRegions.Count == 0)
-            throw new HttpRequestException("No regions found from datacenter list");
-
-        var autoResult = await fetcher.FindBestServerInRegionAsync(
-            (long)_joinData.PlaceId!,
-            topRegions,
-            cancellationToken: cancellationToken);
-
-        if (autoResult.Found)
-        {
-            App.Logger.Info($"Selected best server in {autoResult.Region} (rank {autoResult.Rank})");
-            return autoResult.ServerId!;
-        }
-
-        App.Logger.Warn("No server found in any region within timeout.");
-        return "";
-    }
-
     private async Task PrepareJoinAsync()
     {
         // reapplied on every launch because roblox can reset the file on its own.
@@ -579,7 +444,7 @@ internal partial class Bootstrapper : IDisposable
                 }
                 else
                 {
-                    serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                    serverid = await Integrations.BetterMatchmaking.FindServerAsync((long)_joinData.PlaceId, SetStatus, _matchmakingCts.Token);
                 }
             }
         }
@@ -900,105 +765,6 @@ internal partial class Bootstrapper : IDisposable
     #endregion
 
     #region Roblox Install
-
-    private static bool TryDeleteRobloxInDirectory(string dir)
-    {
-        IAppData[] clients = [App.PlayerData, App.StudioData];
-
-        foreach (IAppData client in clients)
-        {
-            string path = Path.Combine(dir, client.ExecutableName);
-
-            bool exists = client.IsBundle ? Directory.Exists(path) : File.Exists(path);
-            if (!exists) continue;
-
-            try
-            {
-                if (client.IsBundle)
-                    Directory.Delete(path, true);
-                else
-                {
-                    File.SetAttributes(path, FileAttributes.Normal);
-                    File.Delete(path);
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static void CleanupVersionsFolder()
-    {
-        bool externalPlayer = App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged;
-
-        if (externalPlayer)
-        {
-            bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
-            if (!isStudio)
-            {
-                App.Logger.Info("Skipping cleanup on Linux (Player) to protect Sober's data directory.");
-                return;
-            }
-        }
-
-        if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-        {
-            App.Logger.Info("Background updater tried to cleanup, stopping!");
-            return;
-        }
-
-        if (!Directory.Exists(Paths.Versions))
-        {
-            App.Logger.Info("Versions directory does not exist, skipping cleanup.");
-            return;
-        }
-
-        foreach (string dir in Directory.GetDirectories(Paths.Versions))
-        {
-            string dirName = Path.GetFileName(dir);
-
-            // to make static directory work on studio linux
-            if (externalPlayer && dirName == Path.GetFileName(App.Clients.Player.Install.InstallRoot))
-                continue;
-
-            bool shouldDelete = App.Settings.Prop.StaticDirectory
-                ? !ClientCatalog.StaticDirectoryNames.Contains(dirName)
-                : dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid;
-
-            if (!shouldDelete)
-                continue;
-
-            // check if it's still being used first
-            // we dont want to accidentally delete the files of a running roblox instance
-            if (!TryDeleteRobloxInDirectory(dir))
-                continue;
-
-            try
-            {
-                Directory.Delete(dir, true);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                try
-                {
-                    Filesystem.AssertReadOnlyDirectory(dir);
-                    Directory.Delete(dir, true);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error(ex, $"Failed to delete {dir}");
-                }
-            }
-            catch (IOException ex)
-            {
-                App.Logger.Error(ex, $"Failed to delete {dir}");
-            }
-        }
-    }
 
     private void MigrateCompatibilityFlags()
     {

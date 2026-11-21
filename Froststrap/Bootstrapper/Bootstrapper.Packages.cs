@@ -242,7 +242,7 @@ internal partial class Bootstrapper : IDisposable
         foreach (var package in _versionPackageManifest)
             AppData.DistributionState.PackageHashes.Add(package.Name, package.Signature);
 
-        CleanupVersionsFolder();
+        VersionsCleaner.Run();
 
         var allPackageHashes = new List<string>();
 
