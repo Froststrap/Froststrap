@@ -14,24 +14,26 @@
   pkg-config,
   libX11,
   libICE,
+  icu,
   libXi,
   libXrandr,
   libSM,
   libxcb,
   xcbutil,
   libxcursor,
-  libsecret,
-  dotnetCorePackages,
   glib,
   callPackage,
-  nspr,
   dbus,
-  squashfsTools,
-  skia,
+  openssl,
+}:
+{
+  dotnix,
+  ...
 }:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  dotnet-tc = dotnetCorePackages.sdk_10_0;
+  dotnet = dotnix.packages.${stdenv.hostPlatform.system};
+  dotnet-sdk = dotnet."10-0".stable.sdk;
 in
 mkFragment (finalAttrs: {
   name = "dotnet";
@@ -40,12 +42,9 @@ mkFragment (finalAttrs: {
     fontconfig
     freetype
     libGL
-    nspr
     vulkan-loader
     wayland
     libxkbcommon
-    libsecret
-    skia
     dbus
 
     # X11 libs
@@ -57,11 +56,13 @@ mkFragment (finalAttrs: {
     libxcursor
     libxcb
     xcbutil
+    icu
     glib
+    openssl
   ];
 
   buildInputs = [
-    dotnet-tc
+    dotnet-sdk
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     glib
@@ -72,12 +73,11 @@ mkFragment (finalAttrs: {
     libxcb
     xcbutil
     libxkbcommon
-
-    squashfsTools
   ];
 
   shellHook = ''
     export LD_LIBRARY_PATH=${lib.makeLibraryPath finalAttrs.runtimeLibs}
-    export DOTNET_ROOT=${dotnet-tc}/share/dotnet
+    export DOTNET_ROOT=${dotnet-sdk}/share/dotnet
+    export PATH=${dotnet-sdk}/share/dotnet:$PATH
   '';
 })

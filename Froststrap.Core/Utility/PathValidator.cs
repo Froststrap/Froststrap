@@ -40,12 +40,6 @@ namespace Froststrap.Utility
             "LPT9"
         ];
 
-        private static readonly char[] _directorySeperatorDelimiters =
-        [
-            Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar
-        ];
-
         private static readonly char[] _invalidPathChars = GetInvalidPathChars();
 
         public static char[] GetInvalidPathChars()
@@ -66,33 +60,6 @@ namespace Froststrap.Utility
                 return ValidationResult.IllegalCharacter;
 
             string fileNameNoExt = Path.GetFileNameWithoutExtension(fileName).ToUpperInvariant();
-            if (_reservedNames.Contains(fileNameNoExt))
-                return ValidationResult.ReservedFileName;
-
-            return ValidationResult.Ok;
-        }
-
-        public static ValidationResult IsPathValid(string path)
-        {
-            string? pathRoot = Path.GetPathRoot(path);
-            string pathNoRoot = pathRoot != null ? path[pathRoot.Length..] : path;
-
-            string[] pathParts = pathNoRoot.Split(_directorySeperatorDelimiters);
-
-            foreach (var part in pathParts)
-            {
-                if (part.IndexOfAny(_invalidPathChars) != -1)
-                    return ValidationResult.IllegalCharacter;
-
-                if (_reservedNames.Contains(part))
-                    return ValidationResult.ReservedDirectoryName;
-            }
-
-            string fileName = Path.GetFileName(path);
-            if (fileName.IndexOfAny(_invalidPathChars) != -1)
-                return ValidationResult.IllegalCharacter;
-
-            string fileNameNoExt = Path.GetFileNameWithoutExtension(path).ToUpperInvariant();
             if (_reservedNames.Contains(fileNameNoExt))
                 return ValidationResult.ReservedFileName;
 

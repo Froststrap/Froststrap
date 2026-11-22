@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-//! Module holding all "actions" avalailable
+//! Module holding all "actions" available
 //!
 //! Export the module with a main function.
 

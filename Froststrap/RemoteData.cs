@@ -38,6 +38,11 @@ namespace Froststrap
             }
         }
 
+        public void Unsubscribe(EventHandler Handler)
+        {
+            DataLoaded -= Handler;
+        }
+
         public async Task WaitUntilDataFetched()
         {
             const int delay = 100;

@@ -6,6 +6,5 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     internal sealed class TwentyFiveDialogViewModel(IBootstrapperDialog dialog) : BootstrapperDialogViewModel(dialog)
     {
-        public bool CancelButtonVisibility => CancelEnabled;
     }
 }

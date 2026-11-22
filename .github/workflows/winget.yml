@@ -4,12 +4,67 @@ on:
   release:
     types: [released]
 
+permissions:
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: vedantmgoyal9/winget-releaser@a8fff44b123f115ce4c21543edf8b677376fc7e0
-        with:
-          identifier: Froststrap.Froststrap
-          installers-regex: '\.msi$'
-          token: ${{ secrets.WINGET_TOKEN }}
+      - uses: Froststrap/setup-komac@75ab6665d2c924e8a87873025da6d09253295df6
+
+      - name: Resolve MSI download URL
+        id: msi
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          msi="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" \
+            --jq '.assets[] | select(.name | endswith(".msi")) | .browser_download_url')"
+          if [ -z "$msi" ]; then
+            echo "No .msi asset found on release ${GITHUB_REF_NAME}" >&2
+            exit 1
+          fi
+          echo "msi=$msi" >> "$GITHUB_OUTPUT"
+
+      - name: Sync winget-pkgs fork
+        env:
+          GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: komac sync-fork
+
+      - name: Generate manifests
+        env:
+          GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          komac update Froststrap.Froststrap \
+            --version "${GITHUB_REF_NAME#v}" \
+            --urls "${{ steps.msi.outputs.msi }}" \
+            --output "$RUNNER_TEMP/winget" \
+            --skip-pr-check \
+            --exit
+
+      - name: Patch manifest to match Velopack's ARP entry
+        run: |
+          manifest="$RUNNER_TEMP/winget/Froststrap.Froststrap.installer.yaml"
+          if grep -q '^  InstallerType: exe$' "$manifest"; then
+            exit 0
+          fi
+          if ! grep -q '^AppsAndFeaturesEntries:' "$manifest"; then
+            echo "Generated manifest has no AppsAndFeaturesEntries section" >&2
+            exit 1
+          fi
+          awk '
+            /^AppsAndFeaturesEntries:/ {
+              print
+              print "- DisplayName: Froststrap"
+              print "  Publisher: Froststrap"
+              print "  InstallerType: exe"
+              next
+            }
+            { print }
+          ' "$manifest" > "$manifest.tmp"
+          mv "$manifest.tmp" "$manifest"
+
+      - name: Submit manifests
+        env:
+          GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: komac submit "$RUNNER_TEMP/winget" --yes
