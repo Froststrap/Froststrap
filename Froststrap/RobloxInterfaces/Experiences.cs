@@ -203,6 +203,28 @@ namespace Froststrap.RobloxInterfaces
             return tiles;
         }
 
+        public static async Task<bool> SetFavoriteAsync(long universeId, bool isFavorited)
+        {
+            if (universeId == 0)
+                return false;
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                UrlBuilder.BuildApiUrl("games", $"v1/games/{universeId}/favorites"));
+
+            request.Content = new StringContent(
+                JsonHelper.Serialize(new GameFavoritesRequest { IsFavorited = isFavorited }),
+                Encoding.UTF8,
+                "application/json");
+
+            using var response = await App.Cookies.AuthRequest(request);
+
+            if (!response.IsSuccessStatusCode)
+                App.Logger.Error($"Failed to set favorite on {universeId} ({(int)response.StatusCode})");
+
+            return response.IsSuccessStatusCode;
+        }
+
         private static async Task PopulatePlayingAsync(List<GameTile> tiles)
         {
             try

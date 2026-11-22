@@ -22,6 +22,8 @@ internal enum ThumbnailSize
     Detailed,
     [JsonStringEnumMemberName("512x512")]
     Cyberpunk,
+    [JsonStringEnumMemberName("768x432")]
+    Wide,
 }
 
 internal static class ThumbnailSizeExtensions

@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.Clients.Model;
 using Froststrap.Enums.Overlay;
 using Froststrap.Utility;
 using System;
@@ -549,17 +548,9 @@ namespace Froststrap.RobloxInterfaces
 
         public static void LaunchDeeplink(string deeplink)
         {
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await App.Clients.Player.LaunchAsync(new LaunchRequest { Mode = LaunchMode.Player, CommandLine = deeplink });
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Error(ex, $"Failed to launch {deeplink}");
-                }
-            });
+            App.Logger.Info($"Launching {deeplink}");
+
+            Threading.ShellExecute(deeplink);
         }
 
         public static Uri GamePage(long placeId) => UrlBuilder.BuildApiUrl("www", $"games/{placeId}");

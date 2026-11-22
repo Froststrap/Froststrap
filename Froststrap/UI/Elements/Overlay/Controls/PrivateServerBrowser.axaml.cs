@@ -39,11 +39,11 @@ namespace Froststrap.UI.Elements.Overlay.Controls
                 _viewModel.LoadMoreCommand.Execute(null);
         }
 
-        public void Attach(ActivityWatcher? activityWatcher)
+        public void Attach(ActivityWatcher? activityWatcher, long? placeIdOverride = null)
         {
             _viewModel?.SetVisible(false);
 
-            _viewModel = new PrivateServersViewModel(activityWatcher);
+            _viewModel = new PrivateServersViewModel(activityWatcher, placeIdOverride);
             DataContext = _viewModel;
 
             _viewModel.SetVisible(IsVisible);

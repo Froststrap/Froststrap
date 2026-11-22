@@ -41,7 +41,7 @@ namespace Froststrap.UI.Elements.Overlay.Controls
                 _viewModel.LoadMoreCommand.Execute(null);
         }
 
-        public void Attach(ActivityWatcher? activityWatcher)
+        public void Attach(ActivityWatcher? activityWatcher, long? placeIdOverride = null, bool showCurrentServer = true)
         {
             if (_viewModel is not null)
             {
@@ -50,10 +50,10 @@ namespace Froststrap.UI.Elements.Overlay.Controls
                 _viewModel = null;
             }
 
-            _viewModel = new ServerBrowserViewModel(activityWatcher);
+            _viewModel = new ServerBrowserViewModel(activityWatcher, placeIdOverride, showCurrentServer);
             DataContext = _viewModel;
 
-            PrivateView.Attach(activityWatcher);
+            PrivateView.Attach(activityWatcher, placeIdOverride);
 
             _viewModel.SetVisible(PublicView.IsVisible);
         }

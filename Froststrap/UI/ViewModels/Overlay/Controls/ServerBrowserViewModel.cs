@@ -31,6 +31,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         ];
 
         private readonly ActivityWatcher? _activityWatcher;
+        private readonly long? _placeIdOverride;
+        private readonly bool _showCurrentServer;
         private readonly FlashMessage _flash;
 
         private List<GameServer> _allServers = [];
@@ -133,7 +135,12 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        private bool InGame => _activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0;
+        private bool InGame => _placeIdOverride is not null
+            || (_activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0);
+
+        private long PlaceId => _placeIdOverride ?? (_activityWatcher?.Data.PlaceId ?? 0);
+
+        private bool IsInCurrentServer => _activityWatcher?.InGame == true && _activityWatcher.Data.PlaceId != 0;
 
         public ICommand RefreshCommand { get; }
         public ICommand LoadMoreCommand { get; }
@@ -145,7 +152,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private string? _currentLocation;
 
-        public bool HasCurrentServer => InGame;
+        public bool HasCurrentServer => _showCurrentServer && IsInCurrentServer;
         public string CurrentServerType => _activityWatcher?.Data.ServerType.ToTranslatedString() ?? String.Empty;
         public string CurrentJobId => _activityWatcher?.Data.JobId ?? String.Empty;
 
@@ -162,12 +169,12 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         public ICommand CopyInstanceIdCommand { get; }
 
         private bool _isHopping;
-        public bool CanHop => InGame && !_isHopping && !IsBusy;
+        public bool CanHop => IsInCurrentServer && !_isHopping && !IsBusy;
 
         public ICommand HopCommand { get; }
 
         private bool _findingClosest;
-        public bool CanJoinClosest => InGame && !_findingClosest && !IsBusy;
+        public bool CanJoinClosest => IsInCurrentServer && !_findingClosest && !IsBusy;
 
         public ICommand ClosestCommand { get; }
 
@@ -176,7 +183,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             foreach (string name in CurrentServerProperties)
                 OnPropertyChanged(name);
 
-            if (!InGame || !ShowCurrentLocation || _currentLocation is not null)
+            if (!IsInCurrentServer || !ShowCurrentLocation || _currentLocation is not null)
                 return;
 
             string? location = await _activityWatcher!.Data.QueryServerLocation();
@@ -225,7 +232,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 }
 
                 App.Logger.Info($"Hopping to {target.JobId}");
-                GameServers.Join(_activityWatcher!.Data.PlaceId, target.JobId);
+                GameServers.Join(PlaceId, target.JobId);
                 Flash(Strings.Menu_Overlay_Servers_Hopping);
             }
             catch (Exception ex)
@@ -255,8 +262,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                     return;
                 }
 
-                long placeId = _activityWatcher!.Data.PlaceId;
-                var (jobId, alreadyClosest) = await GameServers.FindClosestAsync(placeId, _activityWatcher.Data.JobId);
+                long placeId = PlaceId;
+                var (jobId, alreadyClosest) = await GameServers.FindClosestAsync(placeId, _activityWatcher?.Data.JobId ?? String.Empty);
 
                 if (alreadyClosest) { Flash(Strings.Menu_Overlay_Servers_ClosestAlready); return; }
                 if (jobId is null) { Flash(Strings.Menu_Overlay_Servers_ClosestNone); return; }
@@ -278,9 +285,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
             }
         }
 
-        public ServerBrowserViewModel(ActivityWatcher? activityWatcher)
+        public ServerBrowserViewModel(ActivityWatcher? activityWatcher, long? placeIdOverride = null, bool showCurrentServer = true)
         {
             _activityWatcher = activityWatcher;
+            _placeIdOverride = placeIdOverride;
+            _showCurrentServer = showCurrentServer;
 
             _flash = new FlashMessage(TimeSpan.FromSeconds(2), () => OnPropertyChanged(nameof(SummaryText)));
 
@@ -406,11 +415,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
             try
             {
-                long placeId = _activityWatcher!.Data.PlaceId;
+                long placeId = PlaceId;
 
                 var servers = await GameServers.FetchAsync(
                     placeId,
-                    _activityWatcher.Data.JobId,
+                    _activityWatcher?.Data.JobId ?? String.Empty,
                     SelectedOrder,
                     ExcludeFull,
                     SelectedRegion);
@@ -418,7 +427,8 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 if (generation != _generation)
                     return;
 
-                if (servers.FirstOrDefault(x => x.IsCurrent) is GameServer current
+                if (_activityWatcher is not null
+                    && servers.FirstOrDefault(x => x.IsCurrent) is GameServer current
                     && _activityWatcher.Data.StartTime is DateTime started)
                 {
                     current.StartedAt = started;
@@ -480,7 +490,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
                 OnPropertyChanged(nameof(HasMore));
                 OnPropertyChanged(nameof(SummaryText));
 
-                await EnrichAsync(_activityWatcher!.Data.PlaceId, more);
+                await EnrichAsync(PlaceId, more);
             }
             catch (Exception ex)
             {
@@ -505,11 +515,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private void Join(GameServer? server)
         {
-            if (server is null || server.IsCurrent || _activityWatcher is null) return;
+            if (server is null || server.IsCurrent || PlaceId == 0) return;
 
             try
             {
-                GameServers.Join(_activityWatcher.Data.PlaceId, server.JobId);
+                GameServers.Join(PlaceId, server.JobId);
             }
             catch (Exception ex)
             {
@@ -520,11 +530,11 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
 
         private async Task CopyLinkAsync(Visual? visual)
         {
-            if (visual?.DataContext is not GameServer server || _activityWatcher is null) return;
+            if (visual?.DataContext is not GameServer server || PlaceId == 0) return;
 
             try
             {
-                string link = UrlBuilder.BuildApiUrl("www", $"games/start?placeId={_activityWatcher.Data.PlaceId}&gameInstanceId={server.JobId}").ToString();
+                string link = UrlBuilder.BuildApiUrl("www", $"games/start?placeId={PlaceId}&gameInstanceId={server.JobId}").ToString();
 
                 var clipboard = TopLevel.GetTopLevel(visual)?.Clipboard;
                 if (clipboard is null) return;

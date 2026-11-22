@@ -12,6 +12,7 @@
     xmlns:models="using:Froststrap.Models"
     xmlns:apis="using:Froststrap.Models.APIs.Roblox"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:overlay="using:Froststrap.UI.Elements.Overlay.Controls"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:resources="using:Froststrap.Localisation"
@@ -26,13 +27,15 @@
                 Padding="0"
                 Background="Transparent"
                 BorderThickness="0"
-                ClickMode="Press">
+                ClickMode="Press"
+                Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).OpenGamePageCommand}"
+                CommandParameter="{Binding}">
                 <Button.Styles>
                     <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
                         <Setter Property="Background" Value="Transparent" />
                     </Style>
                 </Button.Styles>
-                <Button.Flyout>
+                <Button.ContextFlyout>
                     <MenuFlyout Placement="Pointer">
                         <MenuItem
                             Header="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}"
@@ -104,7 +107,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuFlyout>
-                </Button.Flyout>
+                </Button.ContextFlyout>
 
                 <controls:Card
                     MaxWidth="190"
@@ -234,6 +237,7 @@
     <Grid>
         <ScrollViewer
             HorizontalScrollBarVisibility="Disabled"
+            IsVisible="{Binding !IsGamePageOpen}"
             VerticalScrollBarVisibility="Hidden">
             <StackPanel Margin="14,10">
                 <Border
@@ -845,6 +849,10 @@
                 </TabControl>
             </StackPanel>
         </ScrollViewer>
+
+        <overlay:GamePageView
+            x:Name="GamePage"
+            IsVisible="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).IsGamePageOpen}" />
 
         <Grid
             IsVisible="{Binding IsJoiningBestRegion}"

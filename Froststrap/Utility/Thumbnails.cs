@@ -92,6 +92,26 @@ namespace Froststrap.Utility
             return results.FirstOrDefault();
         }
 
+        public static async Task<string?> GetGameThumbnailUrlAsync(long universeId, CancellationToken token)
+        {
+            if (universeId == 0 || token.IsCancellationRequested)
+                return null;
+
+            Uri apiUrl = UrlBuilder.BuildApiUrl(
+                "thumbnails",
+                $"v1/games/multiget/thumbnails?universeIds={universeId}&size=768x432&format=Png&isCircular=false&returnPolicy=PlaceHolder");
+
+            var response = await Http.GetJson<ApiArrayResponse<GameThumbnailResponse>>(apiUrl);
+
+            if (token.IsCancellationRequested)
+                return null;
+
+            return response?.Data?
+                .SelectMany(x => x.Thumbnails ?? [])
+                .FirstOrDefault(x => !String.IsNullOrEmpty(x.ImageUrl))?
+                .ImageUrl;
+        }
+
         private static string CacheKey(ThumbnailRequest request) =>
             $"{request.TargetId}:{request.Token}:{request.Type}:{request.Size}:{request.Format}:{request.IsCircular}";
     }

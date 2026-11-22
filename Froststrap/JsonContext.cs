@@ -109,6 +109,9 @@ namespace Froststrap
     [JsonSerializable(typeof(ApiPageResponse<FavoriteGameData>))]
     [JsonSerializable(typeof(ApiPageResponse<SubplaceData>))]
     [JsonSerializable(typeof(OmniUserSearchResponse))]
+    [JsonSerializable(typeof(ApiArrayResponse<SocialLink>))]
+    [JsonSerializable(typeof(ApiArrayResponse<GameThumbnailResponse>))]
+    [JsonSerializable(typeof(GameFavoritesRequest))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

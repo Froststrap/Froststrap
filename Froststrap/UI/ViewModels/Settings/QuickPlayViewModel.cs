@@ -57,6 +57,8 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
     private CancellationTokenSource? _subplacesCts;
     private QuickPlayGameItem? _selectedGame;
     private OmniSearchContent? _selectedSearchResult;
+    private bool _isGamePageOpen;
+    private QuickPlayGameItem? _gamePageItem;
     private bool _disposed;
     private readonly Action<AccountManagerAccount?> _onAccountChangedUiRefresh;
 
@@ -195,6 +197,18 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
 
     public bool HasSelectedGame => SelectedGame != null;
 
+    public bool IsGamePageOpen
+    {
+        get => _isGamePageOpen;
+        private set => SetProperty(ref _isGamePageOpen, value);
+    }
+
+    public QuickPlayGameItem? GamePageItem
+    {
+        get => _gamePageItem;
+        private set => SetProperty(ref _gamePageItem, value);
+    }
+
     public OmniSearchContent? SelectedSearchResult
     {
         get => _selectedSearchResult;
@@ -280,6 +294,8 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
     public bool CanJoinBestRegion => HasActiveAccount && !IsJoiningBestRegion;
 
     public ICommand JoinGameCommand { get; }
+    public ICommand OpenGamePageCommand { get; }
+    public ICommand CloseGamePageCommand { get; }
     public ICommand RejoinLastServerCommand { get; }
     public ICommand ViewServersCommand { get; }
     public ICommand ViewRobloxServersCommand { get; }
@@ -300,6 +316,19 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
         JoinGameCommand = new RelayCommand<QuickPlayGameItem>(item =>
         {
             if (item != null) GameServers.Join(item.PlaceId);
+        });
+
+        OpenGamePageCommand = new RelayCommand<QuickPlayGameItem>(item =>
+        {
+            if (item == null) return;
+            GamePageItem = item;
+            IsGamePageOpen = true;
+        });
+
+        CloseGamePageCommand = new RelayCommand(() =>
+        {
+            IsGamePageOpen = false;
+            GamePageItem = null;
         });
 
         RejoinLastServerCommand = new RelayCommand<QuickPlayGameItem>(item =>
@@ -1197,6 +1226,19 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
         {
             App.Logger.Error($"Account change handler failed: {ex.Message}");
         }
+    }
+
+    public void InvalidateFavorites()
+    {
+        _favoritesLoaded = false;
+
+        if (SelectedTab != QuickPlayTab.Favorites || !HasActiveAccount)
+            return;
+
+        IsFavoritesLoading = true;
+        FavoriteGames = [];
+        OnPropertyChanged(nameof(HasFavoriteGames));
+        _ = LoadFavoriteGamesAsync();
     }
 
     private async Task LoadFavoriteGamesAsync()

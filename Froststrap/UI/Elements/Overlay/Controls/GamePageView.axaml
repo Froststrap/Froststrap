@@ -1,0 +1,631 @@
+<!--
+    SPDX-FileCopyrightText: 2026 Froststrap
+
+    SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl
+    x:Class="Froststrap.UI.Elements.Overlay.Controls.GamePageView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Froststrap.Models.Overlay"
+    xmlns:overlay="clr-namespace:Froststrap.UI.Elements.Overlay.Controls"
+    xmlns:resources="using:Froststrap.Localisation"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Overlay.Controls"
+    xmlns:vms="clr-namespace:Froststrap.UI.ViewModels"
+    d:DesignHeight="640"
+    d:DesignWidth="900"
+    x:DataType="vm:GamePageViewModel"
+    mc:Ignorable="d">
+
+    <UserControl.Styles>
+        <Style Selector="Button.PageTab">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Name="PART_Bd"
+                        Padding="{TemplateBinding Padding}"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0,0,0,2"
+                        CornerRadius="0">
+                        <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.PageTab:pointerover /template/ Border#PART_Bd">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        </Style>
+        <Style Selector="Button.PageTab.active">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
+        <Style Selector="Button.PageTab.active /template/ Border#PART_Bd">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+        </Style>
+
+        <Style Selector="Border.Section">
+            <Setter Property="Padding" Value="16,14" />
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style Selector="TextBlock.SectionHeading">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.StatLabel">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.StatValue">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid>
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Disabled"
+            IsVisible="{Binding !IsUnavailable}"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="14,10,14,16">
+
+                <Border
+                    Height="300"
+                    CornerRadius="12"
+                    ClipToBounds="True">
+                    <Panel>
+                        <Image
+                            RenderOptions.BitmapInterpolationMode="HighQuality"
+                            Source="{Binding HeroBitmap}"
+                            Stretch="UniformToFill" />
+
+                        <Border>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Offset="0" Color="#00000000" />
+                                    <GradientStop Offset="0.5" Color="#59000000" />
+                                    <GradientStop Offset="1" Color="#D9000000" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <controls:IconButton
+                            Margin="16"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="#66000000"
+                            BorderBrush="#33FFFFFF"
+                            Command="{Binding BackCommand}"
+                            Content="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Back}"
+                            Icon="ArrowLeft"
+                            IconSize="16" />
+
+                        <Grid
+                            Margin="24"
+                            VerticalAlignment="Bottom"
+                            ColumnDefinitions="Auto,*"
+                            ColumnSpacing="20">
+                            <Border
+                                Width="140"
+                                Height="140"
+                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                BorderBrush="#33FFFFFF"
+                                BorderThickness="1"
+                                ClipToBounds="True"
+                                CornerRadius="10">
+                                <Image
+                                    RenderOptions.BitmapInterpolationMode="HighQuality"
+                                    Source="{Binding IconBitmap}"
+                                    Stretch="UniformToFill" />
+                            </Border>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Bottom"
+                                Spacing="6">
+                                <TextBlock
+                                    FontSize="30"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    Text="{Binding Name}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip.Tip="{Binding Name}" />
+
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <TextBlock
+                                        FontSize="14"
+                                        Foreground="#DDFFFFFF"
+                                        Text="{Binding Creator, StringFormat='By {0}'}"
+                                        TextTrimming="CharacterEllipsis" />
+                                    <Image
+                                        Width="14"
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding IsVerified}"
+                                        Source="avares://Froststrap/Resources/RobloxVerified.png" />
+                                </StackPanel>
+
+                                <StackPanel
+                                    Margin="0,4,0,0"
+                                    IsVisible="{Binding !IsLoading}"
+                                    Orientation="Horizontal"
+                                    Spacing="16">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <ic:Lucide
+                                            Width="16"
+                                            Height="16"
+                                            VerticalAlignment="Center"
+                                            Icon="Users"
+                                            StrokeBrush="#DDFFFFFF" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            Foreground="White"
+                                            Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            Foreground="#B3FFFFFF"
+                                            Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Playing}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <ic:Lucide
+                                            Width="16"
+                                            Height="16"
+                                            VerticalAlignment="Center"
+                                            Icon="Star"
+                                            StrokeBrush="#DDFFFFFF" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            Foreground="White"
+                                            Text="{Binding FavoritedCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <ic:Lucide
+                                            Width="16"
+                                            Height="16"
+                                            VerticalAlignment="Center"
+                                            Icon="Eye"
+                                            StrokeBrush="#DDFFFFFF" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            Foreground="White"
+                                            Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            Foreground="#B3FFFFFF"
+                                            Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <WrapPanel Margin="0,10,0,0" ItemHeight="38">
+                                    <controls:IconButton
+                                        Height="38"
+                                        Margin="0,0,8,8"
+                                        Classes="Success"
+                                        Command="{Binding PlayCommand}"
+                                        Content="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}"
+                                        Icon="Play" />
+
+                                    <controls:IconButton
+                                        Height="38"
+                                        Margin="0,0,8,8"
+                                        Command="{Binding JoinBestRegionCommand}"
+                                        Content="{x:Static resources:Strings.Menu_QuickPlay_JoinBestRegion}"
+                                        Icon="Earth"
+                                        IsEnabled="{Binding CanJoinBestRegion}" />
+
+                                    <controls:IconButton
+                                        Height="38"
+                                        Margin="0,0,8,8"
+                                        Command="{Binding ToggleFavoriteCommand}"
+                                        Content="{Binding FavoriteText}"
+                                        Icon="Star"
+                                        IsFilled="{Binding IsFavorited}" />
+
+                                    <controls:IconButton
+                                        Height="38"
+                                        Margin="0,0,0,8"
+                                        Classes="Transparent"
+                                        Command="{Binding VisitPageCommand}"
+                                        Content="{x:Static resources:Strings.Menu_QuickPlay_VisitPage}"
+                                        Icon="ExternalLink" />
+                                </WrapPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Panel>
+                </Border>
+
+                <Grid IsVisible="{Binding IsContentVisible}">
+                    <StackPanel>
+                        <Border
+                            Margin="0,14,0,0"
+                            BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                            BorderThickness="0,0,0,1">
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Classes="PageTab"
+                                    Classes.active="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=About}"
+                                    Command="{Binding SelectTabCommand}"
+                                    CommandParameter="About"
+                                    Content="{x:Static resources:Strings.Menu_QuickPlay_GamePage_About}" />
+                                <Button
+                                    Classes="PageTab"
+                                    Classes.active="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Badges}"
+                                    Command="{Binding SelectTabCommand}"
+                                    CommandParameter="Badges"
+                                    Content="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Badges}" />
+                                <Button
+                                    Classes="PageTab"
+                                    Classes.active="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Subplaces}"
+                                    Command="{Binding SelectTabCommand}"
+                                    CommandParameter="Subplaces"
+                                    Content="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Subplaces}" />
+                                <Button
+                                    Classes="PageTab"
+                                    Classes.active="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Servers}"
+                                    Command="{Binding SelectTabCommand}"
+                                    CommandParameter="Servers"
+                                    Content="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Servers}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,14,0,0">
+
+                            <Grid
+                                ColumnDefinitions="2*,*"
+                                ColumnSpacing="16"
+                                IsVisible="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=About}">
+                                <StackPanel Grid.Column="0" Spacing="16">
+                                    <Border Classes="Section">
+                                        <StackPanel Spacing="8">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <ic:Lucide
+                                                    Width="16"
+                                                    Height="16"
+                                                    VerticalAlignment="Center"
+                                                    Icon="Info" />
+                                                <TextBlock Classes="SectionHeading" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Description}" />
+                                            </StackPanel>
+                                            <TextBlock
+                                                FontSize="13"
+                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                IsVisible="{Binding HasDescription}"
+                                                Text="{Binding Description}"
+                                                TextWrapping="Wrap" />
+                                            <TextBlock
+                                                FontSize="13"
+                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                IsVisible="{Binding !HasDescription}"
+                                                Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_NoDescription}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Classes="Section" IsVisible="{Binding HasSocialLinks}">
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Classes="SectionHeading" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Social}" />
+                                            <ItemsControl ItemsSource="{Binding SocialLinks}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="models:SocialLinkItem">
+                                                        <Button
+                                                            Margin="0,0,8,8"
+                                                            Padding="10,8"
+                                                            HorizontalContentAlignment="Left"
+                                                            Command="{x:Static vms:GlobalViewModel.OpenWebpageCommand}"
+                                                            CommandParameter="{Binding Url}"
+                                                            ToolTip.Tip="{Binding Url}">
+                                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                <ic:Lucide
+                                                                    Width="16"
+                                                                    Height="16"
+                                                                    VerticalAlignment="Center"
+                                                                    Icon="{Binding Icon}" />
+                                                                <StackPanel VerticalAlignment="Center">
+                                                                    <TextBlock
+                                                                        FontSize="13"
+                                                                        Text="{Binding Title}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                                    <TextBlock
+                                                                        FontSize="11"
+                                                                        Opacity="0.6"
+                                                                        Text="{Binding DisplayUrl}"
+                                                                        TextTrimming="CharacterEllipsis" />
+                                                                </StackPanel>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <Border Grid.Column="1" Classes="Section" VerticalAlignment="Top">
+                                    <StackPanel Spacing="10">
+                                        <TextBlock Classes="SectionHeading" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Statistics}" />
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="StatLabel" Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Classes="StatValue"
+                                                Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="StatLabel" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Favorites}" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Classes="StatValue"
+                                                Text="{Binding FavoritedCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="StatLabel" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Updated}" />
+                                            <TextBlock Grid.Column="1" Classes="StatValue" Text="{Binding UpdatedText}" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="StatLabel" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Created}" />
+                                            <TextBlock Grid.Column="1" Classes="StatValue" Text="{Binding CreatedText}" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="StatLabel" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_MaxPlayers}" />
+                                            <TextBlock Grid.Column="1" Classes="StatValue" Text="{Binding MaxPlayers}" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="StatLabel" Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Genre}" />
+                                            <TextBlock Grid.Column="1" Classes="StatValue" Text="{Binding Genre}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <Grid IsVisible="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Servers}">
+                                <overlay:ServerBrowser x:Name="ServersBrowser" />
+                            </Grid>
+
+                            <Grid IsVisible="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Subplaces}">
+                                <ItemsControl IsVisible="{Binding HasSubplaces}" ItemsSource="{Binding Subplaces}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border
+                                                Margin="0,0,0,8"
+                                                Padding="10"
+                                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6">
+                                                <Grid ColumnDefinitions="48,*,Auto" ColumnSpacing="10">
+                                                    <Border
+                                                        Grid.Column="0"
+                                                        Width="40"
+                                                        Height="40"
+                                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                        ClipToBounds="True"
+                                                        CornerRadius="20">
+                                                        <Image
+                                                            RenderOptions.BitmapInterpolationMode="LowQuality"
+                                                            Source="{Binding ThumbnailBitmap}"
+                                                            Stretch="UniformToFill" />
+                                                    </Border>
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="13"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                        Text="{Binding Name}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        ToolTip.Tip="{Binding Name}" />
+                                                    <controls:IconButton
+                                                        Grid.Column="2"
+                                                        VerticalAlignment="Center"
+                                                        Classes="Primary"
+                                                        Command="{Binding $parent[ItemsControl].((vm:GamePageViewModel)DataContext).JoinSubplaceCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}"
+                                                        Icon="Play" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <ui:FAProgressRing
+                                    Width="32"
+                                    Height="32"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsIndeterminate="True"
+                                    IsVisible="{Binding IsLoadingSubplaces}" />
+
+                                <TextBlock
+                                    MaxWidth="320"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    IsVisible="{Binding ShowSubplacesEmpty}"
+                                    Text="{x:Static resources:Strings.Menu_QuickPlay_NoSubplacesFound}"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+
+                            <Grid IsVisible="{Binding SelectedTab, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Badges}">
+                                <ItemsControl IsVisible="{Binding HasBadges}" ItemsSource="{Binding Badges}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Badge">
+                                            <Border
+                                                Width="200"
+                                                Height="200"
+                                                Margin="0,0,12,12"
+                                                Padding="8"
+                                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                ClipToBounds="True"
+                                                CornerRadius="8">
+                                                <Grid RowDefinitions="*,Auto" RowSpacing="8">
+                                                    <Border
+                                                        Grid.Row="0"
+                                                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                        ClipToBounds="True"
+                                                        CornerRadius="6">
+                                                        <Image
+                                                            RenderOptions.BitmapInterpolationMode="LowQuality"
+                                                            Source="{Binding IconBitmap}"
+                                                            Stretch="UniformToFill" />
+                                                    </Border>
+
+                                                    <StackPanel
+                                                        Grid.Row="1"
+                                                        Spacing="3">
+                                                        <TextBlock
+                                                            FontSize="13"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                            Text="{Binding Name}"
+                                                            TextTrimming="CharacterEllipsis"
+                                                            ToolTip.Tip="{Binding Name}" />
+
+                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                            <TextBlock
+                                                                VerticalAlignment="Center"
+                                                                FontSize="11"
+                                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                                                <Run Text="{x:Static resources:Strings.Menu_Overlay_Badges_Rarity}" />
+                                                                <Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding RarityText, Mode=OneWay}" />
+                                                            </TextBlock>
+                                                        </StackPanel>
+
+                                                        <Border
+                                                            Padding="6,2"
+                                                            HorizontalAlignment="Left"
+                                                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                                            CornerRadius="4"
+                                                            IsVisible="{Binding AwardedKnown}">
+                                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="4">
+                                                                <ic:Lucide
+                                                                    Grid.Column="0"
+                                                                    Width="11"
+                                                                    Height="11"
+                                                                    VerticalAlignment="Center"
+                                                                    Icon="Trophy" />
+                                                                <TextBlock
+                                                                    Grid.Column="1"
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="11"
+                                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                    Text="{Binding StatusText}"
+                                                                    TextTrimming="CharacterEllipsis"
+                                                                    ToolTip.Tip="{Binding StatusText}" />
+                                                            </Grid>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <ui:FAProgressRing
+                                    Width="32"
+                                    Height="32"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsIndeterminate="True"
+                                    IsVisible="{Binding IsLoadingBadges}" />
+
+                                <TextBlock
+                                    MaxWidth="320"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    IsVisible="{Binding ShowBadgesEmpty}"
+                                    Text="{x:Static resources:Strings.Menu_QuickPlay_NoBadgesFound}"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ui:FAProgressRing
+            Width="44"
+            Height="44"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsIndeterminate="True"
+            IsVisible="{Binding IsLoading}" />
+
+        <TextBlock
+            MaxWidth="360"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="14"
+            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            IsVisible="{Binding IsUnavailable}"
+            Text="{x:Static resources:Strings.Menu_QuickPlay_GamePage_Unavailable}"
+            TextAlignment="Center"
+            TextWrapping="Wrap" />
+
+        <Grid
+            Background="#99000000"
+            IsVisible="{Binding IsJoiningBestRegion}"
+            ZIndex="200">
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="16">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="White"
+                    Text="{x:Static resources:Strings.Menu_QuickPlay_FindingBestServer}" />
+                <ui:FAProgressRing
+                    Width="48"
+                    Height="48"
+                    Foreground="White"
+                    IsActive="{Binding IsJoiningBestRegion}"
+                    IsIndeterminate="True" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
