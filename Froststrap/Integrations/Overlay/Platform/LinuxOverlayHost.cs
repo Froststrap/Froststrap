@@ -43,7 +43,6 @@ namespace Froststrap.Integrations.Overlay.Platform
         private readonly Dictionary<Window, LinuxOverlaySurface> _surfaces = [];
         private readonly Dictionary<int, LinuxOverlaySurface> _byId = [];
         private readonly HashSet<Window> _visibleWindows = [];
-        private readonly Dictionary<Window, bool> _clickThrough = [];
         private readonly Dictionary<int, DateTime> _lastFrame = [];
         private readonly HashSet<Window> _hiddenByGame = [];
         private readonly IntPtr _eventBuffer = Marshal.AllocHGlobal(EventSize * MaxEvents);
@@ -86,8 +85,6 @@ namespace Froststrap.Integrations.Overlay.Platform
         public bool UsesRenderedSurfaces => true;
 
         public bool UsesSeparatePinnedWindows => false;
-
-        public bool CanDetectFocus => true;
 
         public void Start() => Dispatcher.UIThread.Post(() => _ = StartAsync());
 
@@ -311,40 +308,28 @@ namespace Froststrap.Integrations.Overlay.Platform
 
                 _lastFrame[surface.Id] = now;
 
-                if (!surface.Tracked)
-                    LayoutFreeSurface(surface);
-
                 (int width, int height) = SurfaceSize(surface);
+
+                if (width <= 0 || height <= 0)
+                    continue;
+
                 surface.Render(width, height);
             }
-        }
-
-        private void LayoutFreeSurface(LinuxOverlaySurface surface)
-        {
-            Size measured = MeasureRendered(surface.Window);
-
-            int width = (int)Math.Ceiling(measured.Width);
-            int height = (int)Math.Ceiling(measured.Height);
-
-            if (width <= 0 || height <= 0)
-                return;
-
-            PixelPoint position = surface.Window.Position;
-            LinuxOverlay.SetRect(surface.Id, position.X, position.Y, width, height);
         }
 
         private (int Width, int Height) SurfaceSize(LinuxOverlaySurface surface)
         {
             Window window = surface.Window;
 
-            if (!surface.Tracked)
-            {
-                Size measured = MeasureRendered(window);
-                return ((int)Math.Ceiling(measured.Width), (int)Math.Ceiling(measured.Height));
-            }
+            if (surface.Tracked)
+                return ((int)Math.Ceiling(window.Width), (int)Math.Ceiling(window.Height));
 
-            int width = (int)Math.Ceiling(window.Width);
-            int height = (int)Math.Ceiling(window.Height);
+            Size measured = MeasureRendered(window);
+            int width = (int)Math.Ceiling(measured.Width);
+            int height = (int)Math.Ceiling(measured.Height);
+
+            if (width > 0 && height > 0)
+                LinuxOverlay.SetRect(surface.Id, window.Position.X, window.Position.Y, width, height);
 
             return (width, height);
         }
@@ -465,15 +450,7 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             LinuxOverlay.SetVisible(id, false);
 
-            if (!tracked)
-            {
-                _clickThrough[window] = true;
-                LinuxOverlay.SetRegions(id, []);
-            }
-            else
-            {
-                LinuxOverlay.SetRegions(id, FullRegion);
-            }
+            LinuxOverlay.SetRegions(id, tracked ? FullRegion : []);
         }
 
         public void ReleaseOverlayWindow(Window window)
@@ -483,7 +460,6 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             _byId.Remove(surface.Id);
             _visibleWindows.Remove(window);
-            _clickThrough.Remove(window);
             _lastFrame.Remove(surface.Id);
 
             if (ReferenceEquals(_focused, window))
@@ -500,7 +476,6 @@ namespace Froststrap.Integrations.Overlay.Platform
             if (!_surfaces.TryGetValue(window, out LinuxOverlaySurface? surface))
                 return;
 
-            _clickThrough[window] = clickThrough;
             LinuxOverlay.SetRegions(surface.Id, clickThrough ? [] : FullRegion);
         }
 
@@ -552,19 +527,10 @@ namespace Froststrap.Integrations.Overlay.Platform
             Key key,
             KeyModifiers defaultModifiers,
             Key defaultKey,
-            string description)
-        {
-            _ = window;
+            string description) =>
+            LinuxHotkeys.Register(id, modifiers, key, defaultModifiers, defaultKey, description);
 
-            return LinuxHotkeys.Register(id, modifiers, key, defaultModifiers, defaultKey, description);
-        }
-
-        public void UnregisterHotkey(Window window, int id)
-        {
-            _ = window;
-
-            LinuxHotkeys.Unregister(id);
-        }
+        public void UnregisterHotkey(Window window, int id) => LinuxHotkeys.Unregister(id);
 
         private static int[] FullRegion => [0, 0, 16384, 16384];
 

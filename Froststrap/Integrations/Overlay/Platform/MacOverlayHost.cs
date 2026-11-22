@@ -117,7 +117,7 @@ namespace Froststrap.Integrations.Overlay.Platform
 
             while (!_disposed && elapsed < ResolveTimeoutMs)
             {
-                if (_tracker.TryGetWindow(out _, out _))
+                if (_tracker.HasWindow())
                     return true;
 
                 await Task.Delay(ResolvePollMs);
@@ -145,7 +145,7 @@ namespace Froststrap.Integrations.Overlay.Platform
         public void FocusGame() => MacApp.Activate(ProcessId);
 
         public IKeyOverlayInput? CreateKeyInput(SoftKeyProfile profile) =>
-            new MacKeyOverlayInput(ProcessId, profile, () => _gameForeground);
+            new MacKeyOverlayInput(profile, () => _gameForeground);
 
         public void PrepareGameWindow(Window window) => PrepareOverlayWindow(window, MacWindow.WindowKind.Game);
 
@@ -201,22 +201,11 @@ namespace Froststrap.Integrations.Overlay.Platform
                 state.SetClickThrough(clickThrough);
         }
 
-        public void SetOverlayRegion(Window window, IReadOnlyList<OverlayRegion> regions)
-        {
-            _ = window;
-            _ = regions;
-        }
+        public void SetOverlayRegion(Window window, IReadOnlyList<OverlayRegion> regions) { }
 
-        public void ClearOverlayRegion(Window window)
-        {
-            _ = window;
-        }
+        public void ClearOverlayRegion(Window window) { }
 
-        public void ClipOverlayToGame(Window window, OverlayRegion gameClip)
-        {
-            _ = window;
-            _ = gameClip;
-        }
+        public void ClipOverlayToGame(Window window, OverlayRegion gameClip) { }
 
         public bool IsWindowForeground(Window window) =>
             _overlayWindows.TryGetValue(window, out MacWindow? state) && state.IsForeground();
@@ -236,24 +225,10 @@ namespace Froststrap.Integrations.Overlay.Platform
             Key key,
             KeyModifiers defaultModifiers,
             Key defaultKey,
-            string description)
-        {
-            _ = window;
+            string description) =>
+            MacHotkeys.Register(id, modifiers, key, defaultModifiers, defaultKey, description);
 
-            return MacHotkeys.Register(
-                id,
-                modifiers,
-                key,
-                defaultModifiers,
-                defaultKey,
-                description);
-        }
-
-        public void UnregisterHotkey(Window window, int id)
-        {
-            _ = window;
-            MacHotkeys.Unregister(id);
-        }
+        public void UnregisterHotkey(Window window, int id) => MacHotkeys.Unregister(id);
 
         private void OnMacHotkeyPressed(int id) => HotkeyPressed?.Invoke(this, id);
 

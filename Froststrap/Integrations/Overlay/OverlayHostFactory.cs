@@ -8,9 +8,10 @@ namespace Froststrap.Integrations.Overlay
 {
     internal static class OverlayHostFactory
     {
-        public static IOverlayHost? Create(int robloxProcessId, ActivityWatcher? activityWatcher)
-        {
-            return new PlatformOverlayHost(robloxProcessId, activityWatcher);
-        }
+        public static IOverlayHost Create(int robloxProcessId, ActivityWatcher? activityWatcher) =>
+            OperatingSystem.IsWindows() ? new WindowsOverlayHost(robloxProcessId, activityWatcher)
+            : OperatingSystem.IsLinux() ? new LinuxOverlayHost(robloxProcessId, activityWatcher)
+            : OperatingSystem.IsMacOS() ? new MacOverlayHost(robloxProcessId, activityWatcher)
+            : new UnsupportedOverlayHost(robloxProcessId, activityWatcher);
     }
 }

@@ -31,14 +31,8 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
 
         private const uint VkSpace = 0x20;
 
-        private const double CpsTimeConstantSeconds = 1.0;
-
         private readonly int _robloxPid;
-
-        private readonly uint _keyUp;
-        private readonly uint _keyLeft;
-        private readonly uint _keyDown;
-        private readonly uint _keyRight;
+        private readonly KeyOverlayState _state;
 
         private Thread? _hookThread;
         private uint _hookThreadId;
@@ -46,20 +40,6 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
         private IntPtr _mouseHook = IntPtr.Zero;
         private LowLevelKeyboardProc? _keyboardProc;
         private LowLevelMouseProc? _mouseProc;
-
-        private volatile bool _up;
-        private volatile bool _left;
-        private volatile bool _down;
-        private volatile bool _right;
-        private volatile bool _space;
-        private volatile bool _mouseLeft;
-        private volatile bool _mouseRight;
-
-        private readonly object _scoreLock = new();
-
-        private double _leftScore;
-        private double _rightScore;
-        private long _scoreTimestamp;
 
         private bool _isDisposed;
 
@@ -69,10 +49,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
 
             var keys = SoftKeyLayout.Resolve(profile);
 
-            _keyUp = keys.Up;
-            _keyLeft = keys.Left;
-            _keyDown = keys.Down;
-            _keyRight = keys.Right;
+            _state = new KeyOverlayState(keys.Up, keys.Left, keys.Down, keys.Right, VkSpace);
 
             if (!OperatingSystem.IsWindows())
             {
@@ -83,32 +60,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
             Start();
         }
 
-        public KeyOverlaySnapshot GetSnapshot()
-        {
-            long now = Environment.TickCount64;
-
-            double leftCps;
-            double rightCps;
-
-            lock (_scoreLock)
-            {
-                DecayScores(now);
-
-                leftCps = _leftScore / CpsTimeConstantSeconds;
-                rightCps = _rightScore / CpsTimeConstantSeconds;
-            }
-
-            return new KeyOverlaySnapshot(
-                _up,
-                _left,
-                _down,
-                _right,
-                _space,
-                _mouseLeft,
-                _mouseRight,
-                leftCps,
-                rightCps);
-        }
+        public KeyOverlaySnapshot GetSnapshot() => _state.GetSnapshot();
 
         [SupportedOSPlatform("windows")]
         private void Start()
@@ -165,12 +117,12 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
 
                 uint vkCode = kb.vkCode;
 
-                if (vkCode != _keyUp && vkCode != _keyDown && vkCode != _keyLeft && vkCode != _keyRight && vkCode != VkSpace)
+                if (!_state.Tracks(vkCode))
                     return CallNextHookEx(_keyboardHook, nCode, wParam, lParam);
 
                 if (!IsGameForeground())
                 {
-                    ClearState();
+                    _state.Clear();
                     return CallNextHookEx(_keyboardHook, nCode, wParam, lParam);
                 }
 
@@ -179,7 +131,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
                 bool isUp = msg == WM_KEYUP || msg == WM_SYSKEYUP;
 
                 if (isDown || isUp)
-                    UpdateKey(vkCode, isDown);
+                    _state.SetKey(vkCode, isDown);
 
                 return CallNextHookEx(_keyboardHook, nCode, wParam, lParam);
             }
@@ -204,28 +156,26 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
                 {
                     if (!IsGameForeground())
                     {
-                        ClearState();
+                        _state.Clear();
                         return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
                     }
 
                     switch (msg)
                     {
                         case WM_LBUTTONDOWN:
-                            _mouseLeft = true;
-                            AddClick(true);
+                            _state.SetMouse(true, true);
                             break;
 
                         case WM_LBUTTONUP:
-                            _mouseLeft = false;
+                            _state.SetMouse(true, false);
                             break;
 
                         case WM_RBUTTONDOWN:
-                            _mouseRight = true;
-                            AddClick(false);
+                            _state.SetMouse(false, true);
                             break;
 
                         case WM_RBUTTONUP:
-                            _mouseRight = false;
+                            _state.SetMouse(false, false);
                             break;
                     }
                 }
@@ -236,68 +186,6 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
             {
                 App.Logger.Error(ex, "Key overlay mouse hook crashed");
                 return CallNextHookEx(_mouseHook, nCode, wParam, lParam);
-            }
-        }
-
-        private void UpdateKey(uint vkCode, bool pressed)
-        {
-            if (vkCode == _keyUp) _up = pressed;
-            else if (vkCode == _keyDown) _down = pressed;
-            else if (vkCode == _keyLeft) _left = pressed;
-            else if (vkCode == _keyRight) _right = pressed;
-            else if (vkCode == VkSpace) _space = pressed;
-        }
-
-        private void DecayScores(long now)
-        {
-            if (_scoreTimestamp == 0)
-            {
-                _scoreTimestamp = now;
-                return;
-            }
-
-            double elapsed = (now - _scoreTimestamp) / 1000.0;
-
-            if (elapsed <= 0)
-                return;
-
-            double decay = Math.Exp(-elapsed / CpsTimeConstantSeconds);
-
-            _leftScore *= decay;
-            _rightScore *= decay;
-            _scoreTimestamp = now;
-        }
-
-        private void AddClick(bool left)
-        {
-            long now = Environment.TickCount64;
-
-            lock (_scoreLock)
-            {
-                DecayScores(now);
-
-                if (left)
-                    _leftScore += 1;
-                else
-                    _rightScore += 1;
-            }
-        }
-
-        private void ClearState()
-        {
-            _up = false;
-            _left = false;
-            _down = false;
-            _right = false;
-            _space = false;
-            _mouseLeft = false;
-            _mouseRight = false;
-
-            lock (_scoreLock)
-            {
-                _leftScore = 0;
-                _rightScore = 0;
-                _scoreTimestamp = 0;
             }
         }
 
@@ -323,7 +211,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
 
             if (OperatingSystem.IsWindows())
             {
-                ClearState();
+                _state.Clear();
 
                 if (_hookThreadId != 0)
                 {

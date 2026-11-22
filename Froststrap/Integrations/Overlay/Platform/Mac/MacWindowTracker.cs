@@ -126,21 +126,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             Refresh();
         }
 
-        public bool TryGetWindow(out CGRect rect, out bool onScreen)
-        {
-            WindowInfo? info = FindWindow();
-
-            if (info is null)
-            {
-                rect = default;
-                onScreen = false;
-                return false;
-            }
-
-            rect = info.Value.Bounds;
-            onScreen = info.Value.OnScreen;
-            return true;
-        }
+        public bool HasWindow() => FindWindow() is not null;
 
         private void OnTick(object? sender, EventArgs e)
         {

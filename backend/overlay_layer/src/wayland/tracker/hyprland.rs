@@ -7,9 +7,15 @@ use std::collections::HashMap;
 use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 use tinyjson::JsonValue;
 
 const SOBER_CLASS: &str = "org.vinegarhq.Sober";
+
+const MONITORS_TTL: Duration = Duration::from_secs(1);
+
+static MONITORS: Mutex<Option<(Instant, Arc<Vec<JsonValue>>)>> = Mutex::new(None);
 
 fn socket_path(name: &str) -> Option<PathBuf> {
     let runtime = std::env::var_os("XDG_RUNTIME_DIR")?;
@@ -83,11 +89,29 @@ fn is_sober(client: &JsonValue) -> bool {
     text(field(client, "class").unwrap_or(&JsonValue::Null)) == Some(SOBER_CLASS)
 }
 
+fn monitors() -> Option<Arc<Vec<JsonValue>>> {
+    let mut cached = MONITORS
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+
+    if let Some((at, list)) = cached.as_ref() {
+        if at.elapsed() < MONITORS_TTL {
+            return Some(list.clone());
+        }
+    }
+
+    let list = Arc::new(request("j/monitors").and_then(|value| array(&value).cloned())?);
+
+    *cached = Some((Instant::now(), list.clone()));
+
+    Some(list)
+}
+
 fn game_info() -> GameInfo {
     let Some(clients) = request("j/clients") else {
         return GameInfo::default();
     };
-    let monitors = request("j/monitors").and_then(|value| array(&value).cloned());
+    let monitors = monitors();
 
     let active = request("j/activewindow")
         .map(|value| text(field(&value, "class").unwrap_or(&JsonValue::Null)) == Some(SOBER_CLASS))

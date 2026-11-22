@@ -497,11 +497,11 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
 
         private static bool IsCloaked(HWND hwnd)
         {
-            int[] buffer = new int[1];
+            Span<int> cloaked = stackalloc int[1];
 
             unsafe
             {
-                fixed (int* pointer = buffer)
+                fixed (int* pointer = cloaked)
                 {
                     var result = PInvoke.DwmGetWindowAttribute(
                         hwnd,
@@ -509,31 +509,30 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
                         pointer,
                         (uint)sizeof(int));
 
-                    return result.Succeeded && buffer[0] != 0;
+                    return result.Succeeded && cloaked[0] != 0;
                 }
             }
         }
 
         private static bool IsShellWindow(HWND hwnd)
         {
-            string className = GetWindowClass(hwnd);
-
-            return className is "Progman" or "WorkerW" or "Shell_TrayWnd" or "Shell_SecondaryTrayWnd";
-        }
-
-        private static string GetWindowClass(HWND hwnd)
-        {
             Span<char> buffer = stackalloc char[64];
+            int length;
 
             unsafe
             {
                 fixed (char* pointer = buffer)
                 {
-                    int length = PInvoke.GetClassName(hwnd, pointer, buffer.Length);
-
-                    return length > 0 ? new string(pointer, 0, length) : String.Empty;
+                    length = PInvoke.GetClassName(hwnd, pointer, buffer.Length);
                 }
             }
+
+            if (length <= 0)
+                return false;
+
+            ReadOnlySpan<char> className = buffer[..length];
+
+            return className is "Progman" or "WorkerW" or "Shell_TrayWnd" or "Shell_SecondaryTrayWnd";
         }
 
         private readonly record struct Occluder(HWND Handle, OverlayRegion Screen);

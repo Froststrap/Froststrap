@@ -7,7 +7,7 @@ mod tracker;
 
 use std::collections::{HashMap, VecDeque};
 use std::error::Error;
-use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicI32, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
@@ -156,6 +156,8 @@ pub struct Overlay {
     shared: Arc<Shared>,
     sender: channel::Sender<Command>,
     thread: Option<JoinHandle<()>>,
+    poll_thread: Option<JoinHandle<()>>,
+    stop: Arc<AtomicBool>,
     next_id: AtomicI32,
 }
 
@@ -167,26 +169,29 @@ impl Overlay {
             game: Mutex::new(GameState::default()),
         });
         let (sender, receiver) = channel::channel::<Command>();
+        let stop = Arc::new(AtomicBool::new(false));
 
         let run_shared = shared.clone();
-        let run_sender = sender.clone();
         let thread = thread::spawn(move || {
-            if let Err(err) = run(run_shared, run_sender, receiver) {
+            if let Err(err) = run(run_shared, receiver) {
                 eprintln!("overlay stopped: {err}");
             }
         });
 
         let poll_shared = shared.clone();
         let poll_sender = sender.clone();
-        thread::Builder::new()
+        let poll_stop = stop.clone();
+        let poll_thread = thread::Builder::new()
             .name("froststrap-overlay-track".into())
-            .spawn(move || poll_game(poll_shared, poll_sender))
+            .spawn(move || poll_game(poll_shared, poll_sender, poll_stop))
             .ok();
 
         Overlay {
             shared,
             sender,
             thread: Some(thread),
+            poll_thread,
+            stop,
             next_id: AtomicI32::new(0),
         }
     }
@@ -245,10 +250,16 @@ impl Overlay {
             frame.height = height;
             frame.pixels.resize(row_bytes * height as usize, 0);
 
-            for row in 0..height as usize {
-                let src = row * stride as usize;
-                let dst = row * row_bytes;
-                frame.pixels[dst..dst + row_bytes].copy_from_slice(&pixels[src..src + row_bytes]);
+            if stride as usize == row_bytes {
+                frame
+                    .pixels
+                    .copy_from_slice(&pixels[..row_bytes * height as usize]);
+            } else {
+                for row in 0..height as usize {
+                    let src = row * stride as usize;
+                    let dst = row * row_bytes;
+                    frame.pixels[dst..dst + row_bytes].copy_from_slice(&pixels[src..src + row_bytes]);
+                }
             }
         }
 
@@ -281,19 +292,25 @@ impl Overlay {
     }
 
     pub fn shutdown(mut self) {
+        self.stop.store(true, Ordering::Relaxed);
         let _ = self.sender.send(Command::Shutdown);
+
         if let Some(thread) = self.thread.take() {
+            let _ = thread.join();
+        }
+
+        if let Some(thread) = self.poll_thread.take() {
             let _ = thread.join();
         }
     }
 }
 
-fn poll_game(shared: Arc<Shared>, sender: channel::Sender<Command>) {
+fn poll_game(shared: Arc<Shared>, sender: channel::Sender<Command>, stop: Arc<AtomicBool>) {
     let Some(tracker) = tracker::detect() else {
         return;
     };
 
-    loop {
+    while !stop.load(Ordering::Relaxed) {
         let state = GameState::from_info(&tracker.game_info());
 
         let changed = {
@@ -307,7 +324,7 @@ fn poll_game(shared: Arc<Shared>, sender: channel::Sender<Command>) {
             return;
         }
 
-        thread::sleep(Duration::from_millis(16));
+        thread::sleep(Duration::from_millis(33));
     }
 }
 
@@ -324,27 +341,14 @@ struct Surface {
 
 impl Surface {
     fn apply_game(&mut self, game: GameState) {
-        let (x, y, width, height) = if game.flags & GAME_PRESENT != 0 {
-            (game.x, game.y, game.width.max(1), game.height.max(1))
+        if game.flags & GAME_PRESENT != 0 {
+            self.set_geometry(game.x, game.y, game.width, game.height);
         } else {
-            (0, 0, 1, 1)
-        };
-
-        if self.x == x && self.y == y && self.width == width && self.height == height {
-            return;
+            self.set_geometry(0, 0, 1, 1);
         }
-
-        self.x = x;
-        self.y = y;
-        self.width = width;
-        self.height = height;
-
-        self.layer.set_size(width as u32, height as u32);
-        self.layer.set_margin(y, 0, 0, x);
-        self.layer.commit();
     }
 
-    fn apply_rect(&mut self, x: i32, y: i32, width: i32, height: i32) {
+    fn set_geometry(&mut self, x: i32, y: i32, width: i32, height: i32) {
         let width = width.max(1);
         let height = height.max(1);
 
@@ -431,24 +435,24 @@ impl App {
 
         {
             let frames = lock(&self.shared.frames);
-            match frames.get(&id) {
-                Some(frame) => log::debug!("wayland: draw id={id} frame {}x{} ({} px)", frame.width, frame.height, frame.pixels.len()),
-                None => log::warn!("wayland: draw id={id} NO FRAME — rendering transparent pixels"),
-            }
-            if let Some(frame) = frames.get(&id) {
-                let copy_width = frame.width.min(width).max(0) as usize;
-                let copy_height = frame.height.min(height).max(0) as usize;
-                let src_stride = frame.width as usize * 4;
-                let dst_stride = width as usize * 4;
 
-                if src_stride > 0 && copy_height > 0 && frame.pixels.len() >= copy_height * src_stride {
-                    for row in 0..copy_height {
-                        let src = row * src_stride;
-                        let dst = row * dst_stride;
-                        canvas[dst..dst + copy_width * 4]
-                            .copy_from_slice(&frame.pixels[src..src + copy_width * 4]);
+            match frames.get(&id) {
+                Some(frame) => {
+                    let copy_width = frame.width.min(width).max(0) as usize;
+                    let copy_height = frame.height.min(height).max(0) as usize;
+                    let src_stride = frame.width as usize * 4;
+                    let dst_stride = width as usize * 4;
+
+                    if src_stride > 0 && copy_height > 0 && frame.pixels.len() >= copy_height * src_stride {
+                        for row in 0..copy_height {
+                            let src = row * src_stride;
+                            let dst = row * dst_stride;
+                            canvas[dst..dst + copy_width * 4]
+                                .copy_from_slice(&frame.pixels[src..src + copy_width * 4]);
+                        }
                     }
                 }
+                None => log::warn!("wayland: draw id={id} NO FRAME — rendering transparent pixels"),
             }
         }
 
@@ -613,7 +617,7 @@ impl App {
 
                 if !tracked {
                     if let Some(surface) = self.surfaces.get_mut(&id) {
-                        surface.apply_rect(x, y, width, height);
+                        surface.set_geometry(x, y, width, height);
                     }
                 }
 
@@ -630,11 +634,7 @@ impl App {
     }
 }
 
-fn run(
-    shared: Arc<Shared>,
-    _sender: channel::Sender<Command>,
-    receiver: channel::Channel<Command>,
-) -> Result<(), Box<dyn Error>> {
+fn run(shared: Arc<Shared>, receiver: channel::Channel<Command>) -> Result<(), Box<dyn Error>> {
     let conn = Connection::connect_to_env()?;
     let (globals, event_queue) = registry_queue_init(&conn)?;
     let qh = event_queue.handle();

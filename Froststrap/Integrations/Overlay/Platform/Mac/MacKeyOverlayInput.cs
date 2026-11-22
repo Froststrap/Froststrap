@@ -15,7 +15,6 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
     internal sealed class MacKeyOverlayInput : IKeyOverlayInput
     {
         private const uint SpaceKeyCode = 0x31;
-        private const double CpsTimeConstantSeconds = 1.0;
 
         private const ulong EventMask =
             (1UL << (int)MacCG.EventKeyDown)
@@ -27,10 +26,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             | (1UL << (int)MacCG.EventRightMouseUp);
 
         private readonly Func<bool> _isGameForeground;
-        private readonly uint _keyUp;
-        private readonly uint _keyLeft;
-        private readonly uint _keyDown;
-        private readonly uint _keyRight;
+        private readonly KeyOverlayState _state;
 
         private readonly GCHandle _selfHandle;
 
@@ -39,34 +35,16 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
         private IntPtr _source;
         private IntPtr _runLoop;
 
-        private volatile bool _up;
-        private volatile bool _left;
-        private volatile bool _down;
-        private volatile bool _right;
-        private volatile bool _space;
-        private volatile bool _mouseLeft;
-        private volatile bool _mouseRight;
-
-        private readonly object _scoreLock = new();
-
-        private double _leftScore;
-        private double _rightScore;
-        private long _scoreTimestamp;
-
         private volatile bool _isDisposed;
         private int _resourcesFreed;
 
-        public MacKeyOverlayInput(int processId, SoftKeyProfile profile, Func<bool> isGameForeground)
+        public MacKeyOverlayInput(SoftKeyProfile profile, Func<bool> isGameForeground)
         {
-            _ = processId;
             _isGameForeground = isGameForeground;
 
             var keys = MacSoftKeyLayout.Resolve(profile);
 
-            _keyUp = keys.Up;
-            _keyLeft = keys.Left;
-            _keyDown = keys.Down;
-            _keyRight = keys.Right;
+            _state = new KeyOverlayState(keys.Up, keys.Left, keys.Down, keys.Right, SpaceKeyCode);
 
             _selfHandle = GCHandle.Alloc(this, GCHandleType.Normal);
 
@@ -79,32 +57,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
             _thread.Start();
         }
 
-        public KeyOverlaySnapshot GetSnapshot()
-        {
-            long now = Environment.TickCount64;
-
-            double leftCps;
-            double rightCps;
-
-            lock (_scoreLock)
-            {
-                DecayScores(now);
-
-                leftCps = _leftScore / CpsTimeConstantSeconds;
-                rightCps = _rightScore / CpsTimeConstantSeconds;
-            }
-
-            return new KeyOverlaySnapshot(
-                _up,
-                _left,
-                _down,
-                _right,
-                _space,
-                _mouseLeft,
-                _mouseRight,
-                leftCps,
-                rightCps);
-        }
+        public KeyOverlaySnapshot GetSnapshot() => _state.GetSnapshot();
 
         private void TapThread()
         {
@@ -240,7 +193,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
 
             if (!_isGameForeground())
             {
-                ClearState();
+                _state.Clear();
                 return;
             }
 
@@ -253,89 +206,25 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
                         eventRef,
                         MacCG.KeyboardEventKeycode);
 
-                    UpdateKey(keyCode, type == MacCG.EventKeyDown);
+                    _state.SetKey(keyCode, type == MacCG.EventKeyDown);
                     break;
                 }
 
                 case MacCG.EventLeftMouseDown:
-                    _mouseLeft = true;
-                    AddClick(true);
+                    _state.SetMouse(true, true);
                     break;
 
                 case MacCG.EventLeftMouseUp:
-                    _mouseLeft = false;
+                    _state.SetMouse(true, false);
                     break;
 
                 case MacCG.EventRightMouseDown:
-                    _mouseRight = true;
-                    AddClick(false);
+                    _state.SetMouse(false, true);
                     break;
 
                 case MacCG.EventRightMouseUp:
-                    _mouseRight = false;
+                    _state.SetMouse(false, false);
                     break;
-            }
-        }
-
-        private void UpdateKey(uint keyCode, bool pressed)
-        {
-            if (keyCode == _keyUp) _up = pressed;
-            else if (keyCode == _keyDown) _down = pressed;
-            else if (keyCode == _keyLeft) _left = pressed;
-            else if (keyCode == _keyRight) _right = pressed;
-            else if (keyCode == SpaceKeyCode) _space = pressed;
-        }
-
-        private void DecayScores(long now)
-        {
-            if (_scoreTimestamp == 0)
-            {
-                _scoreTimestamp = now;
-                return;
-            }
-
-            double elapsed = (now - _scoreTimestamp) / 1000.0;
-
-            if (elapsed <= 0)
-                return;
-
-            double decay = Math.Exp(-elapsed / CpsTimeConstantSeconds);
-
-            _leftScore *= decay;
-            _rightScore *= decay;
-            _scoreTimestamp = now;
-        }
-
-        private void AddClick(bool left)
-        {
-            long now = Environment.TickCount64;
-
-            lock (_scoreLock)
-            {
-                DecayScores(now);
-
-                if (left)
-                    _leftScore += 1;
-                else
-                    _rightScore += 1;
-            }
-        }
-
-        private void ClearState()
-        {
-            _up = false;
-            _left = false;
-            _down = false;
-            _right = false;
-            _space = false;
-            _mouseLeft = false;
-            _mouseRight = false;
-
-            lock (_scoreLock)
-            {
-                _leftScore = 0;
-                _rightScore = 0;
-                _scoreTimestamp = 0;
             }
         }
 
@@ -346,7 +235,7 @@ namespace Froststrap.Integrations.Overlay.Platform.Mac
 
             _isDisposed = true;
 
-            ClearState();
+            _state.Clear();
 
             IntPtr runLoop = _runLoop;
 
