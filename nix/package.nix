@@ -32,6 +32,7 @@
   zlib,
   krb5,
   dbus,
+  openssl,
   lib,
 }:
 {
@@ -59,7 +60,7 @@ let
   };
   version = "2.0.9-beta.1";
 
-  runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
+  runtimeDeps = lib.optionals stdenv.hostPlatform.isLinux [
     expat
     fontconfig
     freetype
@@ -71,6 +72,7 @@ let
     libsecret
     skia
     dbus
+    openssl
 
     # X11 libs
     libX11
@@ -107,12 +109,22 @@ buildDotnetModule {
     dotnet-sdk
     src
     version
+    runtimeDeps
     ;
   projectFile = "Froststrap/Froststrap.csproj";
   nugetDeps = ./deps.json;
   name = "froststrap";
+  pname = "froststrap";
+  dotnetInstallPath = "$out/lib/froststrap";
   cargoRoot = "backend";
   selfContainedBuild = true;
+  
+  makeWrapperArgs = [
+    "--prefix"
+    "LD_LIBRARY_PATH"
+    ":"
+    "${placeholder "out"}/lib/froststrap/libs"
+  ];
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
@@ -148,8 +160,6 @@ buildDotnetModule {
     runHook preInstall
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
-    makeWrapper $out/lib/froststrap/froststrap $out/bin/froststrap \
-    ${lib.optionalString stdenv.hostPlatform.isLinux "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"}
     install -Dm644 ${desktopItem}/share/applications/froststrap-launcher.desktop $out/share/applications/froststrap-launcher.desktop
     install -Dm644 ${src}/build/icon512.png $out/share/icons/hicolor/512x512/apps/froststrap.png
     sed -i -E '/^Categories=/ s/([^;])$/\1;/' $out/share/applications/froststrap-launcher.desktop
