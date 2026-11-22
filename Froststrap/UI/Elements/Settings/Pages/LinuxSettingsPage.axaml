@@ -70,6 +70,61 @@ SPDX-License-Identifier: MPL-2.0
             </controls:OptionControl>
 
             <controls:SectionHeader
+                Title="{x:Static resources:Strings.Common_Rosemary}"
+                IsVisible="{Binding RosemaryEnabled}"
+                Margin="0,4,0,4" />
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_LinuxSettings_RosemaryVersion_Title}"
+                Description="{x:Static resources:Strings.Menu_LinuxSettings_RosemaryVersion_Description}"
+                IsVisible="{Binding RosemaryEnabled}">
+                <ComboBox
+                    ItemsSource="{Binding RosemaryVersionOptions}"
+                    SelectedItem="{Binding SelectedRosemaryVersion, Mode=TwoWay}"
+                    MinWidth="200" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Title}"
+                Description="{x:Static resources:Strings.Menu_LinuxSettings_RosemaryEnvironmentVariables_Description}"
+                IsVisible="{Binding RosemaryEnabled}">
+                <StackPanel Spacing="8">
+                    <ItemsControl ItemsSource="{Binding RosemaryEnvEntries}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBox
+                                        PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_Variable}"
+                                        Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="150" />
+                                    <TextBox
+                                        PlaceholderText="{x:Static resources:Strings.Common_Value}"
+                                        Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="200" />
+                                    <controls:IconButton
+                                        Icon="Trash"
+                                        Command="{Binding RemoveCommand}"
+                                        ToolTip.Tip="{x:Static resources:Strings.Common_Remove}"
+                                        Width="30"
+                                        Padding="0"
+                                        Classes="Danger" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button
+                        Content="{x:Static resources:Strings.Menu_LinuxSettings_AddVariable}"
+                        Command="{Binding AddRosemaryEnvCommand}"
+                        HorizontalAlignment="Left" />
+                </StackPanel>
+            </controls:OptionControl>
+
+            <controls:SectionHeader
                 Title="{x:Static resources:Strings.Common_Studio}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" />
 

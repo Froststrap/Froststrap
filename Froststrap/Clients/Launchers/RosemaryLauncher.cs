@@ -23,6 +23,9 @@ internal sealed class RosemaryLauncher(Func<string?> rosemaryPath) : IClientLaun
             UseShellExecute = false
         };
 
+        foreach (var variable in App.Settings.Prop.RosemaryEnvironmentVariables)
+            startInfo.Environment[variable.Key] = variable.Value;
+
         startInfo.Environment["ROSEMARY_PREFIX"] = "off";
         startInfo.Environment["ROSEMARY_DECORATIONS"] = "server";
         startInfo.Environment["ROSEMARY_MENU"] = "none";

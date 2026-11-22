@@ -21,10 +21,34 @@ internal sealed class RosemaryClient(
     string stateFileName)
     : RobloxClient(layout, capabilities, displayName, environment, stateStore, stateFileName)
 {
-    private const string ReleaseUrl = "https://api.github.com/repos/microlift/rosemary/releases/latest";
+    private const string ReleasesApiUrl = "https://api.github.com/repos/microlift/rosemary/releases";
     private const string ChecksumsAssetName = "SHA256SUMS";
+    private const int ReleasesPerPage = 100;
 
     private static readonly TimeSpan ReleaseCheckTimeout = TimeSpan.FromSeconds(10);
+
+    internal static async Task<List<string>> GetStableVersionsAsync(CancellationToken cancellationToken)
+    {
+        var tags = new List<string>();
+
+        for (int page = 1; ; page++)
+        {
+            var releases = await JsonHelper.GetFromJsonAsync<List<GithubRelease>>(
+                App.HttpClient,
+                $"{ReleasesApiUrl}?per_page={ReleasesPerPage}&page={page}",
+                cancellationToken);
+
+            if (releases is null)
+                break;
+
+            tags.AddRange(releases.Where(release => !release.Prerelease).Select(release => release.TagName));
+
+            if (releases.Count < ReleasesPerPage)
+                break;
+        }
+
+        return tags;
+    }
 
     private readonly string _managedPath = Path.Combine(environment.DataRoot, "Rosemary", "rosemary.AppImage");
 
@@ -72,12 +96,16 @@ internal sealed class RosemaryClient(
     private async Task<string?> UpdateManagedAsync(IInstallReporter reporter)
     {
         string? existing = File.Exists(_managedPath) ? _managedPath : null;
+        string tag = App.Settings.Prop.RosemaryVersionTag?.Trim() ?? string.Empty;
+        string releaseUrl = tag.Length == 0
+            ? $"{ReleasesApiUrl}/latest"
+            : $"{ReleasesApiUrl}/tags/{Uri.EscapeDataString(tag)}";
         GithubRelease? release;
 
         try
         {
             using var timeout = new CancellationTokenSource(ReleaseCheckTimeout);
-            release = await JsonHelper.GetFromJsonAsync<GithubRelease>(App.HttpClient, ReleaseUrl, timeout.Token);
+            release = await JsonHelper.GetFromJsonAsync<GithubRelease>(App.HttpClient, releaseUrl, timeout.Token);
         }
         catch (Exception ex)
         {

@@ -119,6 +119,8 @@ namespace Froststrap.Models.Persistable
         public bool StudioGameMode { get; set; }
         public bool StudioDebug { get; set; }
         public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
+        public string RosemaryVersionTag { get; set; } = string.Empty;
+        public Dictionary<string, string> RosemaryEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff
         public bool ForceLocalData { get; set; }

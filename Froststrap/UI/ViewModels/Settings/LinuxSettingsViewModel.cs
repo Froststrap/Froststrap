@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 using Froststrap.Clients.Contracts;
+using Froststrap.Clients.Runtimes;
 
 namespace Froststrap.UI.ViewModels.Settings;
 
@@ -20,17 +21,78 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     {
         StudioEnvEntries = [];
         foreach (var kv in App.Settings.Prop.StudioEnvironmentVariables)
-            StudioEnvEntries.Add(new EnvEntry(kv.Key, kv.Value, RemoveEnvEntry));
+            StudioEnvEntries.Add(new EnvEntry(App.Settings.Prop.StudioEnvironmentVariables, kv.Key, kv.Value, RemoveEnvEntry));
+
+        RosemaryEnvEntries = [];
+        foreach (var kv in App.Settings.Prop.RosemaryEnvironmentVariables)
+            RosemaryEnvEntries.Add(new EnvEntry(App.Settings.Prop.RosemaryEnvironmentVariables, kv.Key, kv.Value, RemoveEnvEntry));
 
         AddStudioEnvCommand = new RelayCommand(() =>
         {
-            var newEntry = new EnvEntry("", "", RemoveEnvEntry);
+            var newEntry = new EnvEntry(App.Settings.Prop.StudioEnvironmentVariables, "", "", RemoveEnvEntry);
             StudioEnvEntries.Add(newEntry);
+        });
+
+        AddRosemaryEnvCommand = new RelayCommand(() =>
+        {
+            var newEntry = new EnvEntry(App.Settings.Prop.RosemaryEnvironmentVariables, "", "", RemoveEnvEntry);
+            RosemaryEnvEntries.Add(newEntry);
         });
 
         OpenWineCfgCommand = new RelayCommand(OpenWineCfg);
 
+        RosemaryVersionOptions.Add(Strings.Common_Latest);
+        if (SelectedRosemaryVersion != Strings.Common_Latest)
+            RosemaryVersionOptions.Add(SelectedRosemaryVersion);
+
+        if (RosemaryEnabled)
+            _ = LoadRosemaryVersionsAsync();
+
         OnPropertyChanged(nameof(IsWineAvailable));
+    }
+
+    private async Task LoadRosemaryVersionsAsync()
+    {
+        List<string> tags;
+
+        try
+        {
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            tags = await RosemaryClient.GetStableVersionsAsync(timeout.Token);
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Warn($"Could not load Rosemary versions: {ex.Message}");
+            return;
+        }
+
+        string selected = SelectedRosemaryVersion;
+
+        foreach (string tag in tags)
+        {
+            if (!RosemaryVersionOptions.Contains(tag))
+                RosemaryVersionOptions.Add(tag);
+        }
+
+        if (!RosemaryVersionOptions.Contains(selected))
+            RosemaryVersionOptions.Add(selected);
+    }
+
+    public static bool RosemaryEnabled => GlobalViewModel.IsLinux && App.Settings.Prop.LinuxPlayerRuntime == LinuxPlayerRuntime.Rosemary;
+
+    public ObservableCollection<string> RosemaryVersionOptions { get; } = [];
+
+    public string SelectedRosemaryVersion
+    {
+        get => string.IsNullOrWhiteSpace(App.Settings.Prop.RosemaryVersionTag)
+            ? Strings.Common_Latest
+            : App.Settings.Prop.RosemaryVersionTag;
+        set
+        {
+            App.Settings.Prop.RosemaryVersionTag = value == Strings.Common_Latest ? string.Empty : value ?? string.Empty;
+            App.Settings.Save();
+            OnPropertyChanged();
+        }
     }
 
     public static bool SoberAllowGamepadPermission
@@ -172,10 +234,13 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     }
 
     public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }
+    public ObservableCollection<EnvEntry> RosemaryEnvEntries { get; set; }
     public ICommand AddStudioEnvCommand { get; }
+    public ICommand AddRosemaryEnvCommand { get; }
 
     internal sealed class EnvEntry : NotifyPropertyChangedViewModel
     {
+        private readonly Dictionary<string, string> _owner;
         private string _key;
         private string _value;
         private string _originalKey;
@@ -208,8 +273,9 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
 
         public ICommand RemoveCommand { get; }
 
-        public EnvEntry(string key, string value, Action<EnvEntry> removeAction)
+        public EnvEntry(Dictionary<string, string> owner, string key, string value, Action<EnvEntry> removeAction)
         {
+            _owner = owner;
             _key = key;
             _originalKey = key;
             _value = value;
@@ -217,17 +283,17 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
             RemoveCommand = new RelayCommand(() => _removeAction(this));
         }
 
+        public void Remove() => _owner.Remove(_key);
+
         private void UpdateDictionary(string currentKey)
         {
-            var dict = App.Settings.Prop.StudioEnvironmentVariables;
-
             if (!string.IsNullOrEmpty(_originalKey) && _originalKey != currentKey)
-                dict.Remove(_originalKey);
+                _owner.Remove(_originalKey);
 
             if (!string.IsNullOrWhiteSpace(currentKey))
-                dict[currentKey] = Value;
+                _owner[currentKey] = Value;
             else
-                dict.Remove(currentKey);
+                _owner.Remove(currentKey);
 
             _originalKey = currentKey;
             App.Settings.Save();
@@ -236,7 +302,9 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
 
     private void RemoveEnvEntry(EnvEntry entry)
     {
-        App.Settings.Prop.StudioEnvironmentVariables.Remove(entry.Key);
+        entry.Remove();
         StudioEnvEntries.Remove(entry);
+        RosemaryEnvEntries.Remove(entry);
+        App.Settings.Save();
     }
 }
