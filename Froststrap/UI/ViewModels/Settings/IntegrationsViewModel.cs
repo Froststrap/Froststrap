@@ -112,6 +112,7 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
                 DisableAppPatchEnabled = false;
                 DiscordActivityEnabled = false;
                 DiscordActivityJoinEnabled = false;
+                DiscordInvitesEnabled = false;
                 StudioRPCEnabled = false;
 
                 OnPropertyChanged(nameof(ShowServerDetailsEnabled));
@@ -121,6 +122,7 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
                 OnPropertyChanged(nameof(DisableAppPatchEnabled));
                 OnPropertyChanged(nameof(DiscordActivityEnabled));
                 OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
+                OnPropertyChanged(nameof(DiscordInvitesEnabled));
                 OnPropertyChanged(nameof(StudioRPCEnabled));
             }
 
@@ -590,9 +592,11 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
             if (!value)
             {
                 DiscordActivityJoinEnabled = value;
+                DiscordInvitesEnabled = value;
                 EnableCustomStatusDisplay = value;
                 DiscordAccountOnProfile = value;
                 OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
+                OnPropertyChanged(nameof(DiscordInvitesEnabled));
                 OnPropertyChanged(nameof(EnableCustomStatusDisplay));
                 OnPropertyChanged(nameof(DiscordAccountOnProfile));
             }
@@ -625,6 +629,12 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
     {
         get => !App.Settings.Prop.HideRPCButtons;
         set => App.Settings.Prop.HideRPCButtons = !value;
+    }
+
+    public static bool DiscordInvitesEnabled
+    {
+        get => App.Settings.Prop.AllowDiscordInvites;
+        set => App.Settings.Prop.AllowDiscordInvites = value;
     }
 
     public static bool EnableCustomStatusDisplay

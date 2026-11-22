@@ -44,6 +44,7 @@ namespace Froststrap.Models.Persistable
         public bool ShowUsingFroststrapRPC { get; set; } = true;
         public bool UseDiscordRichPresence { get; set; } = true;
         public bool HideRPCButtons { get; set; } = true;
+        public bool AllowDiscordInvites { get; set; }
         public bool EnableCustomStatusDisplay { get; set; } = true;
         public bool ShowAccountOnRichPresence { get; set; }
         public bool StudioRPC { get; set; }

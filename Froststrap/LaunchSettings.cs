@@ -24,11 +24,12 @@ namespace Froststrap
         public LaunchFlag GameShortcutFlag { get; } = new();
         public LaunchFlag ConsoleFlag { get; } = new();
         public LaunchFlag NoGpuFlag { get; } = new();
+        public LaunchFlag DiscordJoinFlag { get; } = new();
 
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => BackgroundUpdaterFlag.Active;
+        public bool BypassUpdateCheck => BackgroundUpdaterFlag.Active || DiscordJoinFlag.Active;
 #endif
 
         public bool Silent { get; set; }
@@ -65,6 +66,7 @@ namespace Froststrap
             BackgroundUpdaterFlag.Active = cli.BackgroundUpdater;
             NoLaunchFlag.Active = cli.NoLaunch;
             TestModeFlag.Active = cli.TestMode;
+            DiscordJoinFlag.Active = cli.DiscordJoin;
             UpgradeFlag.Active = cli.Upgrade;
             ForceFlag.Active = cli.Force;
             ConsoleFlag.Active = cli.ShowConsole;

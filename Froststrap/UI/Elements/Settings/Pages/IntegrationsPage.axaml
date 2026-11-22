@@ -403,6 +403,13 @@
             </controls:OptionControl>
 
             <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Integrations_DiscordInvites_Title}"
+                Description="{x:Static resources:Strings.Menu_Integrations_DiscordInvites_Description}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordInvitesEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
                 Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
                 IsEnabled="{Binding DiscordActivityEnabled}">

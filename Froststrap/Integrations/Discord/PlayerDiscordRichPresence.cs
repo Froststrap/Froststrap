@@ -14,6 +14,8 @@ namespace Froststrap.Integrations.Discord
 {
     internal sealed class PlayerDiscordRichPresence : IDisposable
     {
+        public const string ApplicationId = "363445589247131668";
+
         private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<Message> _messageQueue = new();
@@ -29,13 +31,14 @@ namespace Froststrap.Integrations.Discord
 
         private bool _visible = true;
         private bool _disposed;
+        private readonly bool _registered;
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
             INamedPipeClient? pipeClient = DiscordIpcPipeClient.Create();
             try
             {
-                _rpcClient = new DiscordRpcClient("363445589247131668", -1, new NullLogger(), true, pipeClient);
+                _rpcClient = new DiscordRpcClient(ApplicationId, -1, new NullLogger(), true, pipeClient);
                 pipeClient = null;
             }
             finally
@@ -63,6 +66,11 @@ namespace Froststrap.Integrations.Discord
             _rpcClient.OnClose += (_, e) =>
                 App.Logger.Error($"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
 
+            _rpcClient.OnJoin += (_, e) => DiscordInvites.Join(e.Secret);
+            _rpcClient.OnJoinRequested += (_, e) => Task.Run(() => RespondToJoinRequest(e));
+
+            _registered = DiscordInvites.Register(_rpcClient);
+
             try
             {
                 _rpcClient.Initialize();
@@ -70,6 +78,32 @@ namespace Froststrap.Integrations.Discord
             catch (Exception ex)
             {
                 App.Logger.Error($"Failed to init RPC: {ex.Message}");
+            }
+
+            if (_registered)
+                _rpcClient.Subscribe(App.Settings.Prop.AllowDiscordInvites ? EventType.Join | EventType.JoinRequest : EventType.Join);
+        }
+
+        private bool CanHost(ActivityData? activity) =>
+            _registered && activity is not null && DiscordInvites.CanHost(activity);
+
+        private void RespondToJoinRequest(JoinRequestMessage request)
+        {
+            if (_disposed) return;
+
+            App.Logger.Info("Received a request to join");
+
+            bool accepted = DiscordInvites.AskToJoin(request);
+
+            App.Logger.Info(accepted ? "Accepted the request" : "Declined the request");
+
+            try
+            {
+                _rpcClient?.Respond(request, accepted);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to respond to the join request");
             }
         }
 
@@ -435,6 +469,15 @@ namespace Froststrap.Integrations.Discord
                 }
             };
 
+            if (CanHost(activity))
+            {
+                App.Logger.Info("Letting Discord friends join this server");
+
+                _currentPresence.Name = DiscordPresenceHelper.Truncate(universeName, 128);
+                _currentPresence.Party = DiscordInvites.CreateParty(activity);
+                _currentPresence.Secrets = DiscordInvites.CreateSecrets(activity);
+            }
+
             _originalPresence = _currentPresence.Clone();
 
             if (_messageQueue.TryDequeue(out var queuedMessage))
@@ -447,11 +490,14 @@ namespace Froststrap.Integrations.Discord
             return true;
         }
 
-        public Button[] GetButtons()
+        public Button[]? GetButtons()
         {
             List<Button> buttons = [];
 
             var data = _activityWatcher.Data;
+
+            if (CanHost(data))
+                return null;
 
             if (!App.Settings.Prop.HideRPCButtons)
             {

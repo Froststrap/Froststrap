@@ -61,6 +61,11 @@ internal static class LaunchHandler
             App.Logger.Info("Opening background updater");
             await LaunchBackgroundUpdater();
         }
+        else if (App.LaunchSettings.DiscordJoinFlag.Active)
+        {
+            App.Logger.Info("Joining from Discord");
+            await LaunchDiscordJoin();
+        }
         else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
         {
             App.Logger.Info($"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
@@ -455,6 +460,28 @@ internal static class LaunchHandler
         }, TaskScheduler.Default);
 
         return true;
+    }
+
+    public static async Task LaunchDiscordJoin()
+    {
+        try
+        {
+            string? secret = await DiscordInvites.WaitForJoinSecret();
+
+            if (secret is null || !DiscordInvites.Join(secret))
+            {
+                App.Logger.Info("No invite to join, opening Roblox");
+                Process.Start(Paths.Process, "--player");
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error(ex, "Failed to handle the Discord invite");
+        }
+        finally
+        {
+            App.Terminate();
+        }
     }
 
     public static async Task LaunchBackgroundUpdater()

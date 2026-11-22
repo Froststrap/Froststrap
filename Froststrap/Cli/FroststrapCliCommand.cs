@@ -22,6 +22,9 @@ internal sealed class FroststrapCliCommand
     [CliOption(Name = "--background-updater", Description = "Run as the background updater", Arity = CliArgumentArity.Zero)]
     public bool BackgroundUpdater { get; set; }
 
+    [CliOption(Name = "--discordjoin", Description = "Join a game from a Discord invite", Arity = CliArgumentArity.Zero)]
+    public bool DiscordJoin { get; set; }
+
     [CliOption(Name = "--no-launch", Description = "Install or update Roblox without launching it", Arity = CliArgumentArity.Zero)]
     public bool NoLaunch { get; set; }
 
