@@ -203,6 +203,7 @@
   "CustomTheme_Errors_ElementTypeCreationFailed": "{0} failed to create {1}: {2}",
   "CustomTheme_Errors_FileNotFound": "The file \"{0}\" could not be found on your system",
   "CustomTheme_Errors_InvalidRoot": "Theme XML root is not {0}",
+  "CustomTheme_Errors_PathOutsideTheme": "The path \"{0}\" is outside of the theme folder",
   "CustomTheme_Errors_NoThemeSelected": "No custom theme selected",
   "CustomTheme_Errors_SetupFailed": "Failed to set up custom bootstrapper: {0}.\nDefaulting to {1}.",
   "CustomTheme_Errors_TooManyElements": "Custom bootstrappers can have at most {0} elements; got {1}",
