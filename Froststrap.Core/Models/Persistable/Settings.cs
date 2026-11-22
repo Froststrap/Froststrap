@@ -99,6 +99,7 @@ namespace Froststrap.Models.Persistable
         public bool DisableAnimations { get; set; }
         public bool UpdateRoblox { get; set; } = true;
         public bool AutomaticallyUpdateSober { get; set; } = true;
+        public LinuxPlayerRuntime LinuxPlayerRuntime { get; set; } = LinuxPlayerRuntime.Sober;
         public int MaxThreadDownload { get; set; } = 3;
         public string RobloxDomain { get; set; } = RobloxDefaults.Domain;
         public bool StaticDirectory { get; set; }

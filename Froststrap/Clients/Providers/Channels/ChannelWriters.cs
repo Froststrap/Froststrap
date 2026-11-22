@@ -42,6 +42,7 @@ internal static class ChannelWriters
         {
             ChannelStore.Registry when OperatingSystem.IsWindows() => new RegistryChannelWriter(registryName),
             ChannelStore.MacDefaults when OperatingSystem.IsMacOS() => new MacDefaultsChannelWriter(registryName),
+            ChannelStore.PreferencesPlist => new PreferencesPlistChannelWriter(registryName),
             _ => new NullChannelWriter()
         };
     }

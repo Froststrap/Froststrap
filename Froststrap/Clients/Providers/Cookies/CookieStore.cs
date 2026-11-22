@@ -74,6 +74,7 @@ internal static class CookieStores
         CookieFormat.ProtectedNetscape when OperatingSystem.IsWindows() => new ProtectedCookieStore(install),
         CookieFormat.BinaryCookies => new BinaryCookieStore(install),
         CookieFormat.PlainHeader => new PlainCookieStore(install),
+        CookieFormat.RosemaryJar => new RosemaryCookieStore(install),
         _ => new NullCookieStore()
     };
 }

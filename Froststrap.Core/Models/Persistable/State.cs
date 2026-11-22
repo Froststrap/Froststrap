@@ -27,6 +27,8 @@ namespace Froststrap.Models.Persistable
 
         public string? PendingUpdateReleaseNotes { get; set; }
 
+        public string? RosemaryVersion { get; set; }
+
         public List<ModConfig> Mods { get; set; } = [];
     }
 }

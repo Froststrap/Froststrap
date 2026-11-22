@@ -543,6 +543,9 @@ internal sealed partial class App : Application
         Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
         Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
 
+        Settings.Load();
+        State.Load();
+
         _clients = ClientCatalog.Build(ClientEnvironment.FromHost());
 
         foreach (ClientTarget target in Enum.GetValues<ClientTarget>())
@@ -564,9 +567,6 @@ internal sealed partial class App : Application
         }
 
         _ = Task.Run(RemoteData.LoadData);
-
-        Settings.Load();
-        State.Load();
 
         if (Settings.Prop.Theme == Theme.Custom && Settings.Prop.BackgroundType == BackgroundMode.Image)
         {

@@ -4,6 +4,7 @@
 
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Clients.Model;
 
 namespace Froststrap.UI.ViewModels;
 
@@ -15,6 +16,10 @@ internal static class GlobalViewModel
 
     public static bool IsWindowsOrLinux => IsWindows || IsLinux;
     public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
+
+    public static bool PlayerUsesDeploymentApi => App.Clients.Player.Capabilities.RequiresDeploymentApi;
+
+    public static bool PlayerIsExternallyManaged => App.Clients.Player.Layout.Shape == ExecutableShape.ExternalManaged;
 
     public static bool HasClientSettingsPage => App.Clients.Player.SettingsSync is not null || App.Clients.Studio.RuntimeEnvironment is not null;
 

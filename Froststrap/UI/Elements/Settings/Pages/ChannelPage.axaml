@@ -118,8 +118,18 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_Deployment_Player_Description}" />
 
             <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}"
+                Header="{x:Static resources:Strings.Menu_Deployment_LinuxPlayerRuntime_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_LinuxPlayerRuntime_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
+                <ComboBox
+                    Width="200"
+                    ItemsSource="{Binding LinuxPlayerRuntimeOptions, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedLinuxPlayerRuntime, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}"
+                IsVisible="{x:Static gv:GlobalViewModel.PlayerIsExternallyManaged}">
                 <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
             </controls:OptionControl>
 
@@ -134,7 +144,7 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
                 Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
                 IsEnabled="{Binding !IsRobloxInstallationMissing}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
+                IsVisible="{x:Static gv:GlobalViewModel.PlayerUsesDeploymentApi}">
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
@@ -142,7 +152,7 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Description}"
                 IsExpanded="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                IsVisible="{x:Static gv:GlobalViewModel.PlayerUsesDeploymentApi}"
                 Classes="NoUserExpansion">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding PlayerVersionOverrideEnabled, Mode=TwoWay}" />
@@ -220,7 +230,7 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerChannel_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_Channel_Description}"
                 IsExpanded="True"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
+                IsVisible="{x:Static gv:GlobalViewModel.PlayerUsesDeploymentApi}">
                 <controls:CardExpander.HeaderContent>
                     <TextBox
                         Text="{Binding PlayerChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

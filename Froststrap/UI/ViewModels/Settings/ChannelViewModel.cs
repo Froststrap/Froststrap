@@ -421,6 +421,21 @@ internal sealed class ChannelViewModel : NotifyPropertyChangedViewModel, IDispos
         set => App.Settings.Prop.UpdateRoblox = value;
     }
 
+    public static IReadOnlyList<LinuxPlayerRuntime> LinuxPlayerRuntimeOptions { get; } = Enum.GetValues<LinuxPlayerRuntime>();
+
+    public static LinuxPlayerRuntime SelectedLinuxPlayerRuntime
+    {
+        get => App.Settings.Prop.LinuxPlayerRuntime;
+        set
+        {
+            if (App.Settings.Prop.LinuxPlayerRuntime == value)
+                return;
+
+            App.Settings.Prop.LinuxPlayerRuntime = value;
+            _ = Frontend.ShowMessageBox(Strings.Menu_Deployment_LinuxPlayerRuntime_Restart, MessageBoxImage.Information);
+        }
+    }
+
     public static bool AutomaticallyUpdateSober
     {
         get => App.Settings.Prop.AutomaticallyUpdateSober;

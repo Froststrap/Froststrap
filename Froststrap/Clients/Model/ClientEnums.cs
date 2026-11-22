@@ -49,7 +49,8 @@ internal enum CookieFormat
     None,
     ProtectedNetscape,
     BinaryCookies,
-    PlainHeader
+    PlainHeader,
+    RosemaryJar
 }
 
 internal enum HostIntegration
@@ -62,7 +63,8 @@ internal enum ChannelStore
 {
     None,
     Registry,
-    MacDefaults
+    MacDefaults,
+    PreferencesPlist
 }
 
 internal enum ModSupport

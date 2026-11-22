@@ -23,8 +23,10 @@ internal sealed class ClientEnvironment
         string tempRoot,
         Func<bool> staticDirectory,
         string dataRoot = "",
-        string userName = "")
+        string userName = "",
+        LinuxPlayerRuntime linuxPlayerRuntime = LinuxPlayerRuntime.Sober)
     {
+        LinuxPlayerRuntime = linuxPlayerRuntime;
         DataRoot = dataRoot;
         UserName = userName;
         Host = host;
@@ -49,6 +51,8 @@ internal sealed class ClientEnvironment
 
     public string UserName { get; }
 
+    public LinuxPlayerRuntime LinuxPlayerRuntime { get; }
+
     public static HostPlatform DetectHost()
     {
         if (OperatingSystem.IsWindows())
@@ -68,7 +72,8 @@ internal sealed class ClientEnvironment
         Path.GetTempPath(),
         () => App.Settings.Prop.StaticDirectory,
         Paths.Base,
-        Environment.UserName);
+        Environment.UserName,
+        App.Settings.Prop.LinuxPlayerRuntime);
 
     /// <summary>
     /// Builds the host-independent context a layout needs. The static-directory setting is

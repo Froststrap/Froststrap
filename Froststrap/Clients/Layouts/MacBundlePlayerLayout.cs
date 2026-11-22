@@ -6,7 +6,7 @@ using Froststrap.Clients.Model;
 
 namespace Froststrap.Clients.Layouts;
 
-internal sealed class MacBundlePlayerLayout : ClientLayoutBase
+internal class MacBundlePlayerLayout : ClientLayoutBase
 {
     public override string ClientId => "roblox-mac";
 

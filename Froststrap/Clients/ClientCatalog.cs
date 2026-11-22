@@ -36,6 +36,11 @@ internal static class ClientCatalog
             Register(registry, environment, states, new MacBundleStudioLayout(), MacStudioCapabilities(), "StudioState", "Roblox Studio");
             break;
 
+        case HostPlatform.Linux when environment.LinuxPlayerRuntime == LinuxPlayerRuntime.Rosemary:
+            Register(registry, environment, states, new RosemaryPlayerLayout(), MacPlayerCapabilities(), "PlayerState", "Rosemary");
+            Register(registry, environment, states, new WineStudioLayout(), WineStudioCapabilities(), "StudioState", "Roblox Studio (Wine)", layout => new WineLauncher(layout), () => new WineEnvironment());
+            break;
+
         case HostPlatform.Linux:
             Register(registry, environment, states, new SoberLayout(), SoberCapabilities(), "PlayerState", "Sober");
             Register(registry, environment, states, new WineStudioLayout(), WineStudioCapabilities(), "StudioState", "Roblox Studio (Wine)", layout => new WineLauncher(layout), () => new WineEnvironment());
@@ -77,9 +82,12 @@ internal static class ClientCatalog
             Target = layout.Target,
             HostPlatforms = [environment.Host],
             StateFileName = stateFileName,
-            Factory = () => layout is SoberLayout
-                ? new SoberClient(layout, capabilities, displayName, environment, states, stateFileName)
-                : new RobloxClient(layout, capabilities, displayName, environment, states, stateFileName, launcher?.Invoke(layout), runtimeEnvironment?.Invoke())
+            Factory = () => layout switch
+            {
+                SoberLayout => new SoberClient(layout, capabilities, displayName, environment, states, stateFileName),
+                RosemaryPlayerLayout => new RosemaryClient(layout, capabilities, displayName, environment, states, stateFileName),
+                _ => new RobloxClient(layout, capabilities, displayName, environment, states, stateFileName, launcher?.Invoke(layout), runtimeEnvironment?.Invoke())
+            }
         });
     }
 

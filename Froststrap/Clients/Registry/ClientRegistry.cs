@@ -75,9 +75,13 @@ internal sealed class ClientRegistry(HostPlatform host)
 
     public IReadOnlyList<DistributionState> AllStates => [Player.State, Studio.State];
 
-    public IAppData PlayerDeployment => _playerDeployment ??= new RobloxPlayerData(ClientCatalog.DeploymentLayout(host, ClientTarget.Player));
+    public IAppData PlayerDeployment => _playerDeployment ??= new RobloxPlayerData(DeploymentLayout(Player));
 
-    public IAppData StudioDeployment => _studioDeployment ??= new RobloxStudioData(ClientCatalog.DeploymentLayout(host, ClientTarget.Studio));
+    public IAppData StudioDeployment => _studioDeployment ??= new RobloxStudioData(DeploymentLayout(Studio));
+
+    private IClientLayout DeploymentLayout(IRobloxClient client) => client.Capabilities.RequiresDeploymentApi
+        ? client.Layout
+        : ClientCatalog.DeploymentLayout(host, client.Target);
 
     private IAppData? _playerDeployment;
     private IAppData? _studioDeployment;

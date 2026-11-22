@@ -128,12 +128,24 @@ internal class RobloxClient : IRobloxClient
 
     public virtual async Task FinalizeInstallAsync(string versionDirectory)
     {
-        if (Layout.Shape != ExecutableShape.MacBundle)
+        if (PrepareBundle(versionDirectory) is not { } appPath)
             return;
+
+        if (Layout.SigningTeamId is not null)
+            await VerifyBundleSignatureAsync(appPath, Layout.SigningTeamId);
+
+        using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
+        await process!.WaitForExitAsync();
+    }
+
+    protected string? PrepareBundle(string versionDirectory)
+    {
+        if (Layout.Shape != ExecutableShape.MacBundle)
+            return null;
 
         string appPath = Path.Combine(versionDirectory, Layout.ExecutableName!);
         if (!Directory.Exists(appPath))
-            return;
+            return null;
 
         string macOSDir = Path.Combine(appPath, "Contents", "MacOS");
         if (Directory.Exists(macOSDir)) foreach (string file in Directory.GetFiles(macOSDir))
@@ -142,11 +154,7 @@ internal class RobloxClient : IRobloxClient
             fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
         }
 
-        if (Layout.SigningTeamId is not null)
-            await VerifyBundleSignatureAsync(appPath, Layout.SigningTeamId);
-
-        using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
-        await process!.WaitForExitAsync();
+        return appPath;
     }
 
     private static async Task VerifyBundleSignatureAsync(string appPath, string teamId)
