@@ -187,19 +187,6 @@ internal sealed class DeploymentPackages(
                 {
                     reporter.AddDownloaded(-totalBytesRead);
                 }
-
-                // attempt download over HTTP
-                // SAFETY:
-                //   signatures were fetched earlier over HTTPS
-                //   on macOS there is no signature to verify, so the download
-                //   must never leave HTTPS (see DownloadPackage's hash check)
-                if (ex is IOException
-                    && signedPackages
-                    && !packageUrl.StartsWith("http://", StringComparison.Ordinal))
-                {
-                    App.Logger.Info("Retrying download over HTTP...");
-                    packageUrl = packageUrl.Replace("https://", "http://", StringComparison.Ordinal);
-                }
             }
         }
     }

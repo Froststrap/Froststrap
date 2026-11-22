@@ -141,8 +141,48 @@ internal class RobloxClient : IRobloxClient
             var fileInfo = new FileInfo(file);
             fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
         }
+
+        if (Layout.SigningTeamId is not null)
+            await VerifyBundleSignatureAsync(appPath, Layout.SigningTeamId);
+
         using var process = Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"");
         await process!.WaitForExitAsync();
+    }
+
+    private static async Task VerifyBundleSignatureAsync(string appPath, string teamId)
+    {
+        var startInfo = new ProcessStartInfo("/usr/bin/codesign")
+        {
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            UseShellExecute = false
+        };
+
+        foreach (string argument in new[] { "--verify", "--deep", "--strict", $"-R=anchor apple generic and certificate leaf[subject.OU] = \"{teamId}\"", appPath })
+            startInfo.ArgumentList.Add(argument);
+
+        using var process = Process.Start(startInfo)!;
+        string output = await process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        if (process.ExitCode == 0)
+        {
+            App.Logger.Info($"Verified code signature of {appPath} (team {teamId})");
+            return;
+        }
+
+        App.Logger.Error($"Code signature verification failed for {appPath}: {output.Trim()}");
+
+        try
+        {
+            Directory.Delete(appPath, true);
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error(ex, $"Failed to delete unverified bundle {appPath}");
+        }
+
+        throw new ChecksumFailedException($"Failed to verify the code signature of {Path.GetFileName(appPath)}\n\n{output.Trim()}");
     }
 
     public virtual Task PrepareEnvironmentAsync() => Task.CompletedTask;

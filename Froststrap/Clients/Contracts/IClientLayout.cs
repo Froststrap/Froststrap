@@ -34,6 +34,8 @@ internal interface IClientLayout
 
     string? CrashHandlerProcessName { get; }
 
+    string? SigningTeamId { get; }
+
     CookieFormat CookieFormat { get; }
 
     ChannelStore ChannelStore { get; }

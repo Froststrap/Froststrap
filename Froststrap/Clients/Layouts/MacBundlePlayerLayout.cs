@@ -18,6 +18,8 @@ internal sealed class MacBundlePlayerLayout : ClientLayoutBase
 
     public override string? ExecutableName => "RobloxPlayer.app";
 
+    public override string? SigningTeamId => "2CFABCH843";
+
     public override IReadOnlyList<string> ProcessNames => ["RobloxPlayer"];
 
     public override CookieFormat CookieFormat => CookieFormat.BinaryCookies;

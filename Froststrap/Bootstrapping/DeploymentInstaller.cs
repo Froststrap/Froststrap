@@ -216,7 +216,25 @@ internal sealed class DeploymentInstaller(
             }
         }
 
-        await context.Client.FinalizeInstallAsync(context.VersionDirectory);
+        try
+        {
+            await context.Client.FinalizeInstallAsync(context.VersionDirectory);
+        }
+        catch (ChecksumFailedException ex)
+        {
+            foreach (var package in context.Manifest)
+            {
+                if (File.Exists(package.DownloadPath))
+                    File.Delete(package.DownloadPath);
+
+                context.AppData.DistributionState.PackageHashes.Remove(package.Name);
+            }
+
+            context.AppData.DistributionStateManager.Save();
+
+            await ((IPackageReporter)reporter).OnChecksumFailedAsync(ex);
+            return;
+        }
 
         // finishing and cleanup
         MigrateCompatibilityFlags();

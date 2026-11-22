@@ -18,6 +18,8 @@ internal sealed class MacBundleStudioLayout : ClientLayoutBase
 
     public override string? ExecutableName => "RobloxStudio.app";
 
+    public override string? SigningTeamId => "2CFABCH843";
+
     public override IReadOnlyList<string> ProcessNames => ["RobloxStudio"];
 
     public override CookieFormat CookieFormat => CookieFormat.BinaryCookies;

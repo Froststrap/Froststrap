@@ -41,6 +41,8 @@ internal abstract class ClientLayoutBase : IClientLayout
 
     public virtual string? CrashHandlerProcessName => "RobloxCrashHandler";
 
+    public virtual string? SigningTeamId => null;
+
     public virtual CookieFormat CookieFormat => CookieFormat.None;
 
     public virtual ChannelStore ChannelStore => ChannelStore.None;
