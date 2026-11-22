@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.About;
 
 namespace Froststrap.UI.Elements.About.Pages
 {
-    internal partial class AboutPage : UserControl
+    internal sealed partial class AboutPage : UserControl
     {
         public AboutPage()
         {

@@ -11,7 +11,7 @@ using Froststrap.UI.Elements.ContextMenu;
 
 namespace Froststrap.UI
 {
-    internal class NotifyIconWrapper : IDisposable
+    internal sealed class NotifyIconWrapper : IDisposable
     {
         private bool _isDisposed;
 #pragma warning disable CA2213
@@ -66,7 +66,7 @@ namespace Froststrap.UI
 
             var nativeMenu = NativeMenu.GetMenu(_menuContainer);
 
-            var iconUri = new Uri("avares://Froststrap/Froststrap.ico");
+            var iconUri = new Uri("avares://Froststrap/Resources/Froststrap.png");
             long iconBytes;
             using (var s = AssetLoader.Open(iconUri)) iconBytes = s.Length;
 
@@ -219,7 +219,8 @@ namespace Froststrap.UI
 #if __APPLE__
             var vdr = Froststrap.Backend.VirtualDisplay.Running();
             App.Logger.Info($"Virtual Display result = {vdr}");
-            if (vdr) {
+            if (vdr)
+            {
                 App.Logger.Debug("Exiting Virtual Display");
                 Froststrap.Backend.VirtualDisplay.End();
             }

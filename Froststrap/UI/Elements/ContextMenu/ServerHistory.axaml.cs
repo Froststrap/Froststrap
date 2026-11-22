@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.ContextMenu
     /// <summary>
     /// Interaction logic for ServerHistory.axaml
     /// </summary>
-    internal partial class ServerHistory : Base.AvaloniaWindow
+    internal sealed partial class ServerHistory : Base.AvaloniaWindow
     {
         public ServerHistory()
         {

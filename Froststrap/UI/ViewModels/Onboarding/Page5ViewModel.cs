@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.UI.ViewModels.Onboarding
+namespace Froststrap.UI.ViewModels.Onboarding;
+
+internal sealed class Page5ViewModel : NotifyPropertyChangedViewModel
 {
-    internal class Page5ViewModel : NotifyPropertyChangedViewModel
-    {
-        public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
-        public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{App.ProjectName}.lnk");
-        public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Player));
-        public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", LaunchEntry.GetCliArgs(LaunchMode.Studio));
-        public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "--settings");
-    }
+    public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{ProjectInfo.Name}.lnk");
+    public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{ProjectInfo.Name}.lnk");
+    public ShortcutTask PlayerIconTask { get; } = ShortcutTask.ForLaunch(LaunchMode.Player, Strings.LaunchMenu_LaunchRoblox);
+    public ShortcutTask StudioIconTask { get; } = ShortcutTask.ForLaunch(LaunchMode.Studio, Strings.LaunchMenu_LaunchRobloxStudio);
+    public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "--settings");
 }

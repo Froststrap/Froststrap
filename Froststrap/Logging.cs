@@ -2,9 +2,12 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Diagnostics;
+using System.Text;
 using NLog;
 using NLog.Conditions;
 using NLog.Config;
+using NLog.LayoutRenderers;
 using NLog.Targets;
 using NLog.Targets.Wrappers;
 
@@ -13,18 +16,21 @@ namespace Froststrap
     internal static class Logging
     {
         private const string FileLayout =
-            """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} ${event-properties:RustCallsite:whenEmpty=${callsite:includeNamespace=false}} - ${message} ${exception:format=tostring}""";
+            """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} ${froststrap-callsite} - ${message} ${exception:format=tostring}""";
 
         private const string ConsoleLayout =
-            """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} - ${message} ${exception:format=tostring}""";
+            """${date:format=HH\:mm\:ss} ${pad:padding=-5:inner=${level:uppercase=true}} ${message} ${exception:format=tostring}""";
 
         public static bool Initialized => LogManager.Configuration != null;
 
         public static void Configure(string logRoot)
         {
+            LogManager.Setup().SetupExtensions(
+                extensions => extensions.RegisterLayoutRenderer<FroststrapCallsiteRenderer>("froststrap-callsite"));
+
             var config = new LoggingConfiguration();
 
-            var fileTarget = new FileTarget("latestfile_inner")
+            FileTarget? fileTarget = new("latestfile_inner")
             {
                 FileName = Path.Combine(logRoot, "latest.log"),
                 ArchiveOldFileOnStartup = true,
@@ -35,30 +41,46 @@ namespace Froststrap
                 Layout = FileLayout
             };
 
-            var asyncFile = new AsyncTargetWrapper("latestfile", fileTarget)
+            AsyncTargetWrapper? asyncFile = null;
+            ColoredConsoleTarget? console = null;
+
+            try
             {
-                QueueLimit = 10000,
-                BatchSize = 200,
-                OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
-            };
+                asyncFile = new AsyncTargetWrapper("latestfile", fileTarget)
+                {
+                    QueueLimit = 10000,
+                    BatchSize = 200,
+                    OverflowAction = AsyncTargetWrapperOverflowAction.Discard,
+                };
+                fileTarget = null;
 
-            var console = new ColoredConsoleTarget("console")
+                console = new ColoredConsoleTarget("console")
+                {
+                    Layout = ConsoleLayout,
+                    UseDefaultRowHighlightingRules = false
+                };
+
+                AddHighlight(console, "Trace", ConsoleOutputColor.Gray);
+                AddHighlight(console, "Debug", ConsoleOutputColor.Blue);
+                AddHighlight(console, "Info", ConsoleOutputColor.Green);
+                AddHighlight(console, "Warn", ConsoleOutputColor.Yellow);
+                AddHighlight(console, "Error", ConsoleOutputColor.Red);
+                AddHighlight(console, "Fatal", ConsoleOutputColor.Yellow, ConsoleOutputColor.Red);
+
+                config.AddRule(LogLevel.Debug, LogLevel.Fatal, asyncFile);
+                asyncFile = null;
+
+                config.AddRule(LogLevel.Debug, LogLevel.Fatal, console);
+                console = null;
+
+                LogManager.Configuration = config;
+            }
+            finally
             {
-                Layout = ConsoleLayout,
-                UseDefaultRowHighlightingRules = false
-            };
-
-            AddHighlight(console, "Trace", ConsoleOutputColor.Gray);
-            AddHighlight(console, "Debug", ConsoleOutputColor.Blue);
-            AddHighlight(console, "Info", ConsoleOutputColor.Green);
-            AddHighlight(console, "Warn", ConsoleOutputColor.Yellow);
-            AddHighlight(console, "Error", ConsoleOutputColor.Red);
-            AddHighlight(console, "Fatal", ConsoleOutputColor.Yellow, ConsoleOutputColor.Red);
-
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, asyncFile);
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, console);
-
-            LogManager.Configuration = config;
+                fileTarget?.Dispose();
+                asyncFile?.Dispose();
+                console?.Dispose();
+            }
         }
 
         private static void AddHighlight(
@@ -137,6 +159,125 @@ namespace Froststrap
             }
 
             return null;
+        }
+    }
+
+    [LayoutRenderer("froststrap-callsite")]
+    internal sealed class FroststrapCallsiteRenderer : LayoutRenderer, IUsesStackTrace
+    {
+        public StackTraceUsage StackTraceUsage => StackTraceUsage.WithCallSite | StackTraceUsage.WithCallSiteClassName;
+
+        protected override void Append(StringBuilder builder, LogEventInfo logEvent)
+        {
+            if (logEvent.Properties.TryGetValue("RustCallsite", out var rust)
+                && rust is string native
+                && !string.IsNullOrWhiteSpace(native))
+            {
+                builder.Append(native);
+                return;
+            }
+
+            if (logEvent.CallerClassName is { Length: > 0 } callerClassName
+                && logEvent.CallerMemberName is { Length: > 0 } callerMemberName)
+            {
+                builder.Append(Shorten(callerClassName));
+                builder.Append('.');
+                builder.Append(CleanMethod(callerMemberName, null));
+                return;
+            }
+
+            if (logEvent.StackTrace is { } trace)
+            {
+                foreach (StackFrame frame in trace.GetFrames())
+                {
+                    if (!TryResolve(frame, out string typeName, out string methodName))
+                        continue;
+
+                    if (typeName == "NLog" || typeName.StartsWith("NLog.", StringComparison.Ordinal))
+                        continue;
+
+                    builder.Append(Shorten(typeName));
+                    builder.Append('.');
+                    builder.Append(CleanMethod(methodName, typeName));
+                    return;
+                }
+            }
+
+            builder.Append(logEvent.LoggerName);
+        }
+
+        private static bool TryResolve(StackFrame frame, out string typeName, out string methodName)
+        {
+            typeName = string.Empty;
+            methodName = string.Empty;
+
+            DiagnosticMethodInfo? info = DiagnosticMethodInfo.Create(frame);
+            if (info is not null
+                && !string.IsNullOrEmpty(info.DeclaringTypeName)
+                && !string.IsNullOrEmpty(info.Name))
+            {
+                typeName = info.DeclaringTypeName;
+                methodName = info.Name;
+                return true;
+            }
+
+            string text = frame.ToString();
+            int paren = text.IndexOf('(', StringComparison.Ordinal);
+            if (paren >= 0)
+                text = text[..paren];
+
+            int lastDot = text.LastIndexOf('.');
+            if (lastDot <= 0)
+                return false;
+
+            typeName = text[..lastDot];
+            methodName = text[(lastDot + 1)..];
+            return true;
+        }
+
+        private static string Shorten(string full)
+        {
+            int plus = full.IndexOf('+', StringComparison.Ordinal);
+            if (plus >= 0)
+                full = full[..plus];
+
+            int dot = full.LastIndexOf('.');
+            if (dot >= 0)
+                full = full[(dot + 1)..];
+
+            int tick = full.IndexOf('`', StringComparison.Ordinal);
+            if (tick >= 0)
+                full = full[..tick];
+
+            return full.Length > 0 ? full : "?";
+        }
+
+        private static string CleanMethod(string methodName, string? typeName)
+        {
+            if (methodName == "MoveNext" && typeName is not null)
+            {
+                int open = typeName.LastIndexOf('<');
+                int close = open >= 0 ? typeName.IndexOf('>', open + 1) : -1;
+                if (close > open)
+                    methodName = typeName[(open + 1)..close];
+            }
+
+            if (methodName.Length > 0 && methodName[0] == '<')
+            {
+                int close = methodName.IndexOf('>', StringComparison.Ordinal);
+                if (close > 0)
+                    methodName = methodName[1..close];
+            }
+
+            int bar = methodName.IndexOf('|', StringComparison.Ordinal);
+            if (bar >= 0)
+                methodName = methodName[..bar];
+
+            int dollar = methodName.IndexOf('$', StringComparison.Ordinal);
+            if (dollar >= 0)
+                methodName = methodName[..dollar];
+
+            return methodName.Length > 0 ? methodName : "?";
         }
     }
 }

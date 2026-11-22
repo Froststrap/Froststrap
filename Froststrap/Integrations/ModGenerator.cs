@@ -4,10 +4,13 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // TODO: Clean up this, possible rip apart code and do
-//       class seperation using partial implemntations
+//       class separation using partial implementations
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
+using System.Net.Security;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using SkiaSharp;
 using Color = Avalonia.Media.Color;
 
@@ -25,11 +28,25 @@ namespace Froststrap.Integrations
         private static readonly HttpClient DownloadClient = new(new HttpClientHandler
         {
             AutomaticDecompression = DecompressionMethods.All,
-            CheckCertificateRevocationList = true
+            CheckCertificateRevocationList = true,
+            ServerCertificateCustomValidationCallback = AllowUnknownRevocation
         })
         {
             Timeout = TimeSpan.FromMinutes(5)
         };
+
+        private static bool AllowUnknownRevocation(HttpRequestMessage request, X509Certificate2? certificate, X509Chain? chain, SslPolicyErrors errors)
+        {
+            if (errors == SslPolicyErrors.None)
+                return true;
+
+            if (errors != SslPolicyErrors.RemoteCertificateChainErrors || chain is null)
+                return false;
+
+            return chain.ChainStatus.All(status => status.Status is X509ChainStatusFlags.NoError
+                or X509ChainStatusFlags.RevocationStatusUnknown
+                or X509ChainStatusFlags.OfflineRevocation);
+        }
 
         private static readonly SpriteBlacklist SpriteBlacklistInstance = new()
         {
@@ -39,11 +56,11 @@ namespace Froststrap.Integrations
             Strict = ["gradient/gradient_0_100"]
         };
 
-        internal record GradientStop(float Stop, Color Color);
+        internal sealed record GradientStop(float Stop, Color Color);
 
-        internal record SpriteDef(string Name, int X, int Y, int W, int H);
+        internal sealed record SpriteDef(string Name, int X, int Y, int W, int H);
 
-        private class SpriteBlacklist
+        private sealed class SpriteBlacklist
         {
             public List<string> Prefixes { get; set; } = [];
             public List<string> Suffixes { get; set; } = [];
@@ -213,6 +230,7 @@ namespace Froststrap.Integrations
             }
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "False positive: the sprite sheet is wrapped in a using statement")]
         private static void RecolorSpriteSheets(
             Color solidColor,
             List<GradientStop>? gradient,

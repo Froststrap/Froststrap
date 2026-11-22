@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.ContextMenu
 {
-    internal class ServerHistoryViewModel : NotifyPropertyChangedViewModel
+    internal sealed class ServerHistoryViewModel : NotifyPropertyChangedViewModel
     {
         private readonly ActivityWatcher _activityWatcher;
 
@@ -111,7 +111,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load server history");
 
                 Error = $"Failed to load game history: {ex.Message}";
                 OnPropertyChanged(nameof(Error));
@@ -203,7 +203,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to clean old server history entries");
             }
         }
 
@@ -241,7 +241,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to delete server history entry");
             }
         }
 

@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal class GlobalSettingsDialogService(MainWindowViewModel mainVm) : IDialogServiceGlobal
+    internal sealed class GlobalSettingsDialogService(MainWindowViewModel mainVm) : IDialogServiceGlobal
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
@@ -20,37 +20,13 @@ namespace Froststrap.UI.Elements.Settings.Pages
         }
     }
 
-    internal partial class GlobalSettingsPage : UserControl
+    internal sealed partial class GlobalSettingsPage : UserControl
     {
         public GlobalSettingsPage()
         {
             InitializeComponent();
 
             App.FrostRPC?.SetPage("Global Settings");
-        }
-
-        private void ValidateUInt32(object? sender, TextInputEventArgs e)
-        {
-            if (sender is TextBox textBox && !string.IsNullOrEmpty(e.Text))
-            {
-                string currentText = textBox.Text ?? string.Empty;
-                int caretIndex = textBox.CaretIndex;
-                string newText = currentText.Insert(caretIndex, e.Text);
-
-                e.Handled = !uint.TryParse(newText, out _);
-            }
-        }
-
-        private void ValidateFloat(object? sender, TextInputEventArgs e)
-        {
-            if (sender is TextBox textBox && !string.IsNullOrEmpty(e.Text))
-            {
-                string currentText = textBox.Text ?? string.Empty;
-                int caretIndex = textBox.CaretIndex;
-                string newText = currentText.Insert(caretIndex, e.Text);
-
-                e.Handled = !Regex.IsMatch(newText, @"^-?\d*\.?\d*$");
-            }
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -82,7 +58,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to initialise global settings view model");
                 DataContext = new GlobalSettingsViewModel();
             }
         }

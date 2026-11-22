@@ -7,8 +7,8 @@ SPDX-License-Identifier: MPL-2.0
 <base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.FluentMessageBox"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:base="using:Froststrap.UI.Elements.Base"
+        xmlns:md="using:Froststrap.UI.Elements.Controls"
         Title="Froststrap"
         Width="320" MaxWidth="480" SizeToContent="WidthAndHeight" CanResize="False"
         WindowStartupLocation="CenterScreen">

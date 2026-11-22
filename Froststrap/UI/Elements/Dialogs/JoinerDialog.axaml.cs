@@ -11,7 +11,7 @@ namespace Froststrap.UI.Elements.Dialogs
     /// <summary>
     /// Interaction logic for JoinerDialog.axaml
     /// </summary>
-    internal partial class JoinerDialog : Base.AvaloniaWindow
+    internal sealed partial class JoinerDialog : Base.AvaloniaWindow
     {
         public NextAction CloseAction = NextAction.Terminate;
 

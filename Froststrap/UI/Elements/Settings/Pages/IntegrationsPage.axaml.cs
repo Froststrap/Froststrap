@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal partial class IntegrationsPage : UserControl
+    internal sealed partial class IntegrationsPage : UserControl
     {
         public IntegrationsPage()
         {
@@ -24,7 +24,5 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 viewModel.SelectedCustomIntegration = listBox.SelectedItem as CustomIntegration;
             }
         }
-
-        private void ValidateInt32(object sender, TextInputEventArgs e) => e.Handled = !Int32.TryParse(e.Text, out int _);
     }
 }

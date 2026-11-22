@@ -21,6 +21,7 @@ namespace Froststrap.UI.Utility
         private static readonly Guid TaskbarList3InterfaceId = new("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf");
         private static readonly Lazy<nint> TaskbarInstance = new(CreateTaskbarInstance);
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [DllImport("ole32.dll", PreserveSig = true)]
         private static extern int CoCreateInstance(
             in Guid rclsid,

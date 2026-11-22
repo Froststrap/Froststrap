@@ -10,7 +10,7 @@ using Avalonia.Styling;
 
 namespace Froststrap.UI.Utility;
 
-internal class FluentEntranceTransition : IPageTransition
+internal sealed class FluentEntranceTransition : IPageTransition
 {
     public double VerticalOffset { get; set; } = 150;
     public TimeSpan Duration { get; set; } = TimeSpan.FromMilliseconds(350);
@@ -103,7 +103,7 @@ internal enum SlideDirection
     Right
 }
 
-internal class FluentSlideTransition : IPageTransition
+internal sealed class FluentSlideTransition : IPageTransition
 {
     public double HorizontalOffset { get; set; } = 150;
     public SlideDirection Direction { get; set; } = SlideDirection.Right;

@@ -4,7 +4,7 @@
 
 namespace Froststrap
 {
-    internal class HttpClientLoggingHandler(HttpMessageHandler innerHandler)
+    internal sealed class HttpClientLoggingHandler(HttpMessageHandler innerHandler)
         : MessageProcessingHandler(innerHandler)
     {
         protected override HttpRequestMessage ProcessRequest(HttpRequestMessage request, CancellationToken cancellationToken)

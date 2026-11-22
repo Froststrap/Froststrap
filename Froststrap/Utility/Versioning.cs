@@ -8,22 +8,6 @@ namespace Froststrap.Utility;
 
 static class Versioning
 {
-    public static Version GetVersionFromString(string version)
-    {
-        if (version.StartsWith('v'))
-            version = version[1..];
-
-        int idx = version.IndexOf('+', StringComparison.Ordinal);
-        if (idx != -1)
-            version = version[..idx];
-
-        int dashIdx = version.IndexOf('-', StringComparison.Ordinal);
-        if (dashIdx != -1)
-            version = version[..dashIdx];
-
-        return new Version(version);
-    }
-
     /// <summary>
     ///
     /// </summary>
@@ -169,7 +153,7 @@ static class Versioning
 
     public static string GetRobloxVersionStr(bool studio)
     {
-        IAppData data = studio ? new RobloxStudioData() : new RobloxPlayerData();
+        IAppData data = studio ? App.Clients.StudioDeployment : App.Clients.PlayerDeployment;
 
         return GetRobloxVersionStr(data);
     }

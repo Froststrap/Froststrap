@@ -61,18 +61,6 @@ internal static class LinuxRegistry
         UpdateMimeDatabase();
     }
 
-    public static void UnregisterAll()
-    {
-        if (!OperatingSystem.IsLinux())
-            return;
-
-        if (File.Exists(MimeXmlPath))
-        {
-            File.Delete(MimeXmlPath);
-            UpdateMimeDatabase();
-        }
-    }
-
     private static void UpdateMimeDatabase()
     {
         try

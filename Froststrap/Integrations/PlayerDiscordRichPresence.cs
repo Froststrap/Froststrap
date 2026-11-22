@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using DiscordRPC;
+using DiscordRPC.IO;
 using DiscordRPC.Logging;
 using RichPresence = DiscordRPC.RichPresence;
 using DiscordRPC.Message;
@@ -11,7 +12,7 @@ using System.Net.Sockets;
 
 namespace Froststrap.Integrations
 {
-    internal class PlayerDiscordRichPresence : IDisposable
+    internal sealed class PlayerDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
@@ -31,7 +32,17 @@ namespace Froststrap.Integrations
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            _rpcClient = new DiscordRpcClient("363445589247131668", -1, new NullLogger(), true, DiscordIpcPipeClient.Create());
+            INamedPipeClient? pipeClient = DiscordIpcPipeClient.Create();
+            try
+            {
+                _rpcClient = new DiscordRpcClient("363445589247131668", -1, new NullLogger(), true, pipeClient);
+                pipeClient = null;
+            }
+            finally
+            {
+                pipeClient?.Dispose();
+            }
+
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnGameJoin += (_, _) => Task.Run(() => SetCurrentGame());

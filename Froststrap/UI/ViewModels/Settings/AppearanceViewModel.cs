@@ -8,8 +8,8 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
-using Froststrap.UI.Elements.Editor;
 using System.IO.Compression;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,14 +17,17 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal partial class AppearanceViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
         private static readonly string[] _zipFilter = ["*.zip"];
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
         private CustomThemeCycleSelectionWrapper? _selectedThemeWrapper;
+        private CustomDialog? _customThemePreview;
+        private Action? _themeReloadHandler;
 
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
+        public ICommand PreviewCustomThemeCommand => new RelayCommand(() => PreviewCustomTheme());
         public IAsyncRelayCommand BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomIconLocation(c));
         public IAsyncRelayCommand BrowseCustomRobloxIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomRobloxIconLocation(c));
 
@@ -86,7 +89,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Select Roblox Icon File",
                 AllowMultiple = false,
-                FileTypeFilter = [new FilePickerFileType("Icons") { Patterns = ["*.ico"] }]
+                FileTypeFilter = [new FilePickerFileType("Images") { Patterns = ["*.ico", "*.png", "*.jpg", "*.jpeg", "*.bmp"] }]
             });
 
             if (files.Count > 0)
@@ -96,7 +99,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static List<string> Languages => Locale.GetLanguages();
+        public static IReadOnlyList<string> Languages => Locale.GetLanguages();
 
         public string SelectedLanguage
         {
@@ -125,6 +128,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(SelectedLanguage));
 
                     Locale.Set(identifier);
+                    App.LoadRemoteTranslations();
                 }
             }
         }
@@ -489,17 +493,28 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private static string GetThemeDirectoryOrThrow(string name)
+            => Paths.TryGetCustomThemeDirectory(name, out string? directory)
+                ? directory
+                : throw new InvalidOperationException($"'{name}' is not a valid custom theme name");
+
         private static void DeleteCustomThemeStructure(string name)
         {
-            string dir = Path.Combine(Paths.CustomThemes, name);
+            string dir = GetThemeDirectoryOrThrow(name);
+
+            // the preview watcher holds a handle on the theme folder
+            ThemeFileWatcher.Stop();
+
             if (Directory.Exists(dir))
                 Directory.Delete(dir, true);
         }
 
         private static void RenameCustomThemeStructure(string oldName, string newName)
         {
-            string oldDir = Path.Combine(Paths.CustomThemes, oldName);
-            string newDir = Path.Combine(Paths.CustomThemes, newName);
+            string oldDir = GetThemeDirectoryOrThrow(oldName);
+            string newDir = GetThemeDirectoryOrThrow(newName);
+
+            ThemeFileWatcher.Stop();
             Directory.Move(oldDir, newDir);
         }
 
@@ -541,15 +556,103 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomTheme is null) return;
 
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
+            string themePath = Paths.TryGetCustomThemeDirectory(SelectedCustomTheme, out string? directory)
+                ? Path.Combine(directory, "Theme.xml")
+                : SelectedCustomTheme;
 
-            App.FrostRPC?.SetDialog("Editing Custom Theme");
-            using (var editor = new BootstrapperEditorWindow(SelectedCustomTheme))
+            if (directory is null || !File.Exists(themePath))
             {
-                await editor.ShowDialog(parentWindow);
+                await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Errors_FileNotFound, themePath),
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK);
+                return;
             }
-            App.FrostRPC?.ClearDialog();
+
+            if (!ExternalEditor.OpenTheme(SelectedCustomTheme))
+            {
+                await Frontend.ShowMessageBox(
+                    string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_OpenFailed, directory),
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK);
+            }
+        }
+
+        /// <param name="reload">
+        /// Live-reload after a file change: errors are expected mid-edit so they're only logged, and the new
+        /// window takes the old one's place without stealing focus from the user's editor.
+        /// </param>
+        private void PreviewCustomTheme(bool reload = false)
+        {
+            if (SelectedCustomTheme is null) return;
+
+            try
+            {
+                string directory = GetThemeDirectoryOrThrow(SelectedCustomTheme);
+
+                CustomDialog dialog = new();
+                dialog.ApplyCustomTheme(SelectedCustomTheme);
+
+                dialog.Closed += (_, _) =>
+                {
+                    if (!ReferenceEquals(_customThemePreview, dialog))
+                        return;
+
+                    // nothing left to live-reload, so release the folder
+                    _customThemePreview = null;
+                    ThemeFileWatcher.Stop();
+                };
+
+                CustomDialog? previous = _customThemePreview;
+
+                if (reload && previous is not null)
+                {
+                    dialog.ShowActivated = false;
+                    dialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    dialog.Position = previous.Position;
+                }
+
+                // swap before closing so the old dialog's Closed handler doesn't stop the watcher
+                _customThemePreview = dialog;
+
+                dialog.Message = Strings.Bootstrapper_StylePreview_TextCancel;
+                dialog.CancelEnabled = true;
+                dialog.ShowBootstrapper();
+
+                // close the old one only once the new one is up, so there's no gap/flicker
+                previous?.CloseBootstrapper();
+
+                WatchSelectedTheme(directory);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to preview custom theme");
+
+                if (!reload)
+                {
+                    _ = Frontend.ShowMessageBox(
+                        string.Format(CultureInfo.InvariantCulture, Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
+                        MessageBoxImage.Error,
+                        MessageBoxButton.OK);
+                }
+            }
+        }
+
+        private void WatchSelectedTheme(string directory)
+        {
+            if (!Directory.Exists(directory))
+                return;
+
+            _themeReloadHandler ??= () => Avalonia.Threading.Dispatcher.UIThread.Post(ReloadCustomThemePreview);
+            ThemeFileWatcher.Watch(directory, _themeReloadHandler);
+        }
+
+        private void ReloadCustomThemePreview()
+        {
+            if (_customThemePreview == null)
+                return;
+
+            PreviewCustomTheme(reload: true);
         }
 
         private async Task ExportCustomTheme(Control? control)
@@ -569,7 +672,8 @@ namespace Froststrap.UI.ViewModels.Settings
             if (file is null)
                 return;
 
-            string themeDir = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
+            if (!Paths.TryGetCustomThemeDirectory(SelectedCustomTheme, out string? themeDir))
+                return;
 
             await Task.Run(async () =>
             {
@@ -579,6 +683,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 foreach (var filePath in Directory.EnumerateFiles(themeDir, "*.*", SearchOption.AllDirectories))
                 {
                     string relativePath = Path.GetRelativePath(themeDir, filePath).Replace('\\', '/');
+
+                    if (relativePath.StartsWith(".vscode/", StringComparison.OrdinalIgnoreCase)
+                        || relativePath.StartsWith(".zed/", StringComparison.OrdinalIgnoreCase))
+                        continue;
 
                     var entry = archive.CreateEntry(relativePath, CompressionLevel.Optimal);
                     entry.LastWriteTime = DateTimeOffset.Now;
@@ -604,7 +712,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to delete custom theme");
                 await Frontend.ShowMessageBox(string.Format(CultureInfo.InvariantCulture, Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
@@ -679,7 +787,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to rename custom theme");
                 await Frontend.ShowMessageBox("Rename failed", MessageBoxImage.Error);
                 return;
             }
@@ -784,29 +892,22 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.Theme = value;
+
+                if (value == Theme.Custom && GradientStops.Count == 0)
+                    AddDefaultGradientStops();
+
                 OnPropertyChanged(nameof(Theme));
                 OnPropertyChanged(nameof(CustomThemeExpanded));
+                OnPropertyChanged(nameof(IsColorTheme));
+                OnPropertyChanged(nameof(IsImageTheme));
+                OnPropertyChanged(nameof(CanRemoveGradientStop));
                 ApplyThemeUpdate();
             }
         }
 
-        public static bool CustomThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
+        public static bool CustomThemeExpanded => App.Settings.Prop.Theme is Theme.Custom or Theme.Image;
 
-        public IEnumerable<BackgroundMode> BackgroundTypes { get; } = Enum.GetValues<BackgroundMode>();
         public IEnumerable<BackgroundStretch> BackgroundStretches { get; } = Enum.GetValues<BackgroundStretch>();
-
-        public BackgroundMode BackgroundType
-        {
-            get => App.Settings.Prop.BackgroundType;
-            set
-            {
-                App.Settings.Prop.BackgroundType = value;
-                OnPropertyChanged(nameof(BackgroundType));
-                OnPropertyChanged(nameof(IsGradientMode));
-                OnPropertyChanged(nameof(IsImageMode));
-                ApplyThemeUpdate();
-            }
-        }
 
         public BackgroundStretch BackgroundStretch
         {
@@ -841,8 +942,58 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
-        public bool IsImageMode => BackgroundType == BackgroundMode.Image;
+        public bool IsColorTheme => this.Theme == Enums.Theme.Custom;
+        public bool IsImageTheme => this.Theme == Enums.Theme.Image;
+
+        #region Accent Color
+        public IEnumerable<AccentColorMode> AccentColorModes { get; } = Enum.GetValues<AccentColorMode>();
+
+        public static bool AccentColorExpanded => App.Settings.Prop.AccentColorMode == AccentColorMode.Custom;
+
+        public bool IsCustomAccentColor => AccentColorMode == AccentColorMode.Custom;
+
+        public AccentColorMode AccentColorMode
+        {
+            get => App.Settings.Prop.AccentColorMode;
+            set
+            {
+                if (App.Settings.Prop.AccentColorMode == value)
+                    return;
+
+                App.Settings.Prop.AccentColorMode = value;
+                OnPropertyChanged(nameof(AccentColorMode));
+                OnPropertyChanged(nameof(AccentColorExpanded));
+                OnPropertyChanged(nameof(IsCustomAccentColor));
+                AvaloniaWindow.ApplyTheme();
+            }
+        }
+
+        public string CustomAccentColor
+        {
+            get => App.Settings.Prop.CustomAccentColor;
+            set
+            {
+                App.Settings.Prop.CustomAccentColor = value;
+                OnPropertyChanged(nameof(CustomAccentColor));
+                AvaloniaWindow.ApplyTheme();
+            }
+        }
+
+        private ICommand? _openAccentColorPickerCommand;
+        public ICommand OpenAccentColorPickerCommand => _openAccentColorPickerCommand ??= new RelayCommand<Control>(async control =>
+        {
+            if (control is null) return;
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+
+            var dialog = new ColorPickerDialog(App.Settings.Prop.CustomAccentColor);
+            var result = await dialog.ShowDialog<string>(parentWindow);
+
+            if (!string.IsNullOrWhiteSpace(result))
+                CustomAccentColor = result;
+        });
+        #endregion
         public double? GradientAngle
         {
             get => App.Settings.Prop.GradientAngle;
@@ -861,6 +1012,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         public ObservableCollection<GradientStops> GradientStops { get; } = [];
+        public bool CanRemoveGradientStop => GradientStops.Count > 1;
 
         private ICommand? _addGradientStopCommand;
         public ICommand AddGradientStopCommand => _addGradientStopCommand ??= new RelayCommand(async () => await AddGradientStop());
@@ -937,21 +1089,23 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task AddGradientStop()
         {
-            GradientStops newStop = new() { Offset = 0.5, Color = "#000000" };
+            GradientStops newStop = new() { Offset = 0.5, Color = "#FFFFFF" };
             newStop.PropertyChanged += OnGradientStopPropertyChanged;
             GradientStops.Add(newStop);
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
             ApplyThemeUpdate();
         }
 
         private void RemoveGradientStop(GradientStops stop)
         {
-            if (stop == null) return;
+            if (stop == null || GradientStops.Count <= 1) return;
             stop.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Remove(stop);
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
             ApplyThemeUpdate();
         }
 
-        private void ResetGradient()
+        private void AddDefaultGradientStops()
         {
             List<GradientStops> defaultStops =
             [
@@ -960,14 +1114,21 @@ namespace Froststrap.UI.ViewModels.Settings
                 new() { Offset = 1.0, Color = "#80202C36" }
             ];
 
-            foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;
-            GradientStops.Clear();
-
             foreach (var stop in defaultStops)
             {
                 stop.PropertyChanged += OnGradientStopPropertyChanged;
                 GradientStops.Add(stop);
             }
+
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
+        }
+
+        private void ResetGradient()
+        {
+            foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;
+            GradientStops.Clear();
+
+            AddDefaultGradientStops();
 
             GradientAngle = 0;
             OnPropertyChanged(nameof(GradientAngle));
@@ -1036,11 +1197,15 @@ namespace Froststrap.UI.ViewModels.Settings
                     GradientAngle = angleElement.GetDouble();
                 }
 
+                if (GradientStops.Count == 0)
+                    AddDefaultGradientStops();
+
+                OnPropertyChanged(nameof(CanRemoveGradientStop));
                 ApplyThemeUpdate();
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to import gradient");
             }
         }
 
@@ -1081,11 +1246,13 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 ResetGradient();
             }
+
+            OnPropertyChanged(nameof(CanRemoveGradientStop));
         }
         #endregion
     }
 
-    internal class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
+    internal sealed class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
     {
         private bool _isSelected;
         private string _themeName = string.Empty;

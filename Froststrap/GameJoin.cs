@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Froststrap
 {
-    internal class GameJoin
+    internal sealed class GameJoin
     {
         /// Converts a pasted Roblox link into a launch command
         public static async Task<string?> GetLaunchCommandByLink(string link)
@@ -357,24 +357,6 @@ namespace Froststrap
             App.Logger.Info($"Join type: {joinData.JoinType}");
 
             return joinData;
-        }
-
-        /// Rebuilds parsed launch data into a <c>roblox://experiences/start</c> deeplink,
-        /// the only launch format Sober understands. Returns null when there is nothing
-        /// to join, so the original launch command is left untouched.
-        public static string? BuildSoberUri(GameJoinData joinData)
-        {
-            if (joinData.PlaceId is not long placeId || placeId <= 0)
-                return null;
-
-            bool isPlayTogether = joinData.JoinType == GameJoinType.RequestPlayTogetherGame;
-            string uri = $"roblox://experiences/start?placeId={placeId}";
-
-            if (joinData.AccessCode is not null)
-                uri += $"&accessCode={joinData.AccessCode}";
-            else if (!isPlayTogether && joinData.JobId is not null)
-                uri += $"&gameInstanceId={joinData.JobId}";
-            return uri;
         }
     }
 }

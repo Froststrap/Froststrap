@@ -10,7 +10,7 @@ using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class FluentMessageBox : Base.AvaloniaWindow
+    internal sealed partial class FluentMessageBox : Base.AvaloniaWindow
     {
         public MessageBoxResult Result = MessageBoxResult.None;
 
@@ -53,7 +53,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 IconImage.Source = new Bitmap(stream);
             }
 
-            Title = App.ProjectName;
+            Title = ProjectInfo.Name;
 
             MessageMarkdownTextBlock.MarkdownText = message;
 

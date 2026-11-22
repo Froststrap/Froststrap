@@ -9,8 +9,14 @@
     "nuget",
     "cargo"
   ],
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": false,
+  "prConcurrentLimit": 10,
+  "prHourlyLimit": 10,
+  "rebaseWhen": "behind-base-branch",
   "schedule": [
-    "* * * * *"
-  ]
+    "at any time"
+  ],
+  "timezone": "Australia/Sydney",
+  "logLevel": "info"
 }
-

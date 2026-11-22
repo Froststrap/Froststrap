@@ -1,5 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
 {
-  dotnetCorePackages,
   buildDotnetModule,
   makeRustPlatform,
   rustPlatform,
@@ -31,15 +34,15 @@
   lib,
 }:
 {
+  dotnix,
   fenix,
   ...
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
-  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
-  toolchain =
-    with fenix.packages.${stdenv.system};
-    combine [ minimal.toolchain ];
+  dotnet = dotnix.packages.${stdenv.hostPlatform.system};
+  dotnet-sdk = dotnet.combine [ dotnet."10-0".stable.sdk ];
+  dotnet-runtime = dotnet.combine [ dotnet."10-0".stable.runtime ];
+  toolchain = with fenix.packages.${stdenv.system}; combine [ minimal.toolchain ];
   src = ../.;
   fenixRustPlatform = makeRustPlatform {
     cargo = toolchain;
@@ -50,10 +53,10 @@ let
     pname = "xtask";
     version = "0.0.0";
     src = ../build;
-    cargoHash = "sha256-7YV+oYJE266v0iyzCZmRCo0bkLKLBMLXBKTIG7r03E0=";
+    cargoHash = "sha256-kjDU+JRJXlP8+1GpXwFnQBq+JnQnRbMNl9ZmIjJ747c=";
     doCheck = false;
   };
-  version = "2.0.6-beta.8";
+  version = "2.0.7";
 
   runtimeLibs = lib.optionals stdenv.hostPlatform.isLinux [
     expat
@@ -81,7 +84,12 @@ let
   ];
 in
 buildDotnetModule {
-  inherit dotnet-runtime dotnet-sdk src version;
+  inherit
+    dotnet-runtime
+    dotnet-sdk
+    src
+    version
+    ;
   projectFile = "Froststrap/Froststrap.csproj";
   nugetDeps = ./deps.json;
   name = "froststrap";
@@ -90,14 +98,15 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-KqFpWnP1SgVWs//PM0nqgzpmxDTGuHhy2ffHils4U2Q=";
+    hash = "sha256-30TGDP5xGnqfws4nHk7bRLTj8ugkCoLrfHLtVEu0fk8=";
   };
 
   nativeBuildInputs = [
     rustPlatform.cargoSetupHook
     toolchain
     xtask
-  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     pkg-config
     clang
   ];
@@ -122,10 +131,7 @@ buildDotnetModule {
     mkdir -p $out/lib/froststrap $out/bin
     cp -r build/publish/publish/. $out/lib/froststrap/
     makeWrapper $out/lib/froststrap/froststrap $out/bin/froststrap \
-    ${
-      lib.optionalString stdenv.hostPlatform.isLinux
-        "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"
-    }
+    ${lib.optionalString stdenv.hostPlatform.isLinux "--prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath runtimeLibs}:$out/lib/froststrap/libs"}
     runHook postInstall
   '';
 

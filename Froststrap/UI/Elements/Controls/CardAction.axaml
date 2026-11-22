@@ -7,9 +7,9 @@ SPDX-License-Identifier: MPL-2.0
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:controls="using:Froststrap.UI.Elements.Controls"
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-        xmlns:converters="clr-namespace:Froststrap.UI.Converters">
+        xmlns:converters="using:Froststrap.UI.Converters">
 
     <Style Selector="controls|CardAction">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />

@@ -7,7 +7,7 @@ using Avalonia.Styling;
 
 namespace Froststrap.UI.AppThemes.Styles
 {
-    internal partial class Light : Avalonia.Styling.Styles
+    internal sealed partial class Light : Avalonia.Styling.Styles
     {
         public Light()
         {

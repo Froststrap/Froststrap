@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Fonts;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 using FontFamily = Avalonia.Media.FontFamily;
 
@@ -88,7 +89,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 "BOLD" => FontWeight.Bold,
                 "EXTRABOLD" or "ULTRABOLD" => FontWeight.ExtraBold,
                 "BLACK" or "HEAVY" => FontWeight.Black,
-                "EXTRABLACK" or "ULTRABLACK" => FontWeight.ExtraBlack, //i just noticed ExtraBlack was mispelled :joy:
+                "EXTRABLACK" or "ULTRABLACK" => FontWeight.ExtraBlack,
                 _ => throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name, "FontWeight", value)
             };
         }
@@ -131,36 +132,37 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (resourceName == "Version")
                 return App.Version;
 
-            return Strings.ResourceManager.GetString(resourceName, CultureInfo.CurrentCulture) ?? resourceName;
+            return Translations.Get(resourceName);
         }
 
         private static string? GetFullPath(CustomDialog dialog, string? sourcePath)
         {
             if (sourcePath == null) return null;
 
-            if (sourcePath.StartsWith("file://", StringComparison.Ordinal))
-            {
-                string pathWithoutFile = sourcePath["file://".Length..];
-                if (pathWithoutFile.StartsWith('/'))
-                    pathWithoutFile = pathWithoutFile[1..];
-                pathWithoutFile = Environment.ExpandEnvironmentVariables(pathWithoutFile);
+            string path = sourcePath;
 
-                if (File.Exists(pathWithoutFile)) return pathWithoutFile;
-                return Path.GetFullPath(pathWithoutFile);
+            if (path.StartsWith("file://", StringComparison.Ordinal))
+            {
+                if (!Uri.TryCreate(path, UriKind.Absolute, out Uri? fileUri) || !fileUri.IsFile)
+                    throw new CustomThemeException("CustomTheme.Errors.PathOutsideTheme", sourcePath);
+
+                path = fileUri.LocalPath;
+            }
+            else if (path.StartsWith("theme://", StringComparison.Ordinal))
+            {
+                path = path["theme://".Length..];
             }
 
-            if (sourcePath.StartsWith("theme://", StringComparison.Ordinal))
-            {
-                string relativePath = sourcePath["theme://".Length..];
-                string fullPath = Path.Combine(dialog.ThemeDir, relativePath);
-                return Path.GetFullPath(Environment.ExpandEnvironmentVariables(fullPath));
-            }
+            path = Environment.ExpandEnvironmentVariables(path.Replace('\\', Path.DirectorySeparatorChar));
 
-            string normalizedPath = sourcePath.Replace('\\', Path.DirectorySeparatorChar);
-            normalizedPath = Environment.ExpandEnvironmentVariables(normalizedPath);
-            if (Path.IsPathRooted(normalizedPath)) return normalizedPath;
+            string themeRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(dialog.ThemeDir)) + Path.DirectorySeparatorChar;
+            string fullPath = Path.GetFullPath(Path.Combine(themeRoot, path));
+            StringComparison comparison = OperatingSystem.IsLinux() ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
-            return Path.GetFullPath(Path.Combine(dialog.ThemeDir, normalizedPath));
+            if (!(fullPath + Path.DirectorySeparatorChar).StartsWith(themeRoot, comparison))
+                throw new CustomThemeException("CustomTheme.Errors.PathOutsideTheme", sourcePath);
+
+            return fullPath;
         }
 
         private static GetImageSourceDataResult GetImageSourceData(CustomDialog dialog, string name, XElement xmlElement)
@@ -253,6 +255,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private static readonly Dictionary<string, LoadedFont?> _customFontCache = new(StringComparer.OrdinalIgnoreCase);
         private static readonly Lock _customFontLock = new();
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Deliberate: the font collection is owned by the Avalonia FontManager for the app lifetime")]
         private static LoadedFont? LoadSingleFontFile(string path)
         {
             lock (_customFontLock)

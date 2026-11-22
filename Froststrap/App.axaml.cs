@@ -6,9 +6,15 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
+using Froststrap.Clients;
+using Froststrap.Clients.Model;
+using Froststrap.Clients.Registry;
+using Froststrap.Clients.Runtime;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
@@ -18,7 +24,7 @@ using Velopack;
 
 namespace Froststrap;
 
-internal partial class App : Application
+internal sealed partial class App : Application
 {
     public static bool AboutOpen;
     private void About_OnClick(object? sender, EventArgs e)
@@ -46,31 +52,12 @@ internal partial class App : Application
         DiagnosticsOpen = true;
     }
 
-    private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
-    private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
-
-    public const string ProjectName = "Froststrap";
-    public const string ProjectOwner = "Froststrap";
-    public const string ProjectRepository = "Froststrap/Froststrap";
-    public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
-    public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
-    public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
-    public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/Froststrap/config/refs/heads/main/Data.json";
-
-    public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
-    public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
-
-    // simple shorthand for extremely frequently used and long string - this goes under HKCU
-    public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
-
-    public const string ApisKey = $"Software\\{ProjectName}";
-
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly()
         .GetCustomAttribute<BuildMetadataAttribute>()!;
 
-    public static readonly string Version = (System.Reflection.Assembly.GetExecutingAssembly()
+    public static readonly string Version = (Assembly.GetExecutingAssembly()
         .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
         ?? "unknown+asteo").Split("+")[0];
 
@@ -81,43 +68,13 @@ internal partial class App : Application
 
     public FroststrapRichPresence? RichPresence { get; private set; }
 
-    public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
+    public static bool IsPlayerInstalled => Clients.Player.IsInstalled();
 
-    public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
+    public static bool IsStudioInstalled => Clients.Studio.IsInstalled();
 
-    public static string? MockReleaseTag => GetEnvironmentVariable(MockReleaseTagEnvironmentVariable);
+    private static ClientRegistry? _clients;
 
-    public static bool IsMockReleaseEnabled => !string.IsNullOrWhiteSpace(MockReleaseTag);
-
-    public static string? MockCurrentVersion => GetEnvironmentVariable(MockCurrentVersionEnvironmentVariable);
-
-    public static bool IsPlayerInstalled => PlayerData.IsInstalled;
-
-    public static bool IsStudioInstalled => StudioData.IsInstalled;
-
-    private static bool? _linuxPlayerInstalled;
-
-    public static bool LinuxPlayerInstalled
-    {
-        get
-        {
-            if (!OperatingSystem.IsLinux())
-                return false;
-
-            if (_linuxPlayerInstalled is not bool cached)
-            {
-                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-                _linuxPlayerInstalled = cached;
-            }
-
-            return cached;
-        }
-    }
-
-    public static readonly RobloxPlayerData PlayerData = new();
-
-    public static readonly RobloxStudioData StudioData = new();
+    public static ClientRegistry Clients => _clients ?? throw new InvalidOperationException("Clients are resolved after Paths.Initialize()");
 
     public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -128,8 +85,6 @@ internal partial class App : Application
     public static readonly JsonManager<Settings> Settings = new();
 
     public static readonly JsonManager<State> State = new();
-
-    public static readonly SoberSettingsManager SoberSettings = new();
 
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
@@ -278,7 +233,7 @@ internal partial class App : Application
     public static async Task FinalizeExceptionHandling(AggregateException ex)
     {
         foreach (var innerEx in ex.InnerExceptions)
-            Logger.Error("Unhandled exception: ", innerEx);
+            Logger.Error(innerEx, "Unhandled exception (inner)");
 
         await FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
@@ -353,64 +308,104 @@ internal partial class App : Application
         return false;
     }
 
-    public static string ExtractIcon(string name, string fileName)
+    public static Task AssertWindowsAUMIDAsync()
     {
-        string baseFilePath = Path.Combine(Paths.Base, fileName);
-
-        if (!File.Exists(baseFilePath))
-        {
-            using var stream = Resource.GetStream(name);
-            Directory.CreateDirectory(Path.GetDirectoryName(baseFilePath)!);
-            using var fileStream = File.Create(baseFilePath);
-            stream.CopyTo(fileStream);
-        }
-        return baseFilePath;
+#if DEBUG
+        /// Return early just because of if this runs in debug this might fuck shit up
+        /// Would be good to though make it more robust so this doesn't need to happen
+        return Task.CompletedTask;
+#else
+        return AssertWindowsAUMIDImplAsync();
+#endif
     }
 
-    public static async Task AssertWindowsAUMIDAsync()
+    private static async Task AssertWindowsAUMIDImplAsync()
     {
-        if (!OperatingSystem.IsWindows()) return;
+        if (!OperatingSystem.IsWindows())
+            return;
+
         Logger.Debug("Verifying AUMID creation");
 
-        string iconPath = ExtractIcon("IconFroststrap.ico", "Froststrap.ico");
+        string iconPath = Path.Combine(AppContext.BaseDirectory, "AppIcon.ico");
 
-        const string aumidKeyPath = @"Software\Classes\AppUserModelId\xyz.froststrap.desktop";
+        const string aumidKeyPath = $@"Software\Classes\AppUserModelId\{ProjectInfo.BundleId}";
         using var baseKey = Registry.CurrentUser;
 
-        bool keyExists = baseKey.GetSubKeyNames().Contains("AppUserModelId") &&
-                         baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains("xyz.froststrap.desktop") == true;
-
-        if (!keyExists)
+        if (
+            baseKey.GetSubKeyNames().Contains("AppUserModelId")
+            && baseKey.OpenSubKey("AppUserModelId")?.GetSubKeyNames().Contains(ProjectInfo.BundleId) == true
+        )
         {
-            using var aumidKey = baseKey.CreateSubKey(aumidKeyPath);
-            aumidKey.SetValue("DisplayName", "Froststrap");
-            aumidKey.SetValue("IconBackgroundColor", "FFDDDDDD");
-            aumidKey.SetValue("IconUri", iconPath);
-            Logger.Info("Created AUMID registry key.");
-        }
-        else
-        {
-            using var aumidKey = baseKey.OpenSubKey(aumidKeyPath, writable: true);
-            if (aumidKey != null)
-            {
-                string? currentIconUri = aumidKey.GetValue("IconUri") as string;
-                if (currentIconUri == null || !string.Equals(currentIconUri, iconPath, StringComparison.OrdinalIgnoreCase))
-                {
-                    aumidKey.SetValue("IconUri", iconPath);
-                    Logger.Info($"Updated IconUri from '{currentIconUri}' to '{iconPath}'.");
-                }
-            }
-            else
+            using var aumidKeys = baseKey.OpenSubKey(aumidKeyPath, writable: true);
+            if (aumidKeys is null)
             {
                 Logger.Warn("Could not open existing AUMID key for writing.");
+                return;
             }
+
+            string? currentIconUri = aumidKeys.GetValue("IconUri") as string;
+            if (currentIconUri == null || !string.Equals(currentIconUri, iconPath, StringComparison.OrdinalIgnoreCase))
+            {
+                aumidKeys.SetValue("IconUri", iconPath);
+                Logger.Info($"Updated IconUri from '{currentIconUri}' to '{iconPath}'.");
+            }
+            return;
         }
+
+        using var aumidKey = baseKey.CreateSubKey(aumidKeyPath);
+        aumidKey.SetValue("DisplayName", "Froststrap");
+        aumidKey.SetValue("IconBackgroundColor", "FFDDDDDD");
+        aumidKey.SetValue("IconUri", iconPath);
+        Logger.Info("Created AUMID registry key.");
+    }
+
+    private static void OnSystemColorValuesChanged(object? sender, PlatformColorValues e)
+    {
+        if (Settings.Prop.Theme != Theme.Default)
+            return;
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (Settings.Prop.Theme == Theme.Default)
+                AvaloniaWindow.ApplyTheme();
+        });
+    }
+
+    public static void LoadRemoteTranslations()
+    {
+        string cacheDirectory = Path.Combine(Paths.Cache, "Translations");
+
+        try
+        {
+            int cached = RemoteTranslations.LoadCached(cacheDirectory);
+            if (cached > 0)
+                Logger.Debug($"Loaded {cached} cached remote translations for {Localizer.CultureName}");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+        {
+            Logger.Warn(ex, "Failed to load cached remote translations");
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                int updated = await RemoteTranslations.RefreshAsync(HttpClient, cacheDirectory);
+                if (updated > 0)
+                    Logger.Info($"Updated {updated} remote translations for {Localizer.CultureName}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to refresh remote translations");
+            }
+        });
     }
 
     public static void ApplyAnimationSettings()
     {
         var app = Application.Current;
-        if (app == null) return;
+        if (app == null)
+            return;
 
         RemoveAnimationSettings();
 
@@ -449,10 +444,7 @@ internal partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
-        // FluentAvalonia pins ContentControlThemeFontFamily to the system font, bypassing the default font.
-        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
-
-        // FluentAvalonia's paddings put more space below the text (tuned for Segoe UI), which reads as too high with Inter.
+        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Froststrap#Inter");
         Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
         Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
         Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
@@ -464,11 +456,8 @@ internal partial class App : Application
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         Dispatcher.UIThread.UnhandledException += GlobalExceptionHandler;
 
-        if (OperatingSystem.IsMacOS()
-            && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
-        {
+        if (OperatingSystem.IsMacOS() && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
             activatableLifetime.Activated += OnAppActivated;
-        }
     }
 
     private static void OnAppActivated(object? sender, ActivatedEventArgs e)
@@ -516,51 +505,6 @@ internal partial class App : Application
         }
     }
 
-    public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
-    {
-        try
-        {
-            if (IsMockReleaseEnabled)
-            {
-                string mockTag = MockReleaseTag ?? "v0.0.0-mock";
-                Logger.Debug($"Using mocked release {mockTag}");
-                return new GithubRelease
-                {
-                    TagName = mockTag,
-                    Name = mockTag,
-                    Body = "Mock release",
-                    Prerelease = true,
-                    CreatedAt = DateTime.UtcNow.ToString("o"),
-                    Assets = []
-                };
-            }
-
-            string url = includePreRelease
-                ? $"https://api.github.com/repos/{ProjectRepository}/releases"
-                : $"https://api.github.com/repos/{ProjectRepository}/releases/latest";
-
-            if (includePreRelease)
-            {
-                var releases = await Http.GetJson<List<GithubRelease>>(new Uri(url));
-                if (releases is null || releases.Count == 0)
-                {
-                    Logger.Info("No releases found");
-                    return null;
-                }
-                return releases[0];
-            }
-            else
-            {
-                return await Http.GetJson<GithubRelease>(new Uri(url));
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.Error($"Unhandled exception {ex}");
-            return null;
-        }
-    }
-
     public override async void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -587,24 +531,27 @@ internal partial class App : Application
 
         Paths.Initialize();
 
+        // must happen before anything below loads Settings/State from the new data root
+        if (OperatingSystem.IsWindows())
+            Updater.MigrateOutOfInstallRoot();
+
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
 
-        Logger.Debug($"Starting {ProjectName} {Version} ({Paths.Process})");
+        Logger.Debug($"Starting {ProjectInfo.Name} {Version} ({Paths.Process})");
         Logger.Debug($"OS Description: {RuntimeInformation.OSDescription}");
-        Logger.Debug($"Built for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
+        Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
 
-        var userAgent = new StringBuilder($"{ProjectName}/{Version}");
-        if (IsActionBuild)
+        _clients = ClientCatalog.Build(ClientEnvironment.FromHost());
+
+        foreach (ClientTarget target in Enum.GetValues<ClientTarget>())
         {
-            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
-            userAgent.Append(IsProductionBuild ? " (Production)" : $" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
+            ClientResolution resolution = _clients.Describe(target);
+            Logger.Info($"Client for {target}: {resolution.ClientId} ({resolution.DisplayName}) on {resolution.Host}");
         }
-        else
-        {
-            Logger.Debug($"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
-            userAgent.Append(string.Format(CultureInfo.InvariantCulture, " (Build {0})", Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))));
-        }
+
+        var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
         if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
@@ -621,14 +568,27 @@ internal partial class App : Application
         Settings.Load();
         State.Load();
 
-        if (Settings.Prop.Theme > Theme.Custom)
+        if (Settings.Prop.Theme == Theme.Custom && Settings.Prop.BackgroundType == BackgroundMode.Image)
         {
-            Settings.Prop.Theme = Theme.Dark;
+            Settings.Prop.Theme = Theme.Image;
+            Settings.Save();
+        }
+
+        string locale = Locale.Normalise(Settings.Prop.Locale);
+        if (locale != Settings.Prop.Locale)
+        {
+            Logger.Info($"Migrating locale setting '{Settings.Prop.Locale}' to '{locale}'");
+            Settings.Prop.Locale = locale;
             Settings.Save();
         }
 
         AvaloniaWindow.ApplyTheme();
-        Locale.Set(Settings.Prop.Locale);
+
+        if (PlatformSettings is { } platformSettings)
+            platformSettings.ColorValuesChanged += OnSystemColorValuesChanged;
+
+        Locale.Set(locale);
+        LoadRemoteTranslations();
 
         if (Settings.Prop.DisableAnimations)
             ApplyAnimationSettings();
@@ -643,8 +603,7 @@ internal partial class App : Application
                 FastFlags.Load();
                 GlobalSettings.Load();
 
-                if (OperatingSystem.IsLinux())
-                    SoberSettings.Load(alertFailure: false);
+                Clients.Player.SettingsSync?.Load();
 
                 _ = AssertWindowsAUMIDAsync();
 

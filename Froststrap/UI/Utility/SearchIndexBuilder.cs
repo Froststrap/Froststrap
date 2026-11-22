@@ -13,64 +13,10 @@ namespace Froststrap.UI.Utility
     /// Scans majoirty of elements in search page (OptionControls, CardExpanders, CardActions) etc.
     /// Should be fairly competent at doing its job.
     /// </summary>
-    internal partial class SearchIndexBuilder
+    internal sealed partial class SearchIndexBuilder
     {
         private readonly Dictionary<string, List<SearchBarItem>> _pageIndexCache = [];
-        private List<SearchBarItem>? _navigationItemsCache;
 
-
-        public List<SearchBarItem> BuildIndex(List<(string PageTag, string PageTitle, object PageViewModel)> _)
-        {
-            List<SearchBarItem> searchIndex = [.. GetNavigationItems()];
-            return searchIndex;
-        }
-
-        private List<SearchBarItem> GetNavigationItems()
-        {
-            if (_navigationItemsCache != null)
-            {
-                return _navigationItemsCache;
-            }
-
-            var navigationItems = new[]
-            {
-                new { Display = Strings.Menu_Integrations_Title, Tag = "integrations" },
-                new { Display = Strings.Menu_Behaviour_Title, Tag = "behaviour" },
-                new { Display = Strings.Menu_PresetMods_Title, Tag = "mods" },
-                new { Display = Strings.Menu_FastFlags_Title, Tag = "fastflags" },
-                new { Display = Strings.Menu_Appearance_Title, Tag = "appearance" },
-                new { Display = Strings.Menu_RegionSelector_Title, Tag = "regionselector" },
-                new { Display = Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
-                new { Display = Strings.Common_Shortcuts, Tag = "shortcuts" },
-                new { Display = Strings.Common_Deployment, Tag = "channels" }
-            };
-
-            _navigationItemsCache = [];
-            foreach (var item in navigationItems)
-            {
-                _navigationItemsCache.Add(new SearchBarItem
-                {
-                    DisplayName = item.Display,
-                    Tag = item.Tag,
-                    NavigateAction = null,
-                    PageTag = item.Tag,
-                    Category = "Navigation"
-                });
-            }
-
-            return _navigationItemsCache;
-        }
-
-        public void InvalidatePageCache(string pageTag)
-        {
-            _pageIndexCache.Remove(pageTag);
-        }
-
-        public void ClearCache()
-        {
-            _pageIndexCache.Clear();
-            _navigationItemsCache = null;
-        }
 
         public List<SearchBarItem> ScanRenderedPageForElements(Control pageView, string pageTag)
         {

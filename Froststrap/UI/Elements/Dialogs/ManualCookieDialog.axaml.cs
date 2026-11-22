@@ -6,7 +6,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class ManualCookieDialog : Base.AvaloniaWindow
+    internal sealed partial class ManualCookieDialog : Base.AvaloniaWindow
     {
         public ManualCookieDialogViewModel ViewModel { get; }
 

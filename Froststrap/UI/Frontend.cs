@@ -14,14 +14,14 @@ namespace Froststrap.UI
 {
     internal static class Frontend
     {
-        public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
+        public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None, Window? owner = null)
         {
             App.Logger.Info(message);
 
             if (App.LaunchSettings.Silent)
                 return defaultResult;
 
-            return await ShowFluentMessageBox(message, icon, buttons);
+            return await ShowFluentMessageBox(message, icon, buttons, owner);
         }
 
         public static async Task ShowReleaseNotesDialog(string title, string releaseNotes)
@@ -49,20 +49,6 @@ namespace Froststrap.UI
                     await tcs.Task;
                 }
             });
-        }
-
-        //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
-        public static async Task ShowPlayerErrorDialog(bool crash = false)
-        {
-            string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
-
-            string info = string.Format(CultureInfo.InvariantCulture,
-                Strings.Dialog_PlayerError_HelpInformation,
-                $"https://github.com/{App.ProjectRepository}/wiki/Roblox-crashes-or-does-not-launch",
-                $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Bloxstrap"
-            );
-
-            await ShowMessageBox($"{topLine}\n\n{info}", MessageBoxImage.Error);
         }
 
         public static async Task ShowExceptionDialog(Exception exception)
@@ -144,7 +130,7 @@ namespace Froststrap.UI
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception", ex);
+                App.Logger.Error(ex, "Failed to load the custom bootstrapper theme");
                 await ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
                 return await GetBootstrapperDialog(BootstrapperStyle.FluentDialog);
             }
@@ -165,14 +151,13 @@ namespace Froststrap.UI
             };
         }
 
-        private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons)
+        private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons, Window? owner)
         {
             return await Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var messagebox = new FluentMessageBox(message, icon, buttons);
 
-                Window? owner = null;
-                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                if (owner is null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
                     owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
                 }

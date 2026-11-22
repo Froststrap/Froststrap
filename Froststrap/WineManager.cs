@@ -4,7 +4,7 @@
 
 namespace Froststrap;
 
-internal class WineManager(string baseWineDir)
+internal sealed class WineManager(string baseWineDir)
 {
     private readonly string _wineRoot = Path.Combine(baseWineDir, "kombucha");
     private readonly string _prefixDir = Path.Combine(baseWineDir, "prefixes", "studio");
@@ -57,14 +57,6 @@ internal class WineManager(string baseWineDir)
         else
             args.Add("/ve");
         args.AddRange(["/t", type, "/d", data, "/f"]);
-        await RunAsync("reg", [.. args], cancellationToken: cancellationToken);
-    }
-
-    public async Task DeleteRegistryValueAsync(string keyPath, string valueName, CancellationToken cancellationToken = default)
-    {
-        var args = new List<string> { "delete", keyPath, "/f" };
-        if (!string.IsNullOrEmpty(valueName))
-            args.AddRange(["/v", valueName]);
         await RunAsync("reg", [.. args], cancellationToken: cancellationToken);
     }
 

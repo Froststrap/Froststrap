@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
+[language-server.roslyn]
+command = "roslyn-language-server"
+args = ["--stdio", "--autoLoadProjects", "--telemetryLevel", "off"]
+
+[[language]]
+name = "c-sharp"
+language-servers = ["roslyn"]
+roots = ["*.sln", "*.slnx", "*.csproj"]
+indent = { tab-width = 4, unit = "    " }
+
+[[language]]
+name = "xml"
+file-types = [
+  "xml",
+  "resx",
+  "xaml",
+  "slnx",
+  "axaml",
+  { glob = "app.manifest" },
+]

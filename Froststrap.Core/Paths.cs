@@ -1,0 +1,137 @@
+﻿// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
+namespace Froststrap;
+
+static class Paths
+{
+    public static string UserProfile => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    public static string LocalAppData => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+    public static string RoamingAppData => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+    public static string Desktop => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+    public static string WindowsStartMenu => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
+    public static string Process => Environment.ProcessPath!;
+
+    public static string ConfigRoot { get; private set; } = "";
+    public static string DataRoot { get; private set; } = "";
+
+    private static string WindowsDataRoot => Path.Combine(RoamingAppData, ProjectInfo.Name);
+    public static string WindowsInstallRoot => Path.Combine(LocalAppData, ProjectInfo.Name);
+
+    public static string Downloads { get; private set; } = "";
+    public static string Cache { get; private set; } = "";
+    public static string SavedFlagProfiles { get; private set; } = "";
+    public static string Versions { get; private set; } = "";
+    public static string Modifications { get; private set; } = "";
+    public static string CustomThemes { get; private set; } = "";
+    public static string CustomCursors { get; private set; } = "";
+
+    public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
+
+    public static string Logs
+    {
+        get
+        {
+            if (OperatingSystem.IsMacOS())
+            {
+                return Path.Combine(
+                    Paths.UserProfile,
+                    "Library", "Logs", ProjectInfo.Name
+                );
+            }
+            if (OperatingSystem.IsLinux())
+            {
+                var xdgState = Environment.GetEnvironmentVariable("XDG_STATE_HOME");
+                var baseDir = string.IsNullOrEmpty(xdgState)
+                ? Path.Combine(Paths.UserProfile, ".local", "state")
+                : xdgState;
+                return Path.Combine(baseDir, ProjectInfo.Name);
+            }
+            return Path.Combine(WindowsDataRoot, "Logs");
+        }
+    }
+
+    public static string Base => DataRoot;
+
+    public static bool TryGetCustomThemeDirectory(string? name, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? directory)
+        => TryGetChildDirectory(CustomThemes, name, out directory);
+
+    public static bool TryGetChildDirectory(string root, string? name, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? directory)
+    {
+        directory = null;
+
+        if (string.IsNullOrWhiteSpace(name)
+            || name is "." or ".."
+            || Utility.PathValidator.IsFileNameValid(name) != Utility.PathValidator.ValidationResult.Ok)
+            return false;
+
+        string fullRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+        string full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.Combine(fullRoot, name)));
+
+        StringComparison comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        if (!string.Equals(Path.GetDirectoryName(full), fullRoot, comparison))
+            return false;
+
+        directory = full;
+        return true;
+    }
+    public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
+
+    public static void Initialize()
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            ConfigRoot = WindowsDataRoot;
+            DataRoot = WindowsDataRoot;
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            string libraryPath = Path.Combine(UserProfile, "Library");
+            var rootPath = Path.Combine(libraryPath, "Application Support", ProjectInfo.Name);
+            ConfigRoot = rootPath;
+            DataRoot = rootPath;
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            // Respect XDG Base Directory Specification when present
+            string xdgConfig = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME") ?? Path.Combine(UserProfile, ".config");
+            string xdgData = Environment.GetEnvironmentVariable("XDG_DATA_HOME") ?? Path.Combine(UserProfile, ".local", "share");
+            string xdgCache = Environment.GetEnvironmentVariable("XDG_CACHE_HOME") ?? Path.Combine(UserProfile, ".cache");
+            string xdgBin = Environment.GetEnvironmentVariable("XDG_BIN_HOME") ?? Path.Combine(UserProfile, ".local", "bin");
+
+            ConfigRoot = Path.Combine(xdgConfig, ProjectInfo.Name);
+            DataRoot = Path.Combine(xdgData, ProjectInfo.Name);
+
+            // Set cache and logs to XDG locations
+            Cache = Path.Combine(xdgCache, ProjectInfo.Name);
+        }
+
+        SavedFlagProfiles = Path.Combine(ConfigRoot, "SavedFlagProfiles");
+        CustomCursors = Path.Combine(ConfigRoot, "CustomCursorsSets");
+        CustomThemes = Path.Combine(ConfigRoot, "CustomThemes");
+
+        Downloads = Path.Combine(DataRoot, "Downloads");
+        Versions = Path.Combine(DataRoot, "Versions");
+        Modifications = Path.Combine(ConfigRoot, "Modifications");
+
+        // Ensure cache have sensible defaults when not set by XDG above
+        if (String.IsNullOrEmpty(Cache))
+            Cache = Path.Combine(DataRoot, "Cache");
+
+        string exeName = OperatingSystem.IsWindows() ? $"{ProjectInfo.Name}.exe" : ProjectInfo.Name;
+
+        Directory.CreateDirectory(ConfigRoot);
+        Directory.CreateDirectory(DataRoot);
+
+        // Also ensure common per-user dirs exist
+        Directory.CreateDirectory(Path.GetDirectoryName(SavedFlagProfiles) ?? SavedFlagProfiles);
+        Directory.CreateDirectory(CustomCursors);
+        Directory.CreateDirectory(CustomThemes);
+        Directory.CreateDirectory(Modifications);
+        Directory.CreateDirectory(Downloads);
+        Directory.CreateDirectory(Versions);
+        Directory.CreateDirectory(Cache);
+        Directory.CreateDirectory(Logs);
+    }
+}

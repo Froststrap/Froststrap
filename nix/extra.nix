@@ -6,23 +6,26 @@
   nfpm,
   zstd,
   stdenv,
-  cargo-bloat,
+  squashfsTools,
   callPackage,
 }:
+{
+  ...
+}@inputs:
 let
   inherit (callPackage ./devshell-tools.nix { }) mkFragment;
-  avdt = callPackage ./avdt.nix { };
-  vpk = callPackage ./vpk.nix { };
+  avdt = (callPackage ./avdt.nix { }) inputs;
+  vpk = (callPackage ./vpk.nix { }) inputs;
 in
 mkFragment {
   name = "extra";
   buildInputs = [
-    vpk # velopack tooling
-    avdt # avalonia devtools
+    vpk
+    avdt
     zstd
-    cargo-bloat
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     nfpm
+    squashfsTools
   ];
 }

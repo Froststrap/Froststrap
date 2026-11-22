@@ -11,7 +11,7 @@ using Froststrap.Integrations;
 
 namespace Froststrap.UI.Elements.ContextMenu
 {
-    internal partial class MenuContainer : Base.AvaloniaWindow
+    internal sealed partial class MenuContainer : Base.AvaloniaWindow
     {
         private readonly Watcher? _watcher;
         private ActivityWatcher? ActivityWatcher => _watcher?.ActivityWatcher;
@@ -116,7 +116,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         _watcher?.StudioRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
                     }
 
-                    VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{App.ProjectName} {App.Version}");
+                    VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{ProjectInfo.Name} {App.Version}");
                 });
             }
         }

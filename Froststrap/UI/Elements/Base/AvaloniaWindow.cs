@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -100,7 +101,7 @@ namespace Froststrap.UI.Elements.Base
             WindowDecorations = WindowDecorations.Full;
             ExtendClientAreaToDecorationsHint = true;
             ExtendClientAreaTitleBarHeightHint = OperatingSystem.IsMacOS() ? -1 : 40;
-            MacOSTitleBar.SetTrafficLightOffset(this, new Point(20,19));
+            MacOSTitleBar.SetTrafficLightOffset(this, new Point(20, 19));
             TextOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
             if (ApplyTopPadding) _contentHost?.Margin = new Thickness(0, 36, 0, 0);
 
@@ -132,37 +133,9 @@ namespace Froststrap.UI.Elements.Base
             _appliedBrush = _currentBackgroundBrush;
             _appliedStretch = _currentImageStretch;
             _appliedOpacity = _currentImageOpacity;
-
             _backgroundHost.Background = null;
 
-            if (showImage)
-            {
-                _backgroundBorder.Background = null;
-                _backgroundImage.IsVisible = true;
-                _backgroundImage.Stretch = _currentImageStretch;
-                _backgroundImage.Opacity = _currentImageOpacity;
-
-                if (_currentIsAnimatedGif && _currentAnimatedImagePath is not null)
-                {
-                    bool pathChanged = !string.Equals(previousAnimatedPath, _currentAnimatedImagePath, StringComparison.Ordinal);
-
-                    if (pathChanged || ImageBehavior.GetAnimatedSource(_backgroundImage) is null)
-                    {
-                        var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
-                        ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
-                        ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
-                        _backgroundImage.Source = null;
-                    }
-                }
-                else
-                {
-                    if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
-                        ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
-
-                    _backgroundImage.Source = _currentBackgroundBitmap;
-                }
-            }
-            else
+            if (!showImage)
             {
                 _backgroundImage.IsVisible = false;
 
@@ -171,7 +144,31 @@ namespace Froststrap.UI.Elements.Base
 
                 _backgroundImage.Source = null;
                 _backgroundBorder.Background = _currentBackgroundBrush;
+                return;
             }
+
+            _backgroundBorder.Background = null;
+            _backgroundImage.IsVisible = true;
+            _backgroundImage.Stretch = _currentImageStretch;
+            _backgroundImage.Opacity = _currentImageOpacity;
+
+            if (!_currentIsAnimatedGif || _currentAnimatedImagePath is null)
+            {
+                if (ImageBehavior.GetAnimatedSource(_backgroundImage) is not null)
+                    ImageBehavior.SetAnimatedSource(_backgroundImage, null!);
+
+                _backgroundImage.Source = _currentBackgroundBitmap;
+                return;
+            }
+
+            bool pathChanged = !string.Equals(previousAnimatedPath, _currentAnimatedImagePath, StringComparison.Ordinal);
+            if (!(pathChanged || ImageBehavior.GetAnimatedSource(_backgroundImage) is null))
+                return;
+
+            var uri = new Uri(_currentAnimatedImagePath, UriKind.Absolute);
+            ImageBehavior.SetAnimatedSource(_backgroundImage, new AnimatedImageSourceUri(uri));
+            ImageBehavior.SetRepeatBehavior(_backgroundImage, RepeatBehavior.Forever);
+            _backgroundImage.Source = null;
         }
 
         public static void ApplyTheme()
@@ -183,9 +180,16 @@ namespace Froststrap.UI.Elements.Base
 
             var finalTheme = App.Settings.Prop.Theme.GetFinal();
             string themeName = Enum.GetName(finalTheme) ?? "Dark";
-            bool isCustom = finalTheme == Enums.Theme.Custom;
+            bool isCustomColors = finalTheme == Enums.Theme.Custom;
+            bool isCustomImage = finalTheme == Enums.Theme.Image;
+            bool isBackgroundTheme = isCustomColors || isCustomImage;
 
-            bool themeChanged = isCustom
+            var faTheme = app.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+
+            if (faTheme != null)
+                ApplyAccentColor(faTheme);
+
+            bool themeChanged = isBackgroundTheme
                 || _activeThemeDictionary == null
                 || _activeColorStyle == null
                 || !string.Equals(_appliedThemeName, themeName, StringComparison.Ordinal);
@@ -200,12 +204,10 @@ namespace Froststrap.UI.Elements.Base
                 ? ThemeVariant.Light
                 : ThemeVariant.Dark;
 
-            var faTheme = app.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-
             if (faTheme != null)
             {
                 faTheme.PreferSystemTheme = false;
-                faTheme.PreferUserAccentColor = true;
+                ApplyAccentColor(faTheme);
             }
 
             if (_activeThemeDictionary != null)
@@ -226,7 +228,7 @@ namespace Froststrap.UI.Elements.Base
             Stretch imageStretch = Stretch.UniformToFill;
             double imageOpacity = 1.0;
 
-            if (!isCustom)
+            if (!isBackgroundTheme)
             {
                 EnsureCachedTheme(themeName);
 
@@ -248,42 +250,11 @@ namespace Froststrap.UI.Elements.Base
                 app.Resources.MergedDictionaries.Add(customDict);
                 _appliedThemeName = null;
 
-                if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
+                if (isCustomColors)
                 {
-                    var avaloniaStops = new Avalonia.Media.GradientStops();
-
-                    foreach (var s in App.Settings.Prop.CustomGradientStops)
-                    {
-                        if (Color.TryParse(s.Color, out var color))
-                        {
-                            // Keep the gradient translucent enough for the blur behind it to show.
-                            if (App.Settings.Prop.SelectedBackdrop == WindowsBackdrops.Blur)
-                                color = Color.FromArgb(Math.Min(color.A, (byte)0xBF), color.R, color.G, color.B);
-
-                            avaloniaStops.Add(new Avalonia.Media.GradientStop(color, s.Offset));
-                        }
-                    }
-
-                    double angle = App.Settings.Prop.GradientAngle ?? 45;
-                    double angleRad = (Math.PI / 180.0) * (angle - 90);
-
-                    var startPoint = new RelativePoint(
-                        0.5 - Math.Cos(angleRad) * 0.5,
-                        0.5 - Math.Sin(angleRad) * 0.5,
-                        RelativeUnit.Relative);
-                    var endPoint = new RelativePoint(
-                        0.5 + Math.Cos(angleRad) * 0.5,
-                        0.5 + Math.Sin(angleRad) * 0.5,
-                        RelativeUnit.Relative);
-
-                    backgroundBrush = new LinearGradientBrush
-                    {
-                        GradientStops = avaloniaStops,
-                        StartPoint = startPoint,
-                        EndPoint = endPoint
-                    };
+                    backgroundBrush = BuildCustomColorBrush();
                 }
-                else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
+                else
                 {
                     string path = App.Settings.Prop.BackgroundImagePath ?? string.Empty;
 
@@ -342,6 +313,64 @@ namespace Froststrap.UI.Elements.Base
             bitmapToDispose?.Dispose();
         }
 
+        private static void ApplyAccentColor(FluentAvaloniaTheme faTheme)
+        {
+            if (App.Settings.Prop.AccentColorMode == Enums.AccentColorMode.Custom
+                && Color.TryParse(App.Settings.Prop.CustomAccentColor, out var customAccent))
+                faTheme.CustomAccentColor = customAccent;
+            else faTheme.CustomAccentColor = null;
+        }
+
+        private static readonly Color DefaultCustomColor = Color.Parse("#80272F48");
+
+        private static Color AdjustForBlur(Color color) =>
+            App.Settings.Prop.SelectedBackdrop == WindowsBackdrops.Blur
+                ? Color.FromArgb(Math.Min(color.A, (byte)0xBF), color.R, color.G, color.B)
+                : color;
+
+        private static IBrush BuildCustomColorBrush()
+        {
+            var stops = new List<Avalonia.Media.GradientStop>();
+
+            foreach (var s in App.Settings.Prop.CustomGradientStops ?? [])
+            {
+                if (!Color.TryParse(s.Color, out var color))
+                    continue;
+
+                stops.Add(new Avalonia.Media.GradientStop(AdjustForBlur(color), s.Offset));
+            }
+
+            if (stops.Count == 0)
+                return new SolidColorBrush(AdjustForBlur(DefaultCustomColor));
+
+            if (stops.Count == 1)
+                return new SolidColorBrush(stops[0].Color);
+
+            double angle = App.Settings.Prop.GradientAngle ?? 45;
+            double angleRad = (Math.PI / 180.0) * (angle - 90);
+
+            var startPoint = new RelativePoint(
+                0.5 - Math.Cos(angleRad) * 0.5,
+                0.5 - Math.Sin(angleRad) * 0.5,
+                RelativeUnit.Relative);
+            var endPoint = new RelativePoint(
+                0.5 + Math.Cos(angleRad) * 0.5,
+                0.5 + Math.Sin(angleRad) * 0.5,
+                RelativeUnit.Relative);
+
+            var avaloniaStops = new Avalonia.Media.GradientStops();
+
+            foreach (var stop in stops)
+                avaloniaStops.Add(stop);
+
+            return new LinearGradientBrush
+            {
+                GradientStops = avaloniaStops,
+                StartPoint = startPoint,
+                EndPoint = endPoint
+            };
+        }
+
         private static void EnsureCachedTheme(string themeName)
         {
             if (string.Equals(_cachedThemeName, themeName, StringComparison.Ordinal)
@@ -352,8 +381,8 @@ namespace Froststrap.UI.Elements.Base
             bool light = themeName == "Light";
 
             _cachedThemeDictionary = light
-                ? new Froststrap.UI.AppThemes.ResourceDictionarys.Light()
-                : new Froststrap.UI.AppThemes.ResourceDictionarys.Dark();
+                ? new Froststrap.UI.AppThemes.ResourceDictionaries.Light()
+                : new Froststrap.UI.AppThemes.ResourceDictionaries.Dark();
 
             _cachedThemeStyles = light
                 ? new Froststrap.UI.AppThemes.Styles.Light()
@@ -529,28 +558,33 @@ namespace Froststrap.UI.Elements.Base
                     continue;
 
                 var state = BackdropStates.GetValue(window, static _ => new BackdropState());
-
-                if (state.Applied == selectedBackdrop)
-                    continue;
+                bool backdropChanged = state.Applied != selectedBackdrop;
 
                 state.Applied = selectedBackdrop;
 
                 if (selectedBackdrop != WindowsBackdrops.None)
                 {
-                    window.TransparencyLevelHint = selectedBackdrop switch
+                    if (backdropChanged)
                     {
-                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
-                        _ => [WindowTransparencyLevel.None]
-                    };
+                        window.TransparencyLevelHint = selectedBackdrop switch
+                        {
+                            WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                            WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                            WindowsBackdrops.Blur => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                            _ => [WindowTransparencyLevel.None]
+                        };
+                        window.PropertyChanged -= LogTransparency;
+                        window.PropertyChanged += LogTransparency;
+                    }
+
                     window.Background = Brushes.Transparent;
-                    window.PropertyChanged -= LogTransparency;
-                    window.PropertyChanged += LogTransparency;
                 }
                 else
                 {
-                    window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+                    if (backdropChanged)
+                        window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+
+                    window.ClearValue(TemplatedControl.BackgroundProperty);
                 }
             }
         }
@@ -561,7 +595,19 @@ namespace Froststrap.UI.Elements.Base
 
             ApplyWindowBackground();
             UpdateBackdropForAllWindows();
-            Locale.ApplyLocaleToWindow(this);
+            ApplyLocale();
+        }
+
+        private void ApplyLocale()
+        {
+            if (Locale.RightToLeft)
+            {
+                FlowDirection = FlowDirection.RightToLeft;
+            }
+            else if (Locale.CurrentCulture.Name.StartsWith("th", StringComparison.Ordinal))
+            {
+                Application.Current?.Resources["ContentFontFamily"] = new Avalonia.Media.FontFamily("Noto Sans Thai");
+            }
         }
 
         protected override void OnClosed(EventArgs e)

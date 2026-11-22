@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 //! Build system for Froststrap
 
 #[cfg(target_os = "macos")]
@@ -18,7 +22,7 @@ pub fn main() {
 
     log::info!("Running xtask {}", env!("CARGO_PKG_VERSION"));
 
-    println!(); // seperator
+    println!(); // separator
 
     let git = git::info();
     log::info!("Git commit: {}", git.commit);
@@ -26,13 +30,13 @@ pub fn main() {
     log::info!("Git local dir: {}", git.dir);
     log::info!("Git tag: {}", git.tag.as_deref().unwrap_or("none"));
 
-    println!(); // seperator
+    println!(); // separator
 
     let args = args::get();
     log::info!("No Installers: {}", args.no_installers);
     log::info!("Configuration: {}", args.configuration);
 
-    println!(); // seperator
+    println!(); // separator
 
     log::info!("Target Arch: {}", arch::target_arch());
     log::info!("Rust Target: {}", arch::rust_triple());

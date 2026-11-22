@@ -78,10 +78,20 @@ namespace Froststrap.Integrations.Discord
             {
                 for (int i = start; i < end; i++)
                 {
-                    if (TryConnectWindows(i, out Stream? stream))
+                    Stream? stream = null;
+
+                    try
                     {
+                        if (!TryConnectWindows(i, out stream))
+                            continue;
+
                         Start(stream, i);
+                        stream = null;
                         return true;
+                    }
+                    finally
+                    {
+                        stream?.Dispose();
                     }
                 }
 
@@ -90,10 +100,20 @@ namespace Froststrap.Integrations.Discord
 
             foreach (string path in ResolveUnixPaths(start, end))
             {
-                if (TryConnectUnix(path, out Stream? stream))
+                Stream? stream = null;
+
+                try
                 {
+                    if (!TryConnectUnix(path, out stream))
+                        continue;
+
                     Start(stream, ParsePipeIndex(path));
+                    stream = null;
                     return true;
+                }
+                finally
+                {
+                    stream?.Dispose();
                 }
             }
 
@@ -260,19 +280,23 @@ namespace Froststrap.Integrations.Discord
             if (!File.Exists(path))
                 return false;
 
-            Socket socket = new(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+            Socket? socket = new(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
 
             try
             {
                 socket.Connect(new UnixDomainSocketEndPoint(path));
                 stream = new NetworkStream(socket, ownsSocket: true);
+                socket = null;
                 return true;
             }
             catch (Exception ex)
             {
                 Logger.Trace("Discord pipe {0} could not be connected: {1}", path, ex.Message);
-                socket.Dispose();
                 return false;
+            }
+            finally
+            {
+                socket?.Dispose();
             }
         }
 

@@ -10,25 +10,24 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
 {
-    internal class SearchResultEntry
+    internal sealed class SearchResultEntry
     {
         public required SearchBarItem Item { get; init; }
         public required bool IsLastInGroup { get; init; }
 
-        public string Connector => IsLastInGroup ? "└" : "├";
         public string DisplayName => Item.DisplayName;
         public string Description => Item.Description ?? string.Empty;
         public bool HasDescription => !string.IsNullOrEmpty(Item.Description);
     }
 
-    internal class SearchResultGroup
+    internal sealed class SearchResultGroup
     {
         public string PageName { get; init; } = string.Empty;
         public LucideIconNames IconSymbol { get; init; }
         public ObservableCollection<SearchResultEntry> Items { get; init; } = [];
     }
 
-    internal partial class SearchBarViewModel : ObservableObject, IDisposable
+    internal sealed partial class SearchBarViewModel : ObservableObject, IDisposable
     {
         private string _searchQuery = string.Empty;
         private CancellationTokenSource? _debounceCts;
@@ -225,7 +224,7 @@ namespace Froststrap.UI.ViewModels
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed) return;
             if (disposing)

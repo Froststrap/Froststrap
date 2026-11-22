@@ -1,7 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Froststrap
+#
+# SPDX-License-Identifier: MPL-2.0
+
 [package]
 name = "xtask"
 description = "Build system for Froststrap"
-version = "1.0.0"
+version = "1.2.1"
 edition = "2024"
 license = "MPL-2.0"
 

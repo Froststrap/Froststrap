@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs;
 
-internal partial class RobloxServersDialog : Base.AvaloniaWindow
+internal sealed partial class RobloxServersDialog : Base.AvaloniaWindow
 {
     protected override bool ApplyTopPadding => false;
 
