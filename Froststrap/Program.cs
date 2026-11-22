@@ -53,8 +53,7 @@ sealed partial class Program
 
         velopackBuilder.Run();
 
-        // shim to convert old args to new ones
-        string[] launchArgs = args.Length == 0 ? [] : LegacyArgs.Normalize(args);
+        string[] launchArgs = args;
 
 #if _WIN32
         if (launchArgs.Any(static a => a is "--console" or "-c"))
@@ -73,7 +72,7 @@ sealed partial class Program
         {
             var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
 
-            if (LegacyArgs.RequestsHelpOrVersion(launchArgs))
+            if (launchArgs.Any(static arg => arg is "--help" or "-h" or "--version"))
             {
                 AttachParentConsole();
                 int exitCode = parseResult.ParseResult.Invoke();
