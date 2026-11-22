@@ -189,7 +189,7 @@ internal sealed class SoberClient(
 
         App.Logger.Info($"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
 
-        Directory.CreateDirectory(soberTarget);
+        Directory.CreateDirectory(soberTarget, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
 
         if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
         {
