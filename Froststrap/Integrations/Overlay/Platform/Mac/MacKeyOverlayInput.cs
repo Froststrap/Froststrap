@@ -10,6 +10,8 @@ using Froststrap.Models.Overlay;
 
 namespace Froststrap.Integrations.Overlay.Platform.Mac
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2216",
+        Justification = "The event tap thread and GC handle keep this instance rooted, so a finalizer could never run before Dispose; the OS removes the tap on process exit.")]
     internal sealed class MacKeyOverlayInput : IKeyOverlayInput
     {
         private const uint SpaceKeyCode = 0x31;

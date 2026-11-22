@@ -11,7 +11,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class ChatFriend : NotifyPropertyChangedViewModel
+    internal sealed class ChatFriend : NotifyPropertyChangedViewModel
     {
         private static readonly string[] PresenceProperties =
         [

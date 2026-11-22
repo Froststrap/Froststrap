@@ -7,7 +7,7 @@ using Froststrap.Models.Entities;
 
 namespace Froststrap.RobloxInterfaces
 {
-    internal class Experiences
+    internal sealed class Experiences
     {
         private const int BatchSize = 50;
         private const int FavoritesLimit = 50;

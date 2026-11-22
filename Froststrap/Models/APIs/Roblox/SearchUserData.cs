@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class SearchUserData
+    internal sealed class SearchUserData
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }

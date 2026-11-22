@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Persistable
 {
-    internal class Settings
+    internal sealed class Settings
     {
 
         // Integration Page

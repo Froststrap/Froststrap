@@ -4,13 +4,13 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class PrivateServersPage
+    internal sealed class PrivateServersPage
     {
         [JsonPropertyName("data")] public List<PrivateServerEntry> Data { get; set; } = [];
         [JsonPropertyName("nextPageCursor")] public string? NextPageCursor { get; set; }
     }
 
-    internal class PrivateServerEntry
+    internal sealed class PrivateServerEntry
     {
         [JsonPropertyName("vipServerId")] public long VipServerId { get; set; }
         [JsonPropertyName("accessCode")] public string? AccessCode { get; set; }
@@ -20,14 +20,14 @@ namespace Froststrap.Models.APIs.Roblox
         [JsonPropertyName("owner")] public PrivateServerUser? Owner { get; set; }
     }
 
-    internal class PrivateServerUser
+    internal sealed class PrivateServerUser
     {
         [JsonPropertyName("id")] public long Id { get; set; }
         [JsonPropertyName("name")] public string? Name { get; set; }
         [JsonPropertyName("displayName")] public string? DisplayName { get; set; }
     }
 
-    internal class PrivateServerDetails
+    internal sealed class PrivateServerDetails
     {
         [JsonPropertyName("id")] public long Id { get; set; }
         [JsonPropertyName("name")] public string? Name { get; set; }
@@ -38,13 +38,13 @@ namespace Froststrap.Models.APIs.Roblox
         [JsonPropertyName("permissions")] public PrivateServerPermissions? Permissions { get; set; }
     }
 
-    internal class PrivateServerGame
+    internal sealed class PrivateServerGame
     {
         [JsonPropertyName("id")] public long Id { get; set; }
         [JsonPropertyName("name")] public string? Name { get; set; }
     }
 
-    internal class PrivateServerSubscription
+    internal sealed class PrivateServerSubscription
     {
         [JsonPropertyName("price")] public long? Price { get; set; }
         [JsonPropertyName("active")] public bool Active { get; set; }
@@ -52,7 +52,7 @@ namespace Froststrap.Models.APIs.Roblox
         [JsonPropertyName("expirationDate")] public DateTime? ExpirationDate { get; set; }
     }
 
-    internal class PrivateServerPermissions
+    internal sealed class PrivateServerPermissions
     {
         [JsonPropertyName("clanAllowed")] public bool ClanAllowed { get; set; }
         [JsonPropertyName("enemyClanId")] public long? EnemyClanId { get; set; }
@@ -60,7 +60,7 @@ namespace Froststrap.Models.APIs.Roblox
         [JsonPropertyName("users")] public List<PrivateServerUser>? Users { get; set; }
     }
 
-    internal class UsernameLookupResponse
+    internal sealed class UsernameLookupResponse
     {
         [JsonPropertyName("data")] public List<PrivateServerUser> Data { get; set; } = [];
     }

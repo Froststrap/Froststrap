@@ -14,7 +14,7 @@ using Froststrap.UI.ViewModels.Overlay;
 
 namespace Froststrap.UI.Elements.Overlay
 {
-    internal partial class KeyOverlayView : UserControl
+    internal sealed partial class KeyOverlayView : UserControl
     {
         public KeyOverlayView()
         {

@@ -9,7 +9,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class ServerAvatar : NotifyPropertyChangedViewModel
+    internal sealed class ServerAvatar : NotifyPropertyChangedViewModel
     {
         public ServerAvatar(string? imageUrl, string? overflowText)
         {

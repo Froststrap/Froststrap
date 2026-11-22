@@ -14,7 +14,7 @@ using Froststrap.UI.ViewModels.Overlay;
 
 namespace Froststrap.UI.Elements.Overlay
 {
-    internal partial class KeyOverlay : Window, IDisposable
+    internal sealed partial class KeyOverlay : Window, IDisposable
     {
         private const int HotkeyId = 9002;
         private const int MoveHotkeyId = 9003;

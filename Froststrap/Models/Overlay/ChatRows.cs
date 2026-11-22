@@ -16,11 +16,11 @@ namespace Froststrap.Models.Overlay
         Failed
     }
 
-    internal record ChatDayDivider(DateTime Day, string Text);
+    internal sealed record ChatDayDivider(DateTime Day, string Text);
 
-    internal record ChatSystemLine(string Text);
+    internal sealed record ChatSystemLine(string Text);
 
-    internal class ChatMessageGroup : NotifyPropertyChangedViewModel
+    internal sealed class ChatMessageGroup : NotifyPropertyChangedViewModel
     {
         public long SenderId { get; init; }
 
@@ -76,7 +76,7 @@ namespace Froststrap.Models.Overlay
         }
     }
 
-    internal class ChatLine : NotifyPropertyChangedViewModel
+    internal sealed class ChatLine : NotifyPropertyChangedViewModel
     {
         public string Text { get; init; } = String.Empty;
 

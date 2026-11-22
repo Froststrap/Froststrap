@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RobloxParty.Events
 {
-    internal class EventActor
+    internal sealed class EventActor
     {
         [JsonPropertyName("Type")]
         public string Type { get; set; } = String.Empty;

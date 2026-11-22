@@ -141,10 +141,10 @@ namespace Froststrap.Models.Entities
             if (await App.Cookies.EnsureLoadedAsync() && App.Cookies.IsAuthenticated)
                 return await App.Cookies.AuthPost(url, new StringContent(body, Encoding.UTF8, "application/json"));
 
-            return await App.HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new StringContent(body, Encoding.UTF8, "application/json")
-            });
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+
+            return await App.HttpClient.SendAsync(request);
         }
 
         private static async Task<Dictionary<long, ThumbnailResponse>> FetchThumbnailsAsync(List<long> userIds)

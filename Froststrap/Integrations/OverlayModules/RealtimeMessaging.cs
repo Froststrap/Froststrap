@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace Froststrap.Integrations.OverlayModules
 {
-    internal class RealtimeMessaging : IAsyncDisposable
+    internal sealed class RealtimeMessaging : IAsyncDisposable
     {
         private const string RecordSeparator = "\u001e";
         private const int PingType = 6;

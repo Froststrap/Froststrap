@@ -15,7 +15,7 @@ using static Froststrap.RobloxInterfaces.Experiences;
 
 namespace Froststrap.UI.ViewModels.Overlay
 {
-    internal class OverlaySearchBarViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class OverlaySearchBarViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
         private const int PageSize = 10;

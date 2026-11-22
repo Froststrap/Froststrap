@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class GameVotesResponse
+    internal sealed class GameVotesResponse
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }

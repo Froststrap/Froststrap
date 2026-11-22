@@ -9,7 +9,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class Badge : NotifyPropertyChangedViewModel
+    internal sealed class Badge : NotifyPropertyChangedViewModel
     {
         public long Id { get; set; }
 

@@ -16,7 +16,7 @@ using PeopleApi = Froststrap.RobloxInterfaces.People;
 
 namespace Froststrap.UI.ViewModels.Overlay.SearchTabs
 {
-    internal class PeopleBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class PeopleBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private static readonly TimeSpan SearchDelay = TimeSpan.FromMilliseconds(350);
         private static readonly TimeSpan PendingRefresh = TimeSpan.FromMinutes(5);

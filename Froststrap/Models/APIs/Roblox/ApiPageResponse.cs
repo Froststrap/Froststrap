@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class ApiPageResponse<T>
+    internal sealed class ApiPageResponse<T>
     {
         [JsonPropertyName("previousPageCursor")]
         public string? PreviousPageCursor { get; set; }

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RealtimeMessaging
 {
-    internal class PresenceNotification
+    internal sealed class PresenceNotification
     {
         public const string PresenceChangedType = "PresenceChanged";
 

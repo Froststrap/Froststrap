@@ -18,7 +18,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class PrivateServersViewModel : NotifyPropertyChangedViewModel
+    internal sealed class PrivateServersViewModel : NotifyPropertyChangedViewModel
     {
         private readonly ActivityWatcher? _activityWatcher;
         private readonly long? _placeIdOverride;

@@ -18,7 +18,7 @@ using BadgesApi = Froststrap.RobloxInterfaces.Badges;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class BadgeTrackerViewModel : NotifyPropertyChangedViewModel
+    internal sealed class BadgeTrackerViewModel : NotifyPropertyChangedViewModel
     {
         private static readonly TimeSpan AwardCheckInterval = TimeSpan.FromSeconds(60);
 

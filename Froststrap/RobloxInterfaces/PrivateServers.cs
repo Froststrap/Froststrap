@@ -63,10 +63,8 @@ namespace Froststrap.RobloxInterfaces
                 ExcludeBannedUsers = true
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("users", "v1/usernames/users"))
-            {
-                Content = new StringContent(JsonHelper.Serialize(body), Encoding.UTF8, "application/json")
-            };
+            using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("users", "v1/usernames/users"));
+            request.Content = new StringContent(JsonHelper.Serialize(body), Encoding.UTF8, "application/json");
 
             var response = await Http.SendJson<ApiArrayResponse<PrivateServerUser>>(request);
 

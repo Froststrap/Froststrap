@@ -10,6 +10,8 @@ using System.Runtime.Versioning;
 
 namespace Froststrap.Integrations.Overlay.Platform.Windows
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2216",
+        Justification = "The hook thread keeps this instance rooted, so a finalizer could never run before Dispose; the OS removes the hooks on process exit.")]
     internal sealed class WindowsKeyOverlayInput : IKeyOverlayInput
     {
         private const int WH_KEYBOARD_LL = 13;
@@ -377,37 +379,59 @@ namespace Froststrap.Integrations.Overlay.Platform.Windows
             public int pt_y;
         }
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
+
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
         [DllImport("user32.dll")]
         private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
         [DllImport("kernel32.dll")]
         private static extern uint GetCurrentThreadId();
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool TranslateMessage(ref MSG lpMsg);
 
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr DispatchMessage(ref MSG lpMsg);
+
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]

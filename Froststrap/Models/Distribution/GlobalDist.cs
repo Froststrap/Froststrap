@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.Distribution
 {
-    internal class GlobalDist : CommonDist, IDistribution
+    internal sealed class GlobalDist : CommonDist, IDistribution
     {
     }
 }

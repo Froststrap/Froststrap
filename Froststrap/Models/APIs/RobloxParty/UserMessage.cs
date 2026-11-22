@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RobloxParty
 {
-    internal class UserMessage
+    internal sealed class UserMessage
     {
         public const long SystemSenderId = 1;
 

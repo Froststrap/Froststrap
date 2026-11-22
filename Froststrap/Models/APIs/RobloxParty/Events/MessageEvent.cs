@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RobloxParty.Events
 {
-    internal class MessageEvent
+    internal sealed class MessageEvent
     {
         [JsonPropertyName("Type")]
         public string Type { get; set; } = "MessageCreated";

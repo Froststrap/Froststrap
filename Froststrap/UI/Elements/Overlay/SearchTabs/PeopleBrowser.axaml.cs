@@ -9,7 +9,7 @@ using Froststrap.Models.Overlay;
 
 namespace Froststrap.UI.Elements.Overlay.SearchTabs
 {
-    internal partial class PeopleBrowser : UserControl
+    internal sealed partial class PeopleBrowser : UserControl
     {
         private const double LoadMoreThreshold = 160;
 

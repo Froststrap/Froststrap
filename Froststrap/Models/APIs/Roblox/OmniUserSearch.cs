@@ -6,13 +6,13 @@ using System.Text.Json.Serialization;
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class OmniUserSearchResponse
+    internal sealed class OmniUserSearchResponse
     {
         [JsonPropertyName("searchResults")]
         public List<OmniUserSearchGroup>? SearchResults { get; set; }
     }
 
-    internal class OmniUserSearchGroup
+    internal sealed class OmniUserSearchGroup
     {
         [JsonPropertyName("contentGroupType")]
         public string? ContentGroupType { get; set; }
@@ -21,7 +21,7 @@ namespace Froststrap.Models.APIs.Roblox
         public List<OmniUserSearchContent>? Contents { get; set; }
     }
 
-    internal class OmniUserSearchContent
+    internal sealed class OmniUserSearchContent
     {
         [JsonPropertyName("contentId")]
         public long ContentId { get; set; }
@@ -39,7 +39,7 @@ namespace Froststrap.Models.APIs.Roblox
         public string? ContentType { get; set; }
     }
 
-    internal class AvatarHeadshotResponse
+    internal sealed class AvatarHeadshotResponse
     {
         [JsonPropertyName("targetId")]
         public long TargetId { get; set; }

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RealtimeMessaging
 {
-    internal class SignalrMessage
+    internal sealed class SignalrMessage
     {
         [JsonPropertyName("type")]
         public int? Type { get; set; }

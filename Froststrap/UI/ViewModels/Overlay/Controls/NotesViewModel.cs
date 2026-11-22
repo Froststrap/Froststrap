@@ -6,7 +6,7 @@ using Avalonia.Threading;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class NotesViewModel : NotifyPropertyChangedViewModel
+    internal sealed class NotesViewModel : NotifyPropertyChangedViewModel
     {
         private static readonly TimeSpan SaveDelay = TimeSpan.FromSeconds(2);
 

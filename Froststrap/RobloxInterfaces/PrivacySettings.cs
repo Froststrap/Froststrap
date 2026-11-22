@@ -7,7 +7,7 @@ using Froststrap.Models.Entities;
 
 namespace Froststrap.RobloxInterfaces
 {
-    internal class PrivacySettings
+    internal sealed class PrivacySettings
     {
         private const string OnlineSetting = "whoCanSeeMyOnlineStatus";
         private const string JoinSetting = "whoCanJoinMeInExperiences";

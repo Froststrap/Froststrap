@@ -11,7 +11,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Integrations.OverlayModules
 {
-    internal class FriendPresence(ActivityWatcher? activityWatcher, RealtimeMessaging? messaging = null) : IDisposable
+    internal sealed class FriendPresence(ActivityWatcher? activityWatcher, RealtimeMessaging? messaging = null) : IDisposable
     {
         private static readonly TimeSpan ResyncInterval = TimeSpan.FromMinutes(30);
         private static readonly TimeSpan OfflineInterval = TimeSpan.FromSeconds(45);

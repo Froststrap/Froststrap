@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Froststrap.RobloxInterfaces
 {
-    internal class GameServers
+    internal sealed class GameServers
     {
         private const int PageSize = 100;
         private const int DefaultStatsPages = 5;

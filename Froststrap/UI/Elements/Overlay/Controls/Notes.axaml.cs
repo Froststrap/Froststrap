@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Overlay.Controls;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class Notes : UserControl
+    internal sealed partial class Notes : UserControl
     {
         private readonly NotesViewModel _viewModel = new();
 

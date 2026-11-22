@@ -72,6 +72,7 @@ namespace Froststrap.RobloxInterfaces
             return result;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "False positive: the presence request is wrapped in a using declaration")]
         public static async Task<Dictionary<long, UserPresence>> FetchPresenceAsync(
             IEnumerable<long> ids,
             bool force = false,
@@ -114,10 +115,8 @@ namespace Froststrap.RobloxInterfaces
                 try
                 {
                     var payload = new PresenceBatchRequest { UserIds = batch };
-                    using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users"))
-                    {
-                        Content = new StringContent(JsonHelper.Serialize(payload), Encoding.UTF8, "application/json")
-                    };
+                    using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users"));
+                    request.Content = new StringContent(JsonHelper.Serialize(payload), Encoding.UTF8, "application/json");
 
                     var response = await Http.AuthSendJson<UserPresenceResponse>(request);
 

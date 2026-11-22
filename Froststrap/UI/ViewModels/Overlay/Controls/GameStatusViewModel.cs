@@ -7,7 +7,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class GameStatusViewModel : VisibilityViewModel
+    internal sealed class GameStatusViewModel : VisibilityViewModel
     {
         public override string Title => Strings.Menu_Overlay_GamePrivacy_Title;
 

@@ -21,7 +21,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Froststrap.Integrations.Overlay.Platform
 {
-    internal class WindowsOverlayHost : IOverlayHost
+    internal sealed class WindowsOverlayHost : IOverlayHost
     {
         private const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
         private const uint EVENT_SYSTEM_MINIMIZEEND = 0x0017;

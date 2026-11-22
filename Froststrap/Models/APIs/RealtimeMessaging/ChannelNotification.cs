@@ -6,7 +6,7 @@ using Froststrap.Models.APIs.RobloxParty.Events;
 
 namespace Froststrap.Models.APIs.RealtimeMessaging
 {
-    internal class ChannelMarkedRead
+    internal sealed class ChannelMarkedRead
     {
         [JsonPropertyName("Type")]
         public string Type { get; set; } = String.Empty;
@@ -24,7 +24,7 @@ namespace Froststrap.Models.APIs.RealtimeMessaging
         public string? ChannelVertical { get; set; }
     }
 
-    internal class ChannelMetadataUpdate
+    internal sealed class ChannelMetadataUpdate
     {
         public const string UnreadMetadataType = "ChannelUnread";
 

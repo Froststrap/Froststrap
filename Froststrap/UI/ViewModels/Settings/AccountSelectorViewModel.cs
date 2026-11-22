@@ -541,7 +541,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static async Task<AccountManagerAccount?> ImportFromCookieManager()
         {
-            var cookieManager = new CookiesManager();
+            using var cookieManager = new CookiesManager();
 
             await cookieManager.LoadCookies();
 

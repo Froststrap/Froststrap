@@ -15,6 +15,7 @@ namespace Froststrap.Integrations
 
         public static RobloxServerFetcher Shared => _sharedInstance.Value;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Deliberate: the handler is owned and disposed by the shared HttpClient")]
         private static HttpClient CreateSharedClient()
         {
             var handler = new SocketsHttpHandler

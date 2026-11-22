@@ -9,7 +9,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class GameTile : NotifyPropertyChangedViewModel
+    internal sealed class GameTile : NotifyPropertyChangedViewModel
     {
         public long UniverseId { get; set; }
 

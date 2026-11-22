@@ -15,13 +15,13 @@ namespace Froststrap.Models.APIs.Roblox
         RequestReceived
     }
 
-    internal class FriendStatusResponse
+    internal sealed class FriendStatusResponse
     {
         [JsonPropertyName("data")]
         public List<FriendStatusEntry> Data { get; set; } = [];
     }
 
-    internal class FriendStatusEntry
+    internal sealed class FriendStatusEntry
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }

@@ -8,7 +8,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class PrivateServerItem : INotifyPropertyChanged
+    internal sealed class PrivateServerItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

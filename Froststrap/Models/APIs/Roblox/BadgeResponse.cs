@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class BadgeResponse
+    internal sealed class BadgeResponse
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -28,7 +28,7 @@ namespace Froststrap.Models.APIs.Roblox
         public BadgeStatistics? Statistics { get; set; }
     }
 
-    internal class BadgeStatistics
+    internal sealed class BadgeStatistics
     {
         [JsonPropertyName("pastDayAwardedCount")]
         public long PastDayAwardedCount { get; set; }
@@ -40,7 +40,7 @@ namespace Froststrap.Models.APIs.Roblox
         public double WinRatePercentage { get; set; }
     }
 
-    internal class BadgeAwardedDate
+    internal sealed class BadgeAwardedDate
     {
         [JsonPropertyName("badgeId")]
         public long BadgeId { get; set; }

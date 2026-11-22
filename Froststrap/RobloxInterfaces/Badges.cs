@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Froststrap.RobloxInterfaces
 {
-    internal class Badges
+    internal sealed class Badges
     {
         private const int PageSize = 100;
         private const int MaxPages = 5;

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class FriendFindResponse
+    internal sealed class FriendFindResponse
     {
         [JsonPropertyName("PreviousCursor")]
         public string? PreviousCursor { get; set; }
@@ -16,7 +16,7 @@ namespace Froststrap.Models.APIs.Roblox
         public string? NextCursor { get; set; }
     }
 
-    internal class FriendFindItem
+    internal sealed class FriendFindItem
     {
         [JsonPropertyName("id")]
         public long Id { get; set; }

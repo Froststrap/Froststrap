@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class FriendListHeader : NotifyPropertyChangedViewModel
+    internal sealed class FriendListHeader : NotifyPropertyChangedViewModel
     {
         public FriendSection Section { get; init; }
 

@@ -10,7 +10,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class SearchPerson : NotifyPropertyChangedViewModel
+    internal sealed class SearchPerson : NotifyPropertyChangedViewModel
     {
         public long UserId { get; init; }
 

@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.Models.Overlay
 {
-    internal class ChatTab : NotifyPropertyChangedViewModel
+    internal sealed class ChatTab : NotifyPropertyChangedViewModel
     {
         public required ChatFriend Friend { get; init; }
 

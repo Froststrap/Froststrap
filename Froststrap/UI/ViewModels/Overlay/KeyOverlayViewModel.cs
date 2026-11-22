@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace Froststrap.UI.ViewModels.Overlay
 {
-    internal class KeyOverlayViewModel : NotifyPropertyChangedViewModel
+    internal sealed class KeyOverlayViewModel : NotifyPropertyChangedViewModel
     {
         private bool _showKeys;
         private bool _showMouse;

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.Overlay
 {
-    internal class ServerRegion
+    internal sealed class ServerRegion
     {
         public string Code { get; set; } = String.Empty;
 

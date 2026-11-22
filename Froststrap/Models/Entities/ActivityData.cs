@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.AppData;
+using Froststrap.RobloxInterfaces;
 using System.Web;
 using System.Windows.Input;
 

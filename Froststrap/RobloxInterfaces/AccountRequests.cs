@@ -25,11 +25,15 @@ namespace Froststrap.RobloxInterfaces
             response.EnsureSuccessStatusCode();
         }
 
-        private static Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, Uri url, string? jsonBody) =>
-            App.Cookies.AuthRequest(new HttpRequestMessage(method, url)
-            {
-                Content = jsonBody is null ? null : new StringContent(jsonBody, Encoding.UTF8, "application/json")
-            });
+        private static async Task<HttpResponseMessage> SendJsonAsync(HttpMethod method, Uri url, string? jsonBody)
+        {
+            using var request = new HttpRequestMessage(method, url);
+
+            if (jsonBody is not null)
+                request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            return await App.Cookies.AuthRequest(request);
+        }
 
         private static async Task EnsureAcceptedAsync(HttpResponseMessage response, string setting, string value)
         {

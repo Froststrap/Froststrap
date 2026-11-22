@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Overlay.Controls;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class BadgeTracker : UserControl
+    internal sealed partial class BadgeTracker : UserControl
     {
         private BadgeTrackerViewModel? _viewModel;
 

@@ -20,7 +20,7 @@ using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Overlay
 {
-    internal partial class GameOverlay : Window, IDisposable
+    internal sealed partial class GameOverlay : Window, IDisposable
     {
         private const int ToggleHotkeyId = 9000;
 

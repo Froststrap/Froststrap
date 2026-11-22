@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class ServerBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class ServerBrowserViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int PageSize = 60;
 

@@ -31,7 +31,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         ReverseAlphabetical
     }
 
-    internal class FriendSortOption : NotifyPropertyChangedViewModel
+    internal sealed class FriendSortOption : NotifyPropertyChangedViewModel
     {
         public FriendSortMode Mode { get; init; }
 
@@ -45,7 +45,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
         }
     }
 
-    internal class FriendActivityViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class FriendActivityViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int DetailsBatch = 100;
         private const int DetailConcurrency = 3;

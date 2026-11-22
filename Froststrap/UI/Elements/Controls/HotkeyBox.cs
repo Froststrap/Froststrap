@@ -15,7 +15,7 @@ using Froststrap.Models.Overlay;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    internal class HotkeyBox : TemplatedControl
+    internal sealed class HotkeyBox : TemplatedControl
     {
         public static readonly StyledProperty<KeyModifiers> ModifiersProperty =
             AvaloniaProperty.Register<HotkeyBox, KeyModifiers>(

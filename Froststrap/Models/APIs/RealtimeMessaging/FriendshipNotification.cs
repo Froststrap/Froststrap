@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RealtimeMessaging
 {
-    internal class FriendshipNotification
+    internal sealed class FriendshipNotification
     {
         public const string CreatedType   = "FriendshipCreated";
         public const string DestroyedType = "FriendshipDestroyed";

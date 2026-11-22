@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class UserDetailsBatchRequest
+    internal sealed class UserDetailsBatchRequest
     {
         [JsonPropertyName("userIds")]
         public List<long> UserIds { get; set; } = [];

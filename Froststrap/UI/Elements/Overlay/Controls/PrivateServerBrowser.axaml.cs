@@ -11,7 +11,7 @@ using Froststrap.UI.ViewModels.Overlay.Controls;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class PrivateServerBrowser : UserControl
+    internal sealed partial class PrivateServerBrowser : UserControl
     {
         private const double LoadMoreThreshold = 240;
 

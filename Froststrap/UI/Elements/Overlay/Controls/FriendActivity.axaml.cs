@@ -16,7 +16,7 @@ using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class FriendActivity : UserControl, IDisposable
+    internal sealed partial class FriendActivity : UserControl, IDisposable
     {
         private FriendActivityViewModel? _viewModel;
 

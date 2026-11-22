@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Overlay;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class JoinByLink : UserControl
+    internal sealed partial class JoinByLink : UserControl
     {
         public JoinByLink()
         {

@@ -19,7 +19,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Overlay
 {
-    internal class GameOverlayViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class GameOverlayViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private readonly GameOverlay _window;
         private readonly IOverlayHost? _overlay;

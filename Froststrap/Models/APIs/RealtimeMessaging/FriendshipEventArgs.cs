@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RealtimeMessaging
 {
-    internal class FriendshipEventArgs
+    internal sealed class FriendshipEventArgs
     {
         [JsonPropertyName("UserId1")]
         public long UserId1 { get; set; }

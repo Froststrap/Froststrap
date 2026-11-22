@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.Entities
 {
-    internal class PrivacyState
+    internal sealed class PrivacyState
     {
         public PrivacyLevel? Online { get; init; }
 

@@ -14,7 +14,7 @@ namespace Froststrap.UI.ViewModels.Overlay.Controls
     /// <summary>
     /// Resolves a pasted Roblox link, shows the experience it points at and joins it.
     /// </summary>
-    internal class JoinByLinkViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed class JoinByLinkViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const int IconDecodeWidth = 128;
         private static readonly TimeSpan ResolveDelay = TimeSpan.FromMilliseconds(400);

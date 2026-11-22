@@ -6,5 +6,5 @@ using Avalonia;
 
 namespace Froststrap.Models.Overlay
 {
-    internal record OverlayBounds(Rect Rect, bool IsMaximised, double CornerRadius = 8);
+    internal sealed record OverlayBounds(Rect Rect, bool IsMaximised, double CornerRadius = 8);
 }

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class GameServerResponse
+    internal sealed class GameServerResponse
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = String.Empty;

@@ -92,7 +92,10 @@ internal sealed class CookiesManager : IDisposable
             contentType = request.Content.Headers.ContentType?.ToString();
         }
 
-        HttpResponseMessage response = await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
+        HttpResponseMessage response;
+
+        using (HttpRequestMessage first = BuildRequest(request, bufferedBody, contentType))
+            response = await SendAuthenticated(first);
 
         if (response.StatusCode != HttpStatusCode.Forbidden
             || !response.Headers.TryGetValues(CsrfHeader, out IEnumerable<string>? tokens)
@@ -105,7 +108,8 @@ internal sealed class CookiesManager : IDisposable
 
         response.Dispose();
 
-        return await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
+        using HttpRequestMessage retry = BuildRequest(request, bufferedBody, contentType);
+        return await SendAuthenticated(retry);
     }
 
     private async Task<HttpResponseMessage> SendAuthenticated(HttpRequestMessage request)
@@ -146,8 +150,17 @@ internal sealed class CookiesManager : IDisposable
         return request;
     }
 
-    public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });
-    public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post });
+    public async Task<HttpResponseMessage> AuthGet(Uri? uri)
+    {
+        using var request = new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get };
+        return await AuthRequest(request);
+    }
+
+    public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content)
+    {
+        using var request = new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post };
+        return await AuthRequest(request);
+    }
 
     public void AuthWebsocket(ClientWebSocket webSocket)
     {

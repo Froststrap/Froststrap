@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace Froststrap.RobloxInterfaces
 {
-    internal class PlayerThumbnails
+    internal sealed class PlayerThumbnails
     {
         private const string Size = "48x48";
 
@@ -52,10 +52,8 @@ namespace Froststrap.RobloxInterfaces
 
                 try
                 {
-                    var message = new HttpRequestMessage(HttpMethod.Post, BatchUrl)
-                    {
-                        Content = new StringContent(JsonHelper.Serialize(requests), Encoding.UTF8, "application/json")
-                    };
+                    using var message = new HttpRequestMessage(HttpMethod.Post, BatchUrl);
+                    message.Content = new StringContent(JsonHelper.Serialize(requests), Encoding.UTF8, "application/json");
 
                     var response = await Http.SendJson<ApiArrayResponse<ThumbnailResponse>>(message);
 

@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.RobloxParty
 {
-    internal class MessagesContents
+    internal sealed class MessagesContents
     {
         [JsonPropertyName("conversation_id")]
         public string ConversationId { get; set; } = String.Empty;

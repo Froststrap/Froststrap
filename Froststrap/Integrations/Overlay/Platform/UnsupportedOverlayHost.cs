@@ -11,7 +11,7 @@ using Froststrap.Models.Overlay;
 
 namespace Froststrap.Integrations.Overlay.Platform
 {
-    internal class UnsupportedOverlayHost : IOverlayHost
+    internal sealed class UnsupportedOverlayHost : IOverlayHost
     {
         public event EventHandler<OverlayBounds>? BoundsChanged { add { } remove { } }
         public event EventHandler<bool>? GameVisibilityChanged { add { } remove { } }

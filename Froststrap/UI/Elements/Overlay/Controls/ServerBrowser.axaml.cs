@@ -11,7 +11,7 @@ using Froststrap.UI.ViewModels.Overlay.Controls;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class ServerBrowser : UserControl, IDisposable
+    internal sealed partial class ServerBrowser : UserControl, IDisposable
     {
         private const double LoadMoreThreshold = 240;
 

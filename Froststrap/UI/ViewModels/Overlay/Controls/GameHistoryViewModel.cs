@@ -9,7 +9,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class GameHistoryViewModel : NotifyPropertyChangedViewModel
+    internal sealed class GameHistoryViewModel : NotifyPropertyChangedViewModel
     {
         private const int ThumbnailDecodeWidth = 112;
 

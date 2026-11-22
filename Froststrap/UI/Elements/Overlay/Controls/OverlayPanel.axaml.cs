@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class OverlayPanel : UserControl
+    internal sealed partial class OverlayPanel : UserControl
     {
         public const double MinPanelWidth = 380;
         public const double MinPanelHeight = 260;

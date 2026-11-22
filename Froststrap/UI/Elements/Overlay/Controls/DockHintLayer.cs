@@ -15,7 +15,7 @@ using Avalonia.VisualTree;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal class DockHintLayer : Canvas
+    internal sealed class DockHintLayer : Canvas
     {
         private static readonly TimeSpan ShowDelay = TimeSpan.FromMilliseconds(300);
         private static readonly TimeSpan HideGrace = TimeSpan.FromMilliseconds(150);

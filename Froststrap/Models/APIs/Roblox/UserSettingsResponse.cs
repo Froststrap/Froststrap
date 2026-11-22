@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.APIs.Roblox
 {
-    internal class UserSettingsResponse
+    internal sealed class UserSettingsResponse
     {
         [JsonPropertyName("whoCanSeeMyOnlineStatus")]
         public UserSettingValue? OnlineStatus { get; set; }
@@ -13,7 +13,7 @@ namespace Froststrap.Models.APIs.Roblox
         public UserSettingValue? JoinStatus { get; set; }
     }
 
-    internal class UserSettingValue
+    internal sealed class UserSettingValue
     {
         [JsonPropertyName("currentValue")]
         public string? CurrentValue { get; set; }
@@ -27,13 +27,13 @@ namespace Froststrap.Models.APIs.Roblox
             .ToList() ?? new List<string>();
     }
 
-    internal class UserSettingOption
+    internal sealed class UserSettingOption
     {
         [JsonPropertyName("option")]
         public UserSettingOptionValue? Option { get; set; }
     }
 
-    internal class UserSettingOptionValue
+    internal sealed class UserSettingOptionValue
     {
         [JsonPropertyName("optionValue")]
         public string? OptionValue { get; set; }

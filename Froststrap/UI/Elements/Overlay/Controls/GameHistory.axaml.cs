@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Overlay.Controls;
 
 namespace Froststrap.UI.Elements.Overlay.Controls
 {
-    internal partial class GameHistory : UserControl
+    internal sealed partial class GameHistory : UserControl
     {
         private GameHistoryViewModel? _viewModel;
 

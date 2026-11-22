@@ -18,7 +18,7 @@ using WindowState = Avalonia.Controls.WindowState;
 
 namespace Froststrap.UI.Elements.Overlay
 {
-    internal partial class OverlaySearchBar : Window, IDisposable
+    internal sealed partial class OverlaySearchBar : Window, IDisposable
     {
         private const int HotkeyId = 9001;
         private const double LoadMoreThreshold = 120;

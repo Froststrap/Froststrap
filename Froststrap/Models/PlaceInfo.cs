@@ -9,7 +9,7 @@ using Froststrap.Utility;
 
 namespace Froststrap.Models
 {
-    internal class PlaceInfo(long id, long universeId, string name, string? thumbnailUrl, int thumbnailDecodeWidth = 300) : NotifyPropertyChangedViewModel
+    internal sealed class PlaceInfo(long id, long universeId, string name, string? thumbnailUrl, int thumbnailDecodeWidth = 300) : NotifyPropertyChangedViewModel
     {
         public long Id { get; set; } = id;
         public long UniverseId { get; set; } = universeId;

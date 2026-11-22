@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace Froststrap.Integrations.OverlayModules
 {
-    internal class RobloxParty
+    internal sealed class RobloxParty
     {
         private const string PlatformChatService = "platform-chat-api";
         private const int ConversationPageSize = 100;

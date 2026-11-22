@@ -6,7 +6,7 @@ using Froststrap.Enums.Overlay;
 
 namespace Froststrap.Models.Overlay
 {
-    internal record FriendPresenceChange(
+    internal sealed record FriendPresenceChange(
         long UserId,
         FriendPresenceKind Kind,
         string GameName,

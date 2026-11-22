@@ -12,7 +12,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Overlay.Controls
 {
-    internal class VisibilityOption
+    internal sealed class VisibilityOption
     {
         public PrivacyLevel Value { get; init; }
 

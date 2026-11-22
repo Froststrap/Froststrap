@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.Distribution
 {
-    internal class VNGGamesDist : CommonDist, IDistribution
+    internal sealed class VNGGamesDist : CommonDist, IDistribution
     {
         public override string RobloxDomain { get; } = "robloxapp.vnggames.com";
     }
