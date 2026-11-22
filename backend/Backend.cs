@@ -4,6 +4,7 @@
 
 // Big ass file with all mappings
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using NLog;
 
@@ -263,44 +264,32 @@ public class MobileAppReg
     }
 }
 
-/// Recoloring from the Rust mod generator
+/// The Rust mod generator
 internal partial class InternalModGenerator
 {
     [LibraryImport(
         "mod_generator",
-        EntryPoint = "recolor_fonts"
+        EntryPoint = "generate_mod"
     )]
-    public static partial int RecolorFonts(
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string color,
-        int angle,
-        ushort bands,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string? imageMap,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string? skipGlyphs
+    public static partial int GenerateMod(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string configJson,
+        IntPtr progress
     );
 
     [LibraryImport(
         "mod_generator",
-        EntryPoint = "recolor_images"
+        EntryPoint = "zip_mod"
     )]
-    public static partial int RecolorImages(
-        [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPUTF8Str)] string[] paths,
-        nuint count,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string color,
-        float angle
+    public static partial int ZipMod(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string source,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string destination
     );
 
     [LibraryImport(
         "mod_generator",
-        EntryPoint = "recolor_sprite_sheets"
+        EntryPoint = "last_error"
     )]
-    public static partial int RecolorSpriteSheets(
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string imageSetData,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string color,
-        float angle,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string? customLogo,
-        [MarshalAs(UnmanagedType.LPUTF8Str)] string? customSpinner
-    );
+    public static partial IntPtr LastError();
 
     [LibraryImport(
         "mod_generator",
@@ -309,34 +298,61 @@ internal partial class InternalModGenerator
     public static partial void SetLogger(IntPtr callback);
 }
 
-/// Recoloring from the Rust mod generator
+/// The Rust mod generator
 ///
-/// Every call returns how many items failed, or -1 if the arguments
-/// were rejected or the library couldn't load
-public class ModGeneratorNative
+/// Calls throw `InvalidOperationException` with the generator's error message on failure
+public static unsafe class ModGeneratorNative
 {
-    private static int Call(Func<int> call)
+    private static readonly Lock Sync = new();
+    private static Action<int>? _progress;
+
+    [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+    private static void OnProgress(int stage) => _progress?.Invoke(stage);
+
+    private static void ThrowIfFailed(int result, string fallback)
     {
+        if (result == 0)
+            return;
+
+        string? message = result < 0 ? Marshal.PtrToStringUTF8(InternalModGenerator.LastError()) : null;
+        throw new InvalidOperationException(string.IsNullOrWhiteSpace(message) ? fallback : message);
+    }
+
+    private static void Call(Func<int> call, string fallback)
+    {
+        int result;
         try
         {
-            return call();
+            result = call();
         }
         catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
         {
             NativeLibraryFailure.Report("mod_generator", ex);
-            return -1;
+            throw new InvalidOperationException("The mod generator library couldn't be loaded.", ex);
+        }
+        ThrowIfFailed(result, fallback);
+    }
+
+    /// Generates a complete mod from a JSON configuration, reporting stages
+    /// (1 downloading, 2 extracting, 3 recoloring, 4 finishing) to `onProgress`
+    public static void Generate(string configJson, Action<int>? onProgress)
+    {
+        lock (Sync)
+        {
+            _progress = onProgress;
+            try
+            {
+                var callback = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&OnProgress;
+                Call(() => InternalModGenerator.GenerateMod(configJson, callback), "Failed to generate the mod.");
+            }
+            finally
+            {
+                _progress = null;
+            }
         }
     }
 
-    /// Recolors every font under `path`
-    public static int RecolorFonts(string path, string color, int angle, ushort bands, string? imageMap, string? skipGlyphs)
-        => Call(() => InternalModGenerator.RecolorFonts(path, color, angle, bands, imageMap, skipGlyphs));
-
-    /// Recolors the given PNGs in place
-    public static int RecolorImages(string[] paths, string color, float angle)
-        => Call(() => InternalModGenerator.RecolorImages(paths, (nuint)paths.Length, color, angle));
-
-    /// Recolors the sprite sheets described by `GetImageSetData.lua`
-    public static int RecolorSpriteSheets(string imageSetData, string color, float angle, string? customLogo, string? customSpinner)
-        => Call(() => InternalModGenerator.RecolorSpriteSheets(imageSetData, color, angle, customLogo, customSpinner));
+    /// Zips the contents of `source` into `destination`
+    public static void Zip(string source, string destination)
+        => Call(() => InternalModGenerator.ZipMod(source, destination), "Failed to zip the mod.");
 }
