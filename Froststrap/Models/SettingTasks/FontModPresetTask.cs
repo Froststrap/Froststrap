@@ -66,15 +66,6 @@ namespace Froststrap.Models.SettingTasks
             new() { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = CustomFontAssetId }
         ];
 
-        public static string? GetFileHash()
-        {
-            if (!File.Exists(Paths.CustomFont))
-                return null;
-
-            using var fileStream = File.OpenRead(Paths.CustomFont);
-            return FastHash.FromStream(fileStream);
-        }
-
         public FontModPresetTask() : base("ModPreset", "TextFont")
         {
             if (File.Exists(Paths.CustomFont))

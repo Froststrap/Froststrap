@@ -264,6 +264,47 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Menu_Appearance_AccentColor_Title}"
+                Description="{x:Static resources:Strings.Menu_Appearance_AccentColor_Description}"
+                IsExpanded="{Binding AccentColorExpanded, Mode=OneWay}"
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ComboBox
+                        MinWidth="200"
+                        ItemsSource="{Binding AccentColorModes}"
+                        SelectedItem="{Binding AccentColorMode, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Spacing="16" IsVisible="{Binding IsCustomAccentColor}">
+                    <TextBlock
+                        Text="{x:Static resources:Strings.Menu_Appearance_AccentColor_Custom}"
+                        FontWeight="Bold" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Border
+                            Width="32"
+                            CornerRadius="4"
+                            Background="{Binding CustomAccentColor}"
+                            VerticalAlignment="Stretch" />
+                        <TextBox
+                            Grid.Column="1"
+                            Text="{Binding CustomAccentColor}"
+                            VerticalContentAlignment="Center" />
+                        <Button
+                            Grid.Column="2"
+                            Content="{x:Static resources:Strings.Common_ColorPicker}"
+                            Command="{Binding OpenAccentColorPickerCommand}"
+                            CommandParameter="{Binding $self}" />
+                    </Grid>
+                </StackPanel>
+            </controls:CardExpander>
+
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Title}"
                 Description="{x:Static resources:Strings.Menu_Deployment_DisableAnimations_Description}">

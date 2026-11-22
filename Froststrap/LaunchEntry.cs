@@ -18,8 +18,5 @@ namespace Froststrap
 
         public static NextAction ToNextAction(LaunchMode mode) =>
             IsStudio(mode) ? NextAction.LaunchRobloxStudio : NextAction.LaunchRoblox;
-
-        public static LaunchMode ToLaunchMode(NextAction action) =>
-            action == NextAction.LaunchRobloxStudio ? LaunchMode.Studio : LaunchMode.Player;
     }
 }

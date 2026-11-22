@@ -222,7 +222,7 @@ SPDX-License-Identifier: MPL-2.0
                     </ui:FANavigationViewItem.Icon>
                 </ui:FANavigationViewItem>
 
-                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
+                <ui:FANavigationViewItem Name="linux" IsVisible="{x:Static gv:GlobalViewModel.HasClientSettingsPage}" Content="{x:Static resources:Strings.Menu_LinuxSettings_Title}" Tag="linuxsettings">
                     <ui:FANavigationViewItem.Icon>
                         <ic:Lucide Icon="Settings" />
                     </ui:FANavigationViewItem.Icon>

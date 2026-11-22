@@ -107,6 +107,8 @@ namespace Froststrap.Models.Persistable
                 public string BootstrapperTitle { get; set; } = ProjectInfo.Name;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public Theme Theme { get; set; } = Theme.Default;
+        public AccentColorMode AccentColorMode { get; set; } = AccentColorMode.System;
+        public string CustomAccentColor { get; set; } = "#0078D4";
         public bool EnableWindowManipulation { get; set; }
         public RobloxIcon RobloxIcon { get; set; } = RobloxIcon.IconDefault;
         public string RobloxTitle { get; set; } = "Roblox";

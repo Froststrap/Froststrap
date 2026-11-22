@@ -21,7 +21,7 @@ use std::time::Duration;
 
 logger::export_set_logger!();
 
-/// Runtime initialzer, will No-op on Linux systems
+/// Runtime initializer, will No-op on Linux systems
 ///
 /// On macOS it will request notification permission.
 ///

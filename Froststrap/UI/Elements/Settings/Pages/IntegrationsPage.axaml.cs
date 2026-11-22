@@ -24,7 +24,5 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 viewModel.SelectedCustomIntegration = listBox.SelectedItem as CustomIntegration;
             }
         }
-
-        private void ValidateInt32(object sender, TextInputEventArgs e) => e.Handled = !Int32.TryParse(e.Text, out int _);
     }
 }

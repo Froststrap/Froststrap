@@ -60,14 +60,6 @@ internal sealed class WineManager(string baseWineDir)
         await RunAsync("reg", [.. args], cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteRegistryValueAsync(string keyPath, string valueName, CancellationToken cancellationToken = default)
-    {
-        var args = new List<string> { "delete", keyPath, "/f" };
-        if (!string.IsNullOrEmpty(valueName))
-            args.AddRange(["/v", valueName]);
-        await RunAsync("reg", [.. args], cancellationToken: cancellationToken);
-    }
-
     public async Task<string?> QueryRegistryValueAsync(string keyPath, string valueName, CancellationToken cancellationToken = default)
     {
         var (exitCode, output) = await RunWithOutputAsync("reg", ["query", keyPath, "/v", valueName], cancellationToken: cancellationToken);

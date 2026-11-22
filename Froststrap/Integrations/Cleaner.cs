@@ -2,125 +2,124 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Integrations
-{
-    internal sealed class Cleaner
-    {
-        private const int MaxFiles = 2000;
+namespace Froststrap.Integrations;
 
-        public static readonly IReadOnlyDictionary<string, string?> Directories = new Dictionary<string, string?>
+internal sealed class Cleaner
+{
+    private const int MaxFiles = 2000;
+
+    public static IReadOnlyDictionary<string, string?> Directories => new Dictionary<string, string?>
+    {
+        { "FroststrapLogs", Paths.Logs },
+        { "FroststrapCache", Paths.Downloads },
+        { "RobloxLogs", App.Clients.Player.Install.LogsRoot! },
+        { "RobloxCache", App.Clients.Player.Install.CacheRoot! }
+    };
+
+    public static void DoCleaning()
+    {
+        var cleanerOption = App.Settings.Prop.CleanerOptions;
+        if (cleanerOption == CleanerOptions.Never)
         {
-            { "FroststrapLogs", Paths.Logs },
-            { "FroststrapCache", Paths.Downloads },
-            { "RobloxLogs", Paths.RobloxLogs },
-            { "RobloxCache", Paths.RobloxCache }
+            App.Logger.Info("Cleaner is set to Never; skipping");
+            return;
+        }
+
+        App.Logger.Debug("Cleaner has started");
+
+        var maxFileAge = cleanerOption switch
+        {
+            CleanerOptions.OneDay => 1,
+            CleanerOptions.OneWeek => 7,
+            CleanerOptions.OneMonth => 30,
+            CleanerOptions.TwoMonths => 60,
+            _ => int.MaxValue,
         };
 
-        public static void DoCleaning()
+        var threshold = DateTime.Now.AddDays(-maxFileAge);
+
+        foreach (var directory in Directories)
         {
-            var cleanerOption = App.Settings.Prop.CleanerOptions;
-            if (cleanerOption == CleanerOptions.Never)
+            string? folder = directory.Value;
+            string type = directory.Key;
+
+            int deletedItems = 0;
+
+            if (!App.Settings.Prop.CleanerDirectories.Contains(type))
             {
-                App.Logger.Info("Cleaner is set to Never; skipping");
-                return;
+                App.Logger.Info($"Skipping {type}");
+                continue;
             }
 
-            App.Logger.Debug("Cleaner has started");
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
+                continue;
 
-            var maxFileAge = cleanerOption switch
+            try
             {
-                CleanerOptions.OneDay => 1,
-                CleanerOptions.OneWeek => 7,
-                CleanerOptions.OneMonth => 30,
-                CleanerOptions.TwoMonths => 60,
-                _ => int.MaxValue,
-            };
+                string[] files = RecursivelyGetFiles(folder);
 
-            var threshold = DateTime.Now.AddDays(-maxFileAge);
+                App.Logger.Info($"Running cleaner in {type}, {files.Length} files found");
 
-            foreach (var directory in Directories)
-            {
-                string? folder = directory.Value;
-                string type = directory.Key;
-
-                int deletedItems = 0;
-
-                if (!App.Settings.Prop.CleanerDirectories.Contains(type))
+                foreach (string file in files)
                 {
-                    App.Logger.Info($"Skipping {type}");
-                    continue;
-                }
+                    if (!VerifyFile(file, threshold))
+                        continue;
 
-                if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
-                    continue;
-
-                try
-                {
-                    string[] files = RecursivlyGetFiles(folder);
-
-                    App.Logger.Info($"Running cleaner in {type}, {files.Length} files found");
-
-                    foreach (string file in files)
+                    if (deletedItems >= MaxFiles)
                     {
-                        if (!VerifyFile(file, threshold))
-                            continue;
+                        App.Logger.Info($"Reached file threshold in {type}, continuing to next directory");
+                        break;
+                    }
 
-                        if (deletedItems >= MaxFiles)
-                        {
-                            App.Logger.Info($"Reached file threshold in {type}, continuing to next directory");
-                            break;
-                        }
-
-                        try
-                        {
-                            File.Delete(file);
-                            deletedItems++;
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.Error($"Unable to delete {file}: {ex}");
-                        }
+                    try
+                    {
+                        File.Delete(file);
+                        deletedItems++;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.Error($"Unable to delete {file}: {ex}");
                     }
                 }
-                catch (Exception ex)
-                {
-                    App.Logger.Error($"Failed to clean up {folder}: {ex}");
-                }
             }
-
-            App.Logger.Info("Cleaner finished");
-        }
-
-        private static bool VerifyFile(string file, DateTime threshold)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            if (File.GetCreationTime(file) > threshold)
-                return false;
-
-            if (!file.Contains("Roblox", StringComparison.OrdinalIgnoreCase) &&
-                !file.Contains(ProjectInfo.Name, StringComparison.OrdinalIgnoreCase) &&
-                !file.Contains(Paths.Base, StringComparison.OrdinalIgnoreCase))
+            catch (Exception ex)
             {
-                throw new InvalidOperationException($"{file} was in disallowed directory");
+                App.Logger.Error($"Failed to clean up {folder}: {ex}");
             }
-
-            if (file.Contains("Windows", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException($"{file} was in Windows directory");
-
-            return true;
         }
 
-        private static string[] RecursivlyGetFiles(string folder)
+        App.Logger.Info("Cleaner finished");
+    }
+
+    private static bool VerifyFile(string file, DateTime threshold)
+    {
+        if (!File.Exists(file))
+            return false;
+
+        if (File.GetCreationTime(file) > threshold)
+            return false;
+
+        if (!file.Contains("Roblox", StringComparison.OrdinalIgnoreCase) &&
+            !file.Contains(ProjectInfo.Name, StringComparison.OrdinalIgnoreCase) &&
+            !file.Contains(Paths.Base, StringComparison.OrdinalIgnoreCase))
         {
-            if (string.IsNullOrEmpty(folder))
-                throw new ArgumentNullException(nameof(folder), "Folder path is null or empty.");
-
-            if (!Directory.Exists(folder))
-                throw new DirectoryNotFoundException($"Folder '{folder}' was not found.");
-
-            return [.. Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)];
+            throw new InvalidOperationException($"{file} was in disallowed directory");
         }
+
+        if (file.Contains("Windows", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException($"{file} was in Windows directory");
+
+        return true;
+    }
+
+    private static string[] RecursivelyGetFiles(string folder)
+    {
+        if (string.IsNullOrEmpty(folder))
+            throw new ArgumentNullException(nameof(folder), "Folder path is null or empty.");
+
+        if (!Directory.Exists(folder))
+            throw new DirectoryNotFoundException($"Folder '{folder}' was not found.");
+
+        return [.. Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)];
     }
 }

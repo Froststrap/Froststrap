@@ -12,8 +12,10 @@ internal sealed class Updater
 {
     public static async Task RunMigrations(string? previousVersion = null)
     {
-        if (OperatingSystem.IsLinux())
-            SetupSoberSymlink();
+        _ = PrepareClientEnvironmentsAsync();
+
+        if (OperatingSystem.IsWindows())
+            Utility.WindowsRegistry.SyncUninstallEntry();
 
         string currentVer = App.InternalVersion;
         string? existingVer = previousVersion ?? App.State.Prop.LastMigratedVersion;
@@ -77,7 +79,7 @@ internal sealed class Updater
         if (Utility.Versioning.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
         {
             string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
-            string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+            string pluginCacheDir = Path.Combine(StudioPluginManager.PluginsDirectory, "FroststrapStudioRPC.rbxmx");
 
             if (Directory.Exists(genCacheDir))
             {
@@ -112,69 +114,17 @@ internal sealed class Updater
         App.Logger.Info($"Migrations complete — LastMigratedVersion set to {currentVer}");
     }
 
-    [SupportedOSPlatform("linux")]
-    private static async void SetupSoberSymlink()
+    private static async Task PrepareClientEnvironmentsAsync()
     {
-        string flatpakId = "org.vinegarhq.Sober";
-        string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", flatpakId);
-        string soberTarget = Path.Combine(Paths.Versions, "Sober");
-
-        if (IsSymlinkPointingAt(flatpakDataPath, soberTarget))
-        {
-            App.Logger.Info("Sober symlink already in place, skipping.");
-            return;
-        }
-
-        App.Logger.Info($"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
-
-        Directory.CreateDirectory(soberTarget);
-
-        if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
-        {
-            App.Logger.Info($"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
-            await Utility.Threading.RunAsync("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"");
-
-            App.Logger.Info($"Removing original Sober data directory at {flatpakDataPath}");
-            await Utility.Threading.RunAsync("rm", $"-rf \"{flatpakDataPath}\"");
-        }
-        else if (IsSymlink(flatpakDataPath))
-        {
-            App.Logger.Info($"Removing stale symlink at {flatpakDataPath}");
-            Directory.Delete(flatpakDataPath);
-        }
-
-        Directory.CreateDirectory(Path.GetDirectoryName(flatpakDataPath)!);
-
-        Directory.CreateSymbolicLink(flatpakDataPath, soberTarget);
-        App.Logger.Info($"Created symlink: {flatpakDataPath} -> {soberTarget}");
-    }
-
-    [SupportedOSPlatform("linux")]
-    private static bool IsSymlink(string path)
-    {
-        if (!Path.Exists(path))
-            return false;
-
         try
         {
-            var attributes = File.GetAttributes(path);
-            return attributes.HasFlag(FileAttributes.ReparsePoint);
+            await App.Clients.Player.PrepareEnvironmentAsync();
+            await App.Clients.Studio.PrepareEnvironmentAsync();
         }
-        catch { return false; }
-    }
-
-    [SupportedOSPlatform("linux")]
-    private static bool IsSymlinkPointingAt(string path, string expectedTarget)
-    {
-        if (!IsSymlink(path))
-            return false;
-
-        try
+        catch (Exception ex)
         {
-            string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
-            return actual == expectedTarget;
+            App.Logger.Error(ex, "Failed to prepare client environments");
         }
-        catch { return false; }
     }
 
     [SupportedOSPlatform("windows")]

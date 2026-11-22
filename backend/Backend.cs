@@ -77,7 +77,7 @@ internal partial class InternalVirtualDisplay
 /// A Virtual Display mechanism for macOS
 public class VirtualDisplay
 {
-    /// Intiialize datapoints around being able to
+    /// Initialize datapoints around being able to
     /// create the virtual display
     public unsafe static int Initialize(
         string name,

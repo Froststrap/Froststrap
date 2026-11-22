@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: MPL-2.0
 
 {
-  dotnetCorePackages,
   buildDotnetModule,
   makeRustPlatform,
   rustPlatform,
@@ -36,12 +35,14 @@
   lib,
 }:
 {
+  dotnix,
   fenix,
   ...
 }:
 let
-  dotnet-sdk = dotnetCorePackages.sdk_10_0;
-  dotnet-runtime = dotnetCorePackages.runtime_10_0-bin;
+  dotnet = dotnix.packages.${stdenv.hostPlatform.system};
+  dotnet-sdk = dotnet.combine [ dotnet."10-0".stable.sdk ];
+  dotnet-runtime = dotnet.combine [ dotnet."10-0".stable.runtime ];
   toolchain = with fenix.packages.${stdenv.system}; combine [ minimal.toolchain ];
   src = ../.;
   fenixRustPlatform = makeRustPlatform {

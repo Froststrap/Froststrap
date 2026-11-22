@@ -22,9 +22,7 @@ let
       latest.rustc
       latest.clippy
       latest.rustfmt
-      latest.rust-src
-      latest.rust-analyzer
-  ];
+    ];
 in
 mkFragment {
   name = "rust";

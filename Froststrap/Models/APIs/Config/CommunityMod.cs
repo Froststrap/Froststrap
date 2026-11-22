@@ -18,6 +18,9 @@ namespace Froststrap.Models.APIs.Config
         [JsonPropertyName("download")]
         public string DownloadUrl { get; set; } = null!;
 
+        [JsonPropertyName("sha256")]
+        public string? Sha256 { get; set; }
+
         [JsonPropertyName("gradient")]
         public List<GradientStop>? GradientStops { get; set; }
 
