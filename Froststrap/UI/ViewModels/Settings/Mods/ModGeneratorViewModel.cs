@@ -438,87 +438,17 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     string tempFolderName = SolidColorHex;
 
-                    Parallel.Invoke(
-                        () => SafeExtract(luaZip, luaDir),
-                        () => SafeExtract(extraZip, extraDir),
-                        () => SafeExtract(contentZip, contentDir));
-
-                    StatusText = Strings.Menu_ModGenerator_RecoloringPNGS;
-                    Progress = 50;
                     string foundationImagesDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "SpriteSheets");
                     string? getImageSetDataPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "Generated", "GetImageSetData.lua");
+                    string builderIconsFontDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
 
                     var mappings = await ModGenerator.LoadMappingsAsync();
-
-                    List<ModGenerator.GradientStop>? gradientStopsForSprites = null;
-                    float gradientAngleForSprites = 0f;
-                    if (IsGradientMode)
-                    {
-                        gradientStopsForSprites = [.. GradientStops.OrderBy(s => s.Offset)
-                            .Select(s => new ModGenerator.GradientStop((float)s.Offset, Color.Parse(s.Color)))];
-                        gradientAngleForSprites = (float)GradientAngle;
-                    }
-
-                    ModGenerator.RecolorAllPngs(
-                        TempRoot,
-                        _solidColor,
-                        mappings,
-                        ColorCursors,
-                        ColorShiftlock,
-                        ColorEmoteWheel,
-                        gradientStopsForSprites,
-                        gradientAngleForSprites,
-                        getImageSetDataPath,
-                        RobloxIconImagePath,
-                        CustomSpinnerPath
-                    );
-                    Progress = 70;
-
-                    StatusText = Strings.Menu_ModGenerator_RecoloringFonts;
-
-                    string? gradientArg = null;
-                    double? angleArg = null;
-                    if (IsGradientMode)
-                    {
-                        var orderedStops = GradientStops.OrderBy(s => s.Offset);
-                        gradientArg = string.Join(",", orderedStops.Select(s => $"{s.Offset}:{s.Color.TrimStart('#')}"));
-                        angleArg = GradientAngle;
-                    }
-
-                    string modFolderName = string.IsNullOrWhiteSpace(ModFolderName)
-                        ? GetNextAvailableModFolderName()
-                        : ModFolderName;
-
-                    string? imageMapArg = null;
-                    if (!string.IsNullOrWhiteSpace(RobloxIconImagePath) && File.Exists(RobloxIconImagePath))
-                        imageMapArg = $"tilt:{RobloxIconImagePath}";
-
-                    int? bandsArg = GradientBands > 0 ? GradientBands : (int?)null;
-
-                    string? skipGlyphsArg = null;
-                    if (DontColorPlayIcon)
-                    {
-                        skipGlyphsArg = "play-large,play-small";
-                    }
-
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, gradientArg, angleArg, imageMapArg, bandsArg, skipGlyphsArg);
-
-                    WriteBuilderIconsJson(TempRoot);
-
-                    StatusText = Strings.Menu_ModGenerator_CleaningUp;
-                    Progress = 80;
 
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var entry in mappings.Values)
                         preservePaths.Add(Path.GetFullPath(Path.Combine([TempRoot, .. entry])));
 
-                    string builderIconsFontDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
-                    if (Directory.Exists(builderIconsFontDir))
-                    {
-                        preservePaths.Add(Path.GetFullPath(builderIconsFontDir));
-                        foreach (var fontFile in Directory.GetFiles(builderIconsFontDir, "*.*"))
-                            preservePaths.Add(Path.GetFullPath(fontFile));
-                    }
+                    preservePaths.Add(Path.GetFullPath(builderIconsFontDir));
 
                     string builderIconsJsonPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "BuilderIcons.json");
                     preservePaths.Add(Path.GetFullPath(builderIconsJsonPath));
@@ -540,6 +470,74 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
 
                     preservePaths.Add(Path.GetFullPath(foundationImagesDir));
+
+                    string[] neededDirs =
+                    [
+                        Path.GetFullPath(builderIconsFontDir) + Path.DirectorySeparatorChar,
+                        Path.GetFullPath(foundationImagesDir) + Path.DirectorySeparatorChar
+                    ];
+                    string imageSetDataFullPath = Path.GetFullPath(getImageSetDataPath);
+
+                    bool IsNeeded(string fullPath) =>
+                        preservePaths.Contains(fullPath)
+                        || string.Equals(fullPath, imageSetDataFullPath, StringComparison.OrdinalIgnoreCase)
+                        || neededDirs.Any(dir => fullPath.StartsWith(dir, StringComparison.OrdinalIgnoreCase));
+
+                    Parallel.Invoke(
+                        () => SafeExtract(luaZip, luaDir, IsNeeded),
+                        () => SafeExtract(extraZip, extraDir, IsNeeded),
+                        () => SafeExtract(contentZip, contentDir, IsNeeded));
+
+                    StatusText = Strings.Menu_ModGenerator_RecoloringPNGS;
+                    Progress = 50;
+
+                    string colorArg = $"{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+                    double angleArg = 0;
+                    if (IsGradientMode)
+                    {
+                        var orderedStops = GradientStops.OrderBy(s => s.Offset);
+                        colorArg = string.Join(",", orderedStops.Select(s => $"{s.Offset.ToString(CultureInfo.InvariantCulture)}:{s.Color.TrimStart('#')}"));
+                        angleArg = GradientAngle;
+                    }
+
+                    await ModGenerator.RecolorTexturesAsync(
+                        TempRoot,
+                        colorArg,
+                        (float)angleArg,
+                        mappings,
+                        ColorCursors,
+                        ColorShiftlock,
+                        ColorEmoteWheel,
+                        getImageSetDataPath,
+                        RobloxIconImagePath,
+                        CustomSpinnerPath
+                    );
+                    Progress = 70;
+
+                    StatusText = Strings.Menu_ModGenerator_RecoloringFonts;
+
+                    string modFolderName = string.IsNullOrWhiteSpace(ModFolderName)
+                        ? GetNextAvailableModFolderName()
+                        : ModFolderName;
+
+                    string? imageMapArg = null;
+                    if (!string.IsNullOrWhiteSpace(RobloxIconImagePath) && File.Exists(RobloxIconImagePath))
+                        imageMapArg = $"tilt:{RobloxIconImagePath}";
+
+                    int? bandsArg = GradientBands > 0 ? GradientBands : (int?)null;
+
+                    string? skipGlyphsArg = null;
+                    if (DontColorPlayIcon)
+                    {
+                        skipGlyphsArg = "play-large,play-small";
+                    }
+
+                    await ModGenerator.RecolorFontsAsync(TempRoot, colorArg, angleArg, imageMapArg, bandsArg, skipGlyphsArg);
+
+                    WriteBuilderIconsJson(TempRoot);
+
+                    StatusText = Strings.Menu_ModGenerator_CleaningUp;
+                    Progress = 80;
 
                     void DeleteExcept(string dir)
                     {
@@ -723,7 +721,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             File.WriteAllText(jsonPath, jsonContent);
         }
 
-        private static void SafeExtract(string zipPath, string targetDir)
+        private static void SafeExtract(string zipPath, string targetDir, Func<string, bool> isNeeded)
         {
             if (string.IsNullOrEmpty(zipPath) || !File.Exists(zipPath)) return;
             if (Directory.Exists(targetDir)) Directory.Delete(targetDir, true);
@@ -753,11 +751,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     || entry.FullName.EndsWith('/')
                     || entry.FullName.EndsWith('\\');
 
-                if (isDirectory)
-                {
-                    Directory.CreateDirectory(destinationPath);
+                if (isDirectory || !isNeeded(destinationPath))
                     continue;
-                }
 
                 string? parent = Path.GetDirectoryName(destinationPath);
                 if (!string.IsNullOrEmpty(parent))

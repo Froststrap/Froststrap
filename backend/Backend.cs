@@ -262,3 +262,81 @@ public class MobileAppReg
         }
     }
 }
+
+/// Recoloring from the Rust mod generator
+internal partial class InternalModGenerator
+{
+    [LibraryImport(
+        "mod_generator",
+        EntryPoint = "recolor_fonts"
+    )]
+    public static partial int RecolorFonts(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string path,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string color,
+        int angle,
+        ushort bands,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string? imageMap,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string? skipGlyphs
+    );
+
+    [LibraryImport(
+        "mod_generator",
+        EntryPoint = "recolor_images"
+    )]
+    public static partial int RecolorImages(
+        [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPUTF8Str)] string[] paths,
+        nuint count,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string color,
+        float angle
+    );
+
+    [LibraryImport(
+        "mod_generator",
+        EntryPoint = "recolor_sprite_sheets"
+    )]
+    public static partial int RecolorSpriteSheets(
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string imageSetData,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string color,
+        float angle,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string? customLogo,
+        [MarshalAs(UnmanagedType.LPUTF8Str)] string? customSpinner
+    );
+
+    [LibraryImport(
+        "mod_generator",
+        EntryPoint = "set_logger"
+    )]
+    public static partial void SetLogger(IntPtr callback);
+}
+
+/// Recoloring from the Rust mod generator
+///
+/// Every call returns how many items failed, or -1 if the arguments
+/// were rejected or the library couldn't load
+public class ModGeneratorNative
+{
+    private static int Call(Func<int> call)
+    {
+        try
+        {
+            return call();
+        }
+        catch (Exception ex) when (NativeLibraryFailure.IsLoadFailure(ex))
+        {
+            NativeLibraryFailure.Report("mod_generator", ex);
+            return -1;
+        }
+    }
+
+    /// Recolors every font under `path`
+    public static int RecolorFonts(string path, string color, int angle, ushort bands, string? imageMap, string? skipGlyphs)
+        => Call(() => InternalModGenerator.RecolorFonts(path, color, angle, bands, imageMap, skipGlyphs));
+
+    /// Recolors the given PNGs in place
+    public static int RecolorImages(string[] paths, string color, float angle)
+        => Call(() => InternalModGenerator.RecolorImages(paths, (nuint)paths.Length, color, angle));
+
+    /// Recolors the sprite sheets described by `GetImageSetData.lua`
+    public static int RecolorSpriteSheets(string imageSetData, string color, float angle, string? customLogo, string? customSpinner)
+        => Call(() => InternalModGenerator.RecolorSpriteSheets(imageSetData, color, angle, customLogo, customSpinner));
+}

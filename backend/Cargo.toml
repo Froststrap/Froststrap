@@ -9,6 +9,7 @@ members = [
   "logger",
   "mobileappreg",
   "virtualdisplay",
+  "modgenerator",
 ]
 default-members = [
   "notify",
@@ -30,6 +31,69 @@ codegen-units = 1
 strip = "symbols"
 panic = "abort"
 incremental = false
+
+[profile.release.package.mod-generator]
+opt-level = 3
+
+[profile.release.package.clipper2-rust]
+opt-level = 3
+
+[profile.release.package.skrifa]
+opt-level = 3
+
+[profile.release.package.read-fonts]
+opt-level = 3
+
+[profile.release.package.write-fonts]
+opt-level = 3
+
+[profile.release.package.font-types]
+opt-level = 3
+
+[profile.release.package.kurbo]
+opt-level = 3
+
+[profile.release.package.image]
+opt-level = 3
+
+[profile.release.package.png]
+opt-level = 3
+
+[profile.release.package.fdeflate]
+opt-level = 3
+
+[profile.release.package.zune-jpeg]
+opt-level = 3
+
+[profile.release.package.zune-core]
+opt-level = 3
+
+[profile.release.package.image-webp]
+opt-level = 3
+
+[profile.release.package.gif]
+opt-level = 3
+
+[profile.release.package.imagequant]
+opt-level = 3
+
+[profile.release.package.rayon]
+opt-level = 3
+
+[profile.release.package.rayon-core]
+opt-level = 3
+
+[profile.release.package.regex]
+opt-level = 3
+
+[profile.release.package.regex-automata]
+opt-level = 3
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev.package.mod-generator]
+opt-level = 3
 
 [workspace.dependencies]
 log = "0.4"
