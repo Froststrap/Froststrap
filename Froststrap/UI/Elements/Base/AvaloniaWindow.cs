@@ -381,8 +381,8 @@ namespace Froststrap.UI.Elements.Base
             bool light = themeName == "Light";
 
             _cachedThemeDictionary = light
-                ? new Froststrap.UI.AppThemes.ResourceDictionarys.Light()
-                : new Froststrap.UI.AppThemes.ResourceDictionarys.Dark();
+                ? new Froststrap.UI.AppThemes.ResourceDictionaries.Light()
+                : new Froststrap.UI.AppThemes.ResourceDictionaries.Dark();
 
             _cachedThemeStyles = light
                 ? new Froststrap.UI.AppThemes.Styles.Light()

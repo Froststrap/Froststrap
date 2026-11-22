@@ -3,8 +3,18 @@
 # SPDX-License-Identifier: MPL-2.0
 
 [files]
-extend-exclude = ["Froststrap.Localisation/Resources/Translations/*.json"]
+extend-exclude = ["Froststrap.Localisation/Resources/Translations/*.json", "nix/deps.json"]
 
 [type.control-strings]
 extend-glob = ["*ControlStrings.json"]
 check-file = false
+
+[default]
+extend-ignore-identifiers-re = [
+  "fram",
+  "Sur", # macOS Big Sur
+  "selecton", # down-styled of SelectOn
+  "[A-Za-z0-9+/]{40,}={0,2}", # honstly no idea just got from an AI- should AFAIK just be allowing words over 40 char
+  "Astroid", # lucide spells it this way? 
+  "WriteableBitmap", # avlaonia misspelling in api
+]

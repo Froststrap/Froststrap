@@ -47,7 +47,6 @@ path = [
     "Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/**",
     "Froststrap/Resources/Mods/Cursor/From2006/**",
     "Froststrap/Resources/Mods/Cursor/From2013/**",
-    "Froststrap/Resources/Mods/Sounds/Old*.mp3",
     "Froststrap/Resources/Mods/OldAvatarBackground.rbxl",
 ]
 SPDX-FileCopyrightText = "Roblox Corporation"

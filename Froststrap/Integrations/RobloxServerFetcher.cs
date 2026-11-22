@@ -200,26 +200,6 @@ namespace Froststrap.Integrations
             return "Unknown";
         }
 
-        public async Task<List<ServerInstance>> FetchServersForRegionsAsync(long placeId, List<string> regions, CancellationToken cancellationToken = default)
-        {
-            var allServers = new List<ServerInstance>();
-            var seenIds = new HashSet<string>();
-
-            foreach (var region in regions)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                var (servers, _) = await FetchServersByRegionAsync(placeId, region, null, cancellationToken: cancellationToken);
-
-                foreach (var s in servers)
-                {
-                    if (seenIds.Add(s.Id))
-                        allServers.Add(s);
-                }
-            }
-
-            return allServers;
-        }
-
         public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", string? optionalCookie = null, int? maxServers = null, CancellationToken cancellationToken = default)
         {
             string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();

@@ -11,6 +11,10 @@ using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.AppData;
+using Froststrap.Clients;
+using Froststrap.Clients.Model;
+using Froststrap.Clients.Registry;
+using Froststrap.Clients.Runtime;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
@@ -48,12 +52,6 @@ internal sealed partial class App : Application
         DiagnosticsOpen = true;
     }
 
-    private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
-    private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
-
-    public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
-    public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
-
     public static LaunchSettings LaunchSettings { get; internal set; } = null!;
 
     public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly()
@@ -70,39 +68,13 @@ internal sealed partial class App : Application
 
     public FroststrapRichPresence? RichPresence { get; private set; }
 
-    public static string? MockReleaseTag => GetEnvironmentVariable(MockReleaseTagEnvironmentVariable);
+    public static bool IsPlayerInstalled => Clients.Player.IsInstalled();
 
-    public static bool IsMockReleaseEnabled => !string.IsNullOrWhiteSpace(MockReleaseTag);
+    public static bool IsStudioInstalled => Clients.Studio.IsInstalled();
 
-    public static string? MockCurrentVersion => GetEnvironmentVariable(MockCurrentVersionEnvironmentVariable);
+    private static ClientRegistry? _clients;
 
-    public static bool IsPlayerInstalled => PlayerData.IsInstalled;
-
-    public static bool IsStudioInstalled => StudioData.IsInstalled;
-
-    private static bool? _linuxPlayerInstalled;
-
-    public static bool LinuxPlayerInstalled
-    {
-        get
-        {
-            if (!OperatingSystem.IsLinux())
-                return false;
-
-            if (_linuxPlayerInstalled is not bool cached)
-            {
-                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                cached = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-                _linuxPlayerInstalled = cached;
-            }
-
-            return cached;
-        }
-    }
-
-    public static readonly RobloxPlayerData PlayerData = new();
-
-    public static readonly RobloxStudioData StudioData = new();
+    public static ClientRegistry Clients => _clients ?? throw new InvalidOperationException("Clients are resolved after Paths.Initialize()");
 
     public static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -113,8 +85,6 @@ internal sealed partial class App : Application
     public static readonly JsonManager<Settings> Settings = new();
 
     public static readonly JsonManager<State> State = new();
-
-    public static readonly SoberSettingsManager SoberSettings = new();
 
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
@@ -341,9 +311,8 @@ internal sealed partial class App : Application
     public static Task AssertWindowsAUMIDAsync()
     {
 #if DEBUG
-        /// Return early just becasue of if this runs in debug this might fuck shit up
+        /// Return early just because of if this runs in debug this might fuck shit up
         /// Would be good to though make it more robust so this doesn't need to happen
-        Logger.Debug("Skipping AUMID verification in Debug builds.");
         return Task.CompletedTask;
 #else
         return AssertWindowsAUMIDImplAsync();
@@ -574,6 +543,14 @@ internal sealed partial class App : Application
         Logger.Debug($"Compiled for RID: {RuntimeInformation.RuntimeIdentifier}");
         Logger.Debug($"Compiled {BuildMetadata.LocalTimestamp.ToFriendlyString()}");
 
+        _clients = ClientCatalog.Build(ClientEnvironment.FromHost());
+
+        foreach (ClientTarget target in Enum.GetValues<ClientTarget>())
+        {
+            ClientResolution resolution = _clients.Describe(target);
+            Logger.Info($"Client for {target}: {resolution.ClientId} ({resolution.DisplayName}) on {resolution.Host}");
+        }
+
         var userAgent = new StringBuilder($"{ProjectInfo.Name}/{Version}");
 
         HttpClient.Timeout = TimeSpan.FromSeconds(60);
@@ -626,8 +603,7 @@ internal sealed partial class App : Application
                 FastFlags.Load();
                 GlobalSettings.Load();
 
-                if (OperatingSystem.IsLinux())
-                    SoberSettings.Load(alertFailure: false);
+                Clients.Player.SettingsSync?.Load();
 
                 _ = AssertWindowsAUMIDAsync();
 

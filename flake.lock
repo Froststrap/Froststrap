@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794757690,
-        "narHash": "sha256-mQ/Aq0CyiI1KNY3qjKmBrX74xJEzrg3WMq/DCmdOiqs=",
+        "lastModified": 1794922990,
+        "narHash": "sha256-IgWJtQW5I4JSEYMjFGKQEtHtJ8eQC3KgAOmaDipLnIY=",
         "owner": "froststrap",
         "repo": "dotnix",
-        "rev": "d18bb6bb9b4da761a9d61a38a494417b895608f6",
+        "rev": "459c340a934530c9ae7066e16f1df6b00c8678a8",
         "type": "github"
       },
       "original": {

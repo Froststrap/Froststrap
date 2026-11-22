@@ -19,33 +19,26 @@ static class Processes
         }
     }
 
-    public static bool IsRobloxRunning()
-    {
-        Process[] processes = GetProcessesSafe();
-        string processName = Path.GetFileNameWithoutExtension(App.RobloxPlayerAppName);
-
-        if (OperatingSystem.IsLinux())
-            return processes.Any(x => x.ProcessName == "sober");
-        else
-            return processes.Any(x => x.ProcessName == processName);
-    }
-
-    public static void KillSober()
+    public static void Close(int pid)
     {
         try
         {
-            using Process? process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "flatpak",
-                Arguments = "kill org.vinegarhq.Sober",
-                UseShellExecute = false,
-                CreateNoWindow = true
-            });
+            using var process = Process.GetProcessById(pid);
 
-            process?.WaitForExit(1000);
+            App.Logger.Info($"Closing process '{process.ProcessName}' (pid={pid})");
+
+            if (process.HasExited)
+            {
+                App.Logger.Info($"PID {pid} has already exited");
+                return;
+            }
+
+            process.CloseMainWindow();
         }
-        catch
+        catch (Exception ex)
         {
+            App.Logger.Error($"PID {pid} could not be closed");
+            App.Logger.Error(ex);
         }
     }
 

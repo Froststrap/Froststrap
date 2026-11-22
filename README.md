@@ -50,32 +50,17 @@ All release files are also listed under **Assets** on the [latest release][repo-
 
 ## Platform Support
 
-### Tier I
-
-Tier I platforms are guaranteed to work, and we provide binaries for them.
-
 | System | Notes |
 | :- | :- |
 | Windows | Windows 10 LTSC or Windows 11 and later |
 | macOS aarch64 >= 26.0 | `aarch64` is also known as `arm64`. Requires macOS 26 (Tahoe) or later |
-| NixOS | Binaries run through our wrapper; as long as you use it, everything works correctly |
+| NixOS (Linux) | Binaries run through our wrapper; as long as you use it, everything works correctly |
 
-### Tier II
+Other platforms which tie into these supported systems e.g. NixOS with is being Linux- They will have support too
+just we don't have the proper time to test all operating systems with their provided core utils, and libraries
+to make sure stuff works.
 
-Tier II platforms are supported, and we ship binaries for them. However, support may be less reliable due to reduced reproducibility or a higher maintenance burden.
-
-| System | Notes |
-| :- | :- |
-| Arch Linux | Stability is not guaranteed. We will attempt to reproduce reported issues but generally assume they are specific to Arch Linux |
-| Other macOS | Macs not covered above (such as Intel Macs or macOS older than 26) aren't a focus, but we may look at specific issues case by case |
-| Fedora | Dependency lists have not been tested, so additional packages may be required and compatibility is not guaranteed |
-| Ubuntu/Debian | Dependency lists have not been tested, so additional packages may be required and compatibility is not guaranteed |
-
-### Tier III
-
-| System | Notes |
-| :- | :- |
-| Anything not listed | We will try to help with reported issues, but distribution-specific problems or limitations may be declined or given lower priority than other work |
+We are happy on attempting to fix issues that are happening on systems not listed on here.
 
 ## Key Improvements Over Fishstrap
 

@@ -51,20 +51,6 @@ namespace Froststrap.UI
             });
         }
 
-        //Were supposed to show this when watcher fails to launch but we lowkey dont anymore idk why
-        public static async Task ShowPlayerErrorDialog(bool crash = false)
-        {
-            string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
-
-            string info = string.Format(CultureInfo.InvariantCulture,
-                Strings.Dialog_PlayerError_HelpInformation,
-                $"https://github.com/{ProjectInfo.Repository}/wiki/Roblox-crashes-or-does-not-launch",
-                $"https://github.com/{ProjectInfo.Repository}/wiki/Switching-between-Roblox-and-Bloxstrap"
-            );
-
-            await ShowMessageBox($"{topLine}\n\n{info}", MessageBoxImage.Error);
-        }
-
         public static async Task ShowExceptionDialog(Exception exception)
         {
             if (App.LaunchSettings.Silent)

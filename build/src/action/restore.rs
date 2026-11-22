@@ -9,5 +9,10 @@ use crate::utils::{log, process};
 pub fn main() {
     log::info!("Executing Restore");
 
-    process("dotnet", ["restore"]).exec_checked("dotnet restore");
+    let args = [
+        "restore",
+        "./Froststrap/Froststrap.csproj"
+    ];
+
+    process("dotnet", args).exec_checked("dotnet restore");
 }
