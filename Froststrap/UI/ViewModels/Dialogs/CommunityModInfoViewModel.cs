@@ -12,7 +12,7 @@ using AvaFontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    internal partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
+    internal sealed partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
         private string _colorDisplayText = string.Empty;
         public string ColorDisplayText

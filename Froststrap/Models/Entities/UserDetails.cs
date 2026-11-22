@@ -7,7 +7,7 @@ using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Models.Entities
 {
-    internal class UserDetails
+    internal sealed class UserDetails
     {
         private static List<UserDetails> Cache { get; set; } = [];
 

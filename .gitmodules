@@ -1,12 +1,6 @@
-[submodule "libs/LucideAvalonia"]
-	path = libs/LucideAvalonia
-	url = https://github.com/Froststrap/LucideAvalonia.git
 [submodule "libs/FluentAvalonia"]
-	path = libs/FluentAvalonia
+	path = FluentAvalonia
 	url = https://github.com/Froststrap/FluentAvalonia.git
 [submodule "backend/virtualdisplay"]
 	path = backend/virtualdisplay
 	url = https://github.com/Froststrap/virtualdisplay
-[submodule "libs/DiscordRPC-NativeAOT"]
-	path = libs/DiscordRPC-NativeAOT
-	url = https://github.com/Froststrap/DiscordRPC-NativeAOT.git

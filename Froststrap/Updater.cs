@@ -8,12 +8,14 @@ using System.Runtime.InteropServices;
 
 namespace Froststrap;
 
-internal class Updater
+internal sealed class Updater
 {
     public static async Task RunMigrations(string? previousVersion = null)
     {
-        if (OperatingSystem.IsLinux())
-            SetupSoberSymlink();
+        _ = PrepareClientEnvironmentsAsync();
+
+        if (OperatingSystem.IsWindows())
+            Utility.WindowsRegistry.SyncUninstallEntry();
 
         string currentVer = App.InternalVersion;
         string? existingVer = previousVersion ?? App.State.Prop.LastMigratedVersion;
@@ -77,7 +79,7 @@ internal class Updater
         if (Utility.Versioning.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
         {
             string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
-            string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+            string pluginCacheDir = Path.Combine(StudioPluginManager.PluginsDirectory, "FroststrapStudioRPC.rbxmx");
 
             if (Directory.Exists(genCacheDir))
             {
@@ -112,69 +114,131 @@ internal class Updater
         App.Logger.Info($"Migrations complete — LastMigratedVersion set to {currentVer}");
     }
 
-    [SupportedOSPlatform("linux")]
-    private static async void SetupSoberSymlink()
+    private static async Task PrepareClientEnvironmentsAsync()
     {
-        string flatpakId = "org.vinegarhq.Sober";
-        string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", flatpakId);
-        string soberTarget = Path.Combine(Paths.Versions, "Sober");
-
-        if (IsSymlinkPointingAt(flatpakDataPath, soberTarget))
+        try
         {
-            App.Logger.Info("Sober symlink already in place, skipping.");
+            await App.Clients.Player.PrepareEnvironmentAsync();
+            await App.Clients.Studio.PrepareEnvironmentAsync();
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error(ex, "Failed to prepare client environments");
+        }
+    }
+
+    [SupportedOSPlatform("windows")]
+    public static void MigrateOutOfInstallRoot()
+    {
+        string legacyRoot = Paths.WindowsInstallRoot;
+
+        if (!Directory.Exists(legacyRoot))
+            return;
+
+        foreach (string source in Directory.EnumerateFileSystemEntries(legacyRoot))
+        {
+            string name = Path.GetFileName(source);
+
+            if (IsInstallerOwned(source, name))
+                continue;
+
+            string dest = Path.Combine(Paths.DataRoot, name);
+
+            try
+            {
+                MoveEntry(source, dest);
+                App.Logger.Info($"Migrated '{source}' -> '{dest}'");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, $"Failed to migrate '{source}' -> '{dest}'");
+            }
+        }
+    }
+
+    private static bool IsInstallerOwned(string path, string name)
+    {
+        if (Directory.Exists(path))
+            return name.Equals("current", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("packages", StringComparison.OrdinalIgnoreCase)
+                || name.Equals("Locks", StringComparison.OrdinalIgnoreCase);
+
+        string ext = Path.GetExtension(name);
+        return ext.Equals(".exe", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".dll", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".pdb", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".nupkg", StringComparison.OrdinalIgnoreCase)
+            || ext.Equals(".version", StringComparison.OrdinalIgnoreCase)
+            || name.StartsWith('.')
+            || name.StartsWith("velopack", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void MoveEntry(string source, string dest)
+    {
+        if (File.Exists(source))
+        {
+            if (File.Exists(dest))
+            {
+                App.Logger.Warn($"'{dest}' already exists, leaving '{source}' in place");
+                return;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+            File.Move(source, dest);
             return;
         }
 
-        App.Logger.Info($"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
+        var info = new DirectoryInfo(source);
 
-        Directory.CreateDirectory(soberTarget);
+        if (Directory.Exists(dest) && !Directory.EnumerateFileSystemEntries(dest).Any())
+            Directory.Delete(dest);
 
-        if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
+        if (info.LinkTarget is not null)
         {
-            App.Logger.Info($"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
-            await Utility.Threading.RunAsync("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"");
+            string? target = info.ResolveLinkTarget(true)?.FullName;
 
-            App.Logger.Info($"Removing original Sober data directory at {flatpakDataPath}");
-            await Utility.Threading.RunAsync("rm", $"-rf \"{flatpakDataPath}\"");
+            if (Directory.Exists(dest))
+            {
+                App.Logger.Warn($"'{dest}' already has data, leaving junction '{source}' in place");
+                return;
+            }
+
+            if (target is not null)
+                StorageLocation.CreateLink(dest, target);
+
+            info.Delete();
+            return;
         }
-        else if (IsSymlink(flatpakDataPath))
+
+        if (!Directory.Exists(dest))
         {
-            App.Logger.Info($"Removing stale symlink at {flatpakDataPath}");
-            Directory.Delete(flatpakDataPath);
+            try
+            {
+                Directory.Move(source, dest);
+                return;
+            }
+            catch (IOException) when (Directory.Exists(source) && !Directory.Exists(dest)) { }
         }
 
-        Directory.CreateDirectory(Path.GetDirectoryName(flatpakDataPath)!);
-
-        Directory.CreateSymbolicLink(flatpakDataPath, soberTarget);
-        App.Logger.Info($"Created symlink: {flatpakDataPath} -> {soberTarget}");
+        MergeDirectory(source, dest);
     }
 
-    [SupportedOSPlatform("linux")]
-    private static bool IsSymlink(string path)
+    private static void MergeDirectory(string source, string dest)
     {
-        if (!Path.Exists(path))
-            return false;
+        Directory.CreateDirectory(dest);
 
-        try
+        foreach (string file in Directory.EnumerateFiles(source))
         {
-            var attributes = File.GetAttributes(path);
-            return attributes.HasFlag(FileAttributes.ReparsePoint);
+            string target = Path.Combine(dest, Path.GetFileName(file));
+            if (!File.Exists(target))
+                File.Move(file, target);
         }
-        catch { return false; }
-    }
 
-    [SupportedOSPlatform("linux")]
-    private static bool IsSymlinkPointingAt(string path, string expectedTarget)
-    {
-        if (!IsSymlink(path))
-            return false;
+        foreach (string dir in Directory.EnumerateDirectories(source))
+            MoveEntry(dir, Path.Combine(dest, Path.GetFileName(dir)));
 
-        try
-        {
-            string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
-            return actual == expectedTarget;
-        }
-        catch { return false; }
+        if (!Directory.EnumerateFileSystemEntries(source).Any())
+            Directory.Delete(source);
     }
 
     private static void TryDelete(string path)

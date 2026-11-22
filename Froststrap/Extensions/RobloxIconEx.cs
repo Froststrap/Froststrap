@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
+using System.Runtime.Versioning;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Windows.Win32;
@@ -76,6 +77,7 @@ namespace Froststrap.Extensions
             return bitmap;
         }
 
+        [SupportedOSPlatform("windows5.0")]
         public static unsafe IntPtr GetHIcon(this RobloxIcon icon)
         {
             if (_hIconCache.TryGetValue(icon, out var cached))
@@ -256,6 +258,7 @@ namespace Froststrap.Extensions
             return true;
         }
 
+        [SupportedOSPlatform("windows5.0")]
         private static unsafe HICON PngBytesToHIcon(byte[] pngBytes)
         {
             if (pngBytes.Length == 0)
@@ -278,7 +281,7 @@ namespace Froststrap.Extensions
         {
             _cache.Remove(RobloxIcon.IconCustom);
 
-            if (_hIconCache.Remove(RobloxIcon.IconCustom, out var stale) && stale != IntPtr.Zero)
+            if (_hIconCache.Remove(RobloxIcon.IconCustom, out var stale) && stale != IntPtr.Zero && OperatingSystem.IsWindowsVersionAtLeast(5, 0))
                 PInvoke.DestroyIcon(new HICON((void*)stale));
         }
     }

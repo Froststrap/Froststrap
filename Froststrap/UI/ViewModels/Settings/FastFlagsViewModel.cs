@@ -28,7 +28,7 @@ namespace Froststrap.UI.ViewModels.Settings
         Task OpenFastFlagEditorAsync();
     }
 
-    internal class FastFlagsViewModel(
+    internal sealed class FastFlagsViewModel(
         IFastFlagsService flagsService,
         ISettingsService settingsService,
         IDialogService dialogService) : NotifyPropertyChangedViewModel
@@ -270,16 +270,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool GetFlagAsBool(string flagKey, string falseValue = "False")
-        {
-            return _flagsService.GetPreset(flagKey) != falseValue;
-        }
-
-        public void SetFlagFromBool(string flagKey, bool value, string falseValue = "False")
-        {
-            _flagsService.SetPreset(flagKey, value ? null : falseValue);
-        }
-
         public bool ResetConfiguration
         {
             get => _preResetFlags is not null;
@@ -305,7 +295,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
     }
 
-    internal class DefaultFastFlagsService : IFastFlagsService
+    internal sealed class DefaultFastFlagsService : IFastFlagsService
     {
         public string? GetPreset(string key) => App.FastFlags?.GetPreset(key);
 
@@ -334,7 +324,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
     }
 
-    internal class DefaultSettingsService : ISettingsService
+    internal sealed class DefaultSettingsService : ISettingsService
     {
         public bool UseFastFlagManager
         {
@@ -343,7 +333,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
     }
 
-    internal class DefaultDialogService : IDialogService
+    internal sealed class DefaultDialogService : IDialogService
     {
         public Task OpenFastFlagEditorAsync()
         {

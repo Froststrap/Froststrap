@@ -4,6 +4,7 @@
 
 using NLog;
 using Avalonia;
+using Avalonia.Media.Fonts;
 using Velopack;
 using Froststrap;
 using Froststrap.Backend;
@@ -39,12 +40,18 @@ sealed partial class Program
     {
         AppInitializer.InitializeNativeResolvers();
 
-        VelopackApp.Build()
-            .SetAutoApplyOnStartup(false)
-            .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
-            .OnAfterUpdateFastCallback(v => UriHandler.RegisterProtocolHandlers())
-            .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers())
-            .Run();
+        var velopackBuilder = VelopackApp.Build()
+            .SetAutoApplyOnStartup(false);
+
+        if (OperatingSystem.IsWindows())
+        {
+            velopackBuilder = velopackBuilder
+                .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
+                .OnAfterUpdateFastCallback(v => UriHandler.RegisterProtocolHandlers())
+                .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers());
+        }
+
+        velopackBuilder.Run();
 
         // shim to convert old args to new ones
         string[] launchArgs = args.Length == 0 ? [] : LegacyArgs.Normalize(args);
@@ -110,7 +117,7 @@ sealed partial class Program
         try
         {
 #if __APPLE__
-            NativeNotify.Init();
+            NativeNotify.Init(ProjectInfo.BundleId);
 #endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
@@ -132,11 +139,18 @@ sealed partial class Program
     {
         var builder = AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .WithInterFont()
+            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
+                new EmbeddedFontCollection(
+                    new Uri("fonts:Froststrap", UriKind.Absolute),
+                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
 #if DEBUG
             .WithDeveloperTools()
 #endif
             .LogToTrace();
+
+#if DEBUG
+        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
+#endif
 
         if (OperatingSystem.IsMacOS())
             builder = builder.With(new AvaloniaNativePlatformOptions

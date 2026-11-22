@@ -9,14 +9,16 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
+using System.Security.Cryptography;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    internal partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
+    internal sealed partial class CommunityModsViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private List<CommunityMod> _allMods = [];
         private CancellationTokenSource? _searchCts;
         private bool _disposed;
+        private EventHandler? _remoteDataHandler;
 
         public event EventHandler? OpenModsEvent;
         public event EventHandler? OpenModGeneratorEvent;
@@ -72,7 +74,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         public CommunityModsViewModel()
         {
-            App.RemoteData.Subscribe(async (_, _) => await RefreshModsAsync());
+            _remoteDataHandler = async (_, _) => await RefreshModsAsync();
+            App.RemoteData.Subscribe(_remoteDataHandler);
         }
 
         [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
@@ -112,7 +115,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 HasError = true;
                 ErrorMessage = $"Failed to load mods: {ex.Message}";
-                App.Logger.Error($"Unhandled exception: {ex}");
+                App.Logger.Error(ex, "Failed to refresh community mods");
             }
             finally { IsLoading = false; }
         }
@@ -166,11 +169,21 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 mod.IsDownloading = true;
                 Directory.CreateDirectory(Path.GetDirectoryName(tempFile)!);
 
+                if (string.IsNullOrWhiteSpace(mod.Sha256))
+                    throw new InvalidOperationException($"Refusing to install '{mod.Name}' because the catalog has no checksum for it");
+
                 var progress = new Progress<double>(p => mod.DownloadProgress = p);
                 await DownloadFileAsync(mod.DownloadUrl, tempFile, progress);
+                await VerifyDownloadAsync(tempFile, mod.Sha256);
 
                 string baseName = mod.Name;
                 string finalName = baseName;
+
+                // the name comes from the remote catalog and is used as a folder name that may get
+                // deleted below, so it has to be a plain name inside the target folder
+                string targetRoot = mod.IsCustomTheme ? Paths.CustomThemes : Paths.Modifications;
+                if (!Paths.TryGetChildDirectory(targetRoot, baseName, out _))
+                    throw new InvalidOperationException($"Refusing to install community item with invalid name '{baseName}'");
 
                 if (mod.IsCustomTheme)
                 {
@@ -198,6 +211,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
 
                     await ExtractZipAsync(tempFile, themePath);
+                    ThemeEditorWorkspace.RemoveEditorConfiguration(themePath);
 
                     App.Settings.Prop.SelectedCustomTheme = finalName;
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
@@ -287,7 +301,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error($"Unhandled exception: {ex.Message}");
+                App.Logger.Error(ex, "Failed to open mod info dialog");
             }
             finally
             {
@@ -372,9 +386,24 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
+        private static async Task VerifyDownloadAsync(string path, string expectedSha256)
+        {
+            string actualSha256;
+
+            await using (var stream = File.OpenRead(path))
+                actualSha256 = Convert.ToHexString(await SHA256.HashDataAsync(stream));
+
+            if (!actualSha256.Equals(expectedSha256.Trim(), StringComparison.OrdinalIgnoreCase))
+                throw new ChecksumFailedException($"The downloaded file does not match the catalog checksum\n\nExpected: {expectedSha256}\nGot: {actualSha256}");
+        }
+
         private static async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
         {
-            using var response = await App.HttpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
+            var uri = new Uri(url);
+            if (uri.Scheme != Uri.UriSchemeHttps)
+                throw new InvalidOperationException($"Refusing to download from a non-HTTPS URL: {url}");
+
+            using var response = await App.HttpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
 
@@ -398,13 +427,19 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;
 
             if (disposing)
             {
+                if (_remoteDataHandler != null)
+                {
+                    App.RemoteData.Unsubscribe(_remoteDataHandler);
+                    _remoteDataHandler = null;
+                }
+
                 _searchCts?.Cancel();
                 _searchCts?.Dispose();
                 _searchCts = null;

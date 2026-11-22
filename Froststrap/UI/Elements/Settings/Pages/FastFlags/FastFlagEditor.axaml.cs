@@ -11,16 +11,16 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Elements.Dialogs;
+using Froststrap.UI.Utility;
 using LucideAvalonia.Enum;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
-    internal partial class FastFlagEditor : UserControl, INotifyPropertyChanged, IDisposable
+    internal sealed partial class FastFlagEditor : UserControl, INotifyPropertyChanged, IDisposable
     {
-        private readonly ObservableCollection<FastFlag> _fastFlagList = [];
+        private readonly ResettableObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
         private bool _disposed;
         private string _searchFilter = string.Empty;
@@ -36,10 +36,10 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         public new event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value))
                 return false;
@@ -72,26 +72,19 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         {
             if (_dataGrid is null) return;
 
-            _fastFlagList.Clear();
+            var presetFlags = FastFlagManager.PresetFlags.Values.ToHashSet(StringComparer.Ordinal);
 
-            var presetFlags = FastFlagManager.PresetFlags.Values;
-
-            foreach (var pair in App.FastFlags.Prop.OrderBy(x => x.Key))
-            {
-                if (!pair.Key.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                var entry = new FastFlag
+            _fastFlagList.ReplaceAll(App.FastFlags.Prop
+                .Where(pair => pair.Key.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(pair => pair.Key)
+                .Select(pair => new FastFlag
                 {
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? "",
                     Preset = presetFlags.Contains(pair.Key)
                         ? LucideIconNames.CircleCheck
                         : LucideIconNames.CircleX
-                };
-
-                _fastFlagList.Add(entry);
-            }
+                }));
 
             _dataGrid.ItemsSource ??= _fastFlagList;
 
@@ -351,7 +344,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Count > 0))
+            if (!(_fastFlagList.Count > 0 || App.FastFlags.Prop.Count > 0))
             {
                 await Frontend.ShowMessageBox(
                     Strings.Menu_FastFlagEditor_NoFlagDelete,
@@ -853,7 +846,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (_disposed)
                 return;

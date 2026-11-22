@@ -14,7 +14,7 @@ namespace Froststrap.Cli;
         "  froststrap --studio \"place.rbxl\"\n" +
         "  froststrap --settings --console",
     ShortFormAutoGenerate = CliNameAutoGenerate.None)]
-internal class FroststrapCliCommand
+internal sealed class FroststrapCliCommand
 {
     [CliOption(Name = "--settings", Description = "Open the settings window", Arity = CliArgumentArity.Zero)]
     public bool Settings { get; set; }

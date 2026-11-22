@@ -15,26 +15,10 @@ namespace Froststrap.AppData
 
         public string Directory => App.Settings.Prop.StaticDirectory ? StaticDirectory : DynamicDirectory;
 
-        public bool IsInstalled => DistributionStateManager.IsSaved && IsInstalledWith(DistributionState);
-
-        public bool IsInstalledWith(DistributionState state)
-        {
-            if (string.IsNullOrEmpty(state.VersionGuid))
-                return false;
-
-            string directory = App.Settings.Prop.StaticDirectory
-                ? StaticDirectory
-                : Path.Combine(Paths.Versions, state.VersionGuid);
-
-            return System.IO.Directory.Exists(directory);
-        }
-
         public string ExecutablePath => Path.Combine(Directory, ExecutableName);
 
         public virtual JsonManager<DistributionState> DistributionStateManager { get; } = null!;
 
         public DistributionState DistributionState => DistributionStateManager.Prop;
-
-        public IReadOnlyList<string> ModManifest => DistributionState.ModManifest;
     }
 }

@@ -16,9 +16,10 @@ let
   toolchain =
     with fenix.packages.${stdenv.system};
     combine [
-      minimal.toolchain
+      latest.cargo
+      latest.rustc
       latest.clippy
-      latest.rust-analyzer
+      latest.rustfmt
     ];
 in
 mkFragment {

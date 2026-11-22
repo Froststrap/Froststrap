@@ -11,7 +11,7 @@ using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    internal class ModsDialogService(MainWindowViewModel mainVm) : IModsDialogService
+    internal sealed class ModsDialogService(MainWindowViewModel mainVm) : IModsDialogService
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
@@ -34,7 +34,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         }
     }
 
-    internal partial class ModsPage : UserControl
+    internal sealed partial class ModsPage : UserControl
     {
         private bool _viewModelSetUp;
 
@@ -65,7 +65,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to set up mods view model");
                 CreateFallbackViewModel();
                 _viewModelSetUp = true;
             }

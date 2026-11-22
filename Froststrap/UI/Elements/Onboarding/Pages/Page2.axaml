@@ -13,7 +13,7 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:models="using:Froststrap.Models"
              xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
              xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:resources="using:Froststrap.Resources"
+             xmlns:resources="using:Froststrap.Localisation"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page2"

@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    internal class CommunityModsDialogService(MainWindowViewModel mainVm)
+    internal sealed class CommunityModsDialogService(MainWindowViewModel mainVm)
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
@@ -19,7 +19,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
-    internal partial class CommunityModsPage : UserControl
+    internal sealed partial class CommunityModsPage : UserControl
     {
         private CommunityModsDialogService? _dialogService;
 

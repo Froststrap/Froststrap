@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    internal partial class MainWindowViewModel : NotifyPropertyChangedViewModel
+    internal sealed partial class MainWindowViewModel : NotifyPropertyChangedViewModel
     {
         private bool _isNotLinux = !OperatingSystem.IsLinux();
         public bool IsNotLinux { get => _isNotLinux; }
@@ -49,7 +49,7 @@ namespace Froststrap.UI.ViewModels.About
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to open the About page");
             }
         }
 
@@ -62,7 +62,7 @@ namespace Froststrap.UI.ViewModels.About
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to open the Licenses page");
             }
         }
 
@@ -75,7 +75,7 @@ namespace Froststrap.UI.ViewModels.About
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Failed to start onboarding: ", ex);
+                App.Logger.Error(ex, "Failed to start onboarding: ");
             }
         }
     }

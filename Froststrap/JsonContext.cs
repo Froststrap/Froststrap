@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Models.RobloxApi;
-using Froststrap.UI.Elements.Editor;
 
 namespace Froststrap
 {
@@ -74,7 +73,6 @@ namespace Froststrap
     [JsonSerializable(typeof(PresenceBatchRequest))]
     [JsonSerializable(typeof(JoinGameInstanceRequest))]
     [JsonSerializable(typeof(OmniRecommendationRequest))]
-    [JsonSerializable(typeof(BootstrapperEditorWindow.CustomBootstrapperSchema.Schema))]
     internal partial class JsonContext : JsonSerializerContext
     {
     }

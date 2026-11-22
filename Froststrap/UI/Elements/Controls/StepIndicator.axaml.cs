@@ -10,7 +10,7 @@ using Avalonia.Layout;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    internal partial class StepIndicator : UserControl
+    internal sealed partial class StepIndicator : UserControl
     {
         public static readonly StyledProperty<int> PageCountProperty =
             AvaloniaProperty.Register<StepIndicator, int>(nameof(PageCount), 3);

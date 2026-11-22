@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 using System.Runtime.Versioning;
 using Microsoft.Win32;
 
@@ -16,7 +20,7 @@ namespace Froststrap
         static readonly IHandler? Handler =
             OperatingSystem.IsWindows() ? new WindowsHandler() :
             OperatingSystem.IsLinux() ? new LinuxHandler() :
-            null; // macOS registers through the app bundle's Info.plist
+            null; // macOS registers through other methods.
 
         public static void RegisterProtocolHandlers() => Safely(() => Handler?.Register());
 
@@ -28,8 +32,7 @@ namespace Froststrap
                 Handler.Register();
         });
 
-        // Velopack no likey likey excptions in install/uninstall phase
-        // So let's handle it properly
+        // Velopack doesn't like exceptions in install/uninstall phase- so handle it properly
         static void Safely(Action action)
         {
             try { action(); }

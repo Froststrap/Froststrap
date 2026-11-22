@@ -2,30 +2,32 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.Models.SettingTasks
+namespace Froststrap.Models.SettingTasks;
+
+internal sealed class ShortcutTask : BoolBaseTask
 {
-    internal class ShortcutTask : BoolBaseTask
+    private readonly string _shortcutPath;
+
+    private readonly string _exeFlags;
+
+    public ShortcutTask(string name, string lnkFolder, string lnkName, string exeFlags = "") : base("Shortcut", name)
     {
-        private readonly string _shortcutPath;
+        _shortcutPath = Path.Combine(lnkFolder, lnkName);
+        _exeFlags = exeFlags;
 
-        private readonly string _exeFlags;
+        OriginalState = File.Exists(Shortcut.ResolvePath(_shortcutPath));
+    }
 
-        public ShortcutTask(string name, string lnkFolder, string lnkName, string exeFlags = "") : base("Shortcut", name)
-        {
-            _shortcutPath = Path.Combine(lnkFolder, lnkName);
-            _exeFlags = exeFlags;
+    public static ShortcutTask ForLaunch(LaunchMode mode, string label) =>
+        new(mode.ToString(), Paths.Desktop, $"{label}.lnk", LaunchEntry.GetCliArgs(mode));
 
-            OriginalState = File.Exists(Shortcut.ResolvePath(_shortcutPath));
-        }
+    public override void Execute()
+    {
+        if (NewState)
+            _ = Shortcut.Create(Paths.Process, _exeFlags, _shortcutPath);
+        else
+            Shortcut.Delete(_shortcutPath);
 
-        public override void Execute()
-        {
-            if (NewState)
-                _ = Shortcut.Create(Paths.Process, _exeFlags, _shortcutPath);
-            else
-                Shortcut.Delete(_shortcutPath);
-
-            OriginalState = NewState;
-        }
+        OriginalState = NewState;
     }
 }

@@ -4,12 +4,11 @@
 
 namespace Froststrap.UI.ViewModels.About
 {
-    internal class AboutViewModel : NotifyPropertyChangedViewModel
+    internal sealed class AboutViewModel : NotifyPropertyChangedViewModel
     {
         public static string Version => $"v{App.Version}";
         public static BuildMetadataAttribute BuildMetadata => App.BuildMetadata;
 
         public static string BuildTimestamp => BuildMetadata.LocalTimestamp.ToFriendlyString();
-        public static string BuildCommitHashUrl => $"https://github.com/{App.ProjectRepository}/commit/{BuildMetadata.CommitHash}";
     }
 }

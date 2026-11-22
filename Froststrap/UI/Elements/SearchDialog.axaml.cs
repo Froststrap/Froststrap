@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.UI.Elements;
 
-internal partial class SearchDialog : UserControl
+internal sealed partial class SearchDialog : UserControl
 {
     private SearchBarViewModel? _viewModel;
 

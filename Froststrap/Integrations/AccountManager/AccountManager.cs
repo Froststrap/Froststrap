@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 
 namespace Froststrap.Integrations.AccountManager
 {
-    internal class AccountManager
+    internal sealed class AccountManager
     {
         private const string AccountsFile = "AccountManager.json";
 
@@ -20,8 +20,6 @@ namespace Froststrap.Integrations.AccountManager
         public event Action<AccountManagerAccount?>? ActiveAccountChanged;
 
         public AccountManagerAccount? ActiveAccount { get; private set; }
-        public long CurrentPlaceId { get; set; }
-        public string CurrentServerInstanceId { get; set; } = "";
 
         public static AccountManager Shared { get; } = new AccountManager();
         public IReadOnlyList<AccountManagerAccount> Accounts => _accounts;
@@ -67,7 +65,7 @@ namespace Froststrap.Integrations.AccountManager
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load accounts");
             }
         }
 
@@ -173,7 +171,7 @@ namespace Froststrap.Integrations.AccountManager
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to save accounts");
             }
         }
 
@@ -235,20 +233,6 @@ namespace Froststrap.Integrations.AccountManager
         }
 
         public void AddAccount(AccountManagerAccount account) => AddOrUpdateAccount(account, out _);
-
-        public async Task<bool> RefreshAccountInfoAsync(AccountManagerAccount account)
-        {
-            string? cookie = GetRoblosecurityForUser(account.UserId);
-            if (string.IsNullOrEmpty(cookie))
-                return false;
-
-            var info = await RobloxApiService.GetAccountInfoFromCookieAsync(cookie);
-            if (info == null || info.UserId != account.UserId)
-                return false;
-
-            AddOrUpdateAccount(info, out _);
-            return true;
-        }
 
         public bool RemoveAccount(AccountManagerAccount account)
         {

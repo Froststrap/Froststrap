@@ -10,7 +10,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    internal partial class QuickSignCodeDialog : AvaloniaWindow
+    internal sealed partial class QuickSignCodeDialog : AvaloniaWindow
     {
         public bool SignInSuccessful { get; private set; }
         private DispatcherTimer? _autoCloseTimer;
@@ -20,7 +20,7 @@ namespace Froststrap.UI.Elements.Dialogs
             InitializeComponent();
             SignInSuccessful = false;
 
-            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+            StatusText.Text = Strings.Menu_QuickSignIn_Waiting;
         }
 
         public void StartNewSignIn(string code)
@@ -32,7 +32,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             CodeTextBox.Text = code ?? string.Empty;
             CodeBox.IsVisible = true;
-            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+            StatusText.Text = Strings.Menu_QuickSignIn_Waiting;
 
             if (!IsVisible)
             {
@@ -74,7 +74,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     {
                         Dispatcher.UIThread.Post(() =>
                         {
-                            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
+                            StatusText.Text = Strings.Menu_QuickSignIn_Waiting;
                         });
                     }, TaskScheduler.Default);
                 }

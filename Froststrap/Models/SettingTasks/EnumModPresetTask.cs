@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class EnumModPresetTask<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T> : EnumBaseTask<T> where T : struct, Enum
+    internal sealed class EnumModPresetTask<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] T> : EnumBaseTask<T> where T : struct, Enum
     {
         private readonly Dictionary<T, Dictionary<string, ModPresetFileData>> _fileDataMap = [];
 

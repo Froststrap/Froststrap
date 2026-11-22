@@ -6,7 +6,7 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-internal partial class LinuxSettingsPage : UserControl
+internal sealed partial class LinuxSettingsPage : UserControl
 {
     public LinuxSettingsPage()
     {

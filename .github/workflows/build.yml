@@ -156,9 +156,14 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ubuntu:22.04
+      # the container's default DNS has been failing to resolve archive.ubuntu.com
+      options: --dns 1.1.1.1 --dns 8.8.8.8
     steps:
       - name: Install system dependencies
         run: |
+          # GitHub's Azure mirror, with retries, since archive.ubuntu.com has been unreliable
+          sed -i 's#http://\(archive\|security\).ubuntu.com#http://azure.archive.ubuntu.com#g' /etc/apt/sources.list
+          printf 'Acquire::Retries "5";\nAcquire::http::Timeout "30";\n' > /etc/apt/apt.conf.d/80-retries
           apt-get update
           apt-get install -y \
             git \

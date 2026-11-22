@@ -4,7 +4,7 @@
 
 namespace Froststrap.UI.ViewModels.Onboarding
 {
-    internal class Page4ViewModel : NotifyPropertyChangedViewModel
+    internal sealed class Page4ViewModel : NotifyPropertyChangedViewModel
     {
         private List<string> _availableRegions = [];
         private bool _isLoadingRegions;
@@ -102,7 +102,7 @@ namespace Froststrap.UI.ViewModels.Onboarding
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex);
+                App.Logger.Error(ex, "Failed to load available regions");
 
                 var stale = await LoadDatacentersFromCacheAsync(allowExpired: true);
                 if (stale != null)

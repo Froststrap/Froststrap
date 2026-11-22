@@ -6,14 +6,14 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    internal class LicenseItem
+    internal sealed class LicenseItem
     {
         public string Header { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
     }
 
-    internal class LicensesViewModel : NotifyPropertyChangedViewModel
+    internal sealed class LicensesViewModel : NotifyPropertyChangedViewModel
     {
         public ObservableCollection<LicenseItem> Licenses { get; } = [];
 
@@ -64,13 +64,6 @@ namespace Froststrap.UI.ViewModels.About
                 Header = "AnimatedImage",
                 Description = Strings.Menu_About_Licenses_Apache,
                 Url = "https://github.com/whistyun/AnimatedImage"
-            });
-
-            Licenses.Add(new LicenseItem
-            {
-                Header = "Avalonia Edit",
-                Description = Strings.Menu_About_Licenses_MIT,
-                Url = "https://github.com/AvaloniaUI/AvaloniaEdit"
             });
 
             Licenses.Add(new LicenseItem

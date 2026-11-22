@@ -4,7 +4,7 @@
 
 namespace Froststrap.Utility
 {
-    internal class FixedSizeList<T>(int size) : List<T>
+    internal sealed class FixedSizeList<T>(int size) : List<T>
     {
         public int MaxSize { get; } = size;
 

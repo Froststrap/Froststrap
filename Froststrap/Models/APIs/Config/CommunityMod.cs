@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models.APIs.Config
 {
-    internal partial class CommunityMod : NotifyPropertyChangedViewModel
+    internal sealed partial class CommunityMod : NotifyPropertyChangedViewModel
     {
         [JsonPropertyName("id")]
         public string Id { get; set; } = null!;
@@ -17,6 +17,9 @@ namespace Froststrap.Models.APIs.Config
 
         [JsonPropertyName("download")]
         public string DownloadUrl { get; set; } = null!;
+
+        [JsonPropertyName("sha256")]
+        public string? Sha256 { get; set; }
 
         [JsonPropertyName("gradient")]
         public List<GradientStop>? GradientStops { get; set; }
@@ -138,7 +141,7 @@ namespace Froststrap.Models.APIs.Config
             }
             catch (Exception ex)
             {
-                App.Logger.Error("Unhandled exception: ", ex.Message);
+                App.Logger.Error(ex, "Failed to load community mod thumbnail");
             }
         }
     }

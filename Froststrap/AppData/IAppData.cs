@@ -2,34 +2,25 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-namespace Froststrap.AppData
+namespace Froststrap.AppData;
+
+internal interface IAppData
 {
-    internal interface IAppData
-    {
-        string ProductName { get; }
+    string ProductName { get; }
 
-        string BinaryType { get; }
+    string BinaryType { get; }
 
-        string RegistryName { get; }
+    string ExecutableName { get; }
 
-        string ProcessName { get; }
+    bool IsBundle { get; }
 
-        string ExecutableName { get; }
+    string StaticDirectory { get; }
 
-        string StaticDirectory { get; }
+    string Directory { get; }
 
-        string DynamicDirectory { get; }
+    string ExecutablePath { get; }
 
-        string Directory { get; }
+    JsonManager<DistributionState> DistributionStateManager { get; }
 
-        bool IsInstalled { get; }
-
-        string ExecutablePath { get; }
-
-        JsonManager<DistributionState> DistributionStateManager { get; }
-
-        DistributionState DistributionState { get; }
-
-        IReadOnlyList<string> ModManifest { get; }
-    }
+    DistributionState DistributionState { get; }
 }

@@ -12,7 +12,7 @@ using Froststrap.UI.ViewModels.About;
 
 namespace Froststrap.UI.Elements.About
 {
-    internal partial class MainWindow : Base.AvaloniaWindow
+    internal sealed partial class MainWindow : Base.AvaloniaWindow
     {
         private readonly MainWindowViewModel? _viewModel;
 

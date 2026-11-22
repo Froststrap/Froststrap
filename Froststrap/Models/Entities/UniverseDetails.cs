@@ -7,7 +7,7 @@ namespace Froststrap.Models.Entities
     /// <summary>
     /// Explicit loading. Load from cache before and after a fetch.
     /// </summary>
-    internal class UniverseDetails
+    internal sealed class UniverseDetails
     {
         private static List<UniverseDetails> Cache { get; set; } = [];
 

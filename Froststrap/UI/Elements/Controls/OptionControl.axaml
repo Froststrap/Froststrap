@@ -7,7 +7,7 @@ SPDX-License-Identifier: MPL-2.0
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:controls="using:Froststrap.UI.Elements.Controls"
         xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia">
 
     <Style Selector="controls|OptionControl">
@@ -40,7 +40,7 @@ SPDX-License-Identifier: MPL-2.0
                                                     VerticalAlignment="Center"
                                                     Margin="6,0,0,0">
                                     <ic:Lucide Icon="CircleQuestionMark"
-                                               Width="16" Height="16"
+                                               Width="12" Height="12"
                                                StrokeBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=controls:Hyperlink}}" />
                                 </controls:Hyperlink>
                             </WrapPanel>

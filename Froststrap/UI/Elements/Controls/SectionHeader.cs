@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.Controls
 {
     // Standard settings page section heading: space above, bold title, optional markdown description.
     // Set Margin="0,0,0,4" on the first header of a page, since the page already has its own padding.
-    internal class SectionHeader : StackPanel
+    internal sealed class SectionHeader : StackPanel
     {
         public static readonly StyledProperty<string?> TitleProperty =
             AvaloniaProperty.Register<SectionHeader, string?>(nameof(Title));

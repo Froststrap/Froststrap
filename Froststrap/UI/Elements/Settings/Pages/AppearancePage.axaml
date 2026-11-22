@@ -8,13 +8,13 @@ SPDX-License-Identifier: MPL-2.0
     x:Class="Froststrap.UI.Elements.Settings.Pages.AppearancePage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="using:Froststrap.Resources"
+    xmlns:resources="using:Froststrap.Localisation"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
@@ -201,6 +201,47 @@ SPDX-License-Identifier: MPL-2.0
                                 VerticalAlignment="Center" />
                         </Grid>
                     </StackPanel>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Menu_Appearance_AccentColor_Title}"
+                Description="{x:Static resources:Strings.Menu_Appearance_AccentColor_Description}"
+                IsExpanded="{Binding AccentColorExpanded, Mode=OneWay}"
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ComboBox
+                        MinWidth="200"
+                        ItemsSource="{Binding AccentColorModes}"
+                        SelectedItem="{Binding AccentColorMode, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Spacing="16" IsVisible="{Binding IsCustomAccentColor}">
+                    <TextBlock
+                        Text="{x:Static resources:Strings.Menu_Appearance_AccentColor_Custom}"
+                        FontWeight="Bold" />
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Border
+                            Width="32"
+                            CornerRadius="4"
+                            Background="{Binding CustomAccentColor}"
+                            VerticalAlignment="Stretch" />
+                        <TextBox
+                            Grid.Column="1"
+                            Text="{Binding CustomAccentColor}"
+                            VerticalContentAlignment="Center" />
+                        <Button
+                            Grid.Column="2"
+                            Content="{x:Static resources:Strings.Common_ColorPicker}"
+                            Command="{Binding OpenAccentColorPickerCommand}"
+                            CommandParameter="{Binding $self}" />
+                    </Grid>
                 </StackPanel>
             </controls:CardExpander>
 
@@ -433,7 +474,7 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
                         <Grid
-                            ColumnDefinitions="*,*,*"
+                            ColumnDefinitions="*,*,*,*"
                             ColumnSpacing="8">
                             <controls:IconButton
                                 Grid.Column="0"
@@ -450,6 +491,12 @@ SPDX-License-Identifier: MPL-2.0
                                 HorizontalAlignment="Stretch" />
                             <controls:IconButton
                                 Grid.Column="2"
+                                Icon="Play"
+                                Content="{x:Static resources:Strings.Menu_Appearance_Preview}"
+                                Command="{Binding PreviewCustomThemeCommand}"
+                                HorizontalAlignment="Stretch" />
+                            <controls:IconButton
+                                Grid.Column="3"
                                 Icon="ArrowRightFromLine"
                                 Content="{x:Static resources:Strings.Common_Export}"
                                 Command="{Binding ExportCustomThemeCommand}"

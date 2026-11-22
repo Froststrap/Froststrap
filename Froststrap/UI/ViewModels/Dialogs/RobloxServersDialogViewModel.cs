@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, IDisposable
+internal sealed class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, IDisposable
 {
     private readonly long _placeId;
     private readonly long _universeId;
@@ -303,7 +303,7 @@ internal class RobloxServersDialogViewModel : NotifyPropertyChangedViewModel, ID
         GC.SuppressFinalize(this);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (_disposed) return;
 

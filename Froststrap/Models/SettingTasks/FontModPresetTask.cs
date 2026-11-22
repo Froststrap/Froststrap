@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models.SettingTasks
 {
-    internal class FontModPresetTask : StringBaseTask
+    internal sealed class FontModPresetTask : StringBaseTask
     {
         private const string CustomFontAssetId = "rbxasset://fonts/CustomFont.ttf";
         private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
@@ -65,15 +65,6 @@ namespace Froststrap.Models.SettingTasks
             new() { Name = "Bold", Weight = 700, Style = "normal", AssetId = CustomFontAssetId },
             new() { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = CustomFontAssetId }
         ];
-
-        public static string? GetFileHash()
-        {
-            if (!File.Exists(Paths.CustomFont))
-                return null;
-
-            using var fileStream = File.OpenRead(Paths.CustomFont);
-            return FastHash.FromStream(fileStream);
-        }
 
         public FontModPresetTask() : base("ModPreset", "TextFont")
         {

@@ -8,7 +8,7 @@ using System.Xml.XPath;
 
 namespace Froststrap;
 
-internal class GBSEditor
+internal sealed class GBSEditor
 {
     public XDocument? Document { get; set; } = null!;
 
@@ -83,11 +83,7 @@ internal class GBSEditor
 
     public bool Loaded { get; set; }
 
-    public static string FileLocation => OperatingSystem.IsLinux() ?
-            Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :
-                OperatingSystem.IsMacOS() ?
-                    Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
-                        Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+    public static string FileLocation => App.Clients.Player.Install.GlobalBasicSettingsPath!;
 
     private string? _savedHash;
 
@@ -294,7 +290,7 @@ internal class GBSEditor
         }
         catch (Exception ex)
         {
-            App.Logger.Error($"Failed to set read-only on {FileLocation}", ex);
+            App.Logger.Error(ex, $"Failed to set read-only on {FileLocation}");
         }
     }
 
@@ -329,7 +325,7 @@ internal class GBSEditor
         }
         catch (Exception ex)
         {
-            App.Logger.Error($"Failed to create template at {FileLocation}", ex);
+            App.Logger.Error(ex, $"Failed to create template at {FileLocation}");
         }
     }
 
@@ -351,7 +347,7 @@ internal class GBSEditor
         }
         catch (Exception ex)
         {
-            App.Logger.Error("Failed to load, recreating template...", ex);
+            App.Logger.Error(ex, "Failed to load, recreating template...");
 
             if (File.Exists(FileLocation))
             {
@@ -429,7 +425,7 @@ internal class GBSEditor
         App.Logger.Warn($"Removed {strayRoot.Count + badNames.Count} malformed element(s) left over from an older editor build.");
     }
 
-    public virtual bool Save()
+    public bool Save()
     {
         App.Logger.Info($"Saving to {FileLocation}...");
 

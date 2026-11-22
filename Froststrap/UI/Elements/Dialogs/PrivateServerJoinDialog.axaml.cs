@@ -8,7 +8,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs;
 
-internal partial class PrivateServerJoinDialog : Base.AvaloniaWindow
+internal sealed partial class PrivateServerJoinDialog : Base.AvaloniaWindow
 {
     protected override bool ApplyTopPadding => false;
 

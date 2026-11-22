@@ -7,7 +7,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal class PresetModsDialogService(MainWindowViewModel mainVm)
+    internal sealed class PresetModsDialogService(MainWindowViewModel mainVm)
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
@@ -16,7 +16,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
-    internal partial class ModsPresetsPage : UserControl
+    internal sealed partial class ModsPresetsPage : UserControl
     {
         private PresetModsDialogService? _dialogService;
 
