@@ -45,6 +45,14 @@ SPDX-License-Identifier: MPL-2.0
                     Description="{x:Static resources:Strings.Menu_Diagnostics_RobloxLogs_Description}"
                     Command="{Binding OpenRobloxLogsCommand}" />
 
+                <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Diagnostics_Clients_Title}" />
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Common_Player}"
+                    Description="{Binding PlayerClient}" />
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Common_Studio}"
+                    Description="{Binding StudioClient}" />
+
                 <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Diagnostics_Screenshot_Title}" />
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Diagnostics_Screenshot_Header}"

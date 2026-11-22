@@ -49,6 +49,8 @@ namespace Froststrap
 
             if (_current.RobloxDomain is not null)
                 App.Settings.Prop.RobloxDomain = _current.RobloxDomain;
+
+            App.LoadClients();
         }
 
         private static IDistribution GetDistributionFromType(DistributorType distributorType)

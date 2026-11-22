@@ -9,6 +9,8 @@ namespace Froststrap.Integrations.AccountManager
 {
     internal sealed class AvatarService
     {
+        private const int MaxCachedAvatars = 512;
+
         private readonly Lock _cacheLock = new();
         private readonly Dictionary<long, string?> _avatarUrlCache = [];
 
@@ -60,6 +62,8 @@ namespace Froststrap.Integrations.AccountManager
                                     _avatarUrlCache[item.TargetId] = item.ImageUrl;
                                 }
                             }
+
+                            TrimAvatarCache();
                         }
                     }
                 }
@@ -76,6 +80,14 @@ namespace Froststrap.Integrations.AccountManager
         {
             lock (_cacheLock)
                 return _avatarUrlCache.TryGetValue(userId, out var url) ? url : null;
+        }
+
+        private void TrimAvatarCache()
+        {
+            if (_avatarUrlCache.Count <= MaxCachedAvatars)
+                return;
+
+            _avatarUrlCache.Clear();
         }
     }
 }

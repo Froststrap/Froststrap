@@ -1,0 +1,16 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="Froststrap.UI.AppThemes.ResourceDictionaries.Dark">
+
+    <SolidColorBrush x:Key="NormalDarkAndLightBackground"  Color="#01000000" />
+
+    <SolidColorBrush x:Key="ApplicationBackgroundColor"    Color="#01000000" />
+
+    <SolidColorBrush x:Key="NotificationBackgroundColor"   Color="#2D2D2D" />
+</ResourceDictionary>

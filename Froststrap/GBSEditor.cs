@@ -97,11 +97,7 @@ internal sealed class GBSEditor
 
     public event EventHandler? LoadedChanged;
 
-    public static string FileLocation => OperatingSystem.IsLinux() ?
-            Path.Combine(Paths.SoberData, "appData", "GlobalBasicSettings_13.xml") :
-                OperatingSystem.IsMacOS() ?
-                    Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
-                        Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+    public static string FileLocation => App.Clients.Player.Install.GlobalBasicSettingsPath!;
 
     private string? _savedHash;
 

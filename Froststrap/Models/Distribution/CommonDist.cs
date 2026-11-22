@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.AppData;
-
 namespace Froststrap.Models.Distribution
 {
     internal abstract class CommonDist : IDistribution
@@ -18,8 +16,5 @@ namespace Froststrap.Models.Distribution
             "https://setup-cfly.rbxcdn.com",
             "https://s3.amazonaws.com/setup.roblox.com"
         ];
-
-        public abstract IAppData RobloxPlayerData { get; }
-        public abstract IAppData RobloxStudioData { get; }
     }
 }

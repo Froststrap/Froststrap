@@ -36,25 +36,5 @@ namespace Froststrap.Utility
 
             return url;
         }
-
-        public static string BuildPrivateGamePlaceLauncher(long placeId, string accessCode)
-        {
-            string url = PlacelauncherBaseUrl;
-            url += "?request=RequestPrivateGame&placeId=";
-            url += placeId;
-            url += "&accessCode=";
-            url += accessCode;
-
-            return url;
-        }
-
-        public static string BuildFollowUserPlaceLauncher(long userId)
-        {
-            string url = PlacelauncherBaseUrl;
-            url += "?request=RequestFollowUser&userId=";
-            url += userId;
-
-            return url;
-        }
     }
 }

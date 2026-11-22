@@ -4,658 +4,432 @@
 
 using Froststrap.RobloxInterfaces;
 using System.Net.WebSockets;
-using System.Runtime.Versioning;
-using System.Security.Cryptography;
+using Froststrap.Clients.Contracts;
 
-namespace Froststrap
+namespace Froststrap;
+
+internal sealed class CookiesManager : IDisposable
 {
-    internal sealed class CookiesManager : IDisposable
+    private CookieState _state = CookieState.Unknown;
+
+    public EventHandler<CookieState>? StateChanged;
+    public CookieState State
     {
-        private CookieState _state = CookieState.Unknown;
-
-        public EventHandler<CookieState>? StateChanged;
-        public CookieState State
+        get => _state;
+        set
         {
-            get => _state;
-            set
+            _state = value;
+            StateChanged?.Invoke(this, value);
+        }
+    }
+    public bool Loaded => Enabled && State == CookieState.Success;
+    private static bool Enabled => App.Settings.Prop.AllowCookieAccess;
+
+    public AuthenticatedUser? CurrentUser { get; private set; }
+
+    public bool IsAuthenticated => CurrentUser is not null;
+
+    private event EventHandler? AccountChanged;
+
+    private const int RefreshDelayMs = 1500;
+
+    private readonly SemaphoreSlim _loadLock = new(1, 1);
+    private FileSystemWatcher? _watcher;
+    private string _watchedPath = string.Empty;
+    private CancellationTokenSource? _debounce;
+    private DateTime _stampWrite;
+    private long _stampLength = -1;
+    private bool _hasLoaded;
+
+    public void WatchAccount<T>(T subscriber, Action<T> handler) where T : class
+    {
+        var weak = new WeakReference<T>(subscriber);
+
+        AccountChanged += Wrapper;
+
+        void Wrapper(object? sender, EventArgs e)
+        {
+            if (weak.TryGetTarget(out T? target))
+                handler(target);
+            else
+                AccountChanged -= Wrapper;
+        }
+    }
+
+    private string AuthCookie = string.Empty;
+
+    private const string CsrfHeader = "x-csrf-token";
+
+    private const string TrackerCookieName = "RBXEventTrackerV2";
+
+    private string BrowserTracker = string.Empty;
+    private string _csrfToken = string.Empty;
+    public string GetAuthCookie() => AuthCookie;
+
+    public static string CookiesPath => App.Clients.Player.Cookies.CookiesPath ?? string.Empty;
+
+    public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
+    {
+        string? host = request.RequestUri?.Host;
+
+        ArgumentNullException.ThrowIfNull(host);
+
+        if (
+            !host.Equals(Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase) &&
+            !host.EndsWith("." + Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase)
+            )
+            throw new HttpRequestException($"Host must end with Roblox domain ({Deployment.RobloxDomain})");
+
+        if (!Enabled)
+            throw new InvalidOperationException("Cookie access is not enabled");
+
+        byte[]? bufferedBody = null;
+        string? contentType = null;
+
+        if (request.Content is not null)
+        {
+            bufferedBody = await request.Content.ReadAsByteArrayAsync();
+            contentType = request.Content.Headers.ContentType?.ToString();
+        }
+
+        HttpResponseMessage response = await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
+
+        if (response.StatusCode != HttpStatusCode.Forbidden
+            || !response.Headers.TryGetValues(CsrfHeader, out IEnumerable<string>? tokens)
+            || tokens.FirstOrDefault() is not string token
+            || String.IsNullOrEmpty(token)
+            || token == _csrfToken)
+            return response;
+
+        _csrfToken = token;
+
+        response.Dispose();
+
+        return await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
+    }
+
+    private async Task<HttpResponseMessage> SendAuthenticated(HttpRequestMessage request)
+    {
+        request.Headers.Remove(CsrfHeader);
+
+        if (!String.IsNullOrEmpty(_csrfToken))
+            request.Headers.Add(CsrfHeader, _csrfToken);
+
+        request.Headers.Remove("Cookie");
+        request.Headers.Add("Cookie", String.IsNullOrEmpty(BrowserTracker)
+            ? $".ROBLOSECURITY={AuthCookie}"
+            : $".ROBLOSECURITY={AuthCookie}; {TrackerCookieName}={BrowserTracker}");
+
+        return await App.HttpClient.SendAsync(request);
+    }
+
+    private static HttpRequestMessage BuildRequest(HttpRequestMessage original, byte[]? body, string? contentType)
+    {
+        var request = new HttpRequestMessage(original.Method, original.RequestUri)
+        {
+            Version = original.Version
+        };
+
+        if (body is not null)
+        {
+            var content = new ByteArrayContent(body);
+
+            if (!String.IsNullOrEmpty(contentType))
+                content.Headers.TryAddWithoutValidation("Content-Type", contentType);
+
+            request.Content = content;
+        }
+
+        foreach (KeyValuePair<string, IEnumerable<string>> header in original.Headers)
+            request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+
+        return request;
+    }
+
+    public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });
+    public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post });
+
+    public void AuthWebsocket(ClientWebSocket webSocket)
+    {
+        if (!Enabled)
+            throw new InvalidOperationException("Cookie access is not enabled");
+
+        webSocket.Options.SetRequestHeader("Cookie", $".ROBLOSECURITY={AuthCookie}");
+    }
+
+    public async Task<bool> EnsureLoadedAsync()
+    {
+        if (!Enabled)
+            return false;
+
+        if (!Loaded)
+            await Task.Run(LoadCookies);
+
+        return Loaded;
+    }
+
+    public async Task<AuthenticatedUser?> GetAuthenticated()
+    {
+        try
+        {
+            Uri apiUrl = UrlBuilder.BuildApiUrl("users", "v1/users/authenticated");
+            HttpResponseMessage response = await AuthGet(apiUrl);
+            response.EnsureSuccessStatusCode();
+
+            string content = await response.Content.ReadAsStringAsync();
+            return JsonHelper.Deserialize<AuthenticatedUser>(content);
+        }
+        catch (HttpRequestException ex)
+        {
+            App.Logger.Error($"Failed to get authenticated user: {ex.Message}");
+        }
+
+        return null;
+    }
+
+    private async Task<AuthenticatedUser?> GetAuthenticatedWithRetry()
+    {
+        for (int attempt = 0; attempt < 3; attempt++)
+        {
+            AuthenticatedUser? user = await GetAuthenticated();
+
+            if (user is not null && user.Id != 0)
+                return user;
+
+            if (attempt < 2)
             {
-                _state = value;
-                StateChanged?.Invoke(this, value);
+                App.Logger.Warn($"Could not resolve the signed-in account (attempt {attempt + 1}/3), retrying");
+                await Task.Delay(250 * (attempt + 1));
             }
         }
-        public bool Loaded => Enabled && State == CookieState.Success;
-        private static bool Enabled => App.Settings.Prop.AllowCookieAccess;
 
-        public AuthenticatedUser? CurrentUser { get; private set; }
+        return null;
+    }
 
-        public bool IsAuthenticated => CurrentUser is not null;
+    public async Task LoadCookies()
+    {
+        bool accountChanged;
 
-        private event EventHandler? AccountChanged;
+        await _loadLock.WaitAsync();
 
-        private const int RefreshDelayMs = 1500;
-
-        private readonly SemaphoreSlim _loadLock = new(1, 1);
-        private FileSystemWatcher? _watcher;
-        private string _watchedPath = string.Empty;
-        private CancellationTokenSource? _debounce;
-        private DateTime _stampWrite;
-        private long _stampLength = -1;
-        private bool _hasLoaded;
-
-        public void WatchAccount<T>(T subscriber, Action<T> handler) where T : class
+        try
         {
-            var weak = new WeakReference<T>(subscriber);
-
-            AccountChanged += Wrapper;
-
-            void Wrapper(object? sender, EventArgs e)
-            {
-                if (weak.TryGetTarget(out T? target))
-                    handler(target);
-                else
-                    AccountChanged -= Wrapper;
-            }
+            accountChanged = await LoadTracked(false);
+        }
+        finally
+        {
+            _loadLock.Release();
         }
 
-        private string AuthCookie = string.Empty;
-        private const string AuthCookieName = ".ROBLOSECURITY";
-        private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
+        if (accountChanged)
+            NotifyAccountChanged();
+    }
 
-        private const string CsrfHeader = "x-csrf-token";
+    public async Task RefreshAsync()
+    {
+        if (!Enabled || !_hasLoaded)
+            return;
 
-        private const string TrackerCookieName = "RBXEventTrackerV2";
-        private const string TrackerPattern = $@"\t{TrackerCookieName}\t(.+?)(;|$)";
+        bool accountChanged = false;
 
-        private string BrowserTracker = string.Empty;
-        private string _csrfToken = string.Empty;
-        public string GetAuthCookie() => AuthCookie;
+        await _loadLock.WaitAsync();
 
-        public static string CookiesPath => OperatingSystem.IsMacOS()
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
-            : OperatingSystem.IsLinux()
-                ? Path.Combine(Paths.Roblox, "data", "sober", "cookies")
-                : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
-
-        public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
+        try
         {
-            string? host = request.RequestUri?.Host;
+            if (!HasFileChanged())
+                return;
 
-            ArgumentNullException.ThrowIfNull(host);
-
-            if (
-                !host.Equals(Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase) &&
-                !host.EndsWith("." + Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase)
-                )
-                throw new HttpRequestException($"Host must end with Roblox domain ({Deployment.RobloxDomain})");
-
-            if (!Enabled)
-                throw new InvalidOperationException("Cookie access is not enabled");
-
-            byte[]? bufferedBody = null;
-            string? contentType = null;
-
-            if (request.Content is not null)
-            {
-                bufferedBody = await request.Content.ReadAsByteArrayAsync();
-                contentType = request.Content.Headers.ContentType?.ToString();
-            }
-
-            HttpResponseMessage response = await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
-
-            if (response.StatusCode != HttpStatusCode.Forbidden
-                || !response.Headers.TryGetValues(CsrfHeader, out IEnumerable<string>? tokens)
-                || tokens.FirstOrDefault() is not string token
-                || String.IsNullOrEmpty(token)
-                || token == _csrfToken)
-                return response;
-
-            _csrfToken = token;
-
-            response.Dispose();
-
-            return await SendAuthenticated(BuildRequest(request, bufferedBody, contentType));
+            accountChanged = await LoadTracked(true);
+        }
+        finally
+        {
+            _loadLock.Release();
         }
 
-        private async Task<HttpResponseMessage> SendAuthenticated(HttpRequestMessage request)
+        if (accountChanged)
+            NotifyAccountChanged();
+    }
+
+    private async Task<bool> LoadTracked(bool reload)
+    {
+        bool hadLoaded = _hasLoaded;
+        long previousUser = CurrentUser?.Id ?? 0;
+
+        await LoadCookiesCore(reload);
+
+        return hadLoaded && (CurrentUser?.Id ?? 0) != previousUser;
+    }
+
+    private void NotifyAccountChanged()
+    {
+        App.Logger.Info("Signed-in account changed");
+
+        AccountChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private async Task LoadCookiesCore(bool reload)
+    {
+        if (!Enabled)
         {
-            request.Headers.Remove(CsrfHeader);
-
-            if (!String.IsNullOrEmpty(_csrfToken))
-                request.Headers.Add(CsrfHeader, _csrfToken);
-
-            request.Headers.Remove("Cookie");
-            request.Headers.Add("Cookie", String.IsNullOrEmpty(BrowserTracker)
-                ? $".ROBLOSECURITY={AuthCookie}"
-                : $".ROBLOSECURITY={AuthCookie}; {TrackerCookieName}={BrowserTracker}");
-
-            return await App.HttpClient.SendAsync(request);
+            State = CookieState.NotAllowed;
+            App.Logger.Error("Cookie access not allowed");
+            return;
         }
 
-        private static HttpRequestMessage BuildRequest(HttpRequestMessage original, byte[]? body, string? contentType)
+        if (!reload && CurrentUser is not null && !string.IsNullOrEmpty(AuthCookie))
         {
-            var request = new HttpRequestMessage(original.Method, original.RequestUri)
-            {
-                Version = original.Version
-            };
-
-            if (body is not null)
-            {
-                var content = new ByteArrayContent(body);
-
-                if (!String.IsNullOrEmpty(contentType))
-                    content.Headers.TryAddWithoutValidation("Content-Type", contentType);
-
-                request.Content = content;
-            }
-
-            foreach (KeyValuePair<string, IEnumerable<string>> header in original.Headers)
-                request.Headers.TryAddWithoutValidation(header.Key, header.Value);
-
-            return request;
+            App.Logger.Error("Cookie was already loaded!");
+            return;
         }
 
-        public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });
-        public async Task<HttpResponseMessage> AuthPost(Uri? uri, HttpContent? content) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Content = content, Method = HttpMethod.Post });
+        _hasLoaded = true;
 
-        public void AuthWebsocket(ClientWebSocket webSocket)
+        StartWatching();
+        RecordStamp();
+
+        if (!File.Exists(CookiesPath))
         {
-            if (!Enabled)
-                throw new InvalidOperationException("Cookie access is not enabled");
+            if (reload)
+                Forget();
 
-            webSocket.Options.SetRequestHeader("Cookie", $".ROBLOSECURITY={AuthCookie}");
+            State = CookieState.NotFound;
+            App.Logger.Error("Cookie file not found");
+            return;
         }
 
-        public async Task<bool> EnsureLoadedAsync()
+        try
         {
-            if (!Enabled)
-                return false;
+            StoredCookies result = default;
 
-            if (!Loaded)
-                await Task.Run(LoadCookies);
-
-            return Loaded;
-        }
-
-        public async Task<AuthenticatedUser?> GetAuthenticated()
-        {
-            try
-            {
-                Uri apiUrl = UrlBuilder.BuildApiUrl("users", "v1/users/authenticated");
-                HttpResponseMessage response = await AuthGet(apiUrl);
-                response.EnsureSuccessStatusCode();
-
-                string content = await response.Content.ReadAsStringAsync();
-                return JsonHelper.Deserialize<AuthenticatedUser>(content);
-            }
-            catch (HttpRequestException ex)
-            {
-                App.Logger.Error($"Failed to get authenticated user: {ex.Message}");
-            }
-
-            return null;
-        }
-
-        private record struct CookieLoadResult(string AuthCookie, string BrowserTracker);
-
-        private async Task<AuthenticatedUser?> GetAuthenticatedWithRetry()
-        {
             for (int attempt = 0; attempt < 3; attempt++)
             {
-                AuthenticatedUser? user = await GetAuthenticated();
+                result = await App.Clients.Player.Cookies.ReadAsync();
 
-                if (user is not null && user.Id != 0)
-                    return user;
+                if (!string.IsNullOrEmpty(result.AuthCookie))
+                    break;
 
                 if (attempt < 2)
-                {
-                    App.Logger.Warn($"Could not resolve the signed-in account (attempt {attempt + 1}/3), retrying");
-                    await Task.Delay(250 * (attempt + 1));
-                }
+                    await Task.Delay(200);
             }
 
-            return null;
-        }
-
-        private static async Task<CookieLoadResult> ReadCookiesFromStore()
-        {
-            if (OperatingSystem.IsWindows())
-                return await LoadWindowsCookies();
-
-            if (OperatingSystem.IsMacOS())
-                return await LoadMacCookies();
-
-            if (OperatingSystem.IsLinux())
-                return await LoadLinuxCookies();
-
-            return default;
-        }
-
-        public async Task LoadCookies()
-        {
-            bool accountChanged;
-
-            await _loadLock.WaitAsync();
-
-            try
-            {
-                accountChanged = await LoadTracked(false);
-            }
-            finally
-            {
-                _loadLock.Release();
-            }
-
-            if (accountChanged)
-                NotifyAccountChanged();
-        }
-
-        public async Task RefreshAsync()
-        {
-            if (!Enabled || !_hasLoaded)
-                return;
-
-            bool accountChanged = false;
-
-            await _loadLock.WaitAsync();
-
-            try
-            {
-                if (!HasFileChanged())
-                    return;
-
-                accountChanged = await LoadTracked(true);
-            }
-            finally
-            {
-                _loadLock.Release();
-            }
-
-            if (accountChanged)
-                NotifyAccountChanged();
-        }
-
-        private async Task<bool> LoadTracked(bool reload)
-        {
-            bool hadLoaded = _hasLoaded;
-            long previousUser = CurrentUser?.Id ?? 0;
-
-            await LoadCookiesCore(reload);
-
-            return hadLoaded && (CurrentUser?.Id ?? 0) != previousUser;
-        }
-
-        private void NotifyAccountChanged()
-        {
-            App.Logger.Info("Signed-in account changed");
-
-            AccountChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private async Task LoadCookiesCore(bool reload)
-        {
-            if (!Enabled)
-            {
-                State = CookieState.NotAllowed;
-                App.Logger.Error("Cookie access not allowed");
-                return;
-            }
-
-            if (!reload && CurrentUser is not null && !string.IsNullOrEmpty(AuthCookie))
-            {
-                App.Logger.Error("Cookie was already loaded!");
-                return;
-            }
-
-            _hasLoaded = true;
-
-            StartWatching();
-            RecordStamp();
-
-            if (!File.Exists(CookiesPath))
+            if (string.IsNullOrEmpty(result.AuthCookie))
             {
                 if (reload)
                     Forget();
 
-                State = CookieState.NotFound;
-                App.Logger.Error("Cookie file not found");
+                State = CookieState.Invalid;
                 return;
             }
 
-            try
-            {
-                CookieLoadResult result = default;
+            AuthCookie = result.AuthCookie;
+            BrowserTracker = result.BrowserTracker;
 
-                for (int attempt = 0; attempt < 3; attempt++)
-                {
-                    result = await ReadCookiesFromStore();
+            if (!string.IsNullOrEmpty(result.BrowserTracker))
+                App.Logger.Info("Found a browser tracker");
+            else
+                App.Logger.Info("No browser tracker in the cookie store");
 
-                    if (!string.IsNullOrEmpty(result.AuthCookie))
-                        break;
+            AuthenticatedUser? user = await GetAuthenticatedWithRetry();
 
-                    if (attempt < 2)
-                        await Task.Delay(200);
-                }
-
-                if (string.IsNullOrEmpty(result.AuthCookie))
-                {
-                    if (reload)
-                        Forget();
-
-                    State = CookieState.Invalid;
-                    return;
-                }
-
-                AuthCookie = result.AuthCookie;
-                BrowserTracker = result.BrowserTracker;
-
-                if (!string.IsNullOrEmpty(result.BrowserTracker))
-                    App.Logger.Info("Found a browser tracker");
-                else
-                    App.Logger.Info("No browser tracker in the cookie store");
-
-                AuthenticatedUser? user = await GetAuthenticatedWithRetry();
-
-                CurrentUser = user;
-                State = (user != null && user.Id != 0) ? CookieState.Success : CookieState.Invalid;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error($"Failed to load cookies: {ex.Message}");
-                State = CookieState.Failed;
-                _stampLength = -1;
-            }
+            CurrentUser = user;
+            State = (user != null && user.Id != 0) ? CookieState.Success : CookieState.Invalid;
         }
-
-        public void Dispose()
+        catch (Exception ex)
         {
+            App.Logger.Error($"Failed to load cookies: {ex.Message}");
+            State = CookieState.Failed;
+            _stampLength = -1;
+        }
+    }
+
+    public void Dispose()
+    {
+        _watcher?.Dispose();
+        _debounce?.Cancel();
+        _debounce?.Dispose();
+        _loadLock.Dispose();
+
+        GC.SuppressFinalize(this);
+    }
+
+    private void Forget()
+    {
+        AuthCookie = string.Empty;
+        BrowserTracker = string.Empty;
+        CurrentUser = null;
+    }
+
+    private void RecordStamp()
+    {
+        var info = new FileInfo(CookiesPath);
+
+        _stampWrite = info.Exists ? info.LastWriteTimeUtc : default;
+        _stampLength = info.Exists ? info.Length : -1;
+    }
+
+    private bool HasFileChanged()
+    {
+        var info = new FileInfo(CookiesPath);
+
+        DateTime write = info.Exists ? info.LastWriteTimeUtc : default;
+        long length = info.Exists ? info.Length : -1;
+
+        return write != _stampWrite || length != _stampLength;
+    }
+
+    private void StartWatching()
+    {
+        try
+        {
+            string path = CookiesPath;
+            string? directory = Path.GetDirectoryName(path);
+
+            if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+                return;
+
+            if (_watcher is not null && _watchedPath == path)
+                return;
+
             _watcher?.Dispose();
-            _debounce?.Cancel();
-            _debounce?.Dispose();
-            _loadLock.Dispose();
 
-            GC.SuppressFinalize(this);
+            _watcher = new FileSystemWatcher(directory, Path.GetFileName(path))
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName | NotifyFilters.CreationTime
+            };
+
+            _watcher.Changed += (_, _) => ScheduleRefresh();
+            _watcher.Created += (_, _) => ScheduleRefresh();
+            _watcher.Deleted += (_, _) => ScheduleRefresh();
+            _watcher.Renamed += (_, _) => ScheduleRefresh();
+
+            _watcher.EnableRaisingEvents = true;
+            _watchedPath = path;
         }
-
-        private void Forget()
+        catch (Exception ex)
         {
-            AuthCookie = string.Empty;
-            BrowserTracker = string.Empty;
-            CurrentUser = null;
+            App.Logger.Warn("Failed to watch the cookie file");
+            App.Logger.Error(ex);
         }
+    }
 
-        private void RecordStamp()
-        {
-            var info = new FileInfo(CookiesPath);
+    private void ScheduleRefresh()
+    {
+        var source = new CancellationTokenSource();
 
-            _stampWrite = info.Exists ? info.LastWriteTimeUtc : default;
-            _stampLength = info.Exists ? info.Length : -1;
-        }
+        Interlocked.Exchange(ref _debounce, source)?.Cancel();
 
-        private bool HasFileChanged()
-        {
-            var info = new FileInfo(CookiesPath);
-
-            DateTime write = info.Exists ? info.LastWriteTimeUtc : default;
-            long length = info.Exists ? info.Length : -1;
-
-            return write != _stampWrite || length != _stampLength;
-        }
-
-        private void StartWatching()
+        _ = Task.Run(async () =>
         {
             try
             {
-                string path = CookiesPath;
-                string? directory = Path.GetDirectoryName(path);
-
-                if (string.IsNullOrEmpty(directory) || !Directory.Exists(directory))
-                    return;
-
-                if (_watcher is not null && _watchedPath == path)
-                    return;
-
-                _watcher?.Dispose();
-
-                _watcher = new FileSystemWatcher(directory, Path.GetFileName(path))
-                {
-                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName | NotifyFilters.CreationTime
-                };
-
-                _watcher.Changed += (_, _) => ScheduleRefresh();
-                _watcher.Created += (_, _) => ScheduleRefresh();
-                _watcher.Deleted += (_, _) => ScheduleRefresh();
-                _watcher.Renamed += (_, _) => ScheduleRefresh();
-
-                _watcher.EnableRaisingEvents = true;
-                _watchedPath = path;
+                await Task.Delay(RefreshDelayMs, source.Token);
+                await RefreshAsync();
             }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                App.Logger.Warn("Failed to watch the cookie file");
                 App.Logger.Error(ex);
             }
-        }
-
-        private void ScheduleRefresh()
-        {
-            var source = new CancellationTokenSource();
-
-            Interlocked.Exchange(ref _debounce, source)?.Cancel();
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await Task.Delay(RefreshDelayMs, source.Token);
-                    await RefreshAsync();
-                }
-                catch (OperationCanceledException) { }
-                catch (Exception ex)
-                {
-                    App.Logger.Error(ex);
-                }
-            });
-        }
-
-        private static async Task<string> ReadTextShared(string path)
-        {
-            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-            using var reader = new StreamReader(stream);
-
-            return await reader.ReadToEndAsync();
-        }
-
-        private static async Task<byte[]> ReadBytesShared(string path)
-        {
-            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-            using var buffer = new MemoryStream();
-
-            await stream.CopyToAsync(buffer);
-
-            return buffer.ToArray();
-        }
-
-        [SupportedOSPlatform("windows")]
-        private static async Task<CookieLoadResult> LoadWindowsCookies()
-        {
-            string content = await ReadTextShared(CookiesPath);
-            var cookies = JsonHelper.Deserialize<RobloxCookies>(content)!;
-
-            byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
-            byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
-
-            string rawCookies = Encoding.UTF8.GetString(unencryptedData);
-
-            Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
-            string authCookie = authCookieMatch.Success ? authCookieMatch.Groups[1].Value : string.Empty;
-
-            Match trackerMatch = Regex.Match(rawCookies, TrackerPattern);
-            string tracker = trackerMatch.Success ? trackerMatch.Groups[1].Value : string.Empty;
-
-            return new CookieLoadResult(authCookie, tracker);
-        }
-
-        private static async Task<CookieLoadResult> LoadMacCookies()
-        {
-            byte[] fileBytes = await ReadBytesShared(CookiesPath);
-            var cookies = ParseBinaryCookies(fileBytes);
-
-            string authCookie = ExtractRoblosecurity(cookies) ?? string.Empty;
-
-            var trackerCookie = cookies.FirstOrDefault(c =>
-                c.Name == TrackerCookieName &&
-                c.Domain.Contains("." + Deployment.RobloxDomain, StringComparison.Ordinal));
-            string tracker = trackerCookie.Value ?? string.Empty;
-
-            return new CookieLoadResult(authCookie, tracker);
-        }
-
-        private static async Task<CookieLoadResult> LoadLinuxCookies()
-        {
-            string cookieText = await ReadTextShared(CookiesPath);
-            if (string.IsNullOrWhiteSpace(cookieText))
-                return new CookieLoadResult(string.Empty, string.Empty);
-
-            string authCookie = string.Empty;
-            string tracker = string.Empty;
-
-            var cookieParts = cookieText.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var part in cookieParts)
-            {
-                var trimmed = part.Trim();
-                int eqIndex = trimmed.IndexOf('=', StringComparison.Ordinal);
-                if (eqIndex > 0)
-                {
-                    string name = trimmed[..eqIndex].Trim();
-                    string value = trimmed[(eqIndex + 1)..].Trim();
-
-                    if (name == AuthCookieName)
-                        authCookie = value;
-                    else if (name == TrackerCookieName)
-                        tracker = value;
-                }
-            }
-
-            return new CookieLoadResult(authCookie, tracker);
-        }
-
-        private struct BinaryCookie
-        {
-            public string Name { get; set; }
-            public string Value { get; set; }
-            public string Domain { get; set; }
-            public string Path { get; set; }
-            public int Flags { get; set; }
-            public DateTime? Expiry { get; set; }
-            public DateTime? Creation { get; set; }
-        }
-
-        private static List<BinaryCookie> ParseBinaryCookies(byte[] data)
-        {
-            var cookies = new List<BinaryCookie>();
-            int offset = 0;
-
-            if (data.Length < 4 || data[0] != 0x63 || data[1] != 0x6F || data[2] != 0x6F || data[3] != 0x6B)
-                throw new InvalidOperationException("Not a binarycookies file");
-
-            offset += 4;
-            int numPages = ReadBigEndianInt32(data, ref offset);
-
-            int[] pageSizes = new int[numPages];
-            for (int i = 0; i < numPages; i++)
-                pageSizes[i] = ReadBigEndianInt32(data, ref offset);
-
-            for (int p = 0; p < numPages; p++)
-            {
-                int pageStart = offset;
-                int pageEnd = pageStart + pageSizes[p];
-
-                int pageHeader = ReadLittleEndianInt32(data, pageStart);
-                if (pageHeader != 0x00000100 && pageHeader != 0x00010000)
-                    App.Logger.Error($"Unexpected page header: 0x{pageHeader:X} at offset {pageStart}");
-
-                int numCookies = ReadLittleEndianInt32(data, pageStart + 4);
-                int cookieOffsetsOffset = pageStart + 8;
-
-                for (int c = 0; c < numCookies; c++)
-                {
-                    int cookieOffset = pageStart + ReadLittleEndianInt32(data, cookieOffsetsOffset + c * 4);
-                    try
-                    {
-                        var cookie = ParseSingleCookie(data, cookieOffset);
-                        cookies.Add(cookie);
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.Error($"Failed to parse cookie {c} in page {p}: {ex.Message}");
-                    }
-                }
-
-                offset = pageEnd;
-            }
-
-            return cookies;
-        }
-
-        private static BinaryCookie ParseSingleCookie(byte[] data, int offset)
-        {
-            int flags = ReadLittleEndianInt32(data, offset + 4);
-            int urlOffset = ReadLittleEndianInt32(data, offset + 16);
-            int nameOffset = ReadLittleEndianInt32(data, offset + 20);
-            int pathOffset = ReadLittleEndianInt32(data, offset + 24);
-            int valueOffset = ReadLittleEndianInt32(data, offset + 28);
-            double expiryTime = BitConverter.ToDouble(data, offset + 40);
-            double creationTime = BitConverter.ToDouble(data, offset + 48);
-
-            string domain = ReadNullTerminatedString(data, offset + urlOffset);
-            string name = ReadNullTerminatedString(data, offset + nameOffset);
-            string path = ReadNullTerminatedString(data, offset + pathOffset);
-            string value = ReadNullTerminatedString(data, offset + valueOffset);
-
-            return new BinaryCookie
-            {
-                Name = name,
-                Value = value,
-                Domain = domain,
-                Path = path,
-                Flags = flags,
-                Expiry = MacTimeToDateTime(expiryTime),
-                Creation = MacTimeToDateTime(creationTime)
-            };
-        }
-
-        private static string ReadNullTerminatedString(byte[] data, int offset)
-        {
-            int end = offset;
-            while (end < data.Length && data[end] != 0) end++;
-            return Encoding.UTF8.GetString(data, offset, end - offset);
-        }
-
-        private static int ReadBigEndianInt32(byte[] data, ref int offset)
-        {
-            int value = (data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3];
-            offset += 4;
-            return value;
-        }
-
-        private static int ReadLittleEndianInt32(byte[] data, int offset)
-        {
-            return data[offset] | (data[offset + 1] << 8) | (data[offset + 2] << 16) | (data[offset + 3] << 24);
-        }
-
-        private static DateTime? MacTimeToDateTime(double macTime)
-        {
-            if (macTime == 0) return null;
-            DateTime epoch = new(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return epoch.AddSeconds(macTime).ToLocalTime();
-        }
-
-        private static string? ExtractRoblosecurity(List<BinaryCookie> cookies)
-        {
-            var cookie = cookies.FirstOrDefault(c =>
-                c.Name == ".ROBLOSECURITY" &&
-                c.Domain.Contains("." + Deployment.RobloxDomain, StringComparison.Ordinal));
-            return cookie.Value;
-        }
+        });
     }
 }

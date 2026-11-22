@@ -15,7 +15,6 @@ namespace Froststrap.UI.ViewModels
         public required SearchBarItem Item { get; init; }
         public required bool IsLastInGroup { get; init; }
 
-        public string Connector => IsLastInGroup ? "└" : "├";
         public string DisplayName => Item.DisplayName;
         public string Description => Item.Description ?? string.Empty;
         public bool HasDescription => !string.IsNullOrEmpty(Item.Description);

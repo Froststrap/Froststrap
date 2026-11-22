@@ -53,26 +53,23 @@
               mkComposedShell
               ;
 
-            dotnetFrag = (pkgs.callPackage ./nix/dotnetDevShell.nix {
-              fontconfig = pkgs-unstable.fontconfig;
-            } inputs);
+            dotnetFrag = (
+              pkgs.callPackage ./nix/dotnetDevShell.nix {
+                fontconfig = pkgs-unstable.fontconfig;
+              } inputs
+            );
             extraFrag = (pkgs.callPackage ./nix/extra.nix { }) inputs;
             lintFrag = pkgs.callPackage ./nix/lint.nix { };
-            lspFrag = pkgs.callPackage ./nix/lsp.nix { };
+            lspFrag = (pkgs.callPackage ./nix/lsp.nix { }) inputs;
             rustFrag = (pkgs.callPackage ./nix/rustDevShell.nix { }) inputs;
           in
           mkComposedShell [ rustFrag ] { }
           // mkComposedShell [ dotnetFrag ] { }
           // mkComposedShell [ extraFrag ] { }
           // mkComposedShell [ lintFrag ] { }
-          // mkComposedShell [ dotnetFrag lspFrag ] { nameOverride = "lsp"; }
+          // mkComposedShell [ dotnetFrag rustFrag lspFrag ] { nameOverride = "lsp"; }
           // mkComposedShell [ dotnetFrag rustFrag ] { nameOverride = "minimal"; }
-          // mkComposedShell [
-            dotnetFrag
-            rustFrag
-            extraFrag
-            lintFrag
-          ] { nameOverride = "default"; };
+          // mkComposedShell [ dotnetFrag rustFrag lspFrag extraFrag lintFrag ] { nameOverride = "default"; };
 
         packages =
           let

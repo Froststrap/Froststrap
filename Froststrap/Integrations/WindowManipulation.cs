@@ -97,14 +97,6 @@ namespace Froststrap.Integrations
             });
         }
 
-        public void ApplyWindowModifications()
-        {
-            App.Logger.Info("Applying window modifications");
-
-            ApplyConfiguredIcon();
-            ApplyConfiguredTitle();
-        }
-
         public unsafe void ApplyConfiguredIcon()
         {
             if (!HasWindow)

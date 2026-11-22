@@ -17,7 +17,7 @@ pub fn request_permission() -> i32 {
     }
 
     let Some(center) = NotificationCenter::current() else {
-        log::error!("Unhandled exception has occured!");
+        log::error!("Unhandled exception has occurred!");
         return Perm::OsError as i32;
     };
 
@@ -35,7 +35,7 @@ pub fn send_notification(title: String, body: String, timeout: Duration) -> i32 
     }
 
     let Some(center) = NotificationCenter::current() else {
-        log::error!("Unhandled exception has occured!");
+        log::error!("Unhandled exception has occurred!");
         return Perm::OsError as i32;
     };
 

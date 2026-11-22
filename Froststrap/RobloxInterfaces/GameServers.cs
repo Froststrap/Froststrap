@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Froststrap.AppData;
+using Froststrap.Clients.Model;
 using Froststrap.Enums.Overlay;
 using Froststrap.Utility;
 using System;
@@ -545,10 +545,21 @@ namespace Froststrap.RobloxInterfaces
             Launch(query);
         }
 
-        public static void Launch(string query)
+        public static void Launch(string query) => LaunchDeeplink($"roblox://experiences/start?{query}");
+
+        public static void LaunchDeeplink(string deeplink)
         {
-            string deeplink = $"roblox://experiences/start?{query}";
-            Process.Start(new RobloxPlayerData().ExecutablePath, deeplink);
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await App.Clients.Player.LaunchAsync(new LaunchRequest { Mode = LaunchMode.Player, CommandLine = deeplink });
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Error(ex, $"Failed to launch {deeplink}");
+                }
+            });
         }
 
         public static Uri GamePage(long placeId) => UrlBuilder.BuildApiUrl("www", $"games/{placeId}");
