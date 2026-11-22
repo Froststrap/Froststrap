@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
+using System.Security.Cryptography;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
@@ -168,8 +169,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 mod.IsDownloading = true;
                 Directory.CreateDirectory(Path.GetDirectoryName(tempFile)!);
 
+                if (string.IsNullOrWhiteSpace(mod.Sha256))
+                    throw new InvalidOperationException($"Refusing to install '{mod.Name}' because the catalog has no checksum for it");
+
                 var progress = new Progress<double>(p => mod.DownloadProgress = p);
                 await DownloadFileAsync(mod.DownloadUrl, tempFile, progress);
+                await VerifyDownloadAsync(tempFile, mod.Sha256);
 
                 string baseName = mod.Name;
                 string finalName = baseName;
@@ -381,9 +386,24 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
+        private static async Task VerifyDownloadAsync(string path, string expectedSha256)
+        {
+            string actualSha256;
+
+            await using (var stream = File.OpenRead(path))
+                actualSha256 = Convert.ToHexString(await SHA256.HashDataAsync(stream));
+
+            if (!actualSha256.Equals(expectedSha256.Trim(), StringComparison.OrdinalIgnoreCase))
+                throw new ChecksumFailedException($"The downloaded file does not match the catalog checksum\n\nExpected: {expectedSha256}\nGot: {actualSha256}");
+        }
+
         private static async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
         {
-            using var response = await App.HttpClient.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead);
+            var uri = new Uri(url);
+            if (uri.Scheme != Uri.UriSchemeHttps)
+                throw new InvalidOperationException($"Refusing to download from a non-HTTPS URL: {url}");
+
+            using var response = await App.HttpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
 
