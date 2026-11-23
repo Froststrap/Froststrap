@@ -63,23 +63,20 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Bootstrapper_AutoUpdate_Title}"
-                Description="{x:Static resources:Strings.Menu_Bootstrapper_AutoUpdate_Description}">
-                <ToggleSwitch IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_Bootstrapper_AutoUpdate_Description}"
+                IsChecked="{Binding AutomaticUpdatesEnabled}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Title}"
-                Description="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Description}">
-                <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Description}"
+                IsChecked="{Binding PreReleaseUpdatesEnabled}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_TestMode}"
-                Description="{x:Static resources:Strings.Menu_TestMode_Description}">
-                <ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_TestMode_Description}"
+                IsChecked="{Binding TestModeEnabled}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Deployment_MoveInstallation_Title}"
@@ -112,26 +109,23 @@ SPDX-License-Identifier: MPL-2.0
                 Title="Roblox"
                 Description="{x:Static resources:Strings.Menu_Deployment_Player_Description}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding AutomaticallyUpdateSober}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Bootstrapper_ForceRobloxReinstall_Title}"
                 Description="{x:Static resources:Strings.Menu_Bootstrapper_ForceRobloxReinstall_Description}"
-                IsEnabled="{Binding !IsRobloxInstallationMissing}">
-                <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsEnabled="{Binding !IsRobloxInstallationMissing}"
+                IsChecked="{Binding ForceRobloxReinstallation}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
                 Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
                 IsEnabled="{Binding !IsRobloxInstallationMissing}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}">
-                <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                IsChecked="{Binding UpdateRoblox}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerOverrideHash_Title}"
@@ -202,11 +196,10 @@ SPDX-License-Identifier: MPL-2.0
                     Width="200" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-                Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
-                <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}"
+                IsChecked="{Binding StaticDirectory}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Deployment_PlayerChannel_Title}"

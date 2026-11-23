@@ -59,11 +59,10 @@ SPDX-License-Identifier: MPL-2.0
                 Title="{x:Static resources:Strings.Common_Presets}"
                 Description="{x:Static resources:Strings.Menu_PresetMods_Presets_Description}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Title}"
-                Description="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Description}">
-                <ToggleSwitch IsChecked="{Binding OldAvatarBackgroundTask.NewState, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Description}"
+                IsChecked="{Binding OldAvatarBackgroundTask.NewState}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_PresetMods_Presets_MouseCursor_Title}"

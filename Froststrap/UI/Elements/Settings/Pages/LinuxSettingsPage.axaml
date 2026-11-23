@@ -20,47 +20,41 @@ SPDX-License-Identifier: MPL-2.0
                 IsVisible="{Binding SoberEnabled}"
                 Margin="0,4,0,4" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_AllowGamepadPermission_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_AllowGamepadPermission_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberAllowGamepadPermission, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberAllowGamepadPermission}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnableGameMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_EnableGameMode_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberEnableGamemode, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberEnableGamemode}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnableHiDpi_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_EnableHiDpi_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberEnableHiDpi, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberEnableHiDpi}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_TouchInputMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_TouchInputMode_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberTouchMode, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberTouchMode}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_UseConsoleExperience_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_UseConsoleExperience_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberUseConsoleExperience, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberUseConsoleExperience}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_ForceLegacyOpenGL_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_ForceLegacyOpenGL_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberUseOpengl, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberUseOpengl}" />
 
             <controls:SectionHeader
                 Title="{x:Static resources:Strings.Common_Studio}"
@@ -72,12 +66,11 @@ SPDX-License-Identifier: MPL-2.0
                 Command="{Binding OpenWineCfgCommand}"
                 IsVisible="{Binding IsWineAvailable}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_WebPages_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_WebPages_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding EnableWebView2}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_GraphicsRenderer_Title}"
@@ -114,19 +107,17 @@ SPDX-License-Identifier: MPL-2.0
                     MinWidth="200" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_GameMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_GameMode_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding StudioGameMode, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding StudioGameMode}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_DebugMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_DebugMode_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding StudioDebug}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Title}"

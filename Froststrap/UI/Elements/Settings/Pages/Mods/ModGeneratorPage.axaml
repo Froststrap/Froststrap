@@ -131,21 +131,13 @@ SPDX-License-Identifier: MPL-2.0
             <controls:SectionHeader Title="{x:Static resources:Strings.Menu_ModGenerator_ModsOptions}"
                                     Description="{x:Static resources:Strings.Menu_ModGenerator_ModsOptions_Description}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_ApplyCursor}">
-                <ToggleSwitch IsChecked="{Binding ColorCursors}" IsEnabled="{Binding IsNotGeneratingMod}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_ModGenerator_ApplyCursor}" IsEnabled="{Binding IsNotGeneratingMod}" IsChecked="{Binding ColorCursors}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_ApplyShiftlock}">
-                <ToggleSwitch IsChecked="{Binding ColorShiftlock}" IsEnabled="{Binding IsNotGeneratingMod}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_ModGenerator_ApplyShiftlock}" IsEnabled="{Binding IsNotGeneratingMod}" IsChecked="{Binding ColorShiftlock}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_ApplyEmoteWheel}">
-                <ToggleSwitch IsChecked="{Binding ColorEmoteWheel}" IsEnabled="{Binding IsNotGeneratingMod}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_ModGenerator_ApplyEmoteWheel}" IsEnabled="{Binding IsNotGeneratingMod}" IsChecked="{Binding ColorEmoteWheel}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_DontColorPlay}">
-                <ToggleSwitch IsChecked="{Binding DontColorPlayIcon}" IsEnabled="{Binding IsNotGeneratingMod}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_ModGenerator_DontColorPlay}" IsEnabled="{Binding IsNotGeneratingMod}" IsChecked="{Binding DontColorPlayIcon}" />
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_RobloxIcon}">
                 <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4" Width="320">
@@ -169,10 +161,9 @@ SPDX-License-Identifier: MPL-2.0
                 </Grid>
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_IncludeModification}"
-                                    Description="{x:Static resources:Strings.Menu_ModGenerator_IncludeModification_Description}">
-                <ToggleSwitch IsChecked="{Binding IncludeModifications}" IsEnabled="{Binding IsNotGeneratingMod}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_ModGenerator_IncludeModification}"
+                                    Description="{x:Static resources:Strings.Menu_ModGenerator_IncludeModification_Description}"
+                                    IsEnabled="{Binding IsNotGeneratingMod}" IsChecked="{Binding IncludeModifications}" />
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_CustomModName}"
                                     IsVisible="{Binding IncludeModifications}">

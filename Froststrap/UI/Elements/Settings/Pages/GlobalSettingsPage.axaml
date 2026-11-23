@@ -71,20 +71,17 @@ SPDX-License-Identifier: MPL-2.0
                                     ShowValue="True" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Description}">
-                <ToggleSwitch IsChecked="{Binding Fullscreen, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Description}"
+                                    IsChecked="{Binding Fullscreen}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Description}">
-                <ToggleSwitch IsChecked="{Binding MaxQualityEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Description}"
+                                    IsChecked="{Binding MaxQualityEnabled}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Description}">
-                <ToggleSwitch IsChecked="{Binding VignetteEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Description}"
+                                    IsChecked="{Binding VignetteEnabled}" />
 
             <controls:SectionHeader Title="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}" />
 
@@ -139,10 +136,9 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBox Width="200" Text="{Binding MouseSensitivity}" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Description}">
-                <ToggleSwitch IsChecked="{Binding ShiftLock, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Description}"
+                                    IsChecked="{Binding ShiftLock}" />
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_FirstPersonSensitivity_Title}"
                                     Description="{x:Static resources:Strings.Menu_GlobalSettings_FirstPersonSensitivity_Description}">
@@ -176,10 +172,9 @@ SPDX-License-Identifier: MPL-2.0
                 </Grid>
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Description}">
-                <ToggleSwitch IsChecked="{Binding CameraYInverted}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Description}"
+                                    IsChecked="{Binding CameraYInverted}" />
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Title}"
                                     Description="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Description}">
@@ -215,20 +210,17 @@ SPDX-License-Identifier: MPL-2.0
                           Classes="enum" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Description}">
-                <ToggleSwitch IsChecked="{Binding ReducedMotion}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Description}"
+                                    IsChecked="{Binding ReducedMotion}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Description}">
-                <ToggleSwitch IsChecked="{Binding PerformanceStatsVisible}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Description}"
+                                    IsChecked="{Binding PerformanceStatsVisible}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Description}">
-                <ToggleSwitch IsChecked="{Binding VREnabled}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Description}"
+                                    IsChecked="{Binding VREnabled}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
