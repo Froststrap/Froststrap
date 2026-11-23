@@ -596,7 +596,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "Käivitamisargumendid",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Roblox töötab!",
   "Menu_Integrations_Custom_NewIntegration": "Uus integratsioon",
-  "Menu_Integrations_Custom_NoneSelected": "Integreerimist ei ole valitud. Palun valige või lisage uus.",
   "Menu_Integrations_Custom_SpecifyGame": "Käivita konkreetne mäng",
   "Menu_Integrations_Custom_Title": "Kohandatud integratsioonid",
   "Menu_Integrations_Description": "Konfigureeri Robloxiga kaasnevad lisafunktsioonid.",

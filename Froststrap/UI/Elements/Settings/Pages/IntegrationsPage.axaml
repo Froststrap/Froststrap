@@ -12,6 +12,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
     xmlns:gv="using:Froststrap.UI.ViewModels"
+    xmlns:models="using:Froststrap.Models"
     x:DataType="vm:IntegrationsViewModel">
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
@@ -194,127 +195,83 @@ SPDX-License-Identifier: MPL-2.0
                 Title="{x:Static resources:Strings.Menu_Integrations_Custom_Title}"
                 Description="{x:Static resources:Strings.Menu_Integrations_Custom_Description}" />
 
-            <Grid
-                MinHeight="325"
-                RowDefinitions="*,Auto"
-                ColumnDefinitions="250,*"
-                ColumnSpacing="8"
-                RowSpacing="8">
-                <ListBox
-                    x:Name="CustomIntegrationsListBox"
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    AutoScrollToSelectedItem="False"
-                    ItemsSource="{Binding CustomIntegrations, Mode=OneWay}"
-                    SelectedIndex="{Binding SelectedCustomIntegrationIndex, Mode=TwoWay}"
-                    SelectionChanged="CustomIntegrationSelection">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <controls:IconButton
+                Icon="Plus"
+                Content="{x:Static resources:Strings.Menu_Integrations_Custom_Add}"
+                Command="{Binding AddIntegrationCommand, Mode=OneTime}"
+                HorizontalAlignment="Stretch"
+                Padding="12,12"
+                Margin="0,4" />
 
-                <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*" ColumnSpacing="8">
-                    <controls:IconButton
-                        Grid.Column="0"
-                        Icon="Plus"
-                        Content="{x:Static resources:Strings.Common_New}"
-                        Command="{Binding AddIntegrationCommand, Mode=OneTime}"
-                        HorizontalAlignment="Stretch" />
-                    <controls:IconButton
-                        Grid.Column="1"
-                        Icon="Trash"
-                        Content="{x:Static resources:Strings.Common_Delete}"
-                        Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
-                        IsEnabled="{Binding IsCustomIntegrationSelected, Mode=OneWay}"
-                        HorizontalAlignment="Stretch"
-                        Classes="Danger" />
-                </Grid>
+            <ItemsControl ItemsSource="{Binding CustomIntegrations}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:CustomIntegration">
+                        <controls:CardExpander Header="{Binding Name}" IsExpanded="{Binding IsExpanded, Mode=TwoWay}">
+                            <controls:CardExpander.HeaderContent>
+                                <controls:IconButton
+                                    Icon="Trash"
+                                    Width="32"
+                                    Height="32"
+                                    MinHeight="32"
+                                    Padding="0"
+                                    Classes="Danger"
+                                    Command="{Binding $parent[ItemsControl].((vm:IntegrationsViewModel)DataContext).DeleteIntegrationCommand}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="{x:Static resources:Strings.Common_Delete}" />
+                            </controls:CardExpander.HeaderContent>
 
-                <StackPanel
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Spacing="8"
-                    IsVisible="{Binding IsCustomIntegrationSelected}">
-                    <TextBlock
-                        Text="{x:Static resources:Strings.Common_Name}"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    <TextBox Text="{Binding SelectedCustomIntegration.Name, UpdateSourceTrigger=PropertyChanged}" />
+                            <StackPanel>
+                                <controls:OptionControl Header="{x:Static resources:Strings.Common_Name}">
+                                    <TextBox Width="360" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                                </controls:OptionControl>
 
-                    <TextBlock
-                        Text="{x:Static resources:Strings.Menu_Integrations_Custom_AppLocation}"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <TextBox
-                            Grid.Column="0"
-                            PlaceholderText="C:\Windows\System32\cmd.exe"
-                            Text="{Binding SelectedCustomIntegration.Location}" />
-                        <controls:IconButton
-                            Grid.Column="1"
-                            Height="34"
-                            Icon="Folder"
-                            Content="{x:Static resources:Strings.Common_Browse}"
-                            Command="{Binding BrowseIntegrationLocationCommand}"
-                            CommandParameter="{Binding $self}" />
-                    </Grid>
+                                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Integrations_Custom_AppLocation}">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Width="360">
+                                        <TextBox PlaceholderText="/bin/sh" Text="{Binding Location}" />
+                                        <controls:IconButton
+                                            Grid.Column="1"
+                                            Icon="Folder"
+                                            Content="{x:Static resources:Strings.Common_Browse}"
+                                            Command="{Binding $parent[ItemsControl].((vm:IntegrationsViewModel)DataContext).BrowseIntegrationLocationCommand}"
+                                            CommandParameter="{Binding}" />
+                                    </Grid>
+                                </controls:OptionControl>
 
-                    <Grid ColumnDefinitions="Auto,*,Auto,2*" ColumnSpacing="8">
-                        <TextBlock
-                            Grid.Column="0"
-                            Text="Launch Delay"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox
-                            Grid.Column="1"
-                            PlaceholderText="200"
-                            Text="{Binding SelectedCustomIntegration.Delay}" />
-                        <TextBlock
-                            Grid.Column="2"
-                            Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox
-                            Grid.Column="3"
-                            PlaceholderText="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}"
-                            Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
-                    </Grid>
+                                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}">
+                                    <TextBox
+                                        Width="360"
+                                        PlaceholderText="{Binding Source='-c &quot;echo {0}&quot;', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}"
+                                        Text="{Binding LaunchArgs}" />
+                                </controls:OptionControl>
 
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <CheckBox
-                            Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoClose}"
-                            IsChecked="{Binding SelectedCustomIntegration.AutoClose}" />
-                        <CheckBox
-                            Content="Pre Roblox Launch"
-                            IsChecked="{Binding SelectedCustomIntegration.PreLaunch}" />
-                        <CheckBox
-                            Content="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}"
-                            IsChecked="{Binding SelectedCustomIntegration.SpecifyGame, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
+                                <controls:OptionControl
+                                    Header="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchDelay_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchDelay_Description}">
+                                    <TextBox Width="360" PlaceholderText="200" Text="{Binding Delay}" />
+                                </controls:OptionControl>
 
-                    <StackPanel Spacing="8" IsVisible="{Binding SelectedCustomIntegration.SpecifyGame}">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Integrations_Custom_GameID}"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox PlaceholderText="1873" Text="{Binding SelectedCustomIntegration.GameID}" />
-                        <CheckBox
-                            Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoCloseOnGame}"
-                            IsChecked="{Binding SelectedCustomIntegration.AutoCloseOnGame, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                </StackPanel>
+                                <controls:ToggleOption Header="{x:Static resources:Strings.Menu_Integrations_Custom_AutoClose}" IsChecked="{Binding AutoClose}" />
 
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Text="{x:Static resources:Strings.Menu_Integrations_Custom_NoneSelected}"
-                    IsVisible="{Binding !IsCustomIntegrationSelected}"
-                    FontWeight="Medium"
-                    TextWrapping="Wrap" />
-            </Grid>
+                                <controls:ToggleOption
+                                    Header="{x:Static resources:Strings.Menu_Integrations_Custom_PreLaunch_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_Custom_PreLaunch_Description}"
+                                    IsChecked="{Binding PreLaunch}" />
+
+                                <controls:ToggleOption Header="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}" IsChecked="{Binding SpecifyGame}" />
+
+                                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Integrations_Custom_GameID}" IsVisible="{Binding SpecifyGame}">
+                                    <TextBox Width="360" PlaceholderText="1873" Text="{Binding GameID}" />
+                                </controls:OptionControl>
+
+                                <controls:ToggleOption
+                                    Header="{x:Static resources:Strings.Menu_Integrations_Custom_AutoCloseOnGame}"
+                                    IsVisible="{Binding SpecifyGame}"
+                                    IsChecked="{Binding AutoCloseOnGame}" />
+                            </StackPanel>
+                        </controls:CardExpander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

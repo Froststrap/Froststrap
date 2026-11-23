@@ -605,7 +605,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "启动参数",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Roblox 正在运行！",
   "Menu_Integrations_Custom_NewIntegration": "新集成",
-  "Menu_Integrations_Custom_NoneSelected": "未选择任何集成。请选择或添加一个新的集成。",
   "Menu_Integrations_Custom_SpecifyGame": "在特定游戏中运行",
   "Menu_Integrations_Custom_Title": "自定义集成",
   "Menu_Integrations_Description": "配置与 Roblox 配套的附加功能。",

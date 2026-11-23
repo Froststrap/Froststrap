@@ -581,7 +581,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "Startparametre",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Roblox kører!",
   "Menu_Integrations_Custom_NewIntegration": "Ny integration",
-  "Menu_Integrations_Custom_NoneSelected": "Der er ikke valgt nogen integration. Vælg en eller tilføj en ny.",
   "Menu_Integrations_Custom_SpecifyGame": "Kør på et bestemt spil",
   "Menu_Integrations_Custom_Title": "Brugerdefinerede integrationer",
   "Menu_Integrations_Description": "Konfigurer yderligere funktioner, der kan bruges sammen med Roblox.",

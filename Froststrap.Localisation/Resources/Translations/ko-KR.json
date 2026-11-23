@@ -608,7 +608,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "실행 인수",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Roblox가 실행 중입니다!",
   "Menu_Integrations_Custom_NewIntegration": "새로운 통합",
-  "Menu_Integrations_Custom_NoneSelected": "선택된 통합 항목이 없습니다. 항목을 선택하거나 새로 추가해 주세요.",
   "Menu_Integrations_Custom_SpecifyGame": "특정 게임에서 실행하기",
   "Menu_Integrations_Custom_Title": "맞춤형 통합",
   "Menu_Integrations_Description": "Roblox와 함께 사용할 추가 기능을 설정하세요.",

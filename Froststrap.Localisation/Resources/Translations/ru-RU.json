@@ -603,7 +603,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "Аргументы запуска",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Roblox запущен!",
   "Menu_Integrations_Custom_NewIntegration": "Новая интеграция",
-  "Menu_Integrations_Custom_NoneSelected": "Интеграция не выбрана. Выберите или добавьте новую.",
   "Menu_Integrations_Custom_SpecifyGame": "Запустить конкретную игру",
   "Menu_Integrations_Custom_Title": "Индивидуальные интеграции",
   "Menu_Integrations_Description": "Настройте дополнительные функции для использования вместе с Roblox.",

@@ -599,7 +599,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "Indítási paraméterek",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "A Roblox már fut!",
   "Menu_Integrations_Custom_NewIntegration": "Új integráció",
-  "Menu_Integrations_Custom_NoneSelected": "Nincs kiválasztva integráció. Kérjük, válasszon ki egyet, vagy adjon hozzá egy újat.",
   "Menu_Integrations_Custom_SpecifyGame": "Egy adott játék futtatása",
   "Menu_Integrations_Custom_Title": "Egyedi integrációk",
   "Menu_Integrations_Description": "Állítsd be a Robloxhoz kapcsolódó további funkciókat.",

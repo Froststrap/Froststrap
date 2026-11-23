@@ -606,7 +606,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "起動引数",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Robloxが動いています！",
   "Menu_Integrations_Custom_NewIntegration": "新しい連携機能",
-  "Menu_Integrations_Custom_NoneSelected": "統合が選択されていません。統合を選択するか、新しい統合を追加してください。",
   "Menu_Integrations_Custom_SpecifyGame": "特定のゲームで実行する",
   "Menu_Integrations_Custom_Title": "カスタム統合",
   "Menu_Integrations_Description": "Robloxと連携する追加機能を設定します。",

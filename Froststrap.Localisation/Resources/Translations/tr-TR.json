@@ -601,7 +601,6 @@
   "Menu_Integrations_Custom_LaunchArgs": "Başlatma Argümanları",
   "Menu_Integrations_Custom_LaunchArgs_Placeholder": "Roblox çalışıyor!",
   "Menu_Integrations_Custom_NewIntegration": "Yeni Entegrasyon",
-  "Menu_Integrations_Custom_NoneSelected": "Seçili bir entegrasyon yok. Lütfen bir entegrasyon seçin veya yeni bir entegrasyon ekleyin.",
   "Menu_Integrations_Custom_SpecifyGame": "Belirli bir oyunda çalıştır",
   "Menu_Integrations_Custom_Title": "Özel Entegrasyonlar",
   "Menu_Integrations_Description": "Roblox ile birlikte kullanılacak ek işlevleri yapılandırın.",
