@@ -333,23 +333,32 @@ internal sealed class ActivityWatcher : IDisposable
             else if (logMessage.StartsWith(GameLaunchEventEntry, StringComparison.Ordinal))
             {
                 int jsonStart = logMessage.IndexOf('{', StringComparison.Ordinal);
-                string jsonString = logMessage[jsonStart..];
-                using JsonDocument doc = JsonDocument.Parse(jsonString);
-                if (
-                    doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
-                    && paramsElement.TryGetProperty("request", out JsonElement requestElement)
-                    && requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement)
-                    && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement)
-                    && requestTypeElement.GetString() == "RequestPrivateGame"
-                )
+                if (jsonStart < 0)
+                    return;
+
+                try
                 {
-                    string? accessCode = accessCodeElement.GetString();
-                    if (!string.IsNullOrEmpty(accessCode))
+                    using JsonDocument doc = JsonDocument.Parse(logMessage[jsonStart..]);
+                    if (
+                        doc.RootElement.TryGetProperty("params", out JsonElement paramsElement)
+                        && paramsElement.TryGetProperty("request", out JsonElement requestElement)
+                        && requestElement.TryGetProperty("requestType", out JsonElement requestTypeElement)
+                        && requestElement.TryGetProperty("accessCode", out JsonElement accessCodeElement)
+                        && requestTypeElement.GetString() == "RequestPrivateGame"
+                    )
                     {
-                        Data.AccessCode = accessCode;
-                        Data.ServerType = ServerType.Private;
-                        App.Logger.Info($"Captured private server access code: {accessCode}");
+                        string? accessCode = accessCodeElement.GetString();
+                        if (!string.IsNullOrEmpty(accessCode))
+                        {
+                            Data.AccessCode = accessCode;
+                            Data.ServerType = ServerType.Private;
+                            App.Logger.Info($"Captured private server access code: {accessCode}");
+                        }
                     }
+                }
+                catch (JsonException ex)
+                {
+                    App.Logger.Error($"Ignoring malformed game launch event JSON: {ex.Message}");
                 }
             }
         }
