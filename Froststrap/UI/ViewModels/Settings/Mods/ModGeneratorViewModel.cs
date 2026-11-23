@@ -226,7 +226,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 if (GradientStops.Count > 0)
                     GradientStops[0].Color = SolidColorHex;
                 UpdateGlyphColors();
-                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
+                StatusText = "";
             }
         }
 
@@ -262,7 +262,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (FontDisplayNames.Count > 0)
                         SelectedFontDisplayName = FontDisplayNames[0];
                 });
-                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
             }
             catch (Exception ex)
             {
