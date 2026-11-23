@@ -586,12 +586,16 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             Height = NotificationHeight,
             CornerRadius = new CornerRadius(10),
             RenderTransform = transform,
-            Child = contentGrid,
+            Child = new Surface
+            {
+                CornerRadius = new CornerRadius(10),
+                [!Surface.BackgroundProperty] = new DynamicResourceExtension("NotificationBackgroundColor"),
+                Content = contentGrid
+            },
             BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
             VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
         };
-        notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
 
         var entry = new NotificationEntry { Element = notification, Transform = transform };
 

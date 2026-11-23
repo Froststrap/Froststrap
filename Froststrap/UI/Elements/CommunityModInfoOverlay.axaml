@@ -19,17 +19,16 @@ SPDX-License-Identifier: MPL-2.0
     <Panel>
         <Border Background="#99000000" PointerPressed="Backdrop_PointerPressed" />
 
-        <Border Width="640"
-                MaxHeight="640"
-                Margin="24"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                CornerRadius="12"
-                ClipToBounds="True"
-                Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
-                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
-                BorderThickness="1"
-                PointerPressed="Card_PointerPressed">
+        <controls:Surface Width="640"
+                          MaxHeight="640"
+                          Margin="24"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          CornerRadius="12"
+                          ClipToBounds="True"
+                          BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                          BorderThickness="1"
+                          PointerPressed="Card_PointerPressed">
             <Grid RowDefinitions="Auto,Auto,*,Auto">
 
                 <Panel Grid.Row="0" Height="240" Background="{DynamicResource ControlFillColorSecondaryBrush}">
@@ -125,7 +124,7 @@ SPDX-License-Identifier: MPL-2.0
                                          CommandParameter="{Binding Mod}" />
                 </StackPanel>
             </Grid>
-        </Border>
+        </controls:Surface>
     </Panel>
 
     <UserControl.Styles>

@@ -19,16 +19,15 @@ SPDX-License-Identifier: MPL-2.0
     <Panel>
         <Border Background="#99000000" PointerPressed="Overlay_PointerPressed" />
 
-        <Border CornerRadius="12"
-                Width="640"
-                MaxHeight="600"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
-                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
-                BorderThickness="1"
-                ClipToBounds="True"
-                PointerPressed="Header_PointerPressed">
+        <controls:Surface CornerRadius="12"
+                          Width="640"
+                          MaxHeight="600"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                          BorderThickness="1"
+                          ClipToBounds="True"
+                          PointerPressed="Header_PointerPressed">
             <Grid RowDefinitions="Auto,1,*">
 
                 <Border Grid.Row="0" Padding="20,20,20,16">
@@ -202,6 +201,6 @@ SPDX-License-Identifier: MPL-2.0
 
                 </Panel>
             </Grid>
-        </Border>
+        </controls:Surface>
     </Panel>
 </UserControl>

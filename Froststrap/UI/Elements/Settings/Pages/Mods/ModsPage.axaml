@@ -194,11 +194,10 @@ SPDX-License-Identifier: MPL-2.0
 
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="800" MaxHeight="600">
 
-                <Border Background="{DynamicResource LayerFillColorDefaultBrush}"
-                        CornerRadius="12"
-                        Padding="20"
-                        BorderThickness="1"
-                        BorderBrush="{DynamicResource ControlStrokeColorDefault}">
+                <controls:Surface CornerRadius="12"
+                                  Padding="20"
+                                  BorderThickness="1"
+                                  BorderBrush="{DynamicResource ControlStrokeColorDefault}">
 
                     <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
                         <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
@@ -286,7 +285,7 @@ SPDX-License-Identifier: MPL-2.0
                                     Padding="20,8"/>
                         </StackPanel>
                     </Grid>
-                </Border>
+                </controls:Surface>
             </Grid>
         </Border>
 
