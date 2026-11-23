@@ -169,6 +169,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ObservableCollection<HzEntry> VirtualDisplayHzEntries { get; } = [];
 
+        public bool HasVirtualDisplayHzEntries => VirtualDisplayHzEntries.Count > 0;
+
         public ICommand AddVirtualDisplayHzCommand { get; }
 
         private string _newVirtualDisplayHz = "";
@@ -211,6 +213,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.Settings.Prop.VirtualDisplayHzModes = [.. VirtualDisplayHzEntries.Select(e => e.Value)];
             App.Settings.Save();
+            OnPropertyChanged(nameof(HasVirtualDisplayHzEntries));
         }
 
         internal sealed class HzEntry

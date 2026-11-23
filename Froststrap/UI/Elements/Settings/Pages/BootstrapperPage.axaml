@@ -73,10 +73,12 @@ SPDX-License-Identifier: MPL-2.0
                             Text="{Binding VirtualDisplayHeight, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl
+                    <controls:CardExpander
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_VirtualDisplayHz_Title}"
-                        Description="{x:Static resources:Strings.Menu_Bootstrapper_VirtualDisplayHz_Description}">
-                        <StackPanel MinWidth="260" Spacing="8">
+                        Description="{x:Static resources:Strings.Menu_Bootstrapper_VirtualDisplayHz_Description}"
+                        IsExpanded="{Binding HasVirtualDisplayHzEntries, Mode=OneWay}"
+                        Classes="NoUserExpansion">
+                        <controls:CardExpander.HeaderContent>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <TextBox
                                     Width="150"
@@ -94,42 +96,26 @@ SPDX-License-Identifier: MPL-2.0
                                     Content="{x:Static resources:Strings.Common_Add}"
                                     Command="{Binding AddVirtualDisplayHzCommand}" />
                             </StackPanel>
-                            <ItemsControl ItemsSource="{Binding VirtualDisplayHzEntries}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Spacing="4" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border
-                                            MinHeight="40"
-                                            Padding="8,4,4,4"
-                                            CornerRadius="6"
-                                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
-                                            <Grid ColumnDefinitions="*,Auto">
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    Text="{Binding Display}"
-                                                    VerticalAlignment="Center" />
-                                                <controls:IconButton
-                                                    Grid.Column="1"
-                                                    Icon="Trash"
-                                                    Command="{Binding RemoveCommand}"
-                                                    Width="32"
-                                                    Height="32"
-                                                    MinHeight="32"
-                                                    Padding="0"
-                                                    VerticalAlignment="Center"
-                                                    Classes="Danger"
-                                                    ToolTip.Tip="{x:Static resources:Strings.Common_Remove}" />
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </controls:OptionControl>
+                        </controls:CardExpander.HeaderContent>
+
+                        <ItemsControl ItemsSource="{Binding VirtualDisplayHzEntries}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <controls:OptionControl Header="{Binding Display}">
+                                        <controls:IconButton
+                                            Icon="Trash"
+                                            Command="{Binding RemoveCommand}"
+                                            Width="32"
+                                            Height="32"
+                                            MinHeight="32"
+                                            Padding="0"
+                                            Classes="Danger"
+                                            ToolTip.Tip="{x:Static resources:Strings.Common_Remove}" />
+                                    </controls:OptionControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </controls:CardExpander>
                 </StackPanel>
             </controls:CardExpander>
 

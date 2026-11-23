@@ -135,45 +135,49 @@ SPDX-License-Identifier: MPL-2.0
                 <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <StackPanel Spacing="8">
-                    <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="4">
+                IsExpanded="{Binding HasStudioEnvEntries, Mode=OneWay}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <Button
+                        Content="{x:Static resources:Strings.Menu_LinuxSettings_AddVariable}"
+                        Command="{Binding AddStudioEnvCommand}" />
+                </controls:CardExpander.HeaderContent>
+
+                <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:Card Margin="0,4" Padding="16,12" MinHeight="0">
+                                <Grid ColumnDefinitions="200,*,Auto" ColumnSpacing="8">
                                     <TextBox
                                         PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_Variable}"
                                         Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="150" />
+                                        VerticalContentAlignment="Center" />
                                     <TextBox
+                                        Grid.Column="1"
                                         PlaceholderText="{x:Static resources:Strings.Common_Value}"
                                         Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="200" />
+                                        VerticalContentAlignment="Center" />
                                     <controls:IconButton
+                                        Grid.Column="2"
                                         Icon="Trash"
                                         Command="{Binding RemoveCommand}"
-                                        ToolTip.Tip="{x:Static resources:Strings.Common_Remove}"
-                                        Width="30"
+                                        Width="32"
+                                        Height="32"
+                                        MinHeight="32"
                                         Padding="0"
-                                        Classes="Danger" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Button
-                        Content="{x:Static resources:Strings.Menu_LinuxSettings_AddVariable}"
-                        Command="{Binding AddStudioEnvCommand}"
-                        HorizontalAlignment="Left" />
-                </StackPanel>
-            </controls:OptionControl>
+                                        VerticalAlignment="Center"
+                                        Classes="Danger"
+                                        ToolTip.Tip="{x:Static resources:Strings.Common_Remove}" />
+                                </Grid>
+                            </controls:Card>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </controls:CardExpander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
