@@ -507,7 +507,6 @@
   "Menu_Channel_Switcher_Fetching": "Fetching latest deploy info, please wait...",
   "Menu_Channel_Switcher_Unauthorized": "The specified channel either doesn't exist or is private.",
   "Menu_ColorPicker_SelectColor": "Select Color",
-  "Menu_CommunityModInfo_Title": "Mod Information",
   "Menu_CommunityMods_AvatarEditor": "Avatar Editor",
   "Menu_CommunityMods_ColorMods": "Color Mods",
   "Menu_CommunityMods_Cursor": "Cursor",

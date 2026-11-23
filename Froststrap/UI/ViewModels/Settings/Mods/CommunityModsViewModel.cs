@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -277,28 +276,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
         [RelayCommand]
-        private static async Task OpenModInfoDialog(Control? control)
+        private static void OpenModInfoDialog(Control? control)
         {
-            if (control?.DataContext is not CommunityMod mod) return;
-
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
-
-            App.FrostRPC?.SetDialog($"Viewing {mod.Name}");
-
-            try
-            {
-                var dialog = new CommunityModInfoDialog(mod);
-                await dialog.ShowDialog(parentWindow);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "Failed to open mod info dialog");
-            }
-            finally
-            {
-                App.FrostRPC?.ClearDialog();
-            }
+            if (control?.DataContext is CommunityMod mod && TopLevel.GetTopLevel(control) is Froststrap.UI.Elements.Settings.MainWindow window)
+                window.ShowCommunityModInfo(mod);
         }
 
         private static readonly HashSet<string> RequiredModFolders = new(StringComparer.OrdinalIgnoreCase)

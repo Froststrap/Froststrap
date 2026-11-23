@@ -212,6 +212,26 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
         return overlay;
     }
 
+    public void ShowCommunityModInfo(CommunityMod mod)
+    {
+        if (this.FindControl<Grid>("RootGrid") is not { } rootGrid)
+            return;
+
+        var overlay = new CommunityModInfoOverlay(mod);
+        Grid.SetRow(overlay, 0);
+        Grid.SetRowSpan(overlay, 3);
+        overlay.ZIndex = 2000;
+
+        App.FrostRPC?.SetDialog($"Viewing {mod.Name}");
+        overlay.Dismissed += (_, _) =>
+        {
+            rootGrid.Children.Remove(overlay);
+            App.FrostRPC?.ClearDialog();
+        };
+
+        rootGrid.Children.Add(overlay);
+    }
+
     protected override async void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
