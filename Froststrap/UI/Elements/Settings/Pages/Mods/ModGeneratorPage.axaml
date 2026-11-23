@@ -20,9 +20,9 @@ SPDX-License-Identifier: MPL-2.0
              d:DesignWidth="1100"
              mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10,14,40">
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                 <controls:CardAction Grid.Column="0"
                                      Command="{Binding OpenCommunityModsCommand}"
                                      Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
@@ -45,15 +45,17 @@ SPDX-License-Identifier: MPL-2.0
             <controls:SectionHeader Title="{x:Static resources:Strings.Menu_ModGenerator_StylePreview}"
                                     Description="{x:Static resources:Strings.Menu_ModGenerator_StylePreview_Description}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_ModGenerator_IconSet_Title}"
-                                    Description="{x:Static resources:Strings.Menu_ModGenerator_IconSet_Description}">
-                <ComboBox Width="200"
-                          ItemsSource="{Binding FontDisplayNames}"
-                          SelectedItem="{Binding SelectedFontDisplayName}" />
-            </controls:OptionControl>
+            <controls:CardExpander Header="{x:Static resources:Strings.Menu_ModGenerator_IconSet_Title}"
+                                   Description="{x:Static resources:Strings.Menu_ModGenerator_IconSet_Description}"
+                                   IsExpanded="True"
+                                   Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ComboBox Width="200"
+                              ItemsSource="{Binding FontDisplayNames}"
+                              SelectedItem="{Binding SelectedFontDisplayName}" />
+                </controls:CardExpander.HeaderContent>
 
-            <controls:Card Margin="0,4" Padding="12">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="250">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="320">
                     <ItemsControl ItemsSource="{Binding GlyphItems}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -77,7 +79,7 @@ SPDX-License-Identifier: MPL-2.0
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-            </controls:Card>
+            </controls:CardExpander>
 
             <controls:SectionHeader Title="{x:Static resources:Strings.Menu_Appearance_Title}"
                                     Description="{x:Static resources:Strings.Menu_ModGenerator_Appearance_Description}" />

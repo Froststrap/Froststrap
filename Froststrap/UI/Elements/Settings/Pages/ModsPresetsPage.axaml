@@ -27,8 +27,7 @@ SPDX-License-Identifier: MPL-2.0
             <Grid
                 ColumnDefinitions="*,*,*"
                 RowDefinitions="Auto,Auto,Auto"
-                ColumnSpacing="4"
-                RowSpacing="4">
+                ColumnSpacing="8">
                 <controls:CardAction
                     Grid.Column="0"
                     Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"

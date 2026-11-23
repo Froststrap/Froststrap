@@ -34,7 +34,7 @@ SPDX-License-Identifier: MPL-2.0
             <Grid
                 x:Name="ShortcutsGrid"
                 ColumnDefinitions="*,*"
-                ColumnSpacing="4">
+                ColumnSpacing="8">
                 <controls:OptionControl
                     x:Name="DesktopOption"
                     Grid.Column="0"
@@ -55,7 +55,7 @@ SPDX-License-Identifier: MPL-2.0
                 Title="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}"
                 Description="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                 <controls:OptionControl
                     Grid.Column="0"
                     Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">

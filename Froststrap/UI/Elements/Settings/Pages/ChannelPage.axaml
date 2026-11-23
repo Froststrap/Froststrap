@@ -21,7 +21,7 @@ SPDX-License-Identifier: MPL-2.0
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                 <controls:CardAction
                     Grid.Column="0"
                     Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
