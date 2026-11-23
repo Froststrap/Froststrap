@@ -264,6 +264,19 @@ internal sealed class ActivityWatcher : IDisposable
 
     private async void ProcessPlayerLogEntry(string logMessage)
     {
+        // async void: an unhandled exception here would crash Froststrap, so never let one escape
+        try
+        {
+            await ProcessPlayerLogEntryAsync(logMessage);
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to process log entry: {ex}");
+        }
+    }
+
+    private async Task ProcessPlayerLogEntryAsync(string logMessage)
+    {
         if (logMessage.StartsWith(GameLeavingEntry, StringComparison.Ordinal) ||
             logMessage.StartsWith(GameLeavingEntrySober, StringComparison.Ordinal) ||
             logMessage.StartsWith(AppCloseEntrySober, StringComparison.Ordinal))
@@ -356,7 +369,8 @@ internal sealed class ActivityWatcher : IDisposable
                         }
                     }
                 }
-                catch (JsonException ex)
+                // InvalidOperationException: valid JSON with an unexpected shape (e.g. "params" isn't an object)
+                catch (Exception ex) when (ex is JsonException or InvalidOperationException)
                 {
                     App.Logger.Error($"Ignoring malformed game launch event JSON: {ex.Message}");
                 }
