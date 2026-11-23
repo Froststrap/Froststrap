@@ -11,5 +11,8 @@ namespace Froststrap.Models.APIs.WebView2
 
         [JsonPropertyName("fileId")]
         public string? FileId { get; set; }
+
+        [JsonPropertyName("hashes")]
+        public WebView2Hashes? Hashes { get; set; }
     }
 }

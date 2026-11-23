@@ -26,6 +26,7 @@ namespace Froststrap
     [JsonSerializable(typeof(WebView2LatestResponse))]
     [JsonSerializable(typeof(WebView2ContentId))]
     [JsonSerializable(typeof(WebView2Download))]
+    [JsonSerializable(typeof(WebView2Hashes))]
     [JsonSerializable(typeof(List<WebView2Download>))]
     [JsonSerializable(typeof(FontFamily))]
     [JsonSerializable(typeof(FontFace))]
