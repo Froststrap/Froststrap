@@ -7,11 +7,14 @@ pub mod test;
 pub mod util;
 
 #[cfg(target_os = "linux")]
-pub mod linux;
+#[path = "linux/mod.rs"]
+pub mod os;
 #[cfg(target_os = "macos")]
-pub mod macos;
+#[path = "macos/mod.rs"]
+pub mod os;
 #[cfg(target_os = "windows")]
-pub mod win;
+#[path = "win.rs"]
+pub mod os;
 
 use std::os::raw::c_char;
 use util::IStr;
@@ -28,19 +31,8 @@ logger::export_set_logger!();
 /// On Windows it will set the thread AUMID.
 #[unsafe(no_mangle)]
 pub extern "C" fn init(bundle_id: *const c_char) -> i32 {
-    _ = bundle_id;
-
-    #[cfg(target_os = "macos")]
-    return macos::request_permission();
-
-    #[cfg(target_os = "windows")]
-    {
-        let bundle_id = IStr::from(bundle_id).into();
-        return win::set_application(bundle_id);
-    }
-
-    #[cfg(target_os = "linux")]
-    return 0;
+    let bundle_id = IStr::from(bundle_id).into();
+    return os::init(bundle_id);
 }
 
 #[unsafe(no_mangle)]
@@ -53,15 +45,7 @@ pub unsafe extern "C" fn send_notification_message(
 
     let title = IStr::from(title).into();
     let description = IStr::from(description).into();
-
-    #[cfg(target_os = "macos")]
-    let r = macos::send_notification(title, description, Duration::from_secs(2));
-
-    #[cfg(target_os = "linux")]
-    let r = linux::send_notification(title, description, Duration::from_secs(2));
-
-    #[cfg(target_os = "windows")]
-    let r = win::send_notification(title, description);
+    let r = os::send_notification(title, description, Duration::from_secs(2));
 
     log::debug!("Send notify result={r}");
     r

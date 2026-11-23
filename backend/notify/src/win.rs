@@ -8,10 +8,11 @@ use crate::data_types::SendNotificationResult;
 use windows::Data::Xml::Dom::XmlDocument;
 use windows::UI::Notifications::{ToastNotification, ToastNotificationManager, ToastTemplateType};
 use windows::core::HSTRING;
+use std::time::Duration;
 
 static AUMID_LOCK: RwLock<Option<String>> = RwLock::new(None);
 
-pub fn set_application(aumid: String) -> i32 {
+pub fn init(aumid: String) -> i32 {
     let mut writer = AUMID_LOCK.write().unwrap();
 
     *writer = Some(aumid);
@@ -22,14 +23,7 @@ pub fn set_application(aumid: String) -> i32 {
     0
 }
 
-pub fn send_notification(title: String, body: String) -> i32 {
-    match send_notification_impl(&title, &body) {
-        Ok(()) => SendNotificationResult::Sent as i32,
-        Err(_e) => SendNotificationResult::CallFailed as i32,
-    }
-}
-
-fn send_notification_impl(title: &str, body: &str) -> windows::core::Result<()> {
+pub fn send_notification(title: String, body: String, _timeout: Duration) -> i32 {
     let toast_xml: XmlDocument =
         ToastNotificationManager::GetTemplateContent(ToastTemplateType::ToastText02)?;
 
