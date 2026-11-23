@@ -17,10 +17,8 @@ pub mod os;
 pub mod os;
 
 use std::os::raw::c_char;
-use util::IStr;
-
-#[cfg(not(target_os = "windows"))]
 use std::time::Duration;
+use util::IStr;
 
 logger::export_set_logger!();
 
