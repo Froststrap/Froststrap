@@ -448,15 +448,27 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         EmoteWheel = ColorEmoteWheel
                     };
 
-                    await ModGenerator.GenerateAsync(options, stage =>
+                    await ModGenerator.GenerateAsync(options, progress =>
                     {
-                        (StatusText, Progress) = stage switch
+                        var (status, start, end) = progress.Stage switch
                         {
-                            ModGenerator.Stage.Downloading => (Strings.Menu_ModGenerator_Downloading, 5),
-                            ModGenerator.Stage.Extracting => (Strings.Menu_ModGenerator_Extracting, 25),
-                            ModGenerator.Stage.Recoloring => (Strings.Menu_ModGenerator_RecoloringPNGS, 50),
-                            _ => (Strings.Menu_ModGenerator_CleaningUp, 80)
+                            ModGenerator.Stage.Downloading => (Strings.Menu_ModGenerator_Downloading, 0, 35),
+                            ModGenerator.Stage.Extracting => (Strings.Menu_ModGenerator_Extracting, 35, 50),
+                            ModGenerator.Stage.Recoloring => (Strings.Menu_ModGenerator_RecoloringPNGS, 50, 88),
+                            _ => (Strings.Menu_ModGenerator_CleaningUp, 88, 90)
                         };
+
+                        string detail = progress switch
+                        {
+                            { Total: 0 } => "",
+                            { Stage: ModGenerator.Stage.Downloading } => string.Format(CultureInfo.InvariantCulture, " ({0:0.0} / {1:0.0} MB)", progress.Done / 1048576.0, progress.Total / 1048576.0),
+                            { Stage: ModGenerator.Stage.Extracting } => string.Format(CultureInfo.InvariantCulture, " ({0:0}%)", progress.Fraction * 100),
+                            { Stage: ModGenerator.Stage.Recoloring } => string.Format(CultureInfo.InvariantCulture, " ({0}/{1})", progress.Done, progress.Total),
+                            _ => ""
+                        };
+
+                        StatusText = status + detail;
+                        Progress = start + (end - start) * progress.Fraction;
                     });
 
                     string outputRoot = ModGenerator.OutputDirectory;
@@ -471,25 +483,21 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         if (!Directory.Exists(targetFolder))
                             Directory.CreateDirectory(targetFolder);
 
-                        int copiedFiles = 0;
                         var itemsToCopy = new List<string> { Path.Combine(outputRoot, "ExtraContent"), Path.Combine(outputRoot, "content"), infoPath };
-                        foreach (var item in itemsToCopy)
+                        var filesToCopy = itemsToCopy
+                            .SelectMany(item => File.Exists(item) ? [item] : Directory.Exists(item) ? Directory.GetFiles(item, "*", SearchOption.AllDirectories) : [])
+                            .ToList();
+
+                        int copiedFiles = 0;
+                        foreach (var file in filesToCopy)
                         {
-                            if (File.Exists(item))
-                            {
-                                File.Copy(item, Path.Combine(targetFolder, Path.GetFileName(item)), true);
-                                copiedFiles++;
-                            }
-                            else if (Directory.Exists(item))
-                            {
-                                foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
-                                {
-                                    string target = Path.Combine(targetFolder, Path.GetRelativePath(outputRoot, file));
-                                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-                                    File.Copy(file, target, true);
-                                    copiedFiles++;
-                                }
-                            }
+                            string target = Path.Combine(targetFolder, Path.GetRelativePath(outputRoot, file));
+                            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                            File.Copy(file, target, true);
+                            copiedFiles++;
+
+                            StatusText = string.Format(CultureInfo.InvariantCulture, "{0} ({1}/{2})", Strings.Menu_ModGenerator_Packaging, copiedFiles, filesToCopy.Count);
+                            Progress = 90 + 10.0 * copiedFiles / filesToCopy.Count;
                         }
 
                         var generatedMod = App.State.Prop.Mods.FirstOrDefault(m =>

@@ -304,10 +304,10 @@ internal partial class InternalModGenerator
 public static unsafe class ModGeneratorNative
 {
     private static readonly Lock Sync = new();
-    private static Action<int>? _progress;
+    private static Action<int, ulong, ulong>? _progress;
 
     [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-    private static void OnProgress(int stage) => _progress?.Invoke(stage);
+    private static void OnProgress(int stage, ulong done, ulong total) => _progress?.Invoke(stage, done, total);
 
     private static void ThrowIfFailed(int result, string fallback)
     {
@@ -335,14 +335,14 @@ public static unsafe class ModGeneratorNative
 
     /// Generates a complete mod from a JSON configuration, reporting stages
     /// (1 downloading, 2 extracting, 3 recoloring, 4 finishing) to `onProgress`
-    public static void Generate(string configJson, Action<int>? onProgress)
+    public static void Generate(string configJson, Action<int, ulong, ulong>? onProgress)
     {
         lock (Sync)
         {
             _progress = onProgress;
             try
             {
-                var callback = (IntPtr)(delegate* unmanaged[Cdecl]<int, void>)&OnProgress;
+                var callback = (IntPtr)(delegate* unmanaged[Cdecl]<int, ulong, ulong, void>)&OnProgress;
                 Call(() => InternalModGenerator.GenerateMod(configJson, callback), "Failed to generate the mod.");
             }
             finally

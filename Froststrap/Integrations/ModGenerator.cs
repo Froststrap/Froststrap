@@ -18,6 +18,11 @@ namespace Froststrap.Integrations
             Finishing = 4
         }
 
+        internal readonly record struct Progress(Stage Stage, ulong Done, ulong Total)
+        {
+            public double Fraction => Total == 0 ? 0 : Math.Min(1, (double)Done / Total);
+        }
+
         public static string OutputDirectory => Path.Combine(Path.GetTempPath(), "Froststrap", "ModGenerator");
 
         private static string CacheDirectory => Path.Combine(Paths.Cache, "ModGenerator");
@@ -119,12 +124,12 @@ namespace Froststrap.Integrations
         }
 
         /// Generates the mod into `OutputDirectory`
-        public static Task GenerateAsync(Options options, Action<Stage> onProgress)
+        public static Task GenerateAsync(Options options, Action<Progress> onProgress)
         {
             DeleteLegacyFiles();
             string config = BuildConfig(options);
             App.Logger.Info($"Generating mod (color: {options.Color}, angle: {options.Angle}, bands: {options.Bands})");
-            return Task.Run(() => Froststrap.Backend.ModGeneratorNative.Generate(config, stage => onProgress((Stage)stage)));
+            return Task.Run(() => Froststrap.Backend.ModGeneratorNative.Generate(config, (stage, done, total) => onProgress(new Progress((Stage)stage, done, total))));
         }
 
         public static Task ZipAsync(string destination)
