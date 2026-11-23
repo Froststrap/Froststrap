@@ -4,8 +4,17 @@
 
 //! os specific stuff for publish
 
-use crate::{args, arch, path::{self, dist, dotnet_publish_artifacts}, utils::{dedent, log, process}};
-use std::{fs, path::{PathBuf, Path}, fs::File, io::Write};
+use crate::{
+    arch, args,
+    path::{self, dist, dotnet_publish_artifacts},
+    utils::{dedent, log, process},
+};
+use std::{
+    fs,
+    fs::File,
+    io::Write,
+    path::{Path, PathBuf},
+};
 
 pub fn main() {
     let args = args::get();
@@ -43,14 +52,13 @@ fn desktop_entry(version: &str) -> String {
     ))
 }
 
-fn build_nfpm(
-    output_dir: PathBuf,
-    version: String,
-    desktop: PathBuf,
-    icon: PathBuf,
-) {
-    let nfpm = ensure_tool(&path::dist(), "nfpm",
-        "https://github.com/goreleaser/nfpm/releases/download/v2.47.0/nfpm_2.47.0_Linux_x86_64.tar.gz", true);
+fn build_nfpm(output_dir: PathBuf, version: String, desktop: PathBuf, icon: PathBuf) {
+    let nfpm = ensure_tool(
+        &path::dist(),
+        "nfpm",
+        "https://github.com/goreleaser/nfpm/releases/download/v2.49.0/nfpm_2.49.0_Linux_x86_64.tar.gz",
+        true,
+    );
 
     let binary = output_dir.join("froststrap");
     let libs_dir = output_dir.join("libs");
@@ -89,13 +97,10 @@ fn build_nfpm(
             "archlinux" => format!("Froststrap-linux-{}-{}.pkg.tar.zst", arch::target_arch(), p),
             _ => format!("Froststrap-linux-{}.{}", arch::target_arch(), p),
         };
-        
+
         log::info!("Building .{} via nFPM", p);
 
-        let target = dist()
-            .join(out_name)
-            .to_string_lossy()
-            .into_owned();
+        let target = dist().join(out_name).to_string_lossy().into_owned();
         let config_s = config.to_string_lossy().into_owned();
 
         let args = ["pkg", "--packager", p, "-f", &config_s, "-t", &target];
@@ -143,7 +148,8 @@ fn nfpm_config(
     version: &str,
     native_libs: &[PathBuf],
 ) -> String {
-    let mut native_contents = String::from("              - dst: /usr/lib/froststrap\n                type: dir\n");
+    let mut native_contents =
+        String::from("              - dst: /usr/lib/froststrap\n                type: dir\n");
 
     for path in native_libs {
         let name = path
@@ -220,7 +226,11 @@ pub fn ensure_tool(build_dir: &Path, name: &str, url: &str, extract_tar_gz: bool
         let archive_s = archive.to_string_lossy().into_owned();
         let extract_s = extract_dir.to_string_lossy().into_owned();
 
-        log::info!("{} not found on PATH, downloading archive to {}", name, archive_s);
+        log::info!(
+            "{} not found on PATH, downloading archive to {}",
+            name,
+            archive_s
+        );
         process("curl", ["-L", "--fail", "-o", &archive_s, url]).exec_checked("curl");
 
         fs::create_dir_all(&extract_dir).unwrap();

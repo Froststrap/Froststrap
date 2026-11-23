@@ -38,12 +38,13 @@ SPDX-License-Identifier: MPL-2.0
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('OSX'))">dylib</NativeLibExt>
     <NativeLibExt Condition="$([MSBuild]::IsOSPlatform('Linux'))">so</NativeLibExt>
 
-    <PackageFlags>-p notify</PackageFlags>
-    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">-p notify -p mobileappreg -p virtualdisplay</PackageFlags>
+    <PackageFlags>--lib --no-default-features --features mod-generator/ffi -p notify -p mod-generator</PackageFlags>
+    <PackageFlags Condition="$([MSBuild]::IsOSPlatform('OSX'))">--lib --no-default-features --features mod-generator/ffi -p notify -p mod-generator -p mobileappreg -p virtualdisplay</PackageFlags>
   </PropertyGroup>
 
   <ItemGroup>
     <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)notify.$(NativeLibExt)" />
+    <NativeLib Include="$(RustTargetDir)/$(NativeLibPrefix)mod_generator.$(NativeLibExt)" />
     <NativeLib Include="$(RustTargetDir)/libvirtualdisplay.dylib"
                Condition="$([MSBuild]::IsOSPlatform('OSX'))" />
     <NativeLib Include="$(RustTargetDir)/libmobileappreg.dylib"

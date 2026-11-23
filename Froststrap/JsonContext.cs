@@ -66,7 +66,6 @@ namespace Froststrap
     [JsonSerializable(typeof(UniverseIdResponse))]
     [JsonSerializable(typeof(GradientStops))]
     [JsonSerializable(typeof(GradientExport))]
-    [JsonSerializable(typeof(ModGeneratorInfo))]
     [JsonSerializable(typeof(VersionCacheEntry))]
     [JsonSerializable(typeof(StoredCredential))]
     [JsonSerializable(typeof(LoginCodeRequest))]

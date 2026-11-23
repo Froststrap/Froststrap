@@ -572,7 +572,7 @@ internal sealed class Bootstrapper : IDisposable
         _appLock?.Dispose();
 
         Dialog?.CloseBootstrapper();
-        App.SoftTerminate(ErrorCode.ERROR_CANCELLED);
+        App.Terminate(ErrorCode.ERROR_CANCELLED);
         return false;
     }
     #endregion

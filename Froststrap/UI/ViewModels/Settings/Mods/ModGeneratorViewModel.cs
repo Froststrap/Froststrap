@@ -11,8 +11,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Collections.ObjectModel;
-using System.IO.Compression;
-using System.Text.Json.Nodes;
 using System.Windows.Input;
 using Color = Avalonia.Media.Color;
 
@@ -24,7 +22,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         public bool IsGradientMode => GradientStops.Count >= 2;
 
-        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
 
         public ModGeneratorViewModel()
         {
@@ -252,7 +249,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         public bool HasFolderNameValidationError => !string.IsNullOrEmpty(FolderNameValidationError);
 
-        private static string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
 
         private async Task LoadFontFilesAsync()
         {
@@ -426,62 +422,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 await Task.Run(async () =>
                 {
-                    StatusText = Strings.Menu_ModGenerator_Downloading;
-                    Progress = 5;
-                    var (luaZip, extraZip, contentZip, vHash, vName) = await ModGenerator.DownloadForModGenerator();
-
-                    StatusText = Strings.Menu_ModGenerator_Extracting;
-                    Progress = 25;
-                    string luaDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages");
-                    string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
-                    string contentDir = Path.Combine(TempRoot, "content", "textures");
-
-                    string tempFolderName = SolidColorHex;
-
-                    Parallel.Invoke(
-                        () => SafeExtract(luaZip, luaDir),
-                        () => SafeExtract(extraZip, extraDir),
-                        () => SafeExtract(contentZip, contentDir));
-
-                    StatusText = Strings.Menu_ModGenerator_RecoloringPNGS;
-                    Progress = 50;
-                    string foundationImagesDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "SpriteSheets");
-                    string? getImageSetDataPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "Generated", "GetImageSetData.lua");
-
-                    var mappings = await ModGenerator.LoadMappingsAsync();
-
-                    List<ModGenerator.GradientStop>? gradientStopsForSprites = null;
-                    float gradientAngleForSprites = 0f;
-                    if (IsGradientMode)
-                    {
-                        gradientStopsForSprites = [.. GradientStops.OrderBy(s => s.Offset)
-                            .Select(s => new ModGenerator.GradientStop((float)s.Offset, Color.Parse(s.Color)))];
-                        gradientAngleForSprites = (float)GradientAngle;
-                    }
-
-                    ModGenerator.RecolorAllPngs(
-                        TempRoot,
-                        _solidColor,
-                        mappings,
-                        ColorCursors,
-                        ColorShiftlock,
-                        ColorEmoteWheel,
-                        gradientStopsForSprites,
-                        gradientAngleForSprites,
-                        getImageSetDataPath,
-                        RobloxIconImagePath,
-                        CustomSpinnerPath
-                    );
-                    Progress = 70;
-
-                    StatusText = Strings.Menu_ModGenerator_RecoloringFonts;
-
-                    string? gradientArg = null;
-                    double? angleArg = null;
+                    string colorArg = $"{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+                    double angleArg = 0;
                     if (IsGradientMode)
                     {
                         var orderedStops = GradientStops.OrderBy(s => s.Offset);
-                        gradientArg = string.Join(",", orderedStops.Select(s => $"{s.Offset}:{s.Color.TrimStart('#')}"));
+                        colorArg = string.Join(",", orderedStops.Select(s => $"{s.Offset.ToString(CultureInfo.InvariantCulture)}:{s.Color.TrimStart('#')}"));
                         angleArg = GradientAngle;
                     }
 
@@ -489,113 +435,44 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         ? GetNextAvailableModFolderName()
                         : ModFolderName;
 
-                    string? imageMapArg = null;
-                    if (!string.IsNullOrWhiteSpace(RobloxIconImagePath) && File.Exists(RobloxIconImagePath))
-                        imageMapArg = $"tilt:{RobloxIconImagePath}";
-
-                    int? bandsArg = GradientBands > 0 ? GradientBands : (int?)null;
-
-                    string? skipGlyphsArg = null;
-                    if (DontColorPlayIcon)
+                    var options = new ModGenerator.Options
                     {
-                        skipGlyphsArg = "play-large,play-small";
-                    }
-
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, gradientArg, angleArg, imageMapArg, bandsArg, skipGlyphsArg);
-
-                    WriteBuilderIconsJson(TempRoot);
-
-                    StatusText = Strings.Menu_ModGenerator_CleaningUp;
-                    Progress = 80;
-
-                    var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    foreach (var entry in mappings.Values)
-                        preservePaths.Add(Path.GetFullPath(Path.Combine([TempRoot, .. entry])));
-
-                    string builderIconsFontDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
-                    if (Directory.Exists(builderIconsFontDir))
-                    {
-                        preservePaths.Add(Path.GetFullPath(builderIconsFontDir));
-                        foreach (var fontFile in Directory.GetFiles(builderIconsFontDir, "*.*"))
-                            preservePaths.Add(Path.GetFullPath(fontFile));
-                    }
-
-                    string builderIconsJsonPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "BuilderIcons.json");
-                    preservePaths.Add(Path.GetFullPath(builderIconsJsonPath));
-
-                    if (ColorCursors)
-                    {
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "Cursors", "KeyboardMouse", "IBeamCursor.png")));
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "Cursors", "KeyboardMouse", "ArrowCursor.png")));
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "Cursors", "KeyboardMouse", "ArrowFarCursor.png")));
-                    }
-                    if (ColorShiftlock)
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "MouseLockedCursor.png")));
-                    if (ColorEmoteWheel)
-                    {
-                        string emotesDir = Path.Combine(TempRoot, "content", "textures", "ui", "Emotes", "Large");
-                        string[] emoteFiles = ["SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png"];
-                        foreach (var e in emoteFiles)
-                            preservePaths.Add(Path.GetFullPath(Path.Combine(emotesDir, e)));
-                    }
-
-                    preservePaths.Add(Path.GetFullPath(foundationImagesDir));
-
-                    void DeleteExcept(string dir)
-                    {
-                        if (preservePaths.Contains(Path.GetFullPath(dir)))
-                            return;
-
-                        foreach (var file in Directory.GetFiles(dir))
-                            if (!preservePaths.Contains(Path.GetFullPath(file)))
-                                try { File.Delete(file); } catch { }
-
-                        foreach (var subDir in Directory.GetDirectories(dir))
-                        {
-                            DeleteExcept(subDir);
-                            try
-                            {
-                                if (!Directory.EnumerateFileSystemEntries(subDir).Any() && !preservePaths.Contains(Path.GetFullPath(subDir)))
-                                    Directory.Delete(subDir);
-                            }
-                            catch { }
-                        }
-                    }
-
-                    if (Directory.Exists(luaDir)) DeleteExcept(luaDir);
-                    if (Directory.Exists(extraDir)) DeleteExcept(extraDir);
-                    if (Directory.Exists(contentDir)) DeleteExcept(contentDir);
-
-                    string infoPath = Path.Combine(TempRoot, "info.json");
-
-                    JsonNode colorsUsed;
-
-                    if (IsGradientMode)
-                    {
-                        JsonArray stops = [];
-
-                        foreach (var stop in GradientStops)
-                            stops.Add((JsonNode)new JsonObject { ["Offset"] = stop.Offset, ["Color"] = stop.Color });
-
-                        colorsUsed = new JsonObject
-                        {
-                            [nameof(GradientExport.GradientStops)] = stops,
-                            ["Angle"] = GradientAngle
-                        };
-                    }
-                    else
-                    {
-                        colorsUsed = new JsonObject { ["SolidColor"] = SolidColorHex };
-                    }
-
-                    var infoData = new ModGeneratorInfo
-                    {
-                        FroststrapVersion = App.InternalVersion,
-                        RobloxVersion = vName,
-                        RobloxVersionHash = vHash,
-                        ColorsUsed = colorsUsed
+                        Color = colorArg,
+                        Angle = angleArg,
+                        Bands = GradientBands > 0 ? GradientBands : null,
+                        RobloxIconPath = RobloxIconImagePath,
+                        SpinnerPath = CustomSpinnerPath,
+                        SkipPlayIcon = DontColorPlayIcon,
+                        Cursors = ColorCursors,
+                        Shiftlock = ColorShiftlock,
+                        EmoteWheel = ColorEmoteWheel
                     };
-                    await File.WriteAllTextAsync(infoPath, JsonHelper.Serialize(infoData, _jsonOptions));
+
+                    await ModGenerator.GenerateAsync(options, progress =>
+                    {
+                        var (status, start, end) = progress.Stage switch
+                        {
+                            ModGenerator.Stage.Downloading => (Strings.Menu_ModGenerator_Downloading, 0, 35),
+                            ModGenerator.Stage.Extracting => (Strings.Menu_ModGenerator_Extracting, 35, 50),
+                            ModGenerator.Stage.Recoloring => (Strings.Menu_ModGenerator_RecoloringPNGS, 50, 88),
+                            _ => (Strings.Menu_ModGenerator_CleaningUp, 88, 90)
+                        };
+
+                        string detail = progress switch
+                        {
+                            { Total: 0 } => "",
+                            { Stage: ModGenerator.Stage.Downloading } => string.Format(CultureInfo.InvariantCulture, " ({0:0.0} / {1:0.0} MB)", progress.Done / 1048576.0, progress.Total / 1048576.0),
+                            { Stage: ModGenerator.Stage.Extracting } => string.Format(CultureInfo.InvariantCulture, " ({0:0}%)", progress.Fraction * 100),
+                            { Stage: ModGenerator.Stage.Recoloring } => string.Format(CultureInfo.InvariantCulture, " ({0}/{1})", progress.Done, progress.Total),
+                            _ => ""
+                        };
+
+                        StatusText = status + detail;
+                        Progress = start + (end - start) * progress.Fraction;
+                    });
+
+                    string outputRoot = ModGenerator.OutputDirectory;
+                    string infoPath = Path.Combine(outputRoot, "info.json");
 
                     StatusText = Strings.Menu_ModGenerator_Packaging;
                     Progress = 90;
@@ -606,49 +483,45 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         if (!Directory.Exists(targetFolder))
                             Directory.CreateDirectory(targetFolder);
 
+                        var itemsToCopy = new List<string> { Path.Combine(outputRoot, "ExtraContent"), Path.Combine(outputRoot, "content"), infoPath };
+                        var filesToCopy = itemsToCopy
+                            .SelectMany(item => File.Exists(item) ? [item] : Directory.Exists(item) ? Directory.GetFiles(item, "*", SearchOption.AllDirectories) : [])
+                            .ToList();
+
                         int copiedFiles = 0;
-                        var itemsToCopy = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
-                        foreach (var item in itemsToCopy)
+                        foreach (var file in filesToCopy)
                         {
-                            if (File.Exists(item))
-                            {
-                                File.Copy(item, Path.Combine(targetFolder, Path.GetFileName(item)), true);
-                                copiedFiles++;
-                            }
-                            else if (Directory.Exists(item))
-                            {
-                                foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
-                                {
-                                    string target = Path.Combine(targetFolder, Path.GetRelativePath(TempRoot, file));
-                                    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-                                    File.Copy(file, target, true);
-                                    copiedFiles++;
-                                }
-                            }
+                            string target = Path.Combine(targetFolder, Path.GetRelativePath(outputRoot, file));
+                            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                            File.Copy(file, target, true);
+                            copiedFiles++;
+
+                            StatusText = string.Format(CultureInfo.InvariantCulture, "{0} ({1}/{2})", Strings.Menu_ModGenerator_Packaging, copiedFiles, filesToCopy.Count);
+                            Progress = 90 + 10.0 * copiedFiles / filesToCopy.Count;
                         }
 
-                        var existingMod = App.State.Prop.Mods.FirstOrDefault(m =>
+                        var generatedMod = App.State.Prop.Mods.FirstOrDefault(m =>
                             string.Equals(m.FolderName, modFolderName, StringComparison.OrdinalIgnoreCase));
 
-                        if (existingMod is null)
+                        if (generatedMod is null)
                         {
-                            int maxPriority = App.State.Prop.Mods.Count > 0 ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
-                            var newMod = new ModConfig
+                            generatedMod = new ModConfig
                             {
                                 FolderName = modFolderName,
-                                Enabled = true,
-                                Priority = maxPriority + 1,
                                 Target = ModTarget.Both
                             };
-                            App.State.Prop.Mods.Add(newMod);
-                            App.State.SaveSetting("Mods");
+                            App.State.Prop.Mods.Add(generatedMod);
                             App.Logger.Info($"Added mod '{modFolderName}' to state.");
                         }
-                        else
-                        {
-                            existingMod.Enabled = true;
-                            App.State.SaveSetting("Mods");
-                        }
+
+                        generatedMod.Enabled = true;
+
+                        var otherMods = App.State.Prop.Mods.Where(m => m != generatedMod).OrderBy(m => m.Priority).ToList();
+                        generatedMod.Priority = 1;
+                        for (int i = 0; i < otherMods.Count; i++)
+                            otherMods[i].Priority = i + 2;
+
+                        App.State.SaveSetting("Mods");
 
                         Progress = 100;
                         StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_AppliedModifications, copiedFiles);
@@ -656,29 +529,29 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     else
                     {
                         StatusText = "Zipping results...";
-                        await Dispatcher.UIThread.InvokeAsync(async () =>
+                        var file = await Dispatcher.UIThread.InvokeAsync(async () =>
                         {
                             var visualRoot = (Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-                            if (visualRoot == null) return;
-                            var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                            if (visualRoot == null) return null;
+                            return await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
                             {
                                 Title = "Save Froststrap Mod",
                                 SuggestedFileName = $"FroststrapMod_{SolidColorHex}.zip",
                                 DefaultExtension = ".zip",
                                 FileTypeChoices = [new FilePickerFileType("Zip Archive") { Patterns = ["*.zip"] }]
                             });
-
-                            if (file != null)
-                            {
-                                ModGenerator.ZipResult(TempRoot, file.Path.LocalPath);
-                                Progress = 100;
-                                StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_SavedTo, Path.GetFileName(file.Path.LocalPath));
-                            }
-                            else
-                            {
-                                StatusText = Strings.Menu_ModGenerator_Cancelled;
-                            }
                         });
+
+                        if (file != null)
+                        {
+                            await ModGenerator.ZipAsync(file.Path.LocalPath);
+                            Progress = 100;
+                            StatusText = string.Format(CultureInfo.InvariantCulture, Strings.Menu_ModGenerator_SavedTo, Path.GetFileName(file.Path.LocalPath));
+                        }
+                        else
+                        {
+                            StatusText = Strings.Menu_ModGenerator_Cancelled;
+                        }
                     }
                 });
             }
@@ -692,78 +565,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 IsNotGeneratingMod = true;
                 IsProgressVisible = false;
                 Progress = 0;
-            }
-        }
-
-        private static void WriteBuilderIconsJson(string targetDir)
-        {
-            var jsonPath = Path.Combine(targetDir, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "BuilderIcons.json");
-            var dir = Path.GetDirectoryName(jsonPath);
-            if (dir == null) return;
-            Directory.CreateDirectory(dir);
-
-            var jsonContent = @"{
-  ""name"": ""Builder Icons"",
-  ""loadStrategy"": ""sameFamilyOnly"",
-  ""faces"": [
-    {
-      ""name"": ""Regular"",
-      ""weight"": 400,
-      ""style"": ""normal"",
-      ""assetId"": ""rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/Font/BuilderIcons-Regular.otf""
-    },
-    {
-      ""name"": ""Bold"",
-      ""weight"": 700,
-      ""style"": ""normal"",
-      ""assetId"": ""rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/Font/BuilderIcons-Filled.otf""
-    }
-  ]
-}";
-            File.WriteAllText(jsonPath, jsonContent);
-        }
-
-        private static void SafeExtract(string zipPath, string targetDir)
-        {
-            if (string.IsNullOrEmpty(zipPath) || !File.Exists(zipPath)) return;
-            if (Directory.Exists(targetDir)) Directory.Delete(targetDir, true);
-            Directory.CreateDirectory(targetDir);
-
-            string targetRoot = Path.GetFullPath(targetDir) + Path.DirectorySeparatorChar;
-
-            using var archive = ZipFile.OpenRead(zipPath);
-            foreach (var entry in archive.Entries)
-            {
-                if (string.IsNullOrWhiteSpace(entry.FullName))
-                    continue;
-
-                string normalizedEntry = entry.FullName
-                    .Replace('\\', Path.DirectorySeparatorChar)
-                    .Replace('/', Path.DirectorySeparatorChar)
-                    .TrimStart(Path.DirectorySeparatorChar);
-
-                if (string.IsNullOrWhiteSpace(normalizedEntry))
-                    continue;
-
-                string destinationPath = Path.GetFullPath(Path.Combine(targetDir, normalizedEntry));
-                if (!destinationPath.StartsWith(targetRoot, StringComparison.Ordinal))
-                    continue;
-
-                bool isDirectory = string.IsNullOrEmpty(entry.Name)
-                    || entry.FullName.EndsWith('/')
-                    || entry.FullName.EndsWith('\\');
-
-                if (isDirectory)
-                {
-                    Directory.CreateDirectory(destinationPath);
-                    continue;
-                }
-
-                string? parent = Path.GetDirectoryName(destinationPath);
-                if (!string.IsNullOrEmpty(parent))
-                    Directory.CreateDirectory(parent);
-
-                entry.ExtractToFile(destinationPath, overwrite: true);
             }
         }
 

@@ -165,6 +165,7 @@ pub fn main() -> (PathBuf, PathBuf) {
         "libvirtualdisplay.dylib",
         "libmobileappreg.dylib",
         "libnotify.dylib",
+        "libmod_generator.dylib",
     ] {
         let dylib = find_dylib(lib);
         builder = builder.framework(dylib);

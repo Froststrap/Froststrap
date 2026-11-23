@@ -35,6 +35,12 @@ internal static class LaunchHandler
                 break;
 
             default:
+                if (App.Bootstrapper is not null || Volatile.Read(ref _activeWatcher) is not null)
+                {
+                    App.Logger.Info("Not closing, Roblox is still being launched or watched");
+                    break;
+                }
+
                 App.Logger.Info("Closing");
                 App.Terminate(ErrorCode.ERROR_SUCCESS);
                 break;
@@ -328,7 +334,7 @@ internal static class LaunchHandler
 
             if (result != MessageBoxResult.Yes)
             {
-                App.Terminate();
+                EndLaunch();
                 return;
             }
         }
@@ -366,22 +372,22 @@ internal static class LaunchHandler
 
             WatcherData? watcherData = App.Bootstrapper.PendingWatcherData;
 
+            App.Bootstrapper.Dispose();
+            App.Bootstrapper = null;
+
             if (watcherData is null)
             {
-                App.Terminate();
+                EndLaunch();
                 return;
             }
 
             App.Logger.Info("Handing off to the watcher");
 
-            App.Bootstrapper.Dispose();
-            App.Bootstrapper = null;
-
             // the watcher owns this process from here on, so only bail out of it if it refused to start
             bool handedOff = await Dispatcher.UIThread.InvokeAsync(() => LaunchWatcher(watcherData));
 
             if (!handedOff)
-                App.Terminate();
+                EndLaunch();
         }, TaskScheduler.Default);
 
 
@@ -448,10 +454,21 @@ internal static class LaunchHandler
             if (App.Settings.Prop.CleanerOptions != CleanerOptions.Never)
                 Cleaner.DoCleaning();
 
-            App.Terminate();
+            EndLaunch();
         }, TaskScheduler.Default);
 
         return true;
+    }
+
+    private static void EndLaunch()
+    {
+        if (App.SettingsOpen)
+        {
+            App.Logger.Info("Settings window is open, keeping the app running");
+            return;
+        }
+
+        App.Terminate();
     }
 
     public static async Task LaunchBackgroundUpdater()
