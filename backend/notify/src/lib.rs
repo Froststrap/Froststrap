@@ -24,11 +24,6 @@ use std::time::Duration;
 
 logger::export_set_logger!();
 
-/// Runtime initializer, will No-op on Linux systems
-///
-/// On macOS it will request notification permission.
-///
-/// On Windows it will set the thread AUMID.
 #[unsafe(no_mangle)]
 pub extern "C" fn init(bundle_id: *const c_char) -> i32 {
     let bundle_id = IStr::from(bundle_id).into();
