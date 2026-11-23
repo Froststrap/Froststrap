@@ -14,27 +14,7 @@ SPDX-License-Identifier: MPL-2.0
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10,14,40">
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                <controls:CardAction Grid.Column="0"
-                                     Command="{Binding OpenCommunityModsCommand}"
-                                     Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
-                                     Icon="House"
-                                     Description="{x:Static resources:Strings.Menu_CommunityMods_Description}" />
-
-                <controls:CardAction Grid.Column="1"
-                                     Command="{Binding OpenPresetModsCommand}"
-                                     Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
-                                     Icon="BookOpen"
-                                     Description="{x:Static resources:Strings.Menu_PresetMods_Description}" />
-
-                <controls:CardAction Grid.Column="2"
-                                     Command="{Binding OpenModsCommand}"
-                                     Header="{x:Static resources:Strings.Menu_Mods_Title}"
-                                     Icon="List"
-                                     Description="{x:Static resources:Strings.Menu_Mods_Description}" />
-            </Grid>
-
-            <controls:SectionHeader Title="{x:Static resources:Strings.Menu_ModGenerator_StylePreview}"
+            <controls:SectionHeader Margin="0,4,0,4" Title="{x:Static resources:Strings.Menu_ModGenerator_StylePreview}"
                                     Description="{x:Static resources:Strings.Menu_ModGenerator_StylePreview_Description}" />
 
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_ModGenerator_IconSet_Title}"

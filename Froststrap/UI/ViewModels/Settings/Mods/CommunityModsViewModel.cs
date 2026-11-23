@@ -20,10 +20,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private bool _disposed;
         private EventHandler? _remoteDataHandler;
 
-        public event EventHandler? OpenModsEvent;
-        public event EventHandler? OpenModGeneratorEvent;
-        public event EventHandler? OpenPresetModsEvent;
-
         private ObservableCollection<CommunityMod> _mods = [];
         public ObservableCollection<CommunityMod> Mods
         {
@@ -77,10 +73,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             _remoteDataHandler = async (_, _) => await RefreshModsAsync();
             App.RemoteData.Subscribe(_remoteDataHandler);
         }
-
-        [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
 
         [RelayCommand]
         private void SetFilter(object? parameter)

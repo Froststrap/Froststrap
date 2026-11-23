@@ -47,10 +47,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             _ = LoadFontFilesAsync();
         }
 
-        public event EventHandler? OpenModsEvent;
-        public event EventHandler? OpenCommunityModsEvent;
-        public event EventHandler? OpenPresetModsEvent;
-
         #region Commands
         public IAsyncRelayCommand GenerateModCommand { get; }
         public ICommand AddGradientStopCommand { get; }
@@ -60,10 +56,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand ClearRobloxIconCommand { get; }
         public ICommand SelectSpinnerIconCommand { get; }
         public ICommand ClearSpinnerIconCommand { get; }
-
-        [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
         #endregion
 
         #region Observable Properties

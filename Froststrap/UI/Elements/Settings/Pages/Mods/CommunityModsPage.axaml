@@ -25,28 +25,6 @@ SPDX-License-Identifier: MPL-2.0
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14">
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                <controls:CardAction Grid.Column="0"
-                                     Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
-                                     Icon="BookOpen"
-                                     Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
-                                     Command="{Binding OpenPresetModsCommand}" />
-
-                <controls:CardAction Grid.Column="1"
-                                     Header="{x:Static resources:Strings.Menu_Mods_Title}"
-                                     Icon="List"
-                                     Description="{x:Static resources:Strings.Menu_Mods_Description}"
-                                     Command="{Binding OpenModsCommand}" />
-
-                <controls:CardAction Grid.Column="2"
-                                     Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
-                                     Icon="PaintbrushVertical"
-                                     Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
-                                     Command="{Binding OpenModGeneratorCommand}"/>
-            </Grid>
-
-            <Separator Margin="0,8" />
-
             <Grid IsVisible="{Binding !IsLoading}" RowDefinitions="Auto, Auto, *">
 
                 <StackPanel Grid.Row="0" Margin="0,0,0,8">

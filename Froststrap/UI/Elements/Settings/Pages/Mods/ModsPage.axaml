@@ -24,26 +24,6 @@ SPDX-License-Identifier: MPL-2.0
         <Grid RowDefinitions="Auto, *, Auto" Margin="14" Background="Transparent">
 
             <StackPanel Grid.Row="0">
-                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                    <controls:CardAction Grid.Column="0"
-                                         Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
-                                         Icon="House"
-                                         Description="{x:Static resources:Strings.Menu_CommunityMods_Description}"
-                                         Command="{Binding OpenCommunityModsCommand}" />
-                    <controls:CardAction Grid.Column="1"
-                                         Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
-                                         Icon="BookOpen"
-                                         Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
-                                         Command="{Binding OpenPresetModsCommand}" />
-                    <controls:CardAction Grid.Column="2"
-                                         Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
-                                         Icon="PaintbrushVertical"
-                                         Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
-                                         Command="{Binding OpenModGeneratorCommand}" />
-                </Grid>
-
-                <Separator Margin="0,8" />
-
                 <controls:IconButton Icon="Plus"
                                      Content="{x:Static resources:Strings.Menu_Mods_AddNewMod}"
                                      HorizontalAlignment="Stretch"
