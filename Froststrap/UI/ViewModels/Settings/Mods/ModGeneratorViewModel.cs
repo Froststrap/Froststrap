@@ -47,10 +47,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             _ = LoadFontFilesAsync();
         }
 
-        public event EventHandler? OpenModsEvent;
-        public event EventHandler? OpenCommunityModsEvent;
-        public event EventHandler? OpenPresetModsEvent;
-
         #region Commands
         public IAsyncRelayCommand GenerateModCommand { get; }
         public ICommand AddGradientStopCommand { get; }
@@ -60,10 +56,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand ClearRobloxIconCommand { get; }
         public ICommand SelectSpinnerIconCommand { get; }
         public ICommand ClearSpinnerIconCommand { get; }
-
-        [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
         #endregion
 
         #region Observable Properties
@@ -226,7 +218,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 if (GradientStops.Count > 0)
                     GradientStops[0].Color = SolidColorHex;
                 UpdateGlyphColors();
-                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
+                StatusText = "";
             }
         }
 
@@ -262,7 +254,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (FontDisplayNames.Count > 0)
                         SelectedFontDisplayName = FontDisplayNames[0];
                 });
-                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
             }
             catch (Exception ex)
             {

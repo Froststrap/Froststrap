@@ -245,7 +245,11 @@ namespace Froststrap.UI.Elements.Base
             }
             else
             {
-                var customDict = new ResourceDictionary { ["NotificationBackgroundColor"] = new SolidColorBrush(Color.Parse("#2D2D2D")) };
+                var customDict = new ResourceDictionary
+                {
+                    ["NotificationBackgroundColor"] = new SolidColorBrush(Color.Parse("#202020")),
+                    ["SurfaceTintBrush"] = new SolidColorBrush(Color.Parse("#14FFFFFF"))
+                };
                 _activeThemeDictionary = customDict;
                 app.Resources.MergedDictionaries.Add(customDict);
                 _appliedThemeName = null;
@@ -253,6 +257,7 @@ namespace Froststrap.UI.Elements.Base
                 if (isCustomColors)
                 {
                     backgroundBrush = BuildCustomColorBrush();
+                    customDict["SurfaceBackdropBrush"] = backgroundBrush;
                 }
                 else
                 {

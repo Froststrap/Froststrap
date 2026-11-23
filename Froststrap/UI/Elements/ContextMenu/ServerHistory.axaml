@@ -8,9 +8,6 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:enums="using:Froststrap.Enums"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:controls="using:Froststrap.UI.Elements.Controls"
                      xmlns:resources="using:Froststrap.Localisation"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
@@ -19,8 +16,7 @@ SPDX-License-Identifier: MPL-2.0
                      Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
                      Width="580" Height="420"
                      MinWidth="420" MinHeight="420"
-                     WindowStartupLocation="CenterScreen"
-                     mc:Ignorable="d">
+                     WindowStartupLocation="CenterScreen">
 
     <base:AvaloniaWindow.Styles>
         <Style Selector="TextBlock.errorView">
@@ -61,9 +57,7 @@ SPDX-License-Identifier: MPL-2.0
                    Text="{Binding Error}"
                    TextWrapping="Wrap" />
 
-        <Border Grid.Row="1"
-                Classes="loadingView"
-                Tag="{Binding LoadState}">
+        <Border Grid.Row="1" Classes="loadingView" Tag="{Binding LoadState}">
             <ui:FAProgressRing IsIndeterminate="True"
                                Width="100" Height="100"
                                VerticalAlignment="Center"

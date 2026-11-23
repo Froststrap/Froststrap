@@ -16,7 +16,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public QuickPlayPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("Quick Play");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Quick Play"); };
 
             GameSearchAutoCompleteBox.SelectionChanged += OnGameSearchSelectionChanged;
             GameSearchAutoCompleteBox.TemplateApplied += OnGameSearchTemplateApplied;

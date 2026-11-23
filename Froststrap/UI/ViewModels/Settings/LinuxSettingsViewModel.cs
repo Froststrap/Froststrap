@@ -26,6 +26,7 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
         {
             var newEntry = new EnvEntry("", "", RemoveEnvEntry);
             StudioEnvEntries.Add(newEntry);
+            OnPropertyChanged(nameof(HasStudioEnvEntries));
         });
 
         OpenWineCfgCommand = new RelayCommand(OpenWineCfg);
@@ -172,6 +173,8 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     }
 
     public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }
+
+    public bool HasStudioEnvEntries => StudioEnvEntries.Count > 0;
     public ICommand AddStudioEnvCommand { get; }
 
     internal sealed class EnvEntry : NotifyPropertyChangedViewModel
@@ -238,5 +241,6 @@ internal sealed class LinuxSettingsViewModel : NotifyPropertyChangedViewModel
     {
         App.Settings.Prop.StudioEnvironmentVariables.Remove(entry.Key);
         StudioEnvEntries.Remove(entry);
+        OnPropertyChanged(nameof(HasStudioEnvEntries));
     }
 }

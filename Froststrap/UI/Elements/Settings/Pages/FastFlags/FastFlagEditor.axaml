@@ -7,18 +7,12 @@ SPDX-License-Identifier: MPL-2.0
 <UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.FastFlags.FastFlagEditor"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Localisation"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:model="using:Froststrap.Models"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
-             d:DesignHeight="600"
-             d:DesignWidth="1000"
-             Focusable="True"
-             mc:Ignorable="d">
+             Focusable="True">
 
     <Grid DragDrop.AllowDrop="True"
           DragDrop.Drop="OnDrop"
@@ -109,8 +103,7 @@ SPDX-License-Identifier: MPL-2.0
                             </controls:AotDataGridColumn.CellTemplate>
                         </controls:AotDataGridColumn>
 
-                        <controls:AotDataGridColumn Width="*"
-                                                    Header="{x:Static resources:Strings.Common_Name}">
+                        <controls:AotDataGridColumn Width="*" Header="{x:Static resources:Strings.Common_Name}">
                             <controls:AotDataGridColumn.CellTemplate>
                                 <DataTemplate x:DataType="model:FastFlag">
                                     <Panel Background="Transparent" DoubleTapped="Cell_DoubleTapped">
@@ -130,8 +123,7 @@ SPDX-License-Identifier: MPL-2.0
                             </controls:AotDataGridColumn.CellTemplate>
                         </controls:AotDataGridColumn>
 
-                        <controls:AotDataGridColumn Width="250"
-                                                    Header="{x:Static resources:Strings.Common_Value}">
+                        <controls:AotDataGridColumn Width="250" Header="{x:Static resources:Strings.Common_Value}">
                             <controls:AotDataGridColumn.CellTemplate>
                                 <DataTemplate x:DataType="model:FastFlag">
                                     <Panel Background="Transparent" DoubleTapped="Cell_DoubleTapped">
@@ -166,10 +158,7 @@ SPDX-License-Identifier: MPL-2.0
             </Grid>
         </Grid>
 
-        <Grid x:Name="DragOverlay"
-              IsHitTestVisible="False"
-              IsVisible="False"
-              Background="#88000000">
+        <Grid x:Name="DragOverlay" IsHitTestVisible="False" IsVisible="False" Background="#88000000">
 
             <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_DragOverlay}"
                        FontSize="20"

@@ -8,22 +8,18 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:controls="using:Froststrap.UI.Elements.Controls"
                      xmlns:resources="using:Froststrap.Localisation"
                      xmlns:models="using:Froststrap.UI.ViewModels"
                      xmlns:vm="using:Froststrap.UI.ViewModels.Dialogs"
                      xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-                     xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
                      xmlns:enums="using:Froststrap.Enums"
                      x:DataType="vm:LaunchMenuViewModel"
                      Title="Froststrap"
                      Width="420"
                      SizeToContent="Height"
                      CanResize="False"
-                     WindowStartupLocation="CenterScreen"
-                     mc:Ignorable="d">
+                     WindowStartupLocation="CenterScreen">
 
     <Grid>
         <StackPanel Margin="32,0,32,32">

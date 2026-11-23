@@ -6,8 +6,10 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using Avalonia.LogicalTree;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml.MarkupExtensions;
@@ -36,6 +38,8 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
     protected override bool ApplyTopPadding => false;
     public static MainWindow? Instance { get; private set; }
 
+    public static bool IsStagingPages { get; private set; }
+
     public static WindowNotificationManager? NotificationManager { get; private set; }
 
     private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
@@ -46,6 +50,7 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
     private readonly SearchIndexBuilder _searchIndexBuilder = new();
     private bool _isIndexingAllPagesStarted;
     private SearchDialog? _searchOverlay;
+    private readonly ConditionalWeakTable<object, Control> _pageViews = new();
     private EventHandler? _remoteDataHandler;
 
     private void ToggleSidebar(object? sender, Avalonia.Interactivity.RoutedEventArgs e) =>
@@ -101,7 +106,87 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             if (_viewModel == null) return;
             UpdatePageView(_viewModel.CurrentPage);
             UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
+            _ = PrewarmPagesAsync();
         }, DispatcherPriority.Loaded);
+    }
+
+    private static List<string> GetPrewarmPages()
+    {
+        List<string> pages = ["integrations", "appearance", "fastflags", "mods", "shortcuts", "modgenerator"];
+
+        if (UI.ViewModels.GlobalViewModel.HasClientSettingsPage)
+            pages.Add("linuxsettings");
+
+        if (BootstrapperViewModel.HasFreshRegionCache())
+            pages.Insert(1, "bootstrapper");
+
+        return pages;
+    }
+
+    private async Task PrewarmPagesAsync()
+    {
+        await Task.Delay(400);
+
+        var stagingArea = this.FindControl<Border>("OffscreenPrewarmCanvas");
+        if (stagingArea == null || _viewModel == null)
+            return;
+
+        foreach (string pageTag in GetPrewarmPages())
+        {
+            if (_viewModel == null || Instance != this)
+                return;
+
+            await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+
+            Control? view = null;
+            try
+            {
+                if (_viewModel.PrewarmPage(pageTag) is not { } viewModel)
+                    continue;
+
+                view = ResolveViewForViewModel(viewModel);
+                if (view == null)
+                    continue;
+
+                view.DataContext = viewModel;
+                _pageViews.AddOrUpdate(viewModel, view);
+
+                stagingArea.IsVisible = true;
+                IsStagingPages = true;
+                try
+                {
+                    stagingArea.Child = view;
+                }
+                finally
+                {
+                    IsStagingPages = false;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+
+                if (ReferenceEquals(stagingArea.Child, view) && !_indexedPageTags.Contains(pageTag)
+                    && _pageInfo.TryGetValue(pageTag, out var info))
+                {
+                    IndexPage(view, pageTag, info.Title, info.Icon);
+                    _indexedPageTags.Add(pageTag);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warn($"Couldn't prepare the {pageTag} page: {ex.Message}");
+            }
+            finally
+            {
+                if (view != null && ReferenceEquals(stagingArea.Child, view))
+                    stagingArea.Child = null;
+                stagingArea.IsVisible = false;
+            }
+
+            await Task.Delay(50);
+        }
+
+        App.Logger.Info("Prepared settings pages in the background");
     }
 
     private SearchDialog? EnsureSearchOverlay()
@@ -125,6 +210,26 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
 
         _searchOverlay = overlay;
         return overlay;
+    }
+
+    public void ShowCommunityModInfo(CommunityMod mod)
+    {
+        if (this.FindControl<Grid>("RootGrid") is not { } rootGrid)
+            return;
+
+        var overlay = new CommunityModInfoOverlay(mod);
+        Grid.SetRow(overlay, 0);
+        Grid.SetRowSpan(overlay, 3);
+        overlay.ZIndex = 2000;
+
+        App.FrostRPC?.SetDialog($"Viewing {mod.Name}");
+        overlay.Dismissed += (_, _) =>
+        {
+            rootGrid.Children.Remove(overlay);
+            App.FrostRPC?.ClearDialog();
+        };
+
+        rootGrid.Children.Add(overlay);
     }
 
     protected override async void OnOpened(EventArgs e)
@@ -252,20 +357,35 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
         if (pageControl == null || viewModel == null) return;
 
         string pageTag = _viewModel?.SelectedPage ?? "";
-        Control? view = ResolveViewForViewModel(viewModel);
+        bool isCachedView = _pageViews.TryGetValue(viewModel, out var view);
+        view ??= ResolveViewForViewModel(viewModel);
         if (view == null) return;
 
-        if (view.DataContext == viewModel) return;
+        if (ReferenceEquals(pageControl.Content, view)) return;
 
         if (pageControl.Content is Control previousPage
-            && !ReferenceEquals(previousPage, view)
             && previousPage.DataContext is IDisposable previousViewModel
-            && !ReferenceEquals(previousViewModel, viewModel))
+            && !ReferenceEquals(previousViewModel, viewModel)
+            && _viewModel?.IsCachedPage(previousViewModel) != true)
         {
             previousViewModel.Dispose();
         }
 
-        view.DataContext = viewModel;
+        if (!isCachedView && _viewModel?.IsCachedPage(viewModel) == true)
+            _pageViews.AddOrUpdate(viewModel, view);
+
+        switch (view.GetVisualParent())
+        {
+            case ContentPresenter presenter:
+                presenter.Content = null;
+                break;
+            case Border staging when staging.Name == "OffscreenPrewarmCanvas":
+                staging.Child = null;
+                break;
+        }
+
+        if (!ReferenceEquals(view.DataContext, viewModel))
+            view.DataContext = viewModel;
         pageControl.Content = view;
 
         Dispatcher.UIThread.Post(() =>
@@ -296,8 +416,6 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             {
                 return;
             }
-
-            SaveCurrentPage();
 
             var action = GetNavigationAction(tag);
             action?.Invoke();
@@ -468,12 +586,16 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             Height = NotificationHeight,
             CornerRadius = new CornerRadius(10),
             RenderTransform = transform,
-            Child = contentGrid,
+            Child = new Surface
+            {
+                CornerRadius = new CornerRadius(10),
+                [!Surface.BackgroundProperty] = new DynamicResourceExtension("NotificationBackgroundColor"),
+                Content = contentGrid
+            },
             BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
             VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top
         };
-        notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
 
         var entry = new NotificationEntry { Element = notification, Transform = transform };
 
@@ -612,7 +734,15 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
                     }
 
                     var container = new Border { Child = view };
-                    stagingArea.Child = container;
+                    IsStagingPages = true;
+                    try
+                    {
+                        stagingArea.Child = container;
+                    }
+                    finally
+                    {
+                        IsStagingPages = false;
+                    }
 
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
@@ -797,8 +927,7 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             _remoteDataHandler = null;
         }
 
-        if (_viewModel?.CurrentPage is IDisposable currentPage)
-            currentPage.Dispose();
+        _viewModel?.DisposePages();
 
         NotificationManager = null;
         Instance = null;

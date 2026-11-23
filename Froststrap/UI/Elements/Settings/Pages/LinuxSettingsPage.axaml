@@ -9,17 +9,10 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    d:DesignHeight="2500"
-    d:DesignWidth="1200"
-    x:DataType="vm:LinuxSettingsViewModel"
-    mc:Ignorable="d">
+    x:DataType="vm:LinuxSettingsViewModel">
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
             <controls:SectionHeader
@@ -27,47 +20,41 @@ SPDX-License-Identifier: MPL-2.0
                 IsVisible="{Binding SoberEnabled}"
                 Margin="0,4,0,4" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_AllowGamepadPermission_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_AllowGamepadPermission_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberAllowGamepadPermission, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberAllowGamepadPermission}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnableGameMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_EnableGameMode_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberEnableGamemode, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberEnableGamemode}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnableHiDpi_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_EnableHiDpi_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberEnableHiDpi, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberEnableHiDpi}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_TouchInputMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_TouchInputMode_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberTouchMode, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberTouchMode}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_UseConsoleExperience_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_UseConsoleExperience_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberUseConsoleExperience, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberUseConsoleExperience}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_ForceLegacyOpenGL_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_ForceLegacyOpenGL_Description}"
-                IsVisible="{Binding SoberEnabled}">
-                <ToggleSwitch IsChecked="{Binding SoberUseOpengl, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{Binding SoberEnabled}"
+                IsChecked="{Binding SoberUseOpengl}" />
 
             <controls:SectionHeader
                 Title="{x:Static resources:Strings.Common_Studio}"
@@ -79,12 +66,11 @@ SPDX-License-Identifier: MPL-2.0
                 Command="{Binding OpenWineCfgCommand}"
                 IsVisible="{Binding IsWineAvailable}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_WebPages_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_WebPages_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding EnableWebView2}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_GraphicsRenderer_Title}"
@@ -121,59 +107,61 @@ SPDX-License-Identifier: MPL-2.0
                     MinWidth="200" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_GameMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_GameMode_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding StudioGameMode, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding StudioGameMode}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_DebugMode_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_DebugMode_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
-            </controls:OptionControl>
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                IsChecked="{Binding StudioDebug}" />
 
-            <controls:OptionControl
+            <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Title}"
                 Description="{x:Static resources:Strings.Menu_LinuxSettings_EnvironmentVariables_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <StackPanel Spacing="8">
-                    <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="4">
+                IsExpanded="{Binding HasStudioEnvEntries, Mode=OneWay}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <Button
+                        Content="{x:Static resources:Strings.Menu_LinuxSettings_AddVariable}"
+                        Command="{Binding AddStudioEnvCommand}" />
+                </controls:CardExpander.HeaderContent>
+
+                <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <controls:Card Margin="0,4" Padding="16,12" MinHeight="0">
+                                <Grid ColumnDefinitions="200,*,Auto" ColumnSpacing="8">
                                     <TextBox
                                         PlaceholderText="{x:Static resources:Strings.Menu_LinuxSettings_Variable}"
                                         Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="150" />
+                                        VerticalContentAlignment="Center" />
                                     <TextBox
+                                        Grid.Column="1"
                                         PlaceholderText="{x:Static resources:Strings.Common_Value}"
                                         Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="200" />
+                                        VerticalContentAlignment="Center" />
                                     <controls:IconButton
+                                        Grid.Column="2"
                                         Icon="Trash"
                                         Command="{Binding RemoveCommand}"
-                                        ToolTip.Tip="{x:Static resources:Strings.Common_Remove}"
-                                        Width="30"
+                                        Width="32"
+                                        Height="32"
+                                        MinHeight="32"
                                         Padding="0"
-                                        Classes="Danger" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Button
-                        Content="{x:Static resources:Strings.Menu_LinuxSettings_AddVariable}"
-                        Command="{Binding AddStudioEnvCommand}"
-                        HorizontalAlignment="Left" />
-                </StackPanel>
-            </controls:OptionControl>
+                                        VerticalAlignment="Center"
+                                        Classes="Danger"
+                                        ToolTip.Tip="{x:Static resources:Strings.Common_Remove}" />
+                                </Grid>
+                            </controls:Card>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </controls:CardExpander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

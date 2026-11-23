@@ -6,22 +6,17 @@ SPDX-License-Identifier: MPL-2.0
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:resources="using:Froststrap.Localisation"
-             xmlns:models="using:Froststrap.Models.APIs.Config"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:enums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              xmlns:fa="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
-             x:DataType="vm:GlobalSettingsViewModel"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
+             x:DataType="vm:GlobalSettingsViewModel">
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
-            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="4" RowSpacing="4">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
                 <controls:CardAction Grid.Column="0" Grid.Row="0"
                                      Icon="Import"
                                      Header="{x:Static resources:Strings.Common_Import}"
@@ -76,20 +71,17 @@ SPDX-License-Identifier: MPL-2.0
                                     ShowValue="True" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Description}">
-                <ToggleSwitch IsChecked="{Binding Fullscreen, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Fullscreen_Description}"
+                                    IsChecked="{Binding Fullscreen}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Description}">
-                <ToggleSwitch IsChecked="{Binding MaxQualityEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_MaxQuality_Description}"
+                                    IsChecked="{Binding MaxQualityEnabled}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Description}">
-                <ToggleSwitch IsChecked="{Binding VignetteEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_Vignette_Description}"
+                                    IsChecked="{Binding VignetteEnabled}" />
 
             <controls:SectionHeader Title="{x:Static resources:Strings.Menu_GlobalSettings_AudioSettings_Title}" />
 
@@ -144,10 +136,9 @@ SPDX-License-Identifier: MPL-2.0
                 <TextBox Width="200" Text="{Binding MouseSensitivity}" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Description}">
-                <ToggleSwitch IsChecked="{Binding ShiftLock, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ShiftLock_Description}"
+                                    IsChecked="{Binding ShiftLock}" />
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_FirstPersonSensitivity_Title}"
                                     Description="{x:Static resources:Strings.Menu_GlobalSettings_FirstPersonSensitivity_Description}">
@@ -156,16 +147,12 @@ SPDX-License-Identifier: MPL-2.0
                                Text="X:"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    <TextBox Grid.Column="1"
-                             Width="150"
-                             Text="{Binding MouseSensitivityFirstPersonX, Mode=TwoWay}" />
+                    <TextBox Grid.Column="1" Width="150" Text="{Binding MouseSensitivityFirstPersonX, Mode=TwoWay}" />
                     <TextBlock Grid.Column="2"
                                Text="Y:"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    <TextBox Grid.Column="3"
-                             Width="150"
-                             Text="{Binding MouseSensitivityFirstPersonY, Mode=TwoWay}" />
+                    <TextBox Grid.Column="3" Width="150" Text="{Binding MouseSensitivityFirstPersonY, Mode=TwoWay}" />
                 </Grid>
             </controls:OptionControl>
 
@@ -176,23 +163,18 @@ SPDX-License-Identifier: MPL-2.0
                                Text="X:"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    <TextBox Grid.Column="1"
-                             Width="150"
-                             Text="{Binding MouseSensitivityThirdPersonX, Mode=TwoWay}" />
+                    <TextBox Grid.Column="1" Width="150" Text="{Binding MouseSensitivityThirdPersonX, Mode=TwoWay}" />
                     <TextBlock Grid.Column="2"
                                Text="Y:"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    <TextBox Grid.Column="3"
-                             Width="150"
-                             Text="{Binding MouseSensitivityThirdPersonY, Mode=TwoWay}" />
+                    <TextBox Grid.Column="3" Width="150" Text="{Binding MouseSensitivityThirdPersonY, Mode=TwoWay}" />
                 </Grid>
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Description}">
-                <ToggleSwitch IsChecked="{Binding CameraYInverted}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_InvertY_Description}"
+                                    IsChecked="{Binding CameraYInverted}" />
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Title}"
                                     Description="{x:Static resources:Strings.Menu_GlobalSettings_HapticStrength_Description}">
@@ -216,42 +198,29 @@ SPDX-License-Identifier: MPL-2.0
                                     Description="{x:Static resources:Strings.Menu_GlobalSettings_PlayerListLayout_Description}">
                 <ComboBox Width="200"
                           ItemsSource="{Binding PlayerListLayOuts.Keys, Mode=OneTime}"
-                          SelectedValue="{Binding SelectedPlayerListLayOut, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                          SelectedValue="{Binding SelectedPlayerListLayOut, Mode=TwoWay}"
+                          Classes="enum" />
             </controls:OptionControl>
 
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_TextSize_Title}"
                                     Description="{x:Static resources:Strings.Menu_GlobalSettings_TextSize_Description}">
                 <ComboBox Width="200"
                           ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}"
-                          SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                          SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}"
+                          Classes="enum" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Description}">
-                <ToggleSwitch IsChecked="{Binding ReducedMotion}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_ReducedMotion_Description}"
+                                    IsChecked="{Binding ReducedMotion}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Description}">
-                <ToggleSwitch IsChecked="{Binding PerformanceStatsVisible}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_PerfStats_Description}"
+                                    IsChecked="{Binding PerformanceStatsVisible}" />
 
-            <controls:OptionControl Header="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Title}"
-                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Description}">
-                <ToggleSwitch IsChecked="{Binding VREnabled}" />
-            </controls:OptionControl>
+            <controls:ToggleOption Header="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Title}"
+                                    Description="{x:Static resources:Strings.Menu_GlobalSettings_VRMode_Description}"
+                                    IsChecked="{Binding VREnabled}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

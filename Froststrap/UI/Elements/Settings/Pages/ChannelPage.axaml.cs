@@ -12,6 +12,6 @@ internal sealed partial class ChannelPage : UserControl
     {
         InitializeComponent();
 
-        App.FrostRPC?.SetPage("Deployment");
+        AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Deployment"); };
     }
 }

@@ -6,8 +6,6 @@ SPDX-License-Identifier: MPL-2.0
 
 <base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:resources="using:Froststrap.Localisation"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
                      xmlns:controls="using:Froststrap.UI.Elements.Controls"
@@ -18,8 +16,7 @@ SPDX-License-Identifier: MPL-2.0
                      Width="540"
                      SizeToContent="Height"
                      CanResize="False"
-                     WindowStartupLocation="CenterScreen"
-                     mc:Ignorable="d">
+                     WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*">
         <Border Grid.Row="0"
@@ -28,8 +25,7 @@ SPDX-License-Identifier: MPL-2.0
                 BorderThickness="1"
                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
-            <TabControl x:Name="Tabs"
-                        Background="Transparent">
+            <TabControl x:Name="Tabs" Background="Transparent">
 
                 <TabControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -117,9 +113,7 @@ SPDX-License-Identifier: MPL-2.0
             </TabControl>
         </Border>
 
-        <Border Grid.Row="1"
-                Padding="15"
-                Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
                 <controls:IconButton x:Name="RemovePlaceButton"
                                      Grid.Column="0"
@@ -138,10 +132,7 @@ SPDX-License-Identifier: MPL-2.0
                           Content="{x:Static resources:Strings.Menu_FlagProfiles_ClearFlags}"
                           IsVisible="False" />
 
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="12"
-                            HorizontalAlignment="Right">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Right">
                     <controls:IconButton x:Name="DeleteButton"
                                          Icon="Trash"
                                          Classes="Danger"

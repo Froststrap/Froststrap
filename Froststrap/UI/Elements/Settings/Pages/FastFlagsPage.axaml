@@ -9,15 +9,9 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
-    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    d:DesignHeight="2500"
-    d:DesignWidth="1200"
-    x:DataType="vm:FastFlagsViewModel"
-    mc:Ignorable="d">
+    x:DataType="vm:FastFlagsViewModel">
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
@@ -27,18 +21,13 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
                 Command="{Binding OpenFastFlagEditorCommand}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 x:Name="ManagerEnabled"
                 Header="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Title}"
-                Description="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Description}">
-                <ToggleSwitch IsChecked="{Binding UseFastFlagManager, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Description}"
+                IsChecked="{Binding UseFastFlagManager}" />
 
-            <controls:OptionControl
-                x:Name="Reset"
-                Header="{x:Static resources:Strings.Menu_FastFlags_Reset_Title}">
-                <ToggleSwitch IsChecked="{Binding ResetConfiguration, Mode=TwoWay}" />
-            </controls:OptionControl>
+            <controls:ToggleOption x:Name="Reset" Header="{x:Static resources:Strings.Menu_FastFlags_Reset_Title}" IsChecked="{Binding ResetConfiguration}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Title}"
@@ -46,32 +35,24 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}"
+                    Classes="enum" />
             </controls:OptionControl>
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Title}"
-                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Description}">
-                <ToggleSwitch IsChecked="{Binding PauseVoxelizer, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Description}"
+                IsChecked="{Binding PauseVoxelizer}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Title}"
-                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Description}">
-                <ToggleSwitch IsChecked="{Binding GraySky, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Description}"
+                IsChecked="{Binding GraySky}" />
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Title}"
-                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Description}">
-                <ToggleSwitch IsChecked="{Binding RemoveGrass, Mode=TwoWay}" />
-            </controls:OptionControl>
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Description}"
+                IsChecked="{Binding RemoveGrass}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Title}"
@@ -108,12 +89,11 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_FixDisplayScaling_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_FixDisplayScaling_Description}"
-                HelpLink="https://bloxstraplabs.com/wiki/features/engine-settings/#preserving-rendering-quality">
-                <ToggleSwitch IsChecked="{Binding FixDisplayScaling, Mode=TwoWay}" />
-            </controls:OptionControl>
+                HelpLink="https://bloxstraplabs.com/wiki/features/engine-settings/#preserving-rendering-quality"
+                IsChecked="{Binding FixDisplayScaling}" />
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Title}"
@@ -138,13 +118,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}"
+                    Classes="enum" />
             </controls:OptionControl>
 
             <controls:OptionControl
@@ -153,13 +128,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     Width="200"
                     ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}"
+                    Classes="enum" />
             </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>

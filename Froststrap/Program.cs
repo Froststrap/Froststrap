@@ -22,9 +22,11 @@ sealed partial class Program
     private const int AttachParentProcess = -1;
 
     [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    [System.Runtime.InteropServices.DefaultDllImportSearchPaths(System.Runtime.InteropServices.DllImportSearchPath.System32)]
     private static partial int AllocConsole();
 
     [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
+    [System.Runtime.InteropServices.DefaultDllImportSearchPaths(System.Runtime.InteropServices.DllImportSearchPath.System32)]
     private static partial int AttachConsole(int dwProcessId);
 #endif
 
@@ -159,7 +161,7 @@ sealed partial class Program
                 //
                 // > Important: OpenGL was deprecated in macOS 10.14.
                 // > To create high-performance code on GPUs, use the Metal framework instead.
-                // 
+                //
                 // Quote from linked website.
                 RenderingMode = new[]
                 {
@@ -173,7 +175,7 @@ sealed partial class Program
             builder = builder.With(new X11PlatformOptions
             {
                 // https://docs.avaloniaui.net/api/avalonia/x11platformoptions#uid-1eb188c693
-                // 
+                //
                 // Add Vulkan as a possible render method, possibly unstable?
                 RenderingMode = new[]
                 {
@@ -207,7 +209,7 @@ sealed partial class Program
             else
             {
                 // https://docs.avaloniaui.net/docs/platform-specific-guides/windows#rendering-mode
-                // 
+                //
                 // All options in here might actually be nice to have available.
                 // `AngleGL` is noted to only work with `WinUIComposition` and `DirectComposition`
                 // which possibly is dependents of the backdrops we have, haven't tested.

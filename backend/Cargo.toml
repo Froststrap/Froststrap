@@ -13,6 +13,7 @@ members = [
 ]
 default-members = [
   "notify",
+  "modgenerator",
 ]
 
 [workspace.package]

@@ -8,7 +8,7 @@ using Avalonia.Metadata;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    internal sealed partial class OptionControl : TemplatedControl
+    internal partial class OptionControl : TemplatedControl
     {
         public static readonly StyledProperty<string?> HeaderProperty =
             AvaloniaProperty.Register<OptionControl, string?>(nameof(Header));
