@@ -349,5 +349,16 @@ SPDX-License-Identifier: MPL-2.0
             IsVisible="False"
             Opacity="0"
             ZIndex="-1000" />
+
+        <Border
+            x:Name="OffscreenPrewarmCanvas"
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="905"
+            Height="700"
+            IsHitTestVisible="False"
+            IsVisible="False"
+            Opacity="0"
+            ZIndex="-1000" />
     </Grid>
 </base:AvaloniaWindow>

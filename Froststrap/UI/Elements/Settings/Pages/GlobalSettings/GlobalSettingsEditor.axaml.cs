@@ -30,7 +30,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
             columns[2].SortKey = o => ((GlobalSetting)o!).VectorX;
             columns[3].SortKey = o => ((GlobalSetting)o!).VectorY;
 
-            App.FrostRPC?.SetPage("Global Settings Editor");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Global Settings Editor"); };
         }
 
         protected override void OnLoaded(RoutedEventArgs e)

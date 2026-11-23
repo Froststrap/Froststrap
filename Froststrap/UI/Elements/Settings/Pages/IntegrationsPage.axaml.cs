@@ -14,7 +14,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         {
             InitializeComponent();
 
-            App.FrostRPC?.SetPage("Integration");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Integration"); };
         }
 
         public void CustomIntegrationSelection(object sender, SelectionChangedEventArgs e)

@@ -41,7 +41,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         public ModsPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("Mods");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Mods"); };
             this.Loaded += (s, e) => SetupViewModelIfNeeded();
         }
 

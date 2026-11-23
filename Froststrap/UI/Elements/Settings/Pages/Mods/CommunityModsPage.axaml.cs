@@ -26,7 +26,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         public CommunityModsPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("Community Mods");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Community Mods"); };
             this.DataContextChanged += OnDataContextChanged;
         }
 

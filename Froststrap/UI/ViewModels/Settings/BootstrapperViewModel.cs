@@ -49,6 +49,12 @@ namespace Froststrap.UI.ViewModels.Settings
             catch { /* ignore */ }
         }
 
+        internal static bool HasFreshRegionCache()
+        {
+            string path = GetCachePath();
+            return File.Exists(path) && File.GetLastWriteTimeUtc(path) > DateTime.UtcNow.AddDays(-7);
+        }
+
         private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
         {
             try

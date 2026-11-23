@@ -26,7 +26,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public FastFlagsPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("FastFlags Settings");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("FastFlags Settings"); };
         }
     }
 }

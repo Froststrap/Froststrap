@@ -12,6 +12,6 @@ internal sealed partial class LinuxSettingsPage : UserControl
     {
         InitializeComponent();
 
-        App.FrostRPC?.SetPage("Sober Settings");
+        AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Sober Settings"); };
     }
 }

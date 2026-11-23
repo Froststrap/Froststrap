@@ -26,7 +26,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         public ModGeneratorPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("Mod Generator");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Mod Generator"); };
             this.DataContextChanged += OnDataContextChanged;
         }
 
