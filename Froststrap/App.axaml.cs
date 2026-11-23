@@ -190,20 +190,6 @@ internal sealed partial class App : Application
         Environment.Exit(exitCodeNum);
     }
 
-    public static void SoftTerminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
-    {
-        int exitCodeNum = (int)exitCode;
-
-        Logger.Debug($"Terminating with exit code {exitCodeNum} ({exitCode})");
-
-        Dispatcher.UIThread.Invoke(() =>
-        {
-
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                desktop.Shutdown((int)exitCode);
-        });
-    }
-
     async void GlobalExceptionHandler(object? sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;

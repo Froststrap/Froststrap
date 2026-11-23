@@ -45,6 +45,7 @@ public static unsafe class NativeLog
         var callback = Callback;
 
         SetLogger("notify", InternalNativeNotify.SetLogger, callback);
+        SetLogger("mod_generator", InternalModGenerator.SetLogger, callback);
 
         if (OperatingSystem.IsMacOS())
         {
