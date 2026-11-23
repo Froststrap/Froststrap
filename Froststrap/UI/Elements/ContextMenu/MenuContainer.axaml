@@ -9,7 +9,6 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:app="using:Froststrap"
-    xmlns:base="using:Froststrap.UI.Elements.Base"
     xmlns:resources="using:Froststrap.Localisation"
     Title="ContextMenuContainer"
     Width="0" Height="0"

@@ -27,16 +27,12 @@ SPDX-License-Identifier: MPL-2.0
                    IsColorPaletteVisible="False" />
 
         <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
                 <Button Content="{x:Static resources:Strings.Common_Confirm}"
                         Width="100"
                         Click="OnConfirm_Click"
                         Classes="accent" />
-                <Button Content="{x:Static resources:Strings.Common_Cancel}"
-                        Width="100"
-                        Click="OnCancel_Click" />
+                <Button Content="{x:Static resources:Strings.Common_Cancel}" Width="100" Click="OnCancel_Click" />
             </StackPanel>
         </Border>
     </Grid>

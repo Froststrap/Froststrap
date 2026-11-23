@@ -9,15 +9,10 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    d:DesignHeight="2500"
-    d:DesignWidth="1200"
-    x:DataType="vm:IntegrationsViewModel"
-    mc:Ignorable="d">
+    x:DataType="vm:IntegrationsViewModel">
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
@@ -71,13 +66,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}"
+                    Classes="enum" />
             </controls:OptionControl>
 
             <controls:CardExpander
@@ -244,11 +234,7 @@ SPDX-License-Identifier: MPL-2.0
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <Grid
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    ColumnDefinitions="*,*"
-                    ColumnSpacing="8">
+                <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*" ColumnSpacing="8">
                     <controls:IconButton
                         Grid.Column="0"
                         Icon="Plus"
@@ -330,9 +316,7 @@ SPDX-License-Identifier: MPL-2.0
                         <TextBlock
                             Text="{x:Static resources:Strings.Menu_Integrations_Custom_GameID}"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                        <TextBox
-                            PlaceholderText="1873"
-                            Text="{Binding SelectedCustomIntegration.GameID}" />
+                        <TextBox PlaceholderText="1873" Text="{Binding SelectedCustomIntegration.GameID}" />
                         <CheckBox
                             Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoCloseOnGame}"
                             IsChecked="{Binding SelectedCustomIntegration.AutoCloseOnGame, UpdateSourceTrigger=PropertyChanged}" />

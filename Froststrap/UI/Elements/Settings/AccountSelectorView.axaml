@@ -6,16 +6,13 @@ SPDX-License-Identifier: MPL-2.0
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Localisation"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
              xmlns:utility="using:Froststrap.UI.Utility"
              x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
-             x:DataType="vm:AccountSelectorViewModel"
-             mc:Ignorable="d" d:DesignHeight="220" d:DesignWidth="450">
+             x:DataType="vm:AccountSelectorViewModel">
 
     <UserControl.Styles>
         <Style Selector="Button#AccountButton">
@@ -51,10 +48,7 @@ SPDX-License-Identifier: MPL-2.0
             </Button.Styles>
 
             <DockPanel LastChildFill="True">
-                <Grid x:Name="AvatarHost"
-                      Width="32" Height="32"
-                      DockPanel.Dock="Left"
-                      Margin="0,0,8,0">
+                <Grid x:Name="AvatarHost" Width="32" Height="32" DockPanel.Dock="Left" Margin="0,0,8,0">
                     <Border CornerRadius="16"
                             Background="{DynamicResource ControlFillColorDefaultBrush}"
                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
@@ -138,10 +132,7 @@ SPDX-License-Identifier: MPL-2.0
                                     Margin="0,0,4,0"
                                     HorizontalAlignment="Stretch"/>
 
-                            <Border Grid.Column="1"
-                                    Width="36" Height="32"
-                                    CornerRadius="6"
-                                    ClipToBounds="True">
+                            <Border Grid.Column="1" Width="36" Height="32" CornerRadius="6" ClipToBounds="True">
                                 <ComboBox ItemsSource="{Binding AddMethods}"
                                           SelectedItem="{Binding SelectedAddMethod}"
                                           IsEnabled="{Binding !IsAddingAccount}"

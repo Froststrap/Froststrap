@@ -33,18 +33,14 @@ SPDX-License-Identifier: MPL-2.0
             BorderThickness="1"
             ClipToBounds="True">
         <Grid RowDefinitions="Auto,*">
-            <Border Grid.Row="0"
-                    Background="#33000000"
-                    Padding="16"
-                    PointerPressed="OnHeaderPointerPressed">
+            <Border Grid.Row="0" Background="#33000000" Padding="16" PointerPressed="OnHeaderPointerPressed">
                 <Grid ColumnDefinitions="*, Auto">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:Lucide Icon="Layers" Height="18" Width="18" />
                         <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}"
                                    FontWeight="Bold" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <Button Grid.Column="1" Click="OnCloseClicked"
-                            Background="Transparent" BorderThickness="0">
+                    <Button Grid.Column="1" Click="OnCloseClicked" Background="Transparent" BorderThickness="0">
                         <ic:Lucide Icon="X" Height="16" Width="16" />
                     </Button>
                 </Grid>

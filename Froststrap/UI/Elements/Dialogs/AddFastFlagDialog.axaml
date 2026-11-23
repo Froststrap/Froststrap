@@ -49,18 +49,14 @@ SPDX-License-Identifier: MPL-2.0
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Name}" />
-                            <TextBox Grid.Column="1"
-                                     x:Name="FlagNameTextBox"
-                                     PlaceholderText="FFlagExample" />
+                            <TextBox Grid.Column="1" x:Name="FlagNameTextBox" PlaceholderText="FFlagExample" />
                         </Grid>
 
                         <Grid ColumnDefinitions="75, *" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Value}" />
-                            <TextBox Grid.Column="1"
-                                     x:Name="FlagValueTextBox"
-                                     PlaceholderText="True" />
+                            <TextBox Grid.Column="1" x:Name="FlagValueTextBox" PlaceholderText="True" />
                         </Grid>
                     </StackPanel>
                 </TabItem>
@@ -89,9 +85,7 @@ SPDX-License-Identifier: MPL-2.0
             </TabControl>
         </Border>
 
-        <Border Grid.Row="1"
-                Padding="15"
-                Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
                 <Button x:Name="OkButton"
                         Content="{x:Static resources:Strings.Common_OK}"
@@ -99,9 +93,7 @@ SPDX-License-Identifier: MPL-2.0
                         Width="100"
                         IsEnabled="False" />
 
-                <Button Content="{x:Static resources:Strings.Common_Cancel}"
-                        Click="CancelButton_Click"
-                        Width="100" />
+                <Button Content="{x:Static resources:Strings.Common_Cancel}" Click="CancelButton_Click" Width="100" />
             </StackPanel>
         </Border>
     </Grid>

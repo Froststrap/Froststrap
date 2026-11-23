@@ -7,13 +7,9 @@ SPDX-License-Identifier: MPL-2.0
 <base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.ConnectivityDialog"
                      xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:fa="using:FluentAvalonia.UI.Controls"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
                      xmlns:md="using:Froststrap.UI.Elements.Controls"
                      xmlns:resources="using:Froststrap.Localisation"
-                     mc:Ignorable="d"
                      Width="480"
                      SizeToContent="Height"
                      Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
@@ -43,8 +39,7 @@ SPDX-License-Identifier: MPL-2.0
             </StackPanel>
         </Grid>
 
-        <Border Grid.Row="1" Padding="15"
-                Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <Grid>
                 <TextBlock x:Name="VersionText"
                            VerticalAlignment="Center"

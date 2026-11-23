@@ -7,18 +7,10 @@ SPDX-License-Identifier: MPL-2.0
 <UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.ModGeneratorPage"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
              xmlns:resources="using:Froststrap.Localisation"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
-             x:DataType="vm:ModGeneratorViewModel"
-             d:DesignHeight="800"
-             d:DesignWidth="1100"
-             mc:Ignorable="d">
+             x:DataType="vm:ModGeneratorViewModel">
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10,14,40">

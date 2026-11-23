@@ -31,10 +31,7 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_Shortcuts_General_Description}"
                 Margin="0,4,0,4" />
 
-            <Grid
-                x:Name="ShortcutsGrid"
-                ColumnDefinitions="*,*"
-                ColumnSpacing="8">
+            <Grid x:Name="ShortcutsGrid" ColumnDefinitions="*,*" ColumnSpacing="8">
                 <controls:OptionControl
                     x:Name="DesktopOption"
                     Grid.Column="0"
@@ -56,9 +53,7 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                <controls:OptionControl
-                    Grid.Column="0"
-                    Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">
+                <controls:OptionControl Grid.Column="0" Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">
                     <ToggleSwitch IsChecked="{Binding PlayerIconTask.NewState, Mode=TwoWay}" />
                 </controls:OptionControl>
 
@@ -68,9 +63,7 @@ SPDX-License-Identifier: MPL-2.0
                     <ToggleSwitch IsChecked="{Binding StudioIconTask.NewState, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <controls:OptionControl
-                    Grid.Column="2"
-                    Header="{x:Static resources:Strings.Menu_Title}">
+                <controls:OptionControl Grid.Column="2" Header="{x:Static resources:Strings.Menu_Title}">
                     <ToggleSwitch IsChecked="{Binding SettingsIconTask.NewState, Mode=TwoWay}" />
                 </controls:OptionControl>
             </Grid>
@@ -102,10 +95,7 @@ SPDX-License-Identifier: MPL-2.0
                                         RenderOptions.BitmapInterpolationMode="HighQuality" />
                                 </Border>
 
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Spacing="4"
-                                    VerticalAlignment="Center">
+                                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
                                     <TextBlock
                                         Text="{Binding PreviewName}"
                                         FontSize="20"
@@ -273,10 +263,7 @@ SPDX-License-Identifier: MPL-2.0
                                         RenderOptions.BitmapInterpolationMode="HighQuality" />
                                 </Border>
 
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Spacing="4"
-                                    VerticalAlignment="Center">
+                                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
                                     <TextBlock
                                         Text="{Binding LinkPreviewName}"
                                         FontSize="20"

@@ -9,11 +9,9 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="using:Froststrap.UI.Elements.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="using:Froststrap.UI.ViewModels.Dialogs"
     x:DataType="vm:AddCustomThemeViewModel"
@@ -21,8 +19,7 @@ SPDX-License-Identifier: MPL-2.0
     Width="480"
     CanResize="False"
     SizeToContent="Height"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="*,Auto">
         <Border Grid.Row="0"
@@ -52,11 +49,8 @@ SPDX-License-Identifier: MPL-2.0
 					</ui:TabItemHelper.Icon>
                     <StackPanel Spacing="12" Margin="0,0,0,8">
                         <Grid ColumnDefinitions="75,*" RowDefinitions="*,Auto" ColumnSpacing="12">
-                            <TextBlock Text="{x:Static resources:Strings.Common_Name}"
-                                       VerticalAlignment="Center" />
-                            <TextBox Grid.Column="1"
-                                     Text="{Binding Name}"
-                                     PlaceholderText="Enter theme name" />
+                            <TextBlock Text="{x:Static resources:Strings.Common_Name}" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" Text="{Binding Name}" PlaceholderText="Enter theme name" />
                             <TextBlock IsVisible="{Binding HasNameError}"
                                        Text="{Binding NameError}" Grid.Row="1" Grid.Column="1"
                                        Foreground="{DynamicResource SystemFillColorCriticalBrush}"
@@ -65,18 +59,12 @@ SPDX-License-Identifier: MPL-2.0
                         </Grid>
 
                         <Grid ColumnDefinitions="75,*" ColumnSpacing="12">
-                            <TextBlock Text="{x:Static resources:Strings.Common_Template}"
-                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{x:Static resources:Strings.Common_Template}" VerticalAlignment="Center" />
                             <ComboBox Grid.Column="1"
                                       HorizontalAlignment="Stretch"
                                       ItemsSource="{Binding Templates}"
-                                      SelectedItem="{Binding Template}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                                      SelectedItem="{Binding Template}"
+                                      Classes="enum" />
                         </Grid>
                     </StackPanel>
                 </TabItem>
@@ -103,13 +91,9 @@ SPDX-License-Identifier: MPL-2.0
             </TabControl>
         </Border>
 
-        <Border Grid.Row="1"
-                Padding="15"
-                Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="1" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-                <Button Content="{x:Static resources:Strings.Common_OK}"
-                        Click="OnOkButtonClicked"
-                        Width="100"/>
+                <Button Content="{x:Static resources:Strings.Common_OK}" Click="OnOkButtonClicked" Width="100"/>
 
                 <Button Content="{x:Static resources:Strings.Common_Cancel}"
                         Click="OnCancelButtonClicked"

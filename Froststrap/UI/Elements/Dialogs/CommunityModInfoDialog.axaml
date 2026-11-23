@@ -7,8 +7,6 @@ SPDX-License-Identifier: MPL-2.0
 <base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.CommunityModInfoDialog"
                      xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
                      xmlns:md="using:Froststrap.UI.Elements.Controls"
                      xmlns:vm="using:Froststrap.UI.ViewModels.Dialogs"
@@ -17,7 +15,6 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:DataType="vm:CommunityModInfoViewModel"
                      Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
-                     mc:Ignorable="d"
                      Width="650"
                      SizeToContent="Height"
                      WindowStartupLocation="CenterScreen">

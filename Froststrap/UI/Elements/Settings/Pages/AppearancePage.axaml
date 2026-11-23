@@ -9,16 +9,11 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
-    d:DesignHeight="2500"
-    d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
-    mc:Ignorable="d"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch">
 
@@ -38,13 +33,8 @@ SPDX-License-Identifier: MPL-2.0
                     <ComboBox
                         MinWidth="200"
                         ItemsSource="{Binding Themes}"
-                        SelectedItem="{Binding Theme, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                        SelectedItem="{Binding Theme, Mode=TwoWay}"
+                        Classes="enum" />
                 </controls:CardExpander.HeaderContent>
 
                 <StackPanel>
@@ -138,10 +128,7 @@ SPDX-License-Identifier: MPL-2.0
                         <controls:OptionControl
                             Header="{x:Static resources:Strings.Menu_Appearance_BackgroundImage}"
                             Description="{x:Static resources:Strings.Menu_Appearance_BackgroundImage_Description}">
-                            <Grid
-                                ColumnDefinitions="*,Auto,Auto"
-                                ColumnSpacing="8"
-                                Width="360">
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" Width="360">
                                 <TextBox
                                     Text="{Binding BackgroundImagePath}"
                                     PlaceholderText="No image selected..."
@@ -165,22 +152,14 @@ SPDX-License-Identifier: MPL-2.0
                             <ComboBox
                                 MinWidth="200"
                                 ItemsSource="{Binding BackgroundStretches}"
-                                SelectedItem="{Binding BackgroundStretch}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                                SelectedItem="{Binding BackgroundStretch}"
+                                Classes="enum" />
                         </controls:OptionControl>
 
                         <controls:OptionControl
                             Header="{x:Static resources:Strings.Menu_Appearance_Opacity_Title}"
                             Description="{x:Static resources:Strings.Menu_Appearance_Opacity_Description}">
-                            <Grid
-                                ColumnDefinitions="*,50"
-                                ColumnSpacing="8"
-                                Width="260">
+                            <Grid ColumnDefinitions="*,50" ColumnSpacing="8" Width="260">
                                 <Slider
                                     Minimum="0"
                                     Maximum="1"
@@ -206,27 +185,16 @@ SPDX-License-Identifier: MPL-2.0
                     <ComboBox
                         MinWidth="200"
                         ItemsSource="{Binding AccentColorModes}"
-                        SelectedItem="{Binding AccentColorMode, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                        SelectedItem="{Binding AccentColorMode, Mode=TwoWay}"
+                        Classes="enum" />
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Appearance_AccentColor_Custom}"
                     IsVisible="{Binding IsCustomAccentColor}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Border
-                            Width="32"
-                            CornerRadius="4"
-                            Background="{Binding CustomAccentColor}" />
-                        <TextBox
-                            Width="110"
-                            Text="{Binding CustomAccentColor}"
-                            VerticalContentAlignment="Center" />
+                        <Border Width="32" CornerRadius="4" Background="{Binding CustomAccentColor}" />
+                        <TextBox Width="110" Text="{Binding CustomAccentColor}" VerticalContentAlignment="Center" />
                         <Button
                             Content="{x:Static resources:Strings.Common_ColorPicker}"
                             Command="{Binding OpenAccentColorPickerCommand}"
@@ -272,9 +240,7 @@ SPDX-License-Identifier: MPL-2.0
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 Classes="NoUserExpansion">
                 <controls:CardExpander.HeaderContent>
-                    <StackPanel
-                        Orientation="Horizontal"
-                        Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
                         <ic:Lucide
                             Icon="TriangleAlert"
                             StrokeBrush="Orange"
@@ -291,21 +257,14 @@ SPDX-License-Identifier: MPL-2.0
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Appearance_RobloxTitle_Title}"
                         Description="{x:Static resources:Strings.Menu_Appearance_RobloxTitle_Description}">
-                        <TextBox
-                            Width="200"
-                            PlaceholderText="Roblox"
-                            Text="{Binding WindowTitle, Mode=TwoWay}" />
+                        <TextBox Width="200" PlaceholderText="Roblox" Text="{Binding WindowTitle, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Appearance_RobloxIcon_Title}"
                         Description="{x:Static resources:Strings.Menu_Appearance_RobloxIcon_Description}"
                         HelpLink="https://wiki.fishstrap.app/manual/appearance/#custom-icons">
-                        <Grid
-                            Width="200"
-                            ColumnDefinitions="*,Auto"
-                            ColumnSpacing="4"
-                            HorizontalAlignment="Right">
+                        <Grid Width="200" ColumnDefinitions="*,Auto" ColumnSpacing="4" HorizontalAlignment="Right">
                             <ComboBox
                                 ItemsSource="{Binding RobloxIcons, Mode=OneWay}"
                                 SelectedValue="{Binding RobloxIcon, Mode=TwoWay}"
@@ -313,9 +272,7 @@ SPDX-License-Identifier: MPL-2.0
                                 HorizontalAlignment="Stretch">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid
-                                            ColumnDefinitions="16,*"
-                                            ColumnSpacing="8">
+                                        <Grid ColumnDefinitions="16,*" ColumnSpacing="8">
                                             <Image
                                                 Height="16"
                                                 RenderOptions.BitmapInterpolationMode="HighQuality"
@@ -363,9 +320,7 @@ SPDX-License-Identifier: MPL-2.0
                 </StackPanel>
             </controls:CardExpander>
 
-            <Grid
-                ColumnDefinitions="*,128"
-                ColumnSpacing="8">
+            <Grid ColumnDefinitions="*,128" ColumnSpacing="8">
                 <controls:SectionHeader
                     Title="{x:Static resources:Strings.Menu_Bootstrapper_Title}"
                     Description="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Description}"
@@ -389,20 +344,11 @@ SPDX-License-Identifier: MPL-2.0
                     <ComboBox
                         MinWidth="200"
                         ItemsSource="{Binding Dialogs, Mode=OneTime}"
-                        SelectedItem="{Binding Dialog, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                        SelectedItem="{Binding Dialog, Mode=TwoWay}"
+                        Classes="enum" />
                 </controls:CardExpander.HeaderContent>
 
-                <Grid
-                    ColumnDefinitions="250,*"
-                    RowDefinitions="*,Auto"
-                    ColumnSpacing="8"
-                    RowSpacing="8">
+                <Grid ColumnDefinitions="250,*" RowDefinitions="*,Auto" ColumnSpacing="8" RowSpacing="8">
                     <ListBox
                         x:Name="CustomThemesListBox"
                         Grid.Row="0"
@@ -414,27 +360,18 @@ SPDX-License-Identifier: MPL-2.0
                         SelectedIndex="{Binding SelectedCustomThemeIndex, Mode=TwoWay}">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="vm:CustomThemeCycleSelectionWrapper">
-                                <Grid
-                                    ColumnDefinitions="Auto,*"
-                                    ColumnSpacing="8">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
                                     <CheckBox
                                         Grid.Column="0"
                                         IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                         IsVisible="{Binding $parent[ListBox].DataContext.IsThemeCyclingEnabled}" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Text="{Binding ThemeName}"
-                                        VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="{Binding ThemeName}" VerticalAlignment="Center" />
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <Grid
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        ColumnDefinitions="*,*"
-                        ColumnSpacing="8">
+                    <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*" ColumnSpacing="8">
                         <controls:IconButton
                             Grid.Column="0"
                             Icon="Plus"
@@ -463,9 +400,7 @@ SPDX-License-Identifier: MPL-2.0
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
-                        <Grid
-                            ColumnDefinitions="*,*,*,*"
-                            ColumnSpacing="8">
+                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
                             <controls:IconButton
                                 Grid.Column="0"
                                 Icon="Pencil"
@@ -494,9 +429,7 @@ SPDX-License-Identifier: MPL-2.0
                                 HorizontalAlignment="Stretch" />
                         </Grid>
 
-                        <Grid
-                            ColumnDefinitions="*,Auto"
-                            ColumnSpacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <StackPanel Spacing="4">
                                 <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_ThemeCycling_Title}" />
                                 <TextBlock
@@ -504,17 +437,11 @@ SPDX-License-Identifier: MPL-2.0
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                             </StackPanel>
-                            <ToggleSwitch
-                                Grid.Column="1"
-                                IsChecked="{Binding IsThemeCyclingEnabled, Mode=TwoWay}" />
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsThemeCyclingEnabled, Mode=TwoWay}" />
                         </Grid>
 
-                        <StackPanel
-                            Spacing="8"
-                            IsVisible="{Binding IsThemeCyclingEnabled}">
-                            <Grid
-                                ColumnDefinitions="100,*"
-                                ColumnSpacing="8">
+                        <StackPanel Spacing="8" IsVisible="{Binding IsThemeCyclingEnabled}">
+                            <Grid ColumnDefinitions="100,*" ColumnSpacing="8">
                                 <TextBlock
                                     Text="{x:Static resources:Strings.Menu_Appearance_Frequency}"
                                     VerticalAlignment="Center" />
@@ -522,13 +449,8 @@ SPDX-License-Identifier: MPL-2.0
                                     Grid.Column="1"
                                     ItemsSource="{Binding CycleFrequencies}"
                                     SelectedItem="{Binding SelectedCycleFrequency, Mode=TwoWay}"
-                                    HorizontalAlignment="Stretch">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
+                                    HorizontalAlignment="Stretch"
+                                    Classes="enum" />
                             </Grid>
 
                             <Grid
@@ -566,11 +488,7 @@ SPDX-License-Identifier: MPL-2.0
                 Header="{x:Static resources:Strings.Menu_Appearance_Icon_Title}"
                 Description="{x:Static resources:Strings.Menu_Appearance_Icon_Description}"
                 HelpLink="https://wiki.fishstrap.app/manual/appearance/#custom-icons">
-                <Grid
-                    Width="200"
-                    ColumnDefinitions="*,Auto"
-                    ColumnSpacing="4"
-                    HorizontalAlignment="Right">
+                <Grid Width="200" ColumnDefinitions="*,Auto" ColumnSpacing="4" HorizontalAlignment="Right">
                     <ComboBox
                         ItemsSource="{Binding Icons, Mode=OneWay}"
                         SelectedValue="{Binding Icon, Mode=TwoWay}"
@@ -578,9 +496,7 @@ SPDX-License-Identifier: MPL-2.0
                         HorizontalAlignment="Stretch">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid
-                                    ColumnDefinitions="16,*"
-                                    ColumnSpacing="8">
+                                <Grid ColumnDefinitions="16,*" ColumnSpacing="8">
                                     <Image
                                         Height="16"
                                         RenderOptions.BitmapInterpolationMode="HighQuality"
@@ -612,10 +528,7 @@ SPDX-License-Identifier: MPL-2.0
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}"
                 Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
-                <TextBox
-                    Width="200"
-                    PlaceholderText="Froststrap"
-                    Text="{Binding Title, Mode=TwoWay}" />
+                <TextBox Width="200" PlaceholderText="Froststrap" Text="{Binding Title, Mode=TwoWay}" />
             </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>

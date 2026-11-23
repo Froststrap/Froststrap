@@ -10,7 +10,6 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:models="using:Froststrap.Models"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="using:Froststrap.UI.ViewModels"
     x:DataType="vm:SearchBarViewModel"
@@ -18,8 +17,7 @@ SPDX-License-Identifier: MPL-2.0
     Focusable="True">
 
     <Panel>
-        <Border Background="#99000000"
-                PointerPressed="Overlay_PointerPressed" />
+        <Border Background="#99000000" PointerPressed="Overlay_PointerPressed" />
 
         <Border CornerRadius="12"
                 Width="640"
@@ -33,8 +31,7 @@ SPDX-License-Identifier: MPL-2.0
                 PointerPressed="Header_PointerPressed">
             <Grid RowDefinitions="Auto,1,*">
 
-                <Border Grid.Row="0"
-                        Padding="20,20,20,16">
+                <Border Grid.Row="0" Padding="20,20,20,16">
                     <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
                             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                             BorderThickness="1"
@@ -75,8 +72,7 @@ SPDX-License-Identifier: MPL-2.0
                     </Border>
                 </Border>
 
-                <Border Grid.Row="1"
-                        Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+                <Border Grid.Row="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
                 <Panel Grid.Row="2" MinHeight="320">
 

@@ -6,17 +6,12 @@ SPDX-License-Identifier: MPL-2.0
 
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resources="using:Froststrap.Localisation"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:enums="using:Froststrap.Enums"
              xmlns:models="using:Froststrap.Models.APIs.Config"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
-             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-             xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.CommunityModsPage"
              x:DataType="vm:CommunityModsViewModel">
 
@@ -115,9 +110,7 @@ SPDX-License-Identifier: MPL-2.0
                                            ClipToBounds="True">
                                 <Grid RowDefinitions="140, Auto, Auto, *">
 
-                                    <Border Grid.Row="0"
-                                            CornerRadius="8,8,0,0"
-                                            ClipToBounds="True">
+                                    <Border Grid.Row="0" CornerRadius="8,8,0,0" ClipToBounds="True">
                                         <Grid>
                                             <Image Source="{Binding Thumbnail}"
                                                    Stretch="UniformToFill"

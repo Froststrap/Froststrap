@@ -8,26 +8,15 @@ SPDX-License-Identifier: MPL-2.0
     x:Class="Froststrap.UI.Elements.Settings.Pages.ModsPresetsPage"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:lucideEnums="clr-namespace:LucideAvalonia.Enum;assembly=LucideAvalonia"
-    mc:Ignorable="d"
-    d:DesignWidth="800"
-    d:DesignHeight="600"
     x:DataType="vm:ModsPresetsViewModel">
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
-            <Grid
-                ColumnDefinitions="*,*,*"
-                RowDefinitions="Auto,Auto,Auto"
-                ColumnSpacing="8">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
                 <controls:CardAction
                     Grid.Column="0"
                     Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
@@ -82,13 +71,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     ItemsSource="{Binding CursorTypeTask.Selections, Mode=OneTime}"
-                    SelectedItem="{Binding CursorTypeTask.NewState, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding CursorTypeTask.NewState, Mode=TwoWay}"
+                    Classes="enum" />
             </controls:OptionControl>
 
             <controls:OptionControl
@@ -97,13 +81,8 @@ SPDX-License-Identifier: MPL-2.0
                 <ComboBox
                     MinWidth="200"
                     ItemsSource="{Binding EmojiFontTask.Selections, Mode=OneTime}"
-                    SelectedItem="{Binding EmojiFontTask.NewState, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                    SelectedItem="{Binding EmojiFontTask.NewState, Mode=TwoWay}"
+                    Classes="enum" />
             </controls:OptionControl>
 
             <controls:SectionHeader
@@ -212,11 +191,7 @@ SPDX-License-Identifier: MPL-2.0
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Grid
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                ColumnDefinitions="*,*"
-                                ColumnSpacing="8">
+                            <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*" ColumnSpacing="8">
                                 <controls:IconButton
                                     Grid.Column="0"
                                     Icon="Plus"
@@ -255,10 +230,7 @@ SPDX-License-Identifier: MPL-2.0
 
                                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
                                     <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" RowSpacing="8">
-                                        <TextBlock
-                                            Grid.Row="0"
-                                            Text="ShiftLock"
-                                            TextAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Text="ShiftLock" TextAlignment="Center" />
                                         <Border
                                             Grid.Row="1"
                                             MinWidth="100"
@@ -297,10 +269,7 @@ SPDX-License-Identifier: MPL-2.0
                                     </Grid>
 
                                     <Grid Grid.Column="1" RowDefinitions="Auto,*,Auto" RowSpacing="8">
-                                        <TextBlock
-                                            Grid.Row="0"
-                                            Text="Arrow Cursor"
-                                            TextAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Text="Arrow Cursor" TextAlignment="Center" />
                                         <Border
                                             Grid.Row="1"
                                             MinWidth="100"
@@ -339,10 +308,7 @@ SPDX-License-Identifier: MPL-2.0
                                     </Grid>
 
                                     <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto" RowSpacing="8">
-                                        <TextBlock
-                                            Grid.Row="0"
-                                            Text="ArrowFar Cursor"
-                                            TextAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Text="ArrowFar Cursor" TextAlignment="Center" />
                                         <Border
                                             Grid.Row="1"
                                             MinWidth="100"
@@ -381,10 +347,7 @@ SPDX-License-Identifier: MPL-2.0
                                     </Grid>
 
                                     <Grid Grid.Column="3" RowDefinitions="Auto,*,Auto" RowSpacing="8">
-                                        <TextBlock
-                                            Grid.Row="0"
-                                            Text="IBeam Cursor"
-                                            TextAlignment="Center" />
+                                        <TextBlock Grid.Row="0" Text="IBeam Cursor" TextAlignment="Center" />
                                         <Border
                                             Grid.Row="1"
                                             MinWidth="100"

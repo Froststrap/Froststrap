@@ -10,15 +10,10 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
-    d:DesignHeight="900"
-    d:DesignWidth="800"
-    x:DataType="vm:ChannelViewModel"
-    mc:Ignorable="d">
+    x:DataType="vm:ChannelViewModel">
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
@@ -158,10 +153,7 @@ SPDX-License-Identifier: MPL-2.0
                                 IsEnabled="{Binding PlayerVersionOverrideEnabled}"
                                 Width="280" />
 
-                            <StackPanel
-                                IsVisible="{Binding !IsPlayerHashIdle}"
-                                Orientation="Horizontal"
-                                Spacing="8">
+                            <StackPanel IsVisible="{Binding !IsPlayerHashIdle}" Orientation="Horizontal" Spacing="8">
                                 <ui:FAProgressRing
                                     IsVisible="{Binding IsPlayerHashChecking}"
                                     IsIndeterminate="True"
@@ -348,10 +340,7 @@ SPDX-License-Identifier: MPL-2.0
                                 IsEnabled="{Binding StudioVersionOverrideEnabled}"
                                 Width="280" />
 
-                            <StackPanel
-                                IsVisible="{Binding !IsStudioHashIdle}"
-                                Orientation="Horizontal"
-                                Spacing="8">
+                            <StackPanel IsVisible="{Binding !IsStudioHashIdle}" Orientation="Horizontal" Spacing="8">
                                 <ui:FAProgressRing
                                     IsVisible="{Binding IsStudioHashChecking}"
                                     IsIndeterminate="True"

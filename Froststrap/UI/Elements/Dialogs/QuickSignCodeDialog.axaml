@@ -8,12 +8,8 @@ SPDX-License-Identifier: MPL-2.0
                      xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:base="using:Froststrap.UI.Elements.Base"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:ui="using:FluentAvalonia.UI.Controls"
                      xmlns:resources="using:Froststrap.Localisation"
                      xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-                     xmlns:vm="using:Froststrap.UI.ViewModels.Dialogs"
                      xmlns:controls="using:Froststrap.UI.Elements.Controls"
                      Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
                      Width="450"
@@ -21,19 +17,12 @@ SPDX-License-Identifier: MPL-2.0
                      MinWidth="450"
                      MinHeight="345"
                      CanResize="True"
-                     WindowStartupLocation="CenterOwner"
-                     mc:Ignorable="d">
+                     WindowStartupLocation="CenterOwner">
 
     <Grid RowDefinitions="*,Auto">
         <Grid Grid.Row="0" Margin="20,16,20,16" RowDefinitions="Auto,Auto,Auto,Auto,*">
-            <StackPanel
-                Grid.Row="0"
-                Margin="0,0,0,16"
-                Orientation="Horizontal">
-                <ic:Lucide
-                    Margin="0,0,8,0"
-                    FontSize="20"
-                    Icon="Link2" />
+            <StackPanel Grid.Row="0" Margin="0,0,0,16" Orientation="Horizontal">
+                <ic:Lucide Margin="0,0,8,0" FontSize="20" Icon="Link2" />
                 <TextBlock
                     FontSize="18"
                     FontWeight="SemiBold"

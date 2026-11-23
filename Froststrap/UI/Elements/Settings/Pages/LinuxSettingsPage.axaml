@@ -9,17 +9,10 @@ SPDX-License-Identifier: MPL-2.0
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:gv="using:Froststrap.UI.ViewModels"
-    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    d:DesignHeight="2500"
-    d:DesignWidth="1200"
-    x:DataType="vm:LinuxSettingsViewModel"
-    mc:Ignorable="d">
+    x:DataType="vm:LinuxSettingsViewModel">
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
             <controls:SectionHeader
