@@ -47,5 +47,5 @@ pub fn send_notification(title: String, body: String, _timeout: Duration) -> i32
     let notifier = ToastNotificationManager::CreateToastNotifierWithId(&HSTRING::from(aumid))?;
     notifier.Show(&toast)?;
 
-    Ok(())
+    0
 }
