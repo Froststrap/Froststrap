@@ -27,20 +27,18 @@ logger::export_set_logger!();
 #[unsafe(no_mangle)]
 pub extern "C" fn init(bundle_id: *const c_char) -> i32 {
     let bundle_id = IStr::from(bundle_id).into();
-    return os::init(bundle_id);
+    os::init(bundle_id)
 }
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn send_notification_message(
     title: *const c_char,
     description: *const c_char,
-    duration: i32,
+    dur: i32,
 ) -> i32 {
-    _ = duration;
-
     let title = IStr::from(title).into();
     let description = IStr::from(description).into();
-    let r = os::send_notification(title, description, Duration::from_secs(2));
+    let r = os::send_notification(title, description, Duration::from_secs(dur as _));
 
     log::debug!("Send notify result={r}");
     r
