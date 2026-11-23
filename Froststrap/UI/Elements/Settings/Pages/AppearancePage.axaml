@@ -47,159 +47,152 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </controls:CardExpander.HeaderContent>
 
-                <StackPanel Spacing="16">
-                    <StackPanel
-                        Spacing="16"
-                        IsVisible="{Binding IsColorTheme}">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_CustomColors}"
-                            FontWeight="Bold" />
-                        <WrapPanel
-                            ItemSpacing="16"
-                            LineSpacing="8"
-                            VerticalAlignment="Center">
-                            <StackPanel
-                                Orientation="Horizontal"
-                                Spacing="8"
-                                VerticalAlignment="Center">
+                <StackPanel>
+                    <StackPanel IsVisible="{Binding IsColorTheme}">
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Common_Angle}"
+                            Description="{x:Static resources:Strings.Menu_Appearance_Angle_Description}">
+                            <NumericUpDown
+                                Width="160"
+                                Minimum="0"
+                                Maximum="360"
+                                FormatString="{}{0}°"
+                                Value="{Binding GradientAngle}" />
+                        </controls:OptionControl>
+
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Menu_Appearance_CustomColors}"
+                            Description="{x:Static resources:Strings.Menu_Appearance_CustomColors_Description}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button
+                                    Content="{x:Static resources:Strings.Menu_Appearance_ResetDefault}"
+                                    Command="{Binding ResetGradientCommand}" />
                                 <Button
                                     Content="{x:Static resources:Strings.Menu_ModGenerator_AddStop}"
                                     Command="{Binding AddGradientStopCommand}"
                                     Classes="accent" />
-                                <Button
-                                    Content="{x:Static resources:Strings.Menu_Appearance_ResetDefault}"
-                                    Command="{Binding ResetGradientCommand}" />
-                                <TextBlock
-                                    Text="{x:Static resources:Strings.Common_Angle}"
-                                    VerticalAlignment="Center" />
-                                <NumericUpDown
-                                    Width="160"
-                                    Minimum="0"
-                                    Maximum="360"
-                                    Value="{Binding GradientAngle}"
-                                    VerticalAlignment="Center" />
                             </StackPanel>
-
-                            <StackPanel
-                                Orientation="Horizontal"
-                                Spacing="8">
-                                <Button
-                                    Content="{x:Static resources:Strings.Common_Export}"
-                                    Command="{Binding ExportGradientCommand}"
-                                    CommandParameter="{Binding $parent[TopLevel]}" />
-                                <Button
-                                    Content="{x:Static resources:Strings.Common_Import}"
-                                    Command="{Binding ImportGradientCommand}"
-                                    CommandParameter="{Binding $parent[TopLevel]}" />
-                            </StackPanel>
-                        </WrapPanel>
+                        </controls:OptionControl>
 
                         <ItemsControl ItemsSource="{Binding GradientStops}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid
-                                        ColumnDefinitions="Auto,*,45,110,Auto,Auto"
-                                        ColumnSpacing="8"
-                                        Margin="0,4"
-                                        VerticalAlignment="Center">
-                                        <TextBlock
-                                            Text="{x:Static resources:Strings.Common_Offset}"
-                                            VerticalAlignment="Center" />
-                                        <Slider
-                                            Grid.Column="1"
-                                            Minimum="0"
-                                            Maximum="1"
-                                            Value="{Binding Offset, Mode=TwoWay}"
-                                            VerticalAlignment="Center" />
-                                        <TextBlock
-                                            Grid.Column="2"
-                                            Text="{Binding Offset, StringFormat=\{0:N2\}}"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Center" />
-                                        <TextBox
-                                            Grid.Column="3"
-                                            Text="{Binding Color}"
-                                            VerticalAlignment="Center" />
-                                        <Button
-                                            Grid.Column="4"
-                                            Content="{x:Static resources:Strings.Common_ColorPicker}"
-                                            Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).OpenColorPickerCommand}"
-                                            CommandParameter="{Binding $self}" />
-                                        <Button
-                                            Grid.Column="5"
-                                            Content="{x:Static resources:Strings.Common_Remove}"
-                                            IsEnabled="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).CanRemoveGradientStop}"
-                                            Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).RemoveGradientStopCommand}"
-                                            CommandParameter="{Binding}" />
-                                    </Grid>
+                                    <controls:Card Margin="0,4" Padding="16,12" MinHeight="0">
+                                        <Grid
+                                            ColumnDefinitions="Auto,*,45,110,Auto,Auto"
+                                            ColumnSpacing="8"
+                                            VerticalAlignment="Center">
+                                            <TextBlock
+                                                Text="{x:Static resources:Strings.Common_Offset}"
+                                                FontWeight="SemiBold"
+                                                VerticalAlignment="Center" />
+                                            <Slider
+                                                Grid.Column="1"
+                                                Minimum="0"
+                                                Maximum="1"
+                                                Value="{Binding Offset, Mode=TwoWay}"
+                                                VerticalAlignment="Center" />
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                Text="{Binding Offset, StringFormat=\{0:N2\}}"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center" />
+                                            <TextBox
+                                                Grid.Column="3"
+                                                Text="{Binding Color}"
+                                                VerticalAlignment="Center" />
+                                            <Button
+                                                Grid.Column="4"
+                                                Content="{x:Static resources:Strings.Common_ColorPicker}"
+                                                Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).OpenColorPickerCommand}"
+                                                CommandParameter="{Binding $self}" />
+                                            <Button
+                                                Grid.Column="5"
+                                                Content="{x:Static resources:Strings.Common_Remove}"
+                                                IsEnabled="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).CanRemoveGradientStop}"
+                                                Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).RemoveGradientStopCommand}"
+                                                CommandParameter="{Binding}" />
+                                        </Grid>
+                                    </controls:Card>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Menu_Appearance_ShareColors_Title}"
+                            Description="{x:Static resources:Strings.Menu_Appearance_ShareColors_Description}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Button
+                                    Content="{x:Static resources:Strings.Common_Import}"
+                                    Command="{Binding ImportGradientCommand}"
+                                    CommandParameter="{Binding $parent[TopLevel]}" />
+                                <Button
+                                    Content="{x:Static resources:Strings.Common_Export}"
+                                    Command="{Binding ExportGradientCommand}"
+                                    CommandParameter="{Binding $parent[TopLevel]}" />
+                            </StackPanel>
+                        </controls:OptionControl>
                     </StackPanel>
 
-                    <StackPanel
-                        Spacing="16"
-                        IsVisible="{Binding IsImageTheme}">
-                        <TextBlock
-                            Text="{x:Static resources:Strings.Menu_Appearance_BackgroundImage}"
-                            FontWeight="Bold" />
-                        <Grid
-                            ColumnDefinitions="*,Auto,Auto"
-                            ColumnSpacing="8">
-                            <TextBox
-                                Text="{Binding BackgroundImagePath}"
-                                PlaceholderText="No image selected..."
-                                IsReadOnly="True"
-                                VerticalContentAlignment="Center" />
-                            <Button
-                                Grid.Column="1"
-                                Content="{x:Static resources:Strings.Common_Browse}"
-                                Command="{Binding SelectImageCommand}"
-                                CommandParameter="{Binding $parent[TopLevel]}" />
-                            <Button
-                                Grid.Column="2"
-                                Content="{x:Static resources:Strings.Common_Clear}"
-                                Command="{Binding ClearImageCommand}"
-                                Classes="accent" />
-                        </Grid>
+                    <StackPanel IsVisible="{Binding IsImageTheme}">
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Menu_Appearance_BackgroundImage}"
+                            Description="{x:Static resources:Strings.Menu_Appearance_BackgroundImage_Description}">
+                            <Grid
+                                ColumnDefinitions="*,Auto,Auto"
+                                ColumnSpacing="8"
+                                Width="360">
+                                <TextBox
+                                    Text="{Binding BackgroundImagePath}"
+                                    PlaceholderText="No image selected..."
+                                    IsReadOnly="True"
+                                    VerticalContentAlignment="Center" />
+                                <Button
+                                    Grid.Column="1"
+                                    Content="{x:Static resources:Strings.Common_Browse}"
+                                    Command="{Binding SelectImageCommand}"
+                                    CommandParameter="{Binding $parent[TopLevel]}" />
+                                <Button
+                                    Grid.Column="2"
+                                    Content="{x:Static resources:Strings.Common_Clear}"
+                                    Command="{Binding ClearImageCommand}" />
+                            </Grid>
+                        </controls:OptionControl>
 
-                        <Grid
-                            ColumnDefinitions="Auto,*"
-                            ColumnSpacing="8">
-                            <TextBlock
-                                Text="{x:Static resources:Strings.Menu_Appearance_StretchMode}"
-                                VerticalAlignment="Center" />
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Menu_Appearance_StretchMode_Title}"
+                            Description="{x:Static resources:Strings.Menu_Appearance_StretchMode_Description}">
                             <ComboBox
-                                Grid.Column="1"
+                                MinWidth="200"
                                 ItemsSource="{Binding BackgroundStretches}"
-                                SelectedItem="{Binding BackgroundStretch}"
-                                HorizontalAlignment="Stretch">
+                                SelectedItem="{Binding BackgroundStretch}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                        </Grid>
+                        </controls:OptionControl>
 
-                        <Grid
-                            ColumnDefinitions="Auto,*,50"
-                            ColumnSpacing="8">
-                            <TextBlock
-                                Text="{x:Static resources:Strings.Menu_Appearance_Opacity}"
-                                VerticalAlignment="Center" />
-                            <Slider
-                                Grid.Column="1"
-                                Minimum="0"
-                                Maximum="1"
-                                Value="{Binding BackgroundOpacity}"
-                                VerticalAlignment="Center" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Text="{Binding BackgroundOpacity, StringFormat=\{0:P0\}}"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center" />
-                        </Grid>
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Menu_Appearance_Opacity_Title}"
+                            Description="{x:Static resources:Strings.Menu_Appearance_Opacity_Description}">
+                            <Grid
+                                ColumnDefinitions="*,50"
+                                ColumnSpacing="8"
+                                Width="260">
+                                <Slider
+                                    Minimum="0"
+                                    Maximum="1"
+                                    Value="{Binding BackgroundOpacity}"
+                                    VerticalAlignment="Center" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Text="{Binding BackgroundOpacity, StringFormat=\{0:P0\}}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center" />
+                            </Grid>
+                        </controls:OptionControl>
                     </StackPanel>
                 </StackPanel>
             </controls:CardExpander>
@@ -222,27 +215,24 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </controls:CardExpander.HeaderContent>
 
-                <StackPanel Spacing="16" IsVisible="{Binding IsCustomAccentColor}">
-                    <TextBlock
-                        Text="{x:Static resources:Strings.Menu_Appearance_AccentColor_Custom}"
-                        FontWeight="Bold" />
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Menu_Appearance_AccentColor_Custom}"
+                    IsVisible="{Binding IsCustomAccentColor}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
                         <Border
                             Width="32"
                             CornerRadius="4"
-                            Background="{Binding CustomAccentColor}"
-                            VerticalAlignment="Stretch" />
+                            Background="{Binding CustomAccentColor}" />
                         <TextBox
-                            Grid.Column="1"
+                            Width="110"
                             Text="{Binding CustomAccentColor}"
                             VerticalContentAlignment="Center" />
                         <Button
-                            Grid.Column="2"
                             Content="{x:Static resources:Strings.Common_ColorPicker}"
                             Command="{Binding OpenAccentColorPickerCommand}"
                             CommandParameter="{Binding $self}" />
-                    </Grid>
-                </StackPanel>
+                    </StackPanel>
+                </controls:OptionControl>
             </controls:CardExpander>
 
             <controls:OptionControl
