@@ -118,7 +118,7 @@ buildDotnetModule {
   dotnetInstallPath = "$out/lib/froststrap";
   cargoRoot = "backend";
   selfContainedBuild = true;
-  
+
   makeWrapperArgs = [
     "--prefix"
     "LD_LIBRARY_PATH"
@@ -128,7 +128,7 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-30TGDP5xGnqfws4nHk7bRLTj8ugkCoLrfHLtVEu0fk8=";
+    hash = "sha256-/pyk7zjH7vZ+M3Zh/iaUW2jaewZp0yURE6ePsoK/fY8=";
   };
 
   nativeBuildInputs = [
