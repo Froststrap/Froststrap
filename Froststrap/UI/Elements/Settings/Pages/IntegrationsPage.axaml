@@ -22,92 +22,88 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_Integrations_ActivityTracking_Description}"
                 Margin="0,4,0,4" />
 
-            <controls:ToggleOption
-                x:Name="ActivityTrackingOption"
+            <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Integrations_EnableActivityTracking_Title}"
                 Description="{x:Static resources:Strings.Menu_Integrations_EnableActivityTracking_Description}"
-                HelpLink="https://bloxstraplabs.com/wiki/features/activity-tracking/"
-                IsChecked="{Binding ActivityTrackingEnabled}" />
-
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Description}"
-                HelpLink="https://bloxstraplabs.com/wiki/features/server-location-hints/"
-                IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsChecked="{Binding ShowServerDetailsEnabled}" />
-
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_ServerUptime_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_ServerUptime_Description}"
-                IsEnabled="{Binding ShowServerDetailsEnabled}"
-                IsChecked="{Binding ShowServerUptimeEnabled}" />
-
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_AutoRejoin_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_AutoRejoin_Description}"
-                IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsChecked="{Binding AutoRejoinEnabled}" />
-
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
-                IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsChecked="{Binding PlaytimeCounterEnabled}" />
-
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
-                IsEnabled="{Binding ActivityTrackingEnabled}">
-                <ComboBox
-                    MinWidth="200"
-                    ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}"
-                    Classes="enum" />
-            </controls:OptionControl>
-
-            <controls:CardExpander
-                Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}"
-                IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
-                IsEnabled="{Binding ActivityTrackingEnabled}"
+                IsExpanded="{Binding ActivityTrackingEnabled, Mode=OneWay}"
                 Classes="NoUserExpansion">
                 <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
+                    <ToggleSwitch IsChecked="{Binding ActivityTrackingEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Title}"
-                    Description="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Description}"
-                    IsEnabled="{Binding ActivityTrackingEnabled}">
-                    <Button
-                        HorizontalAlignment="Left"
-                        Content="{x:Static resources:Strings.Menu_Integrations_GameHistory_View}"
-                        Command="{Binding OpenGameHistoryCommand}" />
-                </controls:OptionControl>
+                <StackPanel>
+                    <controls:CardExpander
+                        Header="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Description}"
+                        IsExpanded="{Binding ShowServerDetailsEnabled, Mode=OneWay}"
+                        Classes="NoUserExpansion">
+                        <controls:CardExpander.HeaderContent>
+                            <ToggleSwitch IsChecked="{Binding ShowServerDetailsEnabled, Mode=TwoWay}" />
+                        </controls:CardExpander.HeaderContent>
+                        <controls:ToggleOption
+                            Header="{x:Static resources:Strings.Menu_Integrations_ServerUptime_Title}"
+                            Description="{x:Static resources:Strings.Menu_Integrations_ServerUptime_Description}"
+                            IsChecked="{Binding ShowServerUptimeEnabled}" />
+                    </controls:CardExpander>
+
+                    <controls:CardExpander
+                        Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}"
+                        IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
+                        Classes="NoUserExpansion">
+                        <controls:CardExpander.HeaderContent>
+                            <ToggleSwitch IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
+                        </controls:CardExpander.HeaderContent>
+                        <controls:OptionControl
+                            Header="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Title}"
+                            Description="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Description}">
+                            <Button Content="{x:Static resources:Strings.Menu_Integrations_GameHistory_View}" Command="{Binding OpenGameHistoryCommand}" />
+                        </controls:OptionControl>
+                    </controls:CardExpander>
+
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_AutoRejoin_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_AutoRejoin_Description}"
+                        IsChecked="{Binding AutoRejoinEnabled}" />
+
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
+                        IsChecked="{Binding PlaytimeCounterEnabled}" />
+
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_DesktopApp_Title}"
+                        Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/'}"
+                        HelpLink="https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/"
+                        IsChecked="{Binding DisableAppPatchEnabled}" />
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}"
+                        IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}">
+                        <ComboBox
+                            MinWidth="200"
+                            ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
+                            SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}"
+                            Classes="enum" />
+                    </controls:OptionControl>
+                </StackPanel>
             </controls:CardExpander>
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}"
                 Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}"
-                IsExpanded="True">
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+                IsExpanded="True"
+                Classes="NoUserExpansion">
                 <StackPanel>
-                    <controls:ToggleOption
-                        Header="{x:Static resources:Strings.Menu_Integrations_DesktopApp_Title}"
-                        Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/'}"
-                        HelpLink="https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/"
-                        IsEnabled="{Binding ActivityTrackingEnabled}"
-                        IsChecked="{Binding DisableAppPatchEnabled}" />
-
                     <controls:ToggleOption
                         Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}"
                         Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}"
-                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                         IsChecked="{Binding DisableRobloxRecording}" />
 
                     <controls:ToggleOption
                         Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}"
                         Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}"
-                        IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                         IsChecked="{Binding DisableRobloxScreenshots}" />
                 </StackPanel>
             </controls:CardExpander>
@@ -121,75 +117,69 @@ SPDX-License-Identifier: MPL-2.0
                 Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
                 IsChecked="{Binding ShowUsingFroststrapRPC}" />
 
-            <controls:SectionHeader
-                Title="{x:Static resources:Strings.Common_Player}"
-                Description="{x:Static resources:Strings.Menu_Integrations_RPC_Player_Description}" />
-
-            <controls:ToggleOption
-                x:Name="DiscordActivityOption"
-                Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Common_Player}"
                 Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/help/discord-rich-presence-not-working/'}"
+                IsExpanded="{Binding DiscordActivityEnabled, Mode=OneWay}"
                 IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsChecked="{Binding DiscordActivityEnabled}" />
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+                <StackPanel>
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
+                        IsChecked="{Binding EnableCustomStatusDisplay}" />
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
-                IsEnabled="{Binding DiscordActivityEnabled}"
-                IsChecked="{Binding EnableCustomStatusDisplay}" />
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
+                        IsChecked="{Binding DiscordActivityJoinEnabled}" />
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
-                IsEnabled="{Binding DiscordActivityEnabled}"
-                IsChecked="{Binding DiscordActivityJoinEnabled}" />
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
+                        IsChecked="{Binding DiscordAccountOnProfile}" />
+                </StackPanel>
+            </controls:CardExpander>
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
-                IsEnabled="{Binding DiscordActivityEnabled}"
-                IsChecked="{Binding DiscordAccountOnProfile}" />
-
-            <controls:SectionHeader
-                Title="{x:Static resources:Strings.Common_Studio}"
-                Description="{x:Static resources:Strings.Menu_Integrations_RPC_Studio_Description}" />
-
-            <controls:ToggleOption
-                x:Name="StudioActivityOption"
-                Header="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Title}"
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Common_Studio}"
                 Description="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Description}"
+                IsExpanded="{Binding StudioRPCEnabled, Mode=OneWay}"
                 IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsChecked="{Binding StudioRPCEnabled}" />
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+                <StackPanel>
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Description}"
+                        IsChecked="{Binding ThumbnailChanging}" />
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Description}"
-                IsEnabled="{Binding StudioRPCEnabled}"
-                IsChecked="{Binding ThumbnailChanging}" />
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Description}"
+                        IsChecked="{Binding EditingInfo}" />
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Description}"
-                IsEnabled="{Binding StudioRPCEnabled}"
-                IsChecked="{Binding EditingInfo}" />
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Description}"
+                        IsChecked="{Binding WorkspaceInfo}" />
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Description}"
-                IsEnabled="{Binding StudioRPCEnabled}"
-                IsChecked="{Binding WorkspaceInfo}" />
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Description}"
+                        IsChecked="{Binding ShowTesting}" />
 
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Description}"
-                IsEnabled="{Binding StudioRPCEnabled}"
-                IsChecked="{Binding ShowTesting}" />
-
-            <controls:ToggleOption
-                Header="{x:Static resources:Strings.Menu_Integrations_JoinButton_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_JoinButton_Description}"
-                IsEnabled="{Binding StudioRPCEnabled}"
-                IsChecked="{Binding StudioGameButton}" />
+                    <controls:ToggleOption
+                        Header="{x:Static resources:Strings.Menu_Integrations_JoinButton_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_JoinButton_Description}"
+                        IsChecked="{Binding StudioGameButton}" />
+                </StackPanel>
+            </controls:CardExpander>
 
             <controls:SectionHeader
                 Title="{x:Static resources:Strings.Menu_Integrations_Custom_Title}"

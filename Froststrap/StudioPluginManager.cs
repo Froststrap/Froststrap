@@ -37,7 +37,7 @@ internal static class StudioPluginManager
 
     public static void Sync()
     {
-        if (!App.Settings.Prop.StudioRPC)
+        if (!App.Settings.Prop.StudioRPC || !App.Settings.Prop.EnableActivityTracking)
         {
             Uninstall();
             return;

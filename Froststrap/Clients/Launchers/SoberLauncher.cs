@@ -76,16 +76,16 @@ internal sealed class SoberLauncher(IClientLayout layout, FlatpakProcessService 
 
     private void ApplyLaunchSettings()
     {
-        if (App.Settings.Prop.ShowServerDetails)
+        if (App.Settings.Prop.EnableActivityTracking && App.Settings.Prop.ShowServerDetails)
             settings.SetPreset("ServerLocationIndicatorEnabled", "false");
 
-        if (App.Settings.Prop.UseDiscordRichPresence)
+        if (App.Settings.Prop.EnableActivityTracking && App.Settings.Prop.UseDiscordRichPresence)
         {
             settings.SetPreset("DiscordRpcEnabled", "false");
             settings.SetPreset("DiscordRpcShowJoinButton", "false");
         }
 
-        if (App.Settings.Prop.UseDisableAppPatch)
+        if (App.Settings.Prop.EnableActivityTracking && App.Settings.Prop.UseDisableAppPatch)
             settings.SetPreset("CloseOnLeave", "false");
 
         settings.Save();

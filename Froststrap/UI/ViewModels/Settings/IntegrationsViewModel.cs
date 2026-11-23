@@ -69,29 +69,8 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         set
         {
             App.Settings.Prop.EnableActivityTracking = value;
-
-            if (!value)
-            {
-                ShowServerDetailsEnabled = false;
-                ShowGameHistoryEnabled = false;
-                AutoRejoinEnabled = false;
-                PlaytimeCounterEnabled = false;
-                DisableAppPatchEnabled = false;
-                DiscordActivityEnabled = false;
-                DiscordActivityJoinEnabled = false;
-                StudioRPCEnabled = false;
-
-                OnPropertyChanged(nameof(ShowServerDetailsEnabled));
-                OnPropertyChanged(nameof(ShowGameHistoryEnabled));
-                OnPropertyChanged(nameof(AutoRejoinEnabled));
-                OnPropertyChanged(nameof(PlaytimeCounterEnabled));
-                OnPropertyChanged(nameof(DisableAppPatchEnabled));
-                OnPropertyChanged(nameof(DiscordActivityEnabled));
-                OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
-                OnPropertyChanged(nameof(StudioRPCEnabled));
-            }
-
             OnPropertyChanged(nameof(ActivityTrackingEnabled));
+            StudioPluginManager.Sync();
         }
     }
 
@@ -101,14 +80,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         set
         {
             App.Settings.Prop.ShowServerDetails = value;
-
-            if (!value)
-            {
-                ShowServerUptimeEnabled = false;
-
-                OnPropertyChanged(nameof(ShowServerUptimeEnabled));
-            }
-
             OnPropertyChanged(nameof(ShowServerDetailsEnabled));
         }
     }
@@ -172,16 +143,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         {
             App.Settings.Prop.UseDiscordRichPresence = value;
             OnPropertyChanged(nameof(DiscordActivityEnabled));
-
-            if (!value)
-            {
-                DiscordActivityJoinEnabled = value;
-                EnableCustomStatusDisplay = value;
-                DiscordAccountOnProfile = value;
-                OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
-                OnPropertyChanged(nameof(EnableCustomStatusDisplay));
-                OnPropertyChanged(nameof(DiscordAccountOnProfile));
-            }
         }
     }
 
@@ -257,20 +218,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         App.Settings.Prop.StudioRPC = value;
 
         OnPropertyChanged(nameof(StudioRPCEnabled));
-
-        if (!value)
-        {
-            ThumbnailChanging = value;
-            EditingInfo = value;
-            WorkspaceInfo = value;
-            ShowTesting = value;
-            StudioGameButton = value;
-            OnPropertyChanged(nameof(ThumbnailChanging));
-            OnPropertyChanged(nameof(EditingInfo));
-            OnPropertyChanged(nameof(WorkspaceInfo));
-            OnPropertyChanged(nameof(ShowTesting));
-            OnPropertyChanged(nameof(StudioGameButton));
-        }
 
         StudioPluginManager.Sync();
     }

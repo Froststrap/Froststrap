@@ -300,9 +300,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 App.Settings.Prop.EnableActivityTracking = value;
                 OnPropertyChanged(nameof(ActivityTrackingEnabled));
-
-                if (!value)
-                    WindowManipulationEnabled = false;
+                OnPropertyChanged(nameof(WindowManipulationEnabled));
             }
         }
 
