@@ -35,21 +35,7 @@ pub fn main() {
 }
 
 fn desktop_entry(version: &str) -> String {
-    dedent(&format!(
-        r#"
-        [Desktop Entry]
-        Type=Application
-        Name=Froststrap
-        Comment=A fork of Fishstrap, focused on performance and customization
-        Exec=froststrap %u
-        TryExec=froststrap
-        Icon=froststrap
-        Terminal=false
-        Categories=Game;
-        MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;
-        X-AppImage-Version={version}
-    "#
-    ))
+    format!(include_str!("../../../resource/froststrap.desktop"), version)
 }
 
 fn build_nfpm(output_dir: PathBuf, version: String, desktop: PathBuf, icon: PathBuf) {
