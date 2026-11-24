@@ -13,7 +13,7 @@ using Froststrap.Cli;
 
 namespace Froststrap;
 
-sealed partial class Program
+sealed class Program
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -41,6 +41,9 @@ sealed partial class Program
     [STAThread]
     public static int Main(string[] args)
     {
+    #if DEBUG
+        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
+    #endif
         AppInitializer.InitializeNativeResolvers();
 
         var velopackBuilder = VelopackApp.Build()
@@ -137,21 +140,15 @@ sealed partial class Program
     }
 
     public static AppBuilder BuildAvaloniaApp()
-    {
-    #if DEBUG
-        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
-    #endif
-
-    return AppBuilder.Configure<App>()
-        .UsePlatformDetect()
-        .ConfigureFonts(fontManager => fontManager.AddFontCollection(
-            new EmbeddedFontCollection(
-                new Uri("fonts:Froststrap", UriKind.Absolute),
-                new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
+        => AppBuilder.Configure<App>()
+            .UsePlatformDetect()
+            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
+                new EmbeddedFontCollection(
+                    new Uri("fonts:Froststrap", UriKind.Absolute),
+                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
 #if DEBUG
-        .WithDeveloperTools()
+            .WithDeveloperTools()
 #endif
         .LogToTrace()
         .ConfigurePlatformRendering();
-    }
 }
