@@ -277,7 +277,8 @@ internal sealed class Bootstrapper : IDisposable
                     if (backgroundUpdaterLockOpen && MustUpgrade)
                     {
                         // I am Forced Upgrade, killer of Background Updates
-                        Utility.Processes.KillBackgroundUpdater();
+                        using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
+                        handle.Set();
                         backgroundUpdaterLockOpen = false;
                     }
 

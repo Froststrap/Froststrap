@@ -6,7 +6,7 @@ namespace Froststrap.Utility;
 
 static class Processes
 {
-    public static Process[] GetProcessesSafe()
+    public static Process[] GetProcessList()
     {
         try
         {
@@ -40,11 +40,5 @@ static class Processes
             App.Logger.Error($"PID {pid} could not be closed");
             App.Logger.Error(ex);
         }
-    }
-
-    public static void KillBackgroundUpdater()
-    {
-        using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
-        handle.Set();
     }
 }

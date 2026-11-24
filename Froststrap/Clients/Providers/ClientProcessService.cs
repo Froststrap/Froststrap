@@ -43,7 +43,7 @@ internal class ClientProcessService : IProcessService
     private Process[] FindCrashHandlers() => _crashHandlerName is null ? [] : Process.GetProcessesByName(_crashHandlerName);
 
     public IReadOnlyList<Process> FindAllPlayer()
-        => Utility.Processes.GetProcessesSafe().Where(Owns).ToList();
+        => Utility.Processes.GetProcessList().Where(Owns).ToList();
 
     public bool IsStudioProcess(Process process) => Owns(process);
 
