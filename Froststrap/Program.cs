@@ -8,6 +8,7 @@ using Avalonia.Media.Fonts;
 using Velopack;
 using Froststrap;
 using Froststrap.Backend;
+using Froststrap.Startup;
 using Froststrap.Cli;
 
 namespace Froststrap;
@@ -135,96 +136,22 @@ sealed partial class Program
         return 0;
     }
 
-
     public static AppBuilder BuildAvaloniaApp()
     {
-        var builder = AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
-                new EmbeddedFontCollection(
-                    new Uri("fonts:Froststrap", UriKind.Absolute),
-                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
-#if DEBUG
-            .WithDeveloperTools()
-#endif
-            .LogToTrace();
-
-#if DEBUG
+    #if DEBUG
         Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
+    #endif
+
+    return AppBuilder.Configure<App>()
+        .UsePlatformDetect()
+        .ConfigureFonts(fontManager => fontManager.AddFontCollection(
+            new EmbeddedFontCollection(
+                new Uri("fonts:Froststrap", UriKind.Absolute),
+                new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
+#if DEBUG
+        .WithDeveloperTools()
 #endif
-
-        if (OperatingSystem.IsMacOS())
-            builder = builder.With(new AvaloniaNativePlatformOptions
-            {
-                // Remove render with deprecated Core OpenGL, want best experience for macOS.
-                // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_pg_concepts/opengl_pg_concepts.html
-                //
-                // > Important: OpenGL was deprecated in macOS 10.14.
-                // > To create high-performance code on GPUs, use the Metal framework instead.
-                //
-                // Quote from linked website.
-                RenderingMode = new[]
-                {
-                    AvaloniaNativeRenderingMode.Metal,
-                    AvaloniaNativeRenderingMode.Software
-                }
-            });
-
-        if (OperatingSystem.IsLinux())
-        {
-            builder = builder.With(new X11PlatformOptions
-            {
-                // https://docs.avaloniaui.net/api/avalonia/x11platformoptions#uid-1eb188c693
-                //
-                // Add Vulkan as a possible render method, possibly unstable?
-                RenderingMode = new[]
-                {
-                    X11RenderingMode.Glx,
-                    X11RenderingMode.Vulkan,
-                    X11RenderingMode.Software
-                },
-            });
-
-            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
-            {
-                App.Logger.Debug("Using Wayland backend (FROSTSTRAP_FORCE_WAYLAND)");
-
-                builder = builder.UseWayland()
-                    .With(new WaylandPlatformOptions
-                    {
-                        UseDmabufSwapchain = true
-                    });
-            }
-        }
-
-        if (OperatingSystem.IsWindows())
-        {
-            if (App.LaunchSettings?.NoGpuFlag.Active == true)
-            {
-                builder = builder.With(new Win32PlatformOptions
-                {
-                    RenderingMode = [Win32RenderingMode.Software]
-                });
-            }
-            else
-            {
-                // https://docs.avaloniaui.net/docs/platform-specific-guides/windows#rendering-mode
-                //
-                // All options in here might actually be nice to have available.
-                // `AngleGL` is noted to only work with `WinUIComposition` and `DirectComposition`
-                // which possibly is dependents of the backdrops we have, haven't tested.
-                builder = builder.With(new Win32PlatformOptions
-                {
-                    RenderingMode = [
-                        Win32RenderingMode.AngleEgl,
-                        Win32RenderingMode.Wgl,
-                        Win32RenderingMode.Vulkan,
-                        Win32RenderingMode.Software
-                    ]
-                });
-            }
-        }
-
-        return builder;
+        .LogToTrace()
+        .ConfigurePlatformRendering();
     }
 }
