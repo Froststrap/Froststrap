@@ -5,7 +5,6 @@
 using NLog;
 using Avalonia;
 using Avalonia.Media;
-using Velopack;
 using Froststrap;
 using Froststrap.Backend;
 using Froststrap.Startup;
@@ -23,23 +22,11 @@ sealed class Program
     public static int Main(string[] args)
     {
         AppInitializer.InitializeNativeResolvers();
+        VelopackSetup.Run();
 
-        var velopackBuilder = VelopackApp.Build()
-            .SetAutoApplyOnStartup(false);
+        var cli = CliInvocation.Parse(args);
 
-        if (OperatingSystem.IsWindows())
-        {
-            velopackBuilder = velopackBuilder
-                .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
-                .OnAfterUpdateFastCallback(v => UriHandler.RegisterProtocolHandlers())
-                .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers());
-        }
-
-        velopackBuilder.Run();
-
-        string[] launchArgs = args;
-
-        if (launchArgs.Any(static a => a is "--console" or "-c"))
+        if (cli.ShowConsole)
             WindowsConsole.Allocate();
 
         Logging.Configure(Paths.Logs);
@@ -49,52 +36,13 @@ sealed class Program
         _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 
-        if (launchArgs.Length == 0)
+        if (!cli.TryCreateLaunchSettings(out var launchSettings, out int exitCode))
         {
-            App.LaunchSettings = new LaunchSettings(new FroststrapCliCommand(), launchArgs);
-        }
-        else
-        {
-            var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
-
-            if (launchArgs.Any(static arg => arg is "--help" or "-h" or "--version"))
-            {
-                WindowsConsole.AttachToParent();
-                int exitCode = parseResult.ParseResult.Invoke();
-                LogManager.Shutdown();
-                return exitCode;
-            }
-
-            if (parseResult.ParseResult.Errors.Count > 0)
-            {
-                WindowsConsole.AttachToParent();
-
-                foreach (var parseError in parseResult.ParseResult.Errors)
-                {
-                    Console.Error.WriteLine(parseError.Message);
-                    Logger.Error(parseError.Message);
-                }
-
-                LogManager.Shutdown();
-                return (int)ErrorCode.ERROR_CANCELLED;
-            }
-
-            var cli = parseResult.Bind<FroststrapCliCommand>();
-            App.LaunchSettings = new LaunchSettings(cli, launchArgs);
-        }
-
-        var launchSettings = App.LaunchSettings;
-
-        if (launchSettings.UnknownArgs.Count > 0)
-        {
-            var unknown = launchSettings.UnknownArgs;
-            Logger.Error($"{unknown.Count} unrecognized argument(s): {string.Join(", ", unknown)}");
             LogManager.Shutdown();
-            return (int)ErrorCode.ERROR_CANCELLED;
+            return exitCode;
         }
 
-        if (launchArgs.Length != 0)
-            Logger.Debug($"Arguments: {string.Join(" ", launchArgs)}");
+        App.LaunchSettings = launchSettings;
 
         Logger.Debug($"Log file: {Logging.FileLocation}");
 
@@ -126,6 +74,6 @@ sealed class Program
 #if DEBUG
             .WithDeveloperTools()
 #endif
-        .LogToTrace()
-        .ConfigurePlatformRendering();
+            .LogToTrace()
+            .ConfigurePlatformRendering();
 }
