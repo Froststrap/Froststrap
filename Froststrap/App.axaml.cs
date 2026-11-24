@@ -519,7 +519,7 @@ internal sealed partial class App : Application
 
         // must happen before anything below loads Settings/State from the new data root
         if (OperatingSystem.IsWindows())
-            Updater.MigrateOutOfInstallRoot();
+            Migrations.MigrateOutOfInstallRoot();
 
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
@@ -593,7 +593,7 @@ internal sealed partial class App : Application
 
                 _ = AssertWindowsAUMIDAsync();
 
-                await Updater.RunMigrations();
+                await Migrations.RunMigrations();
 
                 if (Settings.Prop.AllowCookieAccess)
                     await Cookies.LoadCookies();

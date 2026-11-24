@@ -57,8 +57,7 @@ internal sealed class UpdaterManager(bool includePrerelease = false)
 
     public UpdateInfo? LastUpdate { get; private set; }
 
-    public async Task<UpdateInfo?> CheckForUpdatesAsync(
-        CancellationToken cancellationToken = default)
+    public async Task<UpdateInfo?> CheckForUpdatesAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -72,17 +71,12 @@ internal sealed class UpdaterManager(bool includePrerelease = false)
     public async Task DownloadUpdatesAsync(
         UpdateInfo update,
         Action<int>? progress = null,
-        CancellationToken cancellationToken = default)
-    {
-        await manager.DownloadUpdatesAsync(
-            update,
-            progress,
-            cancellationToken
-        );
-    }
+        CancellationToken cancellationToken = default
+    ) => await manager.DownloadUpdatesAsync(
+        update,
+        progress,
+        cancellationToken
+    );
 
-    public void ApplyUpdatesAndRestart(UpdateInfo update)
-    {
-        manager.ApplyUpdatesAndRestart(update);
-    }
+    public void ApplyUpdatesAndRestart(UpdateInfo update) => manager.ApplyUpdatesAndRestart(update);
 }
