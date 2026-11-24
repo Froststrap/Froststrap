@@ -22,7 +22,7 @@ namespace Froststrap;
 
 internal sealed class Bootstrapper : IDisposable
 {
-    public const string BackgroundUpdaterLockName = "BackgroundUpdater";
+    private const string LockName = "Bootstrapper";
 
     #region Properties
 
@@ -107,10 +107,6 @@ internal sealed class Bootstrapper : IDisposable
 
     private readonly BootstrapperProgress _progress;
 
-
-    public string LockName { get; set; } = "Bootstrapper";
-
-    public bool QuitIfLockExists { get; set; }
 
     public WatcherData? PendingWatcherData { get; private set; }
 
@@ -198,36 +194,34 @@ internal sealed class Bootstrapper : IDisposable
         // ensure only one instance of the bootstrapper is running at the time
         // so that we don't have stuff like two updates happening simultaneously
         bool lockWasAlreadyHeld = false;
-        _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
 
-        if (!_appLock.IsAcquired)
+        if (!BackgroundUpdate.IsCurrentProcess)
         {
-            lockWasAlreadyHeld = true;
+            _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
 
-            if (QuitIfLockExists)
+            if (!_appLock.IsAcquired)
             {
-                App.Logger.Info($"{LockName} instance exists, exiting!");
-                return;
+                lockWasAlreadyHeld = true;
+
+                App.Logger.Warn($"{LockName} instance exists, waiting...");
+                SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
+
+                while (!_cancelTokenSource.Token.IsCancellationRequested)
+                {
+                    _appLock.Dispose();
+                    _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
+                    if (_appLock.IsAcquired)
+                        break;
+
+                    await Task.Delay(500, _cancelTokenSource.Token);
+                }
+
+                if (_cancelTokenSource.Token.IsCancellationRequested)
+                    return;
             }
 
-            App.Logger.Warn($"{LockName} instance exists, waiting...");
-            SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
-
-            while (!_cancelTokenSource.Token.IsCancellationRequested)
-            {
-                _appLock.Dispose();
-                _appLock = new InterProcessLock(LockName, TimeSpan.Zero);
-                if (_appLock.IsAcquired)
-                    break;
-
-                await Task.Delay(500, _cancelTokenSource.Token);
-            }
-
-            if (_cancelTokenSource.Token.IsCancellationRequested)
-                return;
+            App.Logger.Info("Lock acquired.");
         }
-
-        App.Logger.Info("Lock acquired.");
 
         try
         {
@@ -263,32 +257,11 @@ internal sealed class Bootstrapper : IDisposable
 
                 if (AppData.DistributionState.VersionGuid != _latestVersionGuid || MustUpgrade)
                 {
-                    bool backgroundUpdaterLockOpen;
-                    using (var checkLock = new InterProcessLock(BackgroundUpdaterLockName, TimeSpan.Zero))
-                    {
-                        backgroundUpdaterLockOpen = !checkLock.IsAcquired;
-                    }
+                    if (MustUpgrade)
+                        await BackgroundUpdate.StopAsync();
 
-                    if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-                        backgroundUpdaterLockOpen = false; // we want to actually update lol
-
-                    App.Logger.Debug($"Background updater running: {backgroundUpdaterLockOpen}");
-
-                    if (backgroundUpdaterLockOpen && MustUpgrade)
-                    {
-                        // I am Forced Upgrade, killer of Background Updates
-                        using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
-                        handle.Set();
-                        backgroundUpdaterLockOpen = false;
-                    }
-
-                    if (!backgroundUpdaterLockOpen)
-                    {
-                        if (BackgroundUpdatePolicy.IsEligible(IsStudioLaunch, MustUpgrade, _latestVersion, AppData))
-                            StartBackgroundUpdater();
-                        else
-                            await UpgradeRoblox();
-                    }
+                    if (!BackgroundUpdate.TryDefer(IsStudioLaunch, MustUpgrade, _latestVersion, AppData))
+                        await UpgradeRoblox();
                 }
 
                 if (_cancelTokenSource.IsCancellationRequested)
@@ -579,20 +552,6 @@ internal sealed class Bootstrapper : IDisposable
     #endregion
 
     #region Roblox Install
-
-    private static void StartBackgroundUpdater()
-    {
-        using var checkLock = new InterProcessLock(BackgroundUpdaterLockName, TimeSpan.Zero);
-        if (!checkLock.IsAcquired)
-        {
-            App.Logger.Info("Background updater already running");
-            return;
-        }
-        checkLock.Dispose();
-
-        App.Logger.Info("Starting background updater");
-        Process.Start(Paths.Process, "--background-updater");
-    }
 
     private Task<bool> ApplyModifications() => new ModEngine(
         new ModContext

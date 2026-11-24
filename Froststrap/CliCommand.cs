@@ -19,9 +19,6 @@ internal sealed class FroststrapCliCommand
     [CliOption(Name = "--settings", Description = "Open the settings window", Arity = CliArgumentArity.Zero)]
     public bool Settings { get; set; }
 
-    [CliOption(Name = "--background-updater", Description = "Run as the background updater", Arity = CliArgumentArity.Zero)]
-    public bool BackgroundUpdater { get; set; }
-
     [CliOption(Name = "--no-launch", Description = "Install or update Roblox without launching it", Arity = CliArgumentArity.Zero)]
     public bool NoLaunch { get; set; }
 
