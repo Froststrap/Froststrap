@@ -32,6 +32,8 @@
   krb5,
   dbus,
   openssl,
+  apple-sdk,
+  darwin,
   lib,
 }:
 {
@@ -106,6 +108,8 @@ buildDotnetModule {
   cargoRoot = "backend";
   selfContainedBuild = true;
 
+  executables = if stdenv.hostPlatform.isDarwin then [ ] else null;
+
   makeWrapperArgs = [
     "--prefix"
     "LD_LIBRARY_PATH"
@@ -122,18 +126,23 @@ buildDotnetModule {
     rustPlatform.cargoSetupHook
     toolchain
     xtask
+    clang
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     pkg-config
-    clang
   ];
 
-  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
-    dbus
-    fontconfig
-    zlib
-    krb5
-  ];
+  buildInputs =
+    lib.optionals stdenv.hostPlatform.isLinux [
+      dbus
+      fontconfig
+      zlib
+      krb5
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      apple-sdk
+      darwin.ICU
+    ];
 
   buildPhase = ''
     runHook preBuild
@@ -142,14 +151,24 @@ buildDotnetModule {
     runHook postBuild
   '';
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/lib/froststrap $out/bin
-    cp -r build/publish/. $out/lib/froststrap/
-    install -Dm644 build/dist/froststrap.desktop $out/share/applications/froststrap.desktop
-    install -Dm644 ${src}/build/icon512.png $out/share/icons/hicolor/512x512/apps/froststrap.png
-    runHook postInstall
-  '';
+  installPhase =
+    if stdenv.hostPlatform.isDarwin then
+      ''
+        runHook preInstall
+        mkdir -p $out/Applications $out/bin
+        cp -R build/dist/Froststrap.app $out/Applications/
+        makeWrapper $out/Applications/Froststrap.app/Contents/MacOS/froststrap $out/bin/froststrap
+        runHook postInstall
+      ''
+    else
+      ''
+        runHook preInstall
+        mkdir -p $out/lib/froststrap $out/bin
+        cp -r build/publish/. $out/lib/froststrap/
+        install -Dm644 build/dist/froststrap.desktop $out/share/applications/froststrap.desktop
+        install -Dm644 ${src}/build/icon512.png $out/share/icons/hicolor/512x512/apps/froststrap.png
+        runHook postInstall
+      '';
 
   meta = {
     description = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
@@ -158,7 +177,6 @@ buildDotnetModule {
     mainProgram = "froststrap";
     platforms = [
       "x86_64-linux"
-      "x86_64-darwin"
       "aarch64-darwin"
     ];
   };
