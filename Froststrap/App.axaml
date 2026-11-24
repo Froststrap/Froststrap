@@ -64,7 +64,6 @@ SPDX-License-Identifier: MPL-2.0
             <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
             <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />
 
-            <FontFamily x:Key="Inter">fonts:Froststrap#Inter</FontFamily>
             <FontFamily x:Key="BuilderIconsRegular">avares://Froststrap/Resources/Fonts#BuilderIcons-Regular</FontFamily>
             <FontFamily x:Key="BuilderIconsFilled">avares://Froststrap/Resources/Fonts#BuilderIcons-Filled</FontFamily>
 

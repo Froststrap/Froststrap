@@ -4,7 +4,7 @@
 
 using NLog;
 using Avalonia;
-using Avalonia.Media.Fonts;
+using Avalonia.Media;
 using Velopack;
 using Froststrap;
 using Froststrap.Backend;
@@ -143,6 +143,7 @@ sealed class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            .With(new FontManagerOptions { DefaultFamilyName = "fonts:Inter#Inter" })
 #if DEBUG
             .WithDeveloperTools()
 #endif
