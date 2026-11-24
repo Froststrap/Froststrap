@@ -41,9 +41,6 @@ sealed class Program
     [STAThread]
     public static int Main(string[] args)
     {
-    #if DEBUG
-        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
-    #endif
         AppInitializer.InitializeNativeResolvers();
 
         var velopackBuilder = VelopackApp.Build()
@@ -67,6 +64,9 @@ sealed class Program
 #endif
 
         Logging.Configure(Paths.Logs);
+#if DEBUG
+        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
+#endif
         _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 
