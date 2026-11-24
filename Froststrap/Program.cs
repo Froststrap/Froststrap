@@ -19,25 +19,6 @@ sealed class Program
 
     internal static readonly Stopwatch StartupTimer = Stopwatch.StartNew();
 
-#if _WIN32
-    private const int AttachParentProcess = -1;
-
-    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
-    [System.Runtime.InteropServices.DefaultDllImportSearchPaths(System.Runtime.InteropServices.DllImportSearchPath.System32)]
-    private static partial int AllocConsole();
-
-    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
-    [System.Runtime.InteropServices.DefaultDllImportSearchPaths(System.Runtime.InteropServices.DllImportSearchPath.System32)]
-    private static partial int AttachConsole(int dwProcessId);
-#endif
-
-    private static void AttachParentConsole()
-    {
-#if _WIN32
-        _ = AttachConsole(AttachParentProcess);
-#endif
-    }
-
     [STAThread]
     public static int Main(string[] args)
     {
@@ -58,10 +39,8 @@ sealed class Program
 
         string[] launchArgs = args;
 
-#if _WIN32
         if (launchArgs.Any(static a => a is "--console" or "-c"))
-            _ = AllocConsole();
-#endif
+            WindowsConsole.Allocate();
 
         Logging.Configure(Paths.Logs);
 #if DEBUG
@@ -80,7 +59,7 @@ sealed class Program
 
             if (launchArgs.Any(static arg => arg is "--help" or "-h" or "--version"))
             {
-                AttachParentConsole();
+                WindowsConsole.AttachToParent();
                 int exitCode = parseResult.ParseResult.Invoke();
                 LogManager.Shutdown();
                 return exitCode;
@@ -88,7 +67,7 @@ sealed class Program
 
             if (parseResult.ParseResult.Errors.Count > 0)
             {
-                AttachParentConsole();
+                WindowsConsole.AttachToParent();
 
                 foreach (var parseError in parseResult.ParseResult.Errors)
                 {
