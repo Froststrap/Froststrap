@@ -17,6 +17,7 @@ using Froststrap.Clients.Registry;
 using Froststrap.Clients.Runtime;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Utility;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -444,6 +445,8 @@ internal sealed partial class App : Application
 
         if (OperatingSystem.IsMacOS() && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
             activatableLifetime.Activated += OnAppActivated;
+
+        MacOSDock.Initialize();
     }
 
     private static void OnAppActivated(object? sender, ActivatedEventArgs e)
