@@ -35,11 +35,6 @@
     "hash": "sha256-oq1powrap87bypo0K2APlecS1AGxS/9s4MGAlyLLVpo="
   },
   {
-    "pname": "Avalonia.Controls.DataGrid",
-    "version": "12.1.0",
-    "hash": "sha256-ivrjda3meZJMpoCglss5cYXxeldsR8li76tILwNQO/g="
-  },
-  {
     "pname": "Avalonia.Controls.WebView",
     "version": "12.1.1",
     "hash": "sha256-rCCCbFZyT7DnSz6idl7BDnKkmN0i5N4WvFqGQHzKCIA="
@@ -48,11 +43,6 @@
     "pname": "Avalonia.Desktop",
     "version": "12.1.3",
     "hash": "sha256-y3ZqNYglcHlE0Z8iC9DKkiySEZ3a1wG42M2aJXjMnDs="
-  },
-  {
-    "pname": "Avalonia.Fonts.Inter",
-    "version": "12.1.3",
-    "hash": "sha256-9rSwNg8uc1w/5Pzuw2fxC6I7U1271HrChMUkUeg5Lko="
   },
   {
     "pname": "Avalonia.FreeDesktop",
@@ -130,11 +120,6 @@
     "hash": "sha256-jLS1vo6V+fHsJs80HYT77oJE6IEC68fIgkLpYODjWAU="
   },
   {
-    "pname": "DiscordRPC-NativeAOT",
-    "version": "1.0.2",
-    "hash": "sha256-bbMZnsw1hFHIsspFoOhdG7BD0cqa9oa0kr9b5IGsbr4="
-  },
-  {
     "pname": "DotMake.CommandLine",
     "version": "3.7.0",
     "hash": "sha256-ZNSmwpxZ4j2cEpRgF+Ktmk1/Dq5tRN/ZQGrxpdCUV5w="
@@ -143,6 +128,16 @@
     "pname": "Fody",
     "version": "6.9.2",
     "hash": "sha256-rQAVA3ybnZhbX/n5QaMEg0qbM2fKTOHcLLr84CQt1G0="
+  },
+  {
+    "pname": "Froststrap.DiscordRPC",
+    "version": "1.0.0",
+    "hash": "sha256-64Lc9QaCCZzc/eNBjy9uMbrREMm+7TFZsdDRcoGlgdY="
+  },
+  {
+    "pname": "Froststrap.LucideAvalonia",
+    "version": "2.0.0",
+    "hash": "sha256-GHF1JFsXDPdJAQrUV2gDofWIOSLbblgQYRSovJ6QZh0="
   },
   {
     "pname": "HarfBuzzSharp",
@@ -195,19 +190,24 @@
     "hash": "sha256-rlIUsV0QBtkdXHsWvJAREQr5XYNQWOGKMOgOKMJ48Zo="
   },
   {
-    "pname": "MicroCom.CodeGenerator.MSBuild",
-    "version": "0.11.5",
-    "hash": "sha256-3Fl0tq+Qk4MXiM4VNCjumfAggb/QmBbooZuOiH+6Xmg="
-  },
-  {
     "pname": "MicroCom.Runtime",
     "version": "0.11.6",
     "hash": "sha256-RTr200R3sZuyxi0XQ25ox2p1kVt5R1CbH/YBs21+eNg="
   },
   {
+    "pname": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+    "version": "10.0.15",
+    "hash": "sha256-aOnThSyVZw0AHgWwvuZr1Yh++iXGPRIAnweGP5e5eSk="
+  },
+  {
     "pname": "Microsoft.Build.Tasks.Git",
     "version": "10.0.401",
     "hash": "sha256-nGvkY1TljHYGP8Bsx2s1RCti0S1DMSZZcIi9eq6cp9o="
+  },
+  {
+    "pname": "Microsoft.DotNet.ILCompiler",
+    "version": "10.0.15",
+    "hash": "sha256-GPTfzgpk/bbPokjKRtAPRXmMMkCQpjvE6n8K5xLMjPY="
   },
   {
     "pname": "Microsoft.Extensions.DependencyInjection.Abstractions",
@@ -223,6 +223,21 @@
     "pname": "Microsoft.IO.RecyclableMemoryStream",
     "version": "3.0.1",
     "hash": "sha256-unFg/5EcU/XKJbob4GtQC43Ydgi5VjeBGs7hfhj4EYo="
+  },
+  {
+    "pname": "Microsoft.NET.ILLink.Tasks",
+    "version": "10.0.15",
+    "hash": "sha256-IUpCZJM+kUP8HDm6MeN2QNA7a3G07INMIdK8B5h/Ltk="
+  },
+  {
+    "pname": "Microsoft.NETCore.App.Runtime.linux-x64",
+    "version": "10.0.15",
+    "hash": "sha256-T0gFGriVdZmfQmNAZl8foPdUWCmzMZAqnZk9UT/kozg="
+  },
+  {
+    "pname": "Microsoft.NETCore.App.Runtime.NativeAOT.linux-x64",
+    "version": "10.0.15",
+    "hash": "sha256-SB+cDx79NtAxyaEBJsUONh5RnGc/zfz+ydJ3wnGbnC0="
   },
   {
     "pname": "Microsoft.NETFramework.ReferenceAssemblies",
@@ -280,6 +295,11 @@
     "hash": "sha256-6I5F9aYQCP7JWsNMCkvUCYvsp20Gn+eYNO2ySuKUuhY="
   },
   {
+    "pname": "runtime.linux-x64.Microsoft.DotNet.ILCompiler",
+    "version": "10.0.15",
+    "hash": "sha256-9uu6MSmItDquh1X9TYXNqeEfrF6SvKngjPDdK5I29QU="
+  },
+  {
     "pname": "SkiaSharp",
     "version": "3.119.4",
     "hash": "sha256-4ypEnTGUXAudFp61vGduHj9YmqtpiI5J1wP9wcOEwXY="
@@ -333,40 +353,5 @@
     "pname": "Velopack",
     "version": "1.2.161",
     "hash": "sha256-1XJ1aSspl1GhLuPhgoO19/4+VTOflrFiM0XaCV3EhO0="
-  },
-  {
-    "pname": "Xaml.Behaviors",
-    "version": "12.0.0.1",
-    "hash": "sha256-Hp93Uk8LO9nJNOwvQiJq0vHErSoEMaJa20aNpISq2Lo="
-  },
-  {
-    "pname": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-    "version": "10.0.15",
-    "hash": "sha256-aOnThSyVZw0AHgWwvuZr1Yh++iXGPRIAnweGP5e5eSk="
-  },
-  {
-    "pname": "Microsoft.DotNet.ILCompiler",
-    "version": "10.0.15",
-    "hash": "sha256-GPTfzgpk/bbPokjKRtAPRXmMMkCQpjvE6n8K5xLMjPY="
-  },
-  {
-    "pname": "Microsoft.NET.ILLink.Tasks",
-    "version": "10.0.15",
-    "hash": "sha256-IUpCZJM+kUP8HDm6MeN2QNA7a3G07INMIdK8B5h/Ltk="
-  },
-  {
-    "pname": "Microsoft.NETCore.App.Runtime.linux-x64",
-    "version": "10.0.15",
-    "hash": "sha256-T0gFGriVdZmfQmNAZl8foPdUWCmzMZAqnZk9UT/kozg="
-  },
-  {
-    "pname": "Microsoft.NETCore.App.Runtime.NativeAOT.linux-x64",
-    "version": "10.0.15",
-    "hash": "sha256-SB+cDx79NtAxyaEBJsUONh5RnGc/zfz+ydJ3wnGbnC0="
-  },
-  {
-    "pname": "runtime.linux-x64.Microsoft.DotNet.ILCompiler",
-    "version": "10.0.15",
-    "hash": "sha256-9uu6MSmItDquh1X9TYXNqeEfrF6SvKngjPDdK5I29QU="
   }
 ]

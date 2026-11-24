@@ -17,10 +17,6 @@ use std::{
 };
 
 pub fn main() {
-    let args = args::get();
-    if args.no_installers {
-        return;
-    }
     let version = super::version();
     let icon = path::xtask_root().join("icon512.png");
     let desktop = path::dist().join("froststrap.desktop");
@@ -30,6 +26,11 @@ pub fn main() {
     let entry = desktop_entry(&version);
     let mut desktop_file = File::create(desktop.clone()).unwrap();
     desktop_file.write_all(entry.as_bytes()).unwrap();
+
+    let args = args::get();
+    if args.no_installers {
+        return;
+    }
 
     build_nfpm(dotnet_publish_artifacts(), version, desktop, icon);
 }

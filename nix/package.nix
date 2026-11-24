@@ -6,7 +6,6 @@
   buildDotnetModule,
   makeRustPlatform,
   rustPlatform,
-  makeDesktopItem,
   pkg-config,
   fontconfig,
   freetype,
@@ -85,23 +84,6 @@ let
     xcbutil
     glib
   ];
-
-  desktopItem = makeDesktopItem {
-    name = "froststrap-launcher"; # needed because for some reason on startup froststrap sets NoDisplay=true into ~/.local/share/applications/froststrap.desktop which takes priority
-    desktopName = "Froststrap";
-    comment = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
-    exec = "froststrap %u";
-    icon = "froststrap";
-    terminal = false;
-    startupNotify = true;
-    categories = [ "Game" ];
-    mimeTypes = [
-      "x-scheme-handler/roblox"
-      "x-scheme-handler/roblox-player"
-      "x-scheme-handler/roblox-studio"
-      "x-scheme-handler/roblox-studio-auth"
-    ];
-  };
 in
 buildDotnetModule {
   inherit
@@ -152,17 +134,16 @@ buildDotnetModule {
     runHook preBuild
     export FROSTSTRAP_VERSION=${version}
     export CARGO_NET_OFFLINE=true
-    xtask publish --no-installers --output "$PWD/build/publish"
+    xtask publish --no-installers --output "$PWD/build"
     runHook postBuild
   '';
 
   installPhase = ''
     runHook preInstall
     mkdir -p $out/lib/froststrap $out/bin
-    cp -r build/publish/publish/. $out/lib/froststrap/
-    install -Dm644 ${desktopItem}/share/applications/froststrap-launcher.desktop $out/share/applications/froststrap-launcher.desktop
+    cp -r build/publish/. $out/lib/froststrap/
+    install -Dm644 build/dist/froststrap.desktop $out/share/applications/froststrap.desktop
     install -Dm644 ${src}/build/icon512.png $out/share/icons/hicolor/512x512/apps/froststrap.png
-    sed -i -E '/^Categories=/ s/([^;])$/\1;/' $out/share/applications/froststrap-launcher.desktop
     runHook postInstall
   '';
 

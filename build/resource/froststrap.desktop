@@ -1,5 +1,5 @@
 [Desktop Entry]
-Categories=Game;Utility
+Categories=Game;Utility;
 Comment=A cross-platform Roblox bootstrapper, focused on performance and customization.
 Exec=froststrap %u
 Icon=froststrap
