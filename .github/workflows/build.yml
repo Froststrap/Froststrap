@@ -18,7 +18,7 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+        with: { submodules: true }
 
       - name: Install .NET
         uses: actions/setup-dotnet@v6
@@ -73,7 +73,7 @@ jobs:
           - { arch: x64, rust-target: x86_64-apple-darwin }
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+        with: { submodules: true }
 
       - name: Install .NET
         uses: actions/setup-dotnet@v6
@@ -177,7 +177,7 @@ jobs:
             pkg-config
 
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+        with: { submodules: true }
 
       - name: Install .NET
         uses: actions/setup-dotnet@v6

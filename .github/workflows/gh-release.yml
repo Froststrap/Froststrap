@@ -9,6 +9,16 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
+
+      - name: Check tag matches csproj version
+        run: |
+          version="$(sed -n 's:.*<AppVersion[^>]*>\([^<]*\)</AppVersion>.*:\1:p' Froststrap/Froststrap.csproj | head -n1)"
+          if [[ "${GITHUB_REF_NAME#v}" != "$version" ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match AppVersion $version in Froststrap/Froststrap.csproj"
+            exit 1
+          fi
+
       - name: Init release in packages repo
         env:
           GH_TOKEN: ${{ secrets.PACKAGE_TOKEN }}

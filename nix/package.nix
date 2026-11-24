@@ -57,7 +57,12 @@ let
     cargoHash = "sha256-WTz+k1t9M/sVZrPFResdpWo9DeheRFZ5u9xSNuJjWrY=";
     doCheck = false;
   };
-  version = "2.0.9-beta.1";
+  version = lib.pipe (builtins.readFile ../Froststrap/Froststrap.csproj) [
+    (lib.splitString "\n")
+    (map (builtins.match "[[:space:]]*<AppVersion[^>]*>([^<]+)</AppVersion>.*"))
+    (lib.findFirst (m: m != null) (throw "Froststrap.csproj has no <AppVersion>"))
+    builtins.head
+  ];
 
   runtimeDeps = lib.optionals stdenv.hostPlatform.isLinux [
     expat
@@ -132,7 +137,6 @@ buildDotnetModule {
 
   buildPhase = ''
     runHook preBuild
-    export FROSTSTRAP_VERSION=${version}
     export CARGO_NET_OFFLINE=true
     xtask publish --no-installers --output "$PWD/build"
     runHook postBuild
