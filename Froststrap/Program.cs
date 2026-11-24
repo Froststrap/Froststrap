@@ -142,10 +142,7 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
-                new EmbeddedFontCollection(
-                    new Uri("fonts:Froststrap", UriKind.Absolute),
-                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
+            .WithInterFont()
 #if DEBUG
             .WithDeveloperTools()
 #endif
