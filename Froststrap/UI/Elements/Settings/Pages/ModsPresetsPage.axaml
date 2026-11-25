@@ -243,6 +243,7 @@ SPDX-License-Identifier: MPL-2.0
                                             <Viewbox Stretch="Uniform">
                                                 <Image
                                                     Source="{Binding ShiftlockCursorPreview}"
+                                                    RenderOptions.BitmapInterpolationMode="None"
                                                     Stretch="Uniform"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" />
@@ -282,6 +283,7 @@ SPDX-License-Identifier: MPL-2.0
                                             <Viewbox Stretch="Uniform">
                                                 <Image
                                                     Source="{Binding ArrowCursorPreview}"
+                                                    RenderOptions.BitmapInterpolationMode="None"
                                                     Stretch="Uniform"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" />
@@ -321,6 +323,7 @@ SPDX-License-Identifier: MPL-2.0
                                             <Viewbox Stretch="Uniform">
                                                 <Image
                                                     Source="{Binding ArrowFarCursorPreview}"
+                                                    RenderOptions.BitmapInterpolationMode="None"
                                                     Stretch="Uniform"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" />
@@ -360,6 +363,7 @@ SPDX-License-Identifier: MPL-2.0
                                             <Viewbox Stretch="Uniform">
                                                 <Image
                                                     Source="{Binding IBeamCursorPreview}"
+                                                    RenderOptions.BitmapInterpolationMode="None"
                                                     Stretch="Uniform"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" />

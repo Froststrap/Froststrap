@@ -688,7 +688,9 @@ internal sealed class ModsPresetsViewModel : NotifyPropertyChangedViewModel
 
     private void UpdateCursorPathAndPreview(string fileName, string path)
     {
-        var image = LoadImageSafely(path);
+        // an empty slot means Roblox's own cursor once the set is applied, so preview that.
+        // a custom file that fails to load stays blank, so a broken cursor isn't hidden.
+        var image = File.Exists(path) ? LoadImageSafely(path) : LoadDefaultCursor(fileName);
 
         if (fileName == "MouseLockedCursor.png") { ShiftlockCursorSelectedPath = path; ShiftlockCursorPreview = image; OnPropertyChanged(nameof(ShiftlockCursorPreview)); }
         else if (fileName == "ArrowCursor.png") { ArrowCursorSelectedPath = path; ArrowCursorPreview = image; OnPropertyChanged(nameof(ArrowCursorPreview)); }
@@ -708,6 +710,20 @@ internal sealed class ModsPresetsViewModel : NotifyPropertyChangedViewModel
         UpdateCursorPathAndPreview("ArrowCursor.png", string.IsNullOrEmpty(kbDir) ? "" : Path.Combine(kbDir, "ArrowCursor.png"));
         UpdateCursorPathAndPreview("ArrowFarCursor.png", string.IsNullOrEmpty(kbDir) ? "" : Path.Combine(kbDir, "ArrowFarCursor.png"));
         UpdateCursorPathAndPreview("IBeamCursor.png", string.IsNullOrEmpty(kbDir) ? "" : Path.Combine(kbDir, "IBeamCursor.png"));
+    }
+
+    private static Bitmap? LoadDefaultCursor(string fileName)
+    {
+        try
+        {
+            using var stream = Resource.GetStream($"Mods/Cursor/Default/{fileName}");
+            return new Bitmap(stream);
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Warn($"No default preview for {fileName}: {ex.Message}");
+            return null;
+        }
     }
 
     private static Bitmap? LoadImageSafely(string path)
