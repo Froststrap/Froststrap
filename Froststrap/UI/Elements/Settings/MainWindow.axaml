@@ -129,6 +129,7 @@ SPDX-License-Identifier: MPL-2.0
                                             IsVisible="{Binding !IsLast}" />
                                         <TextBlock
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
+                                            FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                             Padding="5,3"
                                             IsVisible="{Binding IsLast}"
