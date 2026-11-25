@@ -72,6 +72,7 @@ SPDX-License-Identifier: MPL-2.0
                     <StackPanel
                         Classes="pageTitle"
                         Classes.paneClosed="{Binding !#NavView.IsPaneOpen}"
+                        Classes.breadcrumbs="{Binding HasBreadcrumbs}"
                         Orientation="Horizontal"
                         Spacing="14"
                         VerticalAlignment="Center">
@@ -87,6 +88,9 @@ SPDX-License-Identifier: MPL-2.0
                             <Style Selector="StackPanel.pageTitle.paneClosed">
                                 <Setter Property="Margin" Value="8,0,0,0" />
                             </Style>
+                            <Style Selector="StackPanel.pageTitle.breadcrumbs">
+                                <Setter Property="Spacing" Value="9" />
+                            </Style>
                         </StackPanel.Styles>
                         <ic:Lucide
                             Icon="{Binding CurrentPageIcon}"
@@ -98,15 +102,16 @@ SPDX-License-Identifier: MPL-2.0
                         <ItemsControl IsVisible="{Binding HasBreadcrumbs}" ItemsSource="{Binding BreadcrumbItems}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="8" />
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="vm:BreadcrumbItemModel">
-                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="8">
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="4">
                                         <Button
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
-                                            Padding="0"
+                                            Padding="5,3"
+                                            CornerRadius="6"
                                             Background="Transparent"
                                             BorderThickness="0"
                                             Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
@@ -114,14 +119,18 @@ SPDX-License-Identifier: MPL-2.0
                                             Content="{Binding Content}"
                                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                             IsVisible="{Binding !IsLast}" />
-                                        <TextBlock
-                                            FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
-                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            IsVisible="{Binding !IsLast}"
-                                            Text="›" />
+                                        <ic:Lucide
+                                            Icon="ChevronRight"
+                                            Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbChevronSize}"
+                                            Height="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbChevronSize}"
+                                            StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}"
+                                            VerticalAlignment="Center"
+                                            Margin="4,0,0,0"
+                                            IsVisible="{Binding !IsLast}" />
                                         <TextBlock
                                             FontSize="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).TitlebarTextSize}"
                                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Padding="5,3"
                                             IsVisible="{Binding IsLast}"
                                             Text="{Binding Content}" />
                                     </StackPanel>
