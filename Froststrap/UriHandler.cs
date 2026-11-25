@@ -17,38 +17,31 @@ namespace Froststrap
             "roblox-studio-auth"
         ];
 
-        static readonly IHandler? Handler =
-            OperatingSystem.IsWindows() ? new WindowsHandler() :
-            null; // non-Windows registers via hints during install.
+        // Only Windows registers at runtime; non-Windows registers via hints during install.
+        public static void RegisterProtocolHandlers() => Safely(WindowsHandler.Register);
 
-        public static void RegisterProtocolHandlers() => Safely(() => Handler?.Register());
-
-        public static void UnregisterProtocolHandlers() => Safely(() => Handler?.Unregister());
+        public static void UnregisterProtocolHandlers() => Safely(WindowsHandler.Unregister);
 
         public static void EnsureRegistered() => Safely(() =>
         {
-            if (Handler is not null && !Handler.IsRegistered())
-                Handler.Register();
+            if (!WindowsHandler.IsRegistered())
+                WindowsHandler.Register();
         });
 
         // Velopack doesn't like exceptions in install/uninstall phase- so handle it properly
         static void Safely(Action action)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             try { action(); }
             catch (Exception ex) { App.Logger.Error(ex, "UriHandler failed"); }
         }
 
-        interface IHandler
-        {
-            void Register();
-            void Unregister();
-            bool IsRegistered();
-        }
-
         [SupportedOSPlatform("windows")]
-        sealed class WindowsHandler : IHandler
+        static class WindowsHandler
         {
-            public void Register()
+            public static void Register()
             {
                 string exe = Environment.ProcessPath!;
                 foreach (string scheme in Schemes)
@@ -61,13 +54,13 @@ namespace Froststrap
                 }
             }
 
-            public void Unregister()
+            public static void Unregister()
             {
                 foreach (string scheme in Schemes)
                     Registry.CurrentUser.DeleteSubKeyTree($@"Software\Classes\{scheme}", throwOnMissingSubKey: false);
             }
 
-            public bool IsRegistered()
+            public static bool IsRegistered()
             {
                 using var key = Registry.CurrentUser.OpenSubKey(@"Software\Classes\roblox-player\shell\open\command");
                 return key?.GetValue("") as string == $"\"{Environment.ProcessPath}\" \"%1\"";
