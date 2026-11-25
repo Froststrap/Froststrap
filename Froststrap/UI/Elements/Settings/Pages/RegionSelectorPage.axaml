@@ -144,7 +144,7 @@ SPDX-License-Identifier: MPL-2.0
                         <DataTemplate DataType="models:ServerEntry">
                             <Border
                                 Padding="16,8"
-                                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                                 CornerRadius="8">
                                 <Grid ColumnDefinitions="*,Auto">
                                     <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
@@ -172,7 +172,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <Border
                 IsVisible="{Binding IsServerListEmptyAndNotLoading}"
-                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8"
                 Opacity="0.8">
                 <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -196,7 +196,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <Border
                 IsVisible="{Binding ShowLoadingIndicator}"
-                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8"
                 Opacity="0.8">
                 <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -212,7 +212,7 @@ SPDX-License-Identifier: MPL-2.0
 
             <Border
                 IsVisible="{Binding IsLoadingMore}"
-                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8"
                 Opacity="0.8">
                 <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
