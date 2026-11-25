@@ -17,8 +17,6 @@ pub fn init(aumid: String) -> i32 {
 
     *writer = Some(aumid);
 
-    log::info!("Written {} into AUMID_LOCK::RwLock<T>", aumid.clone());
-
     // TODO: make this actually call a threaded function which Windows will
     //       understand context of it in the thread rather than passing it every time.
 
