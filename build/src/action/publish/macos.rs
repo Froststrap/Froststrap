@@ -6,7 +6,6 @@
 
 use crate::{
     arch,
-    args::{self, Configuration},
     bundle::macos::AppBuilder,
     path,
     utils::{log, process},
@@ -15,10 +14,7 @@ use pissing::prelude::*;
 use std::{fs, path::PathBuf};
 
 fn find_dylib(file_name: &str) -> PathBuf {
-    let profile = match args::get().configuration {
-        Configuration::Release => "release",
-        Configuration::Debug => "debug",
-    };
+    let profile = "release";
     let triple = arch::rust_triple();
     let p = path::git_root()
         .join("backend/target")

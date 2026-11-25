@@ -5,8 +5,13 @@ on:
     branches: ["**"]
   pull_request:
   workflow_call:
+    inputs:
+      configuration:
+        type: string
+        default: debug
 
 env:
+  CONFIGURATION: ${{ inputs.configuration || 'debug' }}
   VPK_VERSION: "1.2.161"
   PACKAGES_REPO: https://github.com/Froststrap/packages
 
@@ -61,7 +66,7 @@ jobs:
         run: cargo xtask clean
 
       - name: Publish
-        run: cargo xtask publish
+        run: cargo xtask --configuration $CONFIGURATION publish
 
       - uses: actions/upload-artifact@v7
         if: always()
@@ -169,7 +174,7 @@ jobs:
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
-        run: cargo xtask --override-arch ${{ matrix.arch }} publish
+        run: cargo xtask --override-arch ${{ matrix.arch }} --configuration $CONFIGURATION publish
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -255,7 +260,7 @@ jobs:
         run: cargo xtask clean
 
       - name: Publish
-        run: cargo xtask publish
+        run: cargo xtask --configuration $CONFIGURATION publish
 
       - uses: actions/upload-artifact@v7
         if: always()

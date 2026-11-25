@@ -30,6 +30,8 @@ jobs:
   build:
     needs: prepare
     uses: ./.github/workflows/build.yml
+    with:
+      configuration: release
     secrets: inherit
 
   release:
