@@ -48,9 +48,7 @@ sealed class Program
 
         try
         {
-#if __APPLE__
             NativeNotify.Init(ProjectInfo.BundleId);
-#endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
