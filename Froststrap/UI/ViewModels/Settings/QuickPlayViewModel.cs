@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
 using Froststrap.Integrations.AccountManager;
+using Froststrap.Services;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Converters;
 using Froststrap.UI.Elements.Settings;
@@ -1009,6 +1010,9 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
         if (universeIds.Count > 0)
             await UniverseDetails.FetchBulk(string.Join(",", universeIds));
 
+        // Load playtime data from PlaytimeDb
+        var playtimeByUniverse = await LoadPlaytimeDataAsync(universeIds);
+
         var history = _allHistory;
         var localGames = await Task.Run(() =>
         {
@@ -1019,6 +1023,9 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
 
                 var details = UniverseDetails.LoadFromCache(entry.UniverseId);
                 var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
+
+                playtimeByUniverse.TryGetValue(entry.UniverseId, out var playtimeData);
+
                 list.Add(new QuickPlayGameItem
                 {
                     UniverseId = entry.UniverseId,
@@ -1032,13 +1039,56 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
                     OriginalDetails = details,
                     Source = GameSource.Tracked,
                     LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0,
-                    IsVerified = details?.Data?.Creator?.HasVerifiedBadge ?? false
+                    IsVerified = details?.Data?.Creator?.HasVerifiedBadge ?? false,
+                    TotalPlaytimeSeconds = playtimeData?.TotalSeconds ?? 0,
+                    SessionCount = playtimeData?.SessionCount ?? 0,
+                    LastPlayedAt = playtimeData?.LastPlayedAt
                 });
             }
             return list;
         });
 
         return localGames;
+    }
+
+    private async Task<Dictionary<long, PlaytimeData>> LoadPlaytimeDataAsync(List<long> universeIds)
+    {
+        var result = new Dictionary<long, PlaytimeData>();
+        var activeAccount = AccountManager.Shared?.ActiveAccount;
+        if (activeAccount == null) return result;
+
+        try
+        {
+            var db = new PlaytimeDb();
+            var totals = await db.GetTotalsPerUniverseAsync(activeAccount.UserId);
+
+            foreach (var total in totals)
+            {
+                if (universeIds.Contains(total.UniverseId))
+                {
+                    var sessions = await db.GetSessionsAsync(activeAccount.UserId, total.UniverseId);
+                    var lastPlayed = sessions.Count > 0 ? sessions.Max(s => s.StartedAt) : 0;
+                    result[total.UniverseId] = new PlaytimeData
+                    {
+                        TotalSeconds = total.TotalSeconds,
+                        SessionCount = sessions.Count(s => s.Deleted == 0),
+                        LastPlayedAt = lastPlayed > 0 ? DateTimeOffset.FromUnixTimeSeconds(lastPlayed).DateTime : null
+                    };
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to load playtime data: {ex.Message}");
+        }
+        return result;
+    }
+
+    private sealed class PlaytimeData
+    {
+        public long TotalSeconds { get; set; }
+        public int SessionCount { get; set; }
+        public DateTime? LastPlayedAt { get; set; }
     }
 
     private static List<GameHistoryEntry> LoadLocalHistory(string cachePath)
@@ -1178,6 +1228,53 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
         var needThumb = games.Where(g => string.IsNullOrEmpty(g.ThumbnailUrl)).ToList();
         if (needThumb.Count > 0)
             await FetchThumbnailsForGames(needThumb);
+
+        // Enrich with playtime data
+        await EnrichWithPlaytimeDataAsync(games);
+    }
+
+    private static async Task EnrichWithPlaytimeDataAsync(List<QuickPlayGameItem> games)
+    {
+        var activeAccount = AccountManager.Shared?.ActiveAccount;
+        if (activeAccount == null) return;
+
+        var universeIds = games.Where(g => g.UniverseId > 0).Select(g => g.UniverseId).Distinct().ToList();
+        if (universeIds.Count == 0) return;
+
+        try
+        {
+            var db = new PlaytimeDb();
+            var totals = await db.GetTotalsPerUniverseAsync(activeAccount.UserId);
+
+            var totalsDict = totals.ToDictionary(t => t.UniverseId, t => t.TotalSeconds);
+            var sessionsDict = new Dictionary<long, (int Count, DateTime? LastPlayed)>();
+
+            foreach (var universeId in universeIds)
+            {
+                var sessions = await db.GetSessionsAsync(activeAccount.UserId, universeId);
+                var validSessions = sessions.Where(s => s.Deleted == 0).ToList();
+                if (validSessions.Count > 0)
+                {
+                    var lastPlayed = validSessions.Max(s => s.StartedAt);
+                    sessionsDict[universeId] = (validSessions.Count, lastPlayed > 0 ? DateTimeOffset.FromUnixTimeSeconds(lastPlayed).DateTime : null);
+                }
+            }
+
+            foreach (var game in games)
+            {
+                if (totalsDict.TryGetValue(game.UniverseId, out var total))
+                    game.TotalPlaytimeSeconds = total;
+                if (sessionsDict.TryGetValue(game.UniverseId, out var sessionData))
+                {
+                    game.SessionCount = sessionData.Count;
+                    game.LastPlayedAt = sessionData.LastPlayed;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error($"Failed to enrich games with playtime data: {ex.Message}");
+        }
     }
 
     private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)

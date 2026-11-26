@@ -110,14 +110,33 @@ SPDX-License-Identifier: MPL-2.0
                     <Panel>
                         <StackPanel>
                             <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                                <Image
-                                    Source="{Binding ThumbnailBitmap}"
-                                    Height="190"
-                                    MinWidth="190"
-                                    Stretch="Fill"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                <Panel>
+                                    <Image
+                                        Source="{Binding ThumbnailBitmap}"
+                                        Height="190"
+                                        MinWidth="190"
+                                        Stretch="Fill"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                    <Border
+                                        Margin="8"
+                                        Padding="4,2"
+                                        Background="#99000000"
+                                        CornerRadius="4"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top">
+                                        <StackPanel Orientation="Horizontal" Spacing="2">
+                                            <ic:Lucide Icon="Clock" Height="10" Width="10" VerticalAlignment="Center" Foreground="White" />
+                                            <TextBlock
+                                                Text="{Binding PlaytimeDisplay}"
+                                                FontSize="10"
+                                                FontWeight="Bold"
+                                                Foreground="White"
+                                                VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Border>
+                                </Panel>
                             </Border>
                             <StackPanel Margin="8" Spacing="4">
                                 <TextBlock

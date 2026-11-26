@@ -22,5 +22,21 @@ namespace Froststrap.Models
         public UniverseDetails? OriginalDetails { get; set; }
         public GameSource Source { get; set; }
         public long LastPlayedTicks { get; set; }
+
+        // Playtime tracking
+        public long TotalPlaytimeSeconds { get; set; }
+        public int SessionCount { get; set; }
+        public DateTime? LastPlayedAt { get; set; }
+
+        public string PlaytimeDisplay => FormatPlaytime(TotalPlaytimeSeconds);
+
+        private static string FormatPlaytime(long seconds)
+        {
+            if (seconds <= 0) return "—";
+            var ts = TimeSpan.FromSeconds(seconds);
+            if (ts.TotalHours >= 1)
+                return $"{(int)ts.TotalHours}h {ts.Minutes}m";
+            return $"{ts.Minutes}m";
+        }
     }
 }
