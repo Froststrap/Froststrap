@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Localisation;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -73,6 +74,20 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
             StudioPluginManager.Sync();
         }
     }
+
+    public bool PlaytimeTrackingEnabled
+    {
+        get => App.Settings.Prop.EnablePlaytimeTracking;
+        set
+        {
+            App.Settings.Prop.EnablePlaytimeTracking = value;
+            OnPropertyChanged(nameof(PlaytimeTrackingEnabled));
+        }
+    }
+
+    public string PlaytimeTrackingLabel => Strings.Menu_Integrations_PlaytimeTracking_Title;
+
+    public bool IsPlaytimeTrackingAvailable => App.Settings.Prop.AllowCookieAccess;
 
     public bool ShowServerDetailsEnabled
     {

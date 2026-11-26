@@ -16,6 +16,9 @@ using Froststrap.Clients.Model;
 using Froststrap.Clients.Registry;
 using Froststrap.Clients.Runtime;
 using Froststrap.Integrations;
+using Froststrap.Integrations.Playtime;
+using AccManager = Froststrap.Integrations.AccountManager.AccountManager;
+using AccAccount = Froststrap.Models.AccountManagerAccount;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Utility;
 using Microsoft.Win32;
@@ -99,6 +102,8 @@ internal sealed partial class App : Application
 
     public static readonly CookiesManager Cookies = new();
 
+    public static PlaytimePoller? PlaytimePoller { get; private set; }
+
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
 
     public static void SavePendingUpdateNotes(UpdateInfo update)
@@ -132,6 +137,111 @@ internal sealed partial class App : Application
         await Frontend.ShowReleaseNotesDialog(
             string.Format(CultureInfo.CurrentCulture, Strings.Menu_Deployment_ReleaseNotes_Title, version),
             notes);
+    }
+
+    private static async Task InitializePlaytimeTrackingAsync()
+    {
+        if (!Settings.Prop.EnablePlaytimeTracking)
+        {
+            Logger.Info("Playtime tracking disabled in settings");
+            return;
+        }
+
+        if (!Settings.Prop.AllowCookieAccess)
+        {
+            Logger.Info("Playtime tracking requires account access (cookie), which is disabled");
+            return;
+        }
+
+        var db = new Froststrap.Services.PlaytimeDb();
+        
+        // Close any orphaned sessions from previous runs
+        try
+        {
+            var closed = await db.CloseOrphansAsync();
+            if (closed > 0)
+                Logger.Info($"Closed {closed} orphaned playtime sessions on startup");
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to close orphaned playtime sessions");
+        }
+
+        var stateMachine = new Froststrap.Services.PlaytimeStateMachine();
+        var accountManager = AccManager.Shared;
+        var poller = new Froststrap.Integrations.Playtime.PlaytimePoller(db, stateMachine, accountManager);
+
+        PlaytimePoller = poller;
+
+        // Start poller if we have linked accounts with cookies
+        var hasCookie = accountManager.Accounts.Any(a => !string.IsNullOrEmpty(accountManager.GetRoblosecurityForUser(a.UserId)));
+        if (hasCookie)
+        {
+            poller.Start();
+            Logger.Info("Playtime poller started");
+        }
+        else
+        {
+            Logger.Info("Playtime poller not started: no linked accounts with valid cookies");
+        }
+
+        // Subscribe to account manager events
+        accountManager.ActiveAccountChanged += OnActiveAccountChanged;
+
+        // Subscribe to cookie state changes
+        Cookies.StateChanged += OnCookieStateChanged;
+    }
+
+    private static void OnActiveAccountChanged(AccAccount? account)
+    {
+        if (PlaytimePoller == null)
+            return;
+
+        var hasCookie = account != null && !string.IsNullOrEmpty(AccManager.Shared.GetRoblosecurityForUser(account.UserId));
+        
+        if (hasCookie && Settings.Prop.EnablePlaytimeTracking && Settings.Prop.AllowCookieAccess)
+        {
+            PlaytimePoller.Start();
+        }
+        else
+        {
+            // No active account or no cookie - end all sessions and stop
+            _ = EndAllPlaytimeSessionsAsync("account switched/removed");
+            PlaytimePoller.StopAsync();
+        }
+    }
+
+    private static void OnCookieStateChanged(object? sender, Froststrap.Enums.CookieState state)
+    {
+        if (PlaytimePoller == null)
+            return;
+
+        if (state == Froststrap.Enums.CookieState.Success && Settings.Prop.EnablePlaytimeTracking && Settings.Prop.AllowCookieAccess)
+        {
+            PlaytimePoller.Start();
+        }
+        else if (state == Froststrap.Enums.CookieState.Invalid || state == Froststrap.Enums.CookieState.NotFound || state == Froststrap.Enums.CookieState.NotAllowed)
+        {
+            _ = EndAllPlaytimeSessionsAsync($"cookie state changed to {state}");
+            PlaytimePoller.StopAsync();
+        }
+    }
+
+    private static async Task EndAllPlaytimeSessionsAsync(string reason)
+    {
+        try
+        {
+            var accountManager = AccManager.Shared;
+            foreach (var account in accountManager.Accounts)
+            {
+                await PlaytimePoller!.EndAllSessionsAsync(account.UserId, DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            }
+            Logger.Info($"Ended all playtime sessions: {reason}");
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex, "Failed to end playtime sessions on {reason}");
+        }
     }
 
     private static bool _showingExceptionDialog;
@@ -509,6 +619,25 @@ internal sealed partial class App : Application
         desktop.Exit += (_, _) =>
         {
             FrostRPC = null;
+            
+            // End all open playtime sessions on app exit
+            if (PlaytimePoller != null)
+            {
+                try
+                {
+                    var accountManager = AccManager.Shared;
+                    foreach (var account in accountManager.Accounts)
+                    {
+                        PlaytimePoller!.EndAllSessionsAsync(account.UserId, DateTimeOffset.UtcNow.ToUnixTimeSeconds()).Wait(2000);
+                    }
+                    PlaytimePoller.StopAsync().Wait(2000);
+                    Logger.Info("Playtime poller stopped and sessions ended on app exit");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Failed to stop playtime poller on exit");
+                }
+            }
         };
 
 #if __APPLE__
@@ -603,6 +732,9 @@ internal sealed partial class App : Application
 
                 if (OperatingSystem.IsLinux())
                     LinuxRegistry.RegisterAll();
+
+                // Initialize playtime tracking
+                await InitializePlaytimeTrackingAsync();
             }
             catch (Exception ex)
             {

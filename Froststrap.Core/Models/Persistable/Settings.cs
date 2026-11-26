@@ -17,6 +17,7 @@ namespace Froststrap.Models.Persistable
         public bool AutoRejoin { get; set; }
         public bool ShowGameHistoryMenu { get; set; } = true;
         public bool PlaytimeCounter { get; set; } = true;
+        public bool EnablePlaytimeTracking { get; set; } = true;
         public TrayDoubleClickAction DoubleClickAction { get; set; } = TrayDoubleClickAction.ServerInfo;
         public bool UseDisableAppPatch { get; set; }
         public bool AutoChangeTitle { get; set; } = true;
