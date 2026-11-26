@@ -41,9 +41,15 @@ namespace Froststrap.Integrations.AccountManager
 
         public static async Task<UserPresence?> GetUserPresenceAsync(long userId)
         {
+            var results = await GetUserPresencesAsync([userId]);
+            return results.FirstOrDefault(x => x.UserId == userId);
+        }
+
+        public static async Task<List<UserPresence>> GetUserPresencesAsync(long[] userIds)
+        {
             try
             {
-                var requestData = new PresenceBatchRequest { UserIds = [userId] };
+                var requestData = new PresenceBatchRequest { UserIds = userIds };
                 string jsonPayload = JsonHelper.Serialize(requestData);
 
                 using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users", secure: true))
@@ -52,12 +58,51 @@ namespace Froststrap.Integrations.AccountManager
                 };
 
                 var result = await Http.SendJson<UserPresenceResponse>(request).ConfigureAwait(false);
-                return result?.UserPresences?.FirstOrDefault(x => x.UserId == userId);
+                return result?.UserPresences ?? [];
             }
             catch (Exception ex)
             {
                 App.Logger.Error(ex);
-                return null;
+                return [];
+            }
+        }
+
+        public static async Task<List<UserPresence>> GetUserPresencesWithCookieAsync(string cookie, long[] userIds)
+        {
+            try
+            {
+                var requestData = new PresenceBatchRequest { UserIds = userIds };
+                string jsonPayload = JsonHelper.Serialize(requestData);
+
+                using var handler = new HttpClientHandler
+                {
+                    CookieContainer = new CookieContainer(),
+                    CheckCertificateRevocationList = true
+                };
+                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
+                using var client = new HttpClient(handler);
+
+                using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users", secure: true))
+                {
+                    Content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json")
+                };
+
+                var response = await client.SendAsync(request).ConfigureAwait(false);
+                response.EnsureSuccessStatusCode();
+
+                string json = await response.Content.ReadAsStringAsync();
+                var result = JsonHelper.Deserialize<UserPresenceResponse>(json);
+                return result?.UserPresences ?? [];
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                App.Logger.Warn("Playtime poller rate limited (429)");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex);
+                return [];
             }
         }
 
