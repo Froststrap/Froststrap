@@ -198,8 +198,8 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            App.Logger.Error(ex, "Failed to load playtime stats");
-            EmptyMessage = ex.Message;
+            App.Logger.Error(ex, Strings.Menu_Integrations_PlaytimeStats_FailedToLoadStats);
+            EmptyMessage = Strings.Menu_Integrations_PlaytimeStats_FailedToLoadStats;
         }
         finally
         {
@@ -249,7 +249,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         catch (OperationCanceledException) { }
         catch (Exception ex)
         {
-            App.Logger.Error(ex, "Failed to load charts");
+            App.Logger.Error(ex, Strings.Menu_Integrations_PlaytimeStats_FailedToLoadCharts);
         }
     }
 
@@ -271,14 +271,14 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
     private ISeries[] BuildColumnSeries(List<GameTotalResult> totals)
     {
         var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
-        var names = totals.Select(t => t.UniverseId == 0 ? "Other" : $"Universe {t.UniverseId}").ToArray();
+        var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
 
         return new ISeries[]
         {
             new ColumnSeries<double>
             {
                 Values = values,
-                Name = "Hours",
+                Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
                 Fill = new SolidColorPaint(GetAccentColor()),
                 Stroke = null
             }
@@ -288,14 +288,14 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
     private ISeries[] BuildBarSeries(List<GameTotalResult> totals)
     {
         var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
-        var names = totals.Select(t => t.UniverseId == 0 ? "Other" : $"Universe {t.UniverseId}").ToArray();
+        var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
 
         return new ISeries[]
         {
             new RowSeries<double>
             {
                 Values = values,
-                Name = "Hours",
+                Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
                 Fill = new SolidColorPaint(GetAccentColor()),
                 Stroke = null
             }
@@ -304,8 +304,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
 
     private ISeries[] BuildPieSeries(List<GameTotalResult> totals)
     {
-        var values = totals.Select(t => (double)t.TotalSeconds).ToArray();
-        var names = totals.Select(t => t.UniverseId == 0 ? "Other" : $"Universe {t.UniverseId}").ToArray();
+        var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
 
         var pieSeries = new PieSeries<double>
         {
@@ -330,7 +329,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
             new ColumnSeries<double>
             {
                 Values = values,
-                Name = "Sessions",
+                Name = Strings.Menu_Integrations_PlaytimeStats_Sessions,
                 Fill = new SolidColorPaint(GetAccentColor()),
                 Stroke = null
             }
@@ -380,7 +379,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
             new LineSeries<double>
             {
                 Values = buckets.Select(b => (double)b.Seconds / 3600.0).ToArray(),
-                Name = "Hours",
+                Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
                 Fill = null,
                 Stroke = new SolidColorPaint(GetAccentColor(), 3),
                 GeometrySize = 6,

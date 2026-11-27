@@ -225,7 +225,7 @@ SPDX-License-Identifier: MPL-2.0
                                 <Border Padding="12" Margin="0,4" Background="#33000000" CornerRadius="8">
                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="16">
                                         <StackPanel Grid.Column="0" MinWidth="180" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding UniverseId, StringFormat='Universe {0}'}"
+                                            <TextBlock Text="{Binding UniverseId, StringFormat={x:Static resources:Strings.Menu_Integrations_PlaytimeStats_UniverseFormat}}"
                                                        FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
                                             <TextBlock Text="{Binding FormattedLastPlayed}"
                                                        FontSize="11" Opacity="0.5" />
