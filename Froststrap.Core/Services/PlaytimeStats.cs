@@ -7,6 +7,47 @@ using System.Globalization;
 
 namespace Froststrap.Services;
 
+public enum TimeRange
+{
+    Last7Days,
+    Last30Days,
+    Last90Days,
+    AllTime
+}
+
+public enum ChartType
+{
+    Column,
+    Bar,
+    Pie,
+    Histogram
+}
+
+public sealed record SummaryResult(
+    long TotalSeconds,
+    int DistinctGames,
+    int SessionCount,
+    long AverageSessionSeconds,
+    long LongestSessionSeconds
+);
+
+public sealed record GameTotalResult(
+    long UniverseId,
+    long TotalSeconds,
+    int SessionCount,
+    long LastPlayedAt
+);
+
+public sealed record TrendBucketResult(
+    DateTime BucketStartUtc,
+    long Seconds
+);
+
+public sealed record HistogramBinResult(
+    string Label,
+    int Count
+);
+
 internal sealed class PlaytimeStats : IDisposable
 {
     private readonly string _dbPath;
@@ -19,87 +60,6 @@ internal sealed class PlaytimeStats : IDisposable
         var dataRoot = customDataRoot ?? Paths.DataRoot;
         _dbPath = Path.Combine(dataRoot, "playtime.db");
     }
-
-    private async Task<SqliteConnection> GetConnectionAsync()
-    {
-        if (_connection is { State: System.Data.ConnectionState.Open })
-            return _connection;
-
-        await _readerLock.WaitAsync();
-        try
-        {
-            if (_connection is { State: System.Data.ConnectionState.Open })
-                return _connection;
-
-            if (!File.Exists(_dbPath))
-            {
-                _readerLock.Release();
-                return null!; // Caller handles null
-            }
-
-            _connection = new SqliteConnection($"Data Source={_dbPath};Pooling=False;Mode=ReadOnly;");
-            await _connection.OpenAsync();
-
-            using var pragma = _connection.CreateCommand();
-            pragma.CommandText = "PRAGMA query_only=ON;";
-            await pragma.ExecuteNonQueryAsync();
-
-            return _connection;
-        }
-        catch
-        {
-            _readerLock.Release();
-            throw;
-        }
-    }
-
-    public void Dispose()
-    {
-        if (_disposed) return;
-        _disposed = true;
-
-        try
-        {
-            _connection?.Dispose();
-        }
-        finally
-        {
-            _readerLock.Dispose();
-        }
-    }
-
-    public enum TimeRange
-    {
-        Last7Days,
-        Last30Days,
-        Last90Days,
-        AllTime
-    }
-
-    public sealed record SummaryResult(
-        long TotalSeconds,
-        int DistinctGames,
-        int SessionCount,
-        long AverageSessionSeconds,
-        long LongestSessionSeconds
-    );
-
-    public sealed record GameTotalResult(
-        long UniverseId,
-        long TotalSeconds,
-        int SessionCount,
-        long LastPlayedAt
-    );
-
-    public sealed record TrendBucketResult(
-        DateTime BucketStartUtc,
-        long Seconds
-    );
-
-    public sealed record HistogramBinResult(
-        string Label,
-        int Count
-    );
 
     private (long rangeStart, long rangeEnd) GetRangeBounds(TimeRange range, long now)
     {
@@ -363,4 +323,52 @@ internal sealed class PlaytimeStats : IDisposable
         long UpdatedAt,
         int Deleted
     );
+
+    private async Task<SqliteConnection> GetConnectionAsync()
+    {
+        if (_connection is { State: System.Data.ConnectionState.Open })
+            return _connection;
+
+        await _readerLock.WaitAsync();
+        try
+        {
+            if (_connection is { State: System.Data.ConnectionState.Open })
+                return _connection;
+
+            if (!File.Exists(_dbPath))
+            {
+                _readerLock.Release();
+                return null!; // Caller handles null
+            }
+
+            _connection = new SqliteConnection($"Data Source={_dbPath};Pooling=False;Mode=ReadOnly;");
+            await _connection.OpenAsync();
+
+            using var pragma = _connection.CreateCommand();
+            pragma.CommandText = "PRAGMA query_only=ON;";
+            await pragma.ExecuteNonQueryAsync();
+
+            return _connection;
+        }
+        catch
+        {
+            _readerLock.Release();
+            throw;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+
+        try
+        {
+            _connection?.Dispose();
+        }
+        finally
+        {
+            _readerLock.Dispose();
+        }
+    }
 }

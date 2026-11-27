@@ -8,6 +8,10 @@ using FluentAssertions;
 
 namespace Froststrap.Tests;
 
+using TimeRange = Froststrap.Services.TimeRange;
+using GameTotalResult = Froststrap.Services.GameTotalResult;
+using HistogramBinResult = Froststrap.Services.HistogramBinResult;
+
 public sealed class PlaytimeStatsTests : IDisposable
 {
     private readonly string _testDbPath;
@@ -36,7 +40,7 @@ public sealed class PlaytimeStatsTests : IDisposable
     public async Task GetSummary_EmptyDb_ReturnsZeros()
     {
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var result = await _stats.GetSummaryAsync(123, PlaytimeStats.TimeRange.Last7Days, now, TimeZoneInfo.Utc);
+        var result = await _stats.GetSummaryAsync(123, TimeRange.Last7Days, now, TimeZoneInfo.Utc);
 
         result.TotalSeconds.Should().Be(0);
         result.DistinctGames.Should().Be(0);
@@ -65,7 +69,7 @@ public sealed class PlaytimeStatsTests : IDisposable
 
         var now = baseTime + 86400; // next day to ensure all sessions are in range
 
-        var result = await _stats.GetSummaryAsync(userId, PlaytimeStats.TimeRange.AllTime, now, TimeZoneInfo.Utc);
+        var result = await _stats.GetSummaryAsync(userId, TimeRange.AllTime, now, TimeZoneInfo.Utc);
 
         result.TotalSeconds.Should().Be(3600 + 1800 + 7200);
         result.DistinctGames.Should().Be(2);
@@ -88,7 +92,7 @@ public sealed class PlaytimeStatsTests : IDisposable
 
         var now = baseTime + 86400;
 
-        var result = await _stats.GetSummaryAsync(userId, PlaytimeStats.TimeRange.AllTime, now, TimeZoneInfo.Utc);
+        var result = await _stats.GetSummaryAsync(userId, TimeRange.AllTime, now, TimeZoneInfo.Utc);
 
         // Should use last_seen_at as end for open session
         result.TotalSeconds.Should().Be(lastSeen - s1.StartedAt);
@@ -108,7 +112,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         // Session entirely outside range (2 weeks ago)
         var s2 = await _db.CreateTestSessionAsync(userId, 456, 101, twoWeeksAgo - 3600, twoWeeksAgo, twoWeeksAgo);
 
-        var result = await _stats.GetSummaryAsync(userId, PlaytimeStats.TimeRange.Last7Days, now, TimeZoneInfo.Utc);
+        var result = await _stats.GetSummaryAsync(userId, TimeRange.Last7Days, now, TimeZoneInfo.Utc);
 
         result.TotalSeconds.Should().Be(3600);
         result.SessionCount.Should().Be(1);
@@ -128,7 +132,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         await _db.EndSessionAsync(s2.Id, s2.StartedAt + 3600);
         await _db.DeleteAllForUserAsync(userId);
 
-        var result = await _stats.GetSummaryAsync(userId, PlaytimeStats.TimeRange.AllTime, now, TimeZoneInfo.Utc);
+        var result = await _stats.GetSummaryAsync(userId, TimeRange.AllTime, now, TimeZoneInfo.Utc);
 
         result.TotalSeconds.Should().Be(0);
         result.SessionCount.Should().Be(0);
@@ -154,7 +158,7 @@ public sealed class PlaytimeStatsTests : IDisposable
 
         var now = baseTime + 86400;
 
-        var results = await _stats.GetPerGameTotalsAsync(userId, PlaytimeStats.TimeRange.AllTime, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetPerGameTotalsAsync(userId, TimeRange.AllTime, now, TimeZoneInfo.Utc);
 
         results.Should().HaveCount(2);
         results[0].UniverseId.Should().Be(456);
@@ -166,7 +170,7 @@ public sealed class PlaytimeStatsTests : IDisposable
     [Fact]
     public async Task TopNWithOther_CombinesRemaining()
     {
-        var totals = new List<PlaytimeStats.GameTotalResult>
+        var totals = new List<GameTotalResult>
         {
             new(1, 10000, 5, 1000),
             new(2, 8000, 4, 1000),
@@ -194,7 +198,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         var s1 = await _db.OpenSessionAsync(userId, 456, 100);
         await _db.EndSessionAsync(s1.Id, s1.StartedAt + 3600); // today only
 
-        var results = await _stats.GetTrendAsync(userId, PlaytimeStats.TimeRange.Last7Days, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetTrendAsync(userId, TimeRange.Last7Days, now, TimeZoneInfo.Utc);
 
         results.Should().HaveCount(7); // 7 days
         results.Sum(r => r.Seconds).Should().Be(3600);
@@ -210,7 +214,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         var s1 = await _db.OpenSessionAsync(userId, 456, 100);
         await _db.EndSessionAsync(s1.Id, s1.StartedAt + 3600);
 
-        var results = await _stats.GetTrendAsync(userId, PlaytimeStats.TimeRange.Last90Days, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetTrendAsync(userId, TimeRange.Last90Days, now, TimeZoneInfo.Utc);
 
         // Should have multiple week buckets, first bucket starts on Monday
         results.Should().NotBeEmpty();
@@ -234,7 +238,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         // Create session with specific timestamps spanning multiple days
         await _db.CreateTestSessionAsync(userId, 456, 100, baseTime, baseTime + 36 * 60 * 60, baseTime + 36 * 60 * 60);
 
-        var results = await _stats.GetTrendAsync(userId, PlaytimeStats.TimeRange.Last7Days, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetTrendAsync(userId, TimeRange.Last7Days, now, TimeZoneInfo.Utc);
 
         // Session should be split across day buckets
         var totalSeconds = results.Sum(r => r.Seconds);
@@ -254,7 +258,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         // Create session with specific timestamps for DST test
         await _db.CreateTestSessionAsync(userId, 456, 100, baseTime, baseTime + 12 * 60 * 60, baseTime + 12 * 60 * 60);
 
-        var results = await _stats.GetTrendAsync(userId, PlaytimeStats.TimeRange.Last7Days, now, tz);
+        var results = await _stats.GetTrendAsync(userId, TimeRange.Last7Days, now, tz);
 
         // Should handle correctly with UTC
         var totalSeconds = results.Sum(r => r.Seconds);
@@ -269,7 +273,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         var now = baseTime + 86400;
 
         // No sessions at all
-        var results = await _stats.GetTrendAsync(userId, PlaytimeStats.TimeRange.Last7Days, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetTrendAsync(userId, TimeRange.Last7Days, now, TimeZoneInfo.Utc);
 
         results.Should().HaveCount(7);
         results.All(r => r.Seconds == 0).Should().BeTrue();
@@ -298,7 +302,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         var s4 = await _db.OpenSessionAsync(userId, 456, 103);
         await _db.EndSessionAsync(s4.Id, s4.StartedAt + 120 * 60);
 
-        var results = await _stats.GetSessionLengthHistogramAsync(userId, PlaytimeStats.TimeRange.AllTime, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetSessionLengthHistogramAsync(userId, TimeRange.AllTime, now, TimeZoneInfo.Utc);
 
         var dict = results.ToDictionary(r => r.Label, r => r.Count);
         dict["0-15m"].Should().Be(0); // 15m exactly goes to next bin
@@ -315,7 +319,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         var baseTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var now = baseTime + 86400;
 
-        var results = await _stats.GetSessionLengthHistogramAsync(userId, PlaytimeStats.TimeRange.AllTime, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetSessionLengthHistogramAsync(userId, TimeRange.AllTime, now, TimeZoneInfo.Utc);
 
         results.Should().HaveCount(5);
         results.Select(r => r.Label).Should().BeEquivalentTo(new[] { "0-15m", "15-30m", "30-60m", "1-2h", "2h+" });
@@ -335,7 +339,7 @@ public sealed class PlaytimeStatsTests : IDisposable
         // Session 3 days ago (inside 7d range)
         var s2 = await _db.CreateTestSessionAsync(userId, 456, 101, baseTime - 1800, baseTime, baseTime);
 
-        var results = await _stats.GetSessionLengthHistogramAsync(userId, PlaytimeStats.TimeRange.Last7Days, now, TimeZoneInfo.Utc);
+        var results = await _stats.GetSessionLengthHistogramAsync(userId, TimeRange.Last7Days, now, TimeZoneInfo.Utc);
 
         var totalCount = results.Sum(r => r.Count);
         totalCount.Should().Be(1); // only s2

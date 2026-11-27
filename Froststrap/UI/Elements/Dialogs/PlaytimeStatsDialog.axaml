@@ -12,6 +12,7 @@ SPDX-License-Identifier: MPL-2.0
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:dialogsVm="using:Froststrap.UI.ViewModels.Dialogs"
     xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
     xmlns:resources="using:Froststrap.Localisation"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
@@ -19,10 +20,10 @@ SPDX-License-Identifier: MPL-2.0
     x:DataType="dialogsVm:PlaytimeStatsDialogViewModel"
     x:Name="RootDialog"
     Title="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Title}"
-    Width="800"
-    Height="600"
-    MinWidth="650"
-    MinHeight="500"
+    Width="900"
+    Height="700"
+    MinWidth="750"
+    MinHeight="600"
     WindowStartupLocation="CenterOwner"
     CanResize="True"
     ShowInTaskbar="False"
@@ -59,8 +60,8 @@ SPDX-License-Identifier: MPL-2.0
             </Border>
 
             <!-- Content -->
-            <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
-                <!-- Account selector + Range picker -->
+            <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,Auto,*,*" RowSpacing="16">
+                <!-- Account selector + Range picker + Chart type picker -->
                 <Grid IsVisible="{Binding ShowAccountSelector}" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
                     <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Account}"
                                VerticalAlignment="Center" Opacity="0.7" />
@@ -76,7 +77,7 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </Grid>
 
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12" Margin="0,0,0,8">
                     <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Range}"
                                VerticalAlignment="Center" Opacity="0.7" />
                     <ComboBox Grid.Column="1" VerticalAlignment="Center"
@@ -89,8 +90,20 @@ SPDX-License-Identifier: MPL-2.0
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <ui:FAProgressRing Grid.Column="2" IsActive="{Binding IsLoading}" Width="20" Height="20"
-                                       Foreground="{DynamicResource SystemAccentColor}" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_ChartType}"
+                               VerticalAlignment="Center" Opacity="0.7" Margin="12,0,4,0" />
+                    <ComboBox Grid.Column="3" VerticalAlignment="Center"
+                              ItemsSource="{Binding ChartTypes}"
+                              SelectedItem="{Binding SelectedChartType, Mode=TwoWay}"
+                              MinWidth="140">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ui:FAProgressRing Grid.Column="3" IsActive="{Binding IsLoading}" Width="20" Height="20"
+                                       Foreground="{DynamicResource SystemAccentColor}" VerticalAlignment="Center" Margin="12,0,0,0" />
                 </Grid>
 
                 <!-- Summary Cards -->
@@ -140,9 +153,59 @@ SPDX-License-Identifier: MPL-2.0
                     </Grid>
                 </controls:Card>
 
+                <!-- Main Chart -->
+                <controls:Card Grid.Row="3" Padding="16" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                               IsVisible="{Binding HasSummary}">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_PerGame}"
+                                       FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="2" VerticalAlignment="Center"
+                                      ItemsSource="{Binding ChartTypes}"
+                                      SelectedItem="{Binding SelectedChartType, Mode=TwoWay}"
+                                      MinWidth="140"
+                                      ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_ChartTypeTooltip}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                        <lvc:CartesianChart Grid.Row="1"
+                                            Series="{Binding MainChartSeries}"
+                                            XAxes="{Binding MainChartXAxes}"
+                                            YAxes="{Binding MainChartYAxes}"
+                                            TooltipPosition="Top"
+                                            LegendPosition="Bottom"
+                                            AnimationsSpeed="0:0:0.3"
+                                            ZoomMode="X"
+                                            Height="300" />
+                    </Grid>
+                </controls:Card>
+
+                <!-- Trend Chart -->
+                <controls:Card Grid.Row="4" Padding="16" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                               IsVisible="{Binding HasSummary}">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Trend}"
+                                   FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                        <lvc:CartesianChart Grid.Row="1"
+                                            Series="{Binding TrendChartSeries}"
+                                            XAxes="{Binding TrendChartXAxes}"
+                                            YAxes="{Binding TrendChartYAxes}"
+                                            TooltipPosition="Top"
+                                            LegendPosition="Bottom"
+                                            AnimationsSpeed="0:0:0.3"
+                                            ZoomMode="X"
+                                            Height="200" />
+                    </Grid>
+                </controls:Card>
+
                 <!-- Empty state -->
-                <Border Grid.Row="2" IsVisible="{Binding !HasSummary}"
-                        Padding="32" Background="#22000000" CornerRadius="8">
+                <Border Grid.Row="3" Grid.RowSpan="2" IsVisible="{Binding !HasSummary}"
+                        Padding="32" Background="#22000000" CornerRadius="8"
+                        VerticalAlignment="Center" HorizontalAlignment="Center">
                     <StackPanel Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ic:Lucide Icon="BarChart2" Height="48" Width="48" Opacity="0.4" />
                         <TextBlock Text="{Binding EmptyMessage}"
@@ -152,9 +215,10 @@ SPDX-License-Identifier: MPL-2.0
                 </Border>
 
                 <!-- Game list -->
-                <ScrollViewer Grid.Row="2" IsVisible="{Binding HasSummary}"
+                <ScrollViewer Grid.Row="5" IsVisible="{Binding HasSummary}"
                               VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled">
+                              HorizontalScrollBarVisibility="Disabled"
+                              MaxHeight="250">
                     <ItemsControl ItemsSource="{Binding GameTotals}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="dialogsVm:PlaytimeStatsDialogViewModel+GameTotalViewItem">
@@ -187,7 +251,7 @@ SPDX-License-Identifier: MPL-2.0
                 </ScrollViewer>
 
                 <!-- Loading overlay -->
-                <Grid Grid.Row="2" IsVisible="{Binding IsLoading}" Background="#40000000" ZIndex="1">
+                <Grid Grid.Row="1" Grid.RowSpan="5" IsVisible="{Binding IsLoading}" Background="#40000000" ZIndex="1">
                     <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
                                            Foreground="{DynamicResource SystemAccentColor}" />
