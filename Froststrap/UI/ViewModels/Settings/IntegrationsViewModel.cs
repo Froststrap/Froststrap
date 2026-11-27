@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.Integrations.AccountManager;
 using Froststrap.Localisation;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -25,6 +26,8 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
     public IAsyncRelayCommand<CustomIntegration> BrowseIntegrationLocationCommand { get; } = new AsyncRelayCommand<CustomIntegration>(BrowseIntegrationLocation);
 
     public ICommand OpenGameHistoryCommand => new RelayCommand(OpenGameHistory);
+
+    public ICommand OpenPlaytimeStatsCommand => new RelayCommand(OpenPlaytimeStats);
 
     private static void AddIntegration()
     {
@@ -88,6 +91,23 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
     public string PlaytimeTrackingLabel => Strings.Menu_Integrations_PlaytimeTracking_Title;
 
     public bool IsPlaytimeTrackingAvailable => App.Settings.Prop.AllowCookieAccess;
+
+    public bool IsPlaytimeStatsButtonEnabled => App.Settings.Prop.EnablePlaytimeTracking && App.Settings.Prop.AllowCookieAccess && AccountManager.Shared?.ActiveAccount != null;
+
+    public string PlaytimeStatsButtonHint =>
+        !App.Settings.Prop.AllowCookieAccess ? Strings.Menu_Integrations_PlaytimeStats_NoAccount :
+        !App.Settings.Prop.EnablePlaytimeTracking ? Strings.Menu_Integrations_PlaytimeStats_TrackingOff :
+        AccountManager.Shared?.ActiveAccount == null ? Strings.Menu_Integrations_PlaytimeStats_NoAccount :
+        string.Empty;
+
+    private async void OpenPlaytimeStats()
+    {
+        if (Froststrap.UI.Elements.Settings.MainWindow.Instance is not { } window)
+            return;
+
+        var dialog = new Froststrap.UI.Elements.Dialogs.PlaytimeStatsDialog();
+        await dialog.ShowDialog(window);
+    }
 
     public bool ShowServerDetailsEnabled
     {

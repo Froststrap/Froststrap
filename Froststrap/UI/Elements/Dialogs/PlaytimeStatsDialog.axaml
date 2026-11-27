@@ -1,0 +1,201 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Dialogs.PlaytimeStatsDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="using:Froststrap.UI.Elements.Base"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:dialogsVm="using:Froststrap.UI.ViewModels.Dialogs"
+    xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Localisation"
+    xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:utility="using:Froststrap.UI.Utility"
+    x:DataType="dialogsVm:PlaytimeStatsDialogViewModel"
+    x:Name="RootDialog"
+    Title="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Title}"
+    Width="800"
+    Height="600"
+    MinWidth="650"
+    MinHeight="500"
+    WindowStartupLocation="CenterOwner"
+    CanResize="True"
+    ShowInTaskbar="False"
+    WindowDecorations="None">
+
+    <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            Background="Transparent"
+            BorderThickness="1"
+            ClipToBounds="True">
+        <Grid RowDefinitions="Auto,*">
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#33000000" Padding="16" PointerPressed="OnHeaderPointerPressed">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Title}"
+                               FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <Button Command="{Binding RefreshCommand}"
+                                ToolTip.Tip="{x:Static resources:Strings.Common_Refresh}"
+                                Background="Transparent" BorderThickness="0"
+                                IsEnabled="{Binding !IsLoading}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <ic:Lucide Icon="RefreshCw" Height="16" Width="16"
+                                           IsVisible="{Binding !IsLoading}" />
+                                <ui:FAProgressRing IsVisible="{Binding IsLoading}" Width="16" Height="16"
+                                                   IsActive="{Binding IsLoading}"
+                                                   Foreground="{DynamicResource SystemAccentColor}" />
+                            </StackPanel>
+                        </Button>
+                        <Button Click="OnCloseClicked" Background="Transparent" BorderThickness="0">
+                            <ic:Lucide Icon="X" Height="16" Width="16" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Content -->
+            <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="16">
+                <!-- Account selector + Range picker -->
+                <Grid IsVisible="{Binding ShowAccountSelector}" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
+                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Account}"
+                               VerticalAlignment="Center" Opacity="0.7" />
+                    <ComboBox Grid.Column="1" VerticalAlignment="Center"
+                              ItemsSource="{Binding Accounts}"
+                              SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+                              MinWidth="200">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayName}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
+                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Range}"
+                               VerticalAlignment="Center" Opacity="0.7" />
+                    <ComboBox Grid.Column="1" VerticalAlignment="Center"
+                              ItemsSource="{Binding Ranges}"
+                              SelectedItem="{Binding SelectedRange, Mode=TwoWay}"
+                              MinWidth="180">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ui:FAProgressRing Grid.Column="2" IsActive="{Binding IsLoading}" Width="20" Height="20"
+                                       Foreground="{DynamicResource SystemAccentColor}" VerticalAlignment="Center" />
+                </Grid>
+
+                <!-- Summary Cards -->
+                <controls:Card Grid.Row="2" Padding="0" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                               IsVisible="{Binding HasSummary}">
+                    <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto" RowSpacing="4">
+                        <Border Grid.Row="0" Grid.Column="0" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_TotalTime}"
+                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding SummaryTotalTime}"
+                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="1" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_GamesPlayed}"
+                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding SummaryGamesPlayed}"
+                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="2" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Sessions}"
+                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding SummarySessions}"
+                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="3" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_AvgSession}"
+                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding SummaryAvgSession}"
+                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="0" Grid.Column="4" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_LongestSession}"
+                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding SummaryLongestSession}"
+                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </controls:Card>
+
+                <!-- Empty state -->
+                <Border Grid.Row="2" IsVisible="{Binding !HasSummary}"
+                        Padding="32" Background="#22000000" CornerRadius="8">
+                    <StackPanel Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ic:Lucide Icon="BarChart2" Height="48" Width="48" Opacity="0.4" />
+                        <TextBlock Text="{Binding EmptyMessage}"
+                                   FontSize="14" Opacity="0.7"
+                                   TextAlignment="Center" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Game list -->
+                <ScrollViewer Grid.Row="2" IsVisible="{Binding HasSummary}"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding GameTotals}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="dialogsVm:PlaytimeStatsDialogViewModel+GameTotalViewItem">
+                                <Border Padding="12" Margin="0,4" Background="#33000000" CornerRadius="8">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="16">
+                                        <StackPanel Grid.Column="0" MinWidth="180" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding UniverseId, StringFormat='Universe {0}'}"
+                                                       FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding FormattedLastPlayed}"
+                                                       FontSize="11" Opacity="0.5" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" Spacing="8">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <ic:Lucide Icon="Clock" Height="14" Width="14" Opacity="0.6" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding FormattedTime}"
+                                                           FontWeight="Medium" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <ic:Lucide Icon="Repeat" Height="14" Width="14" Opacity="0.6" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding SessionCount}"
+                                                           VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Loading overlay -->
+                <Grid Grid.Row="2" IsVisible="{Binding IsLoading}" Background="#40000000" ZIndex="1">
+                    <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
+                                           Foreground="{DynamicResource SystemAccentColor}" />
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Loading}"
+                                   FontSize="12" Opacity="0.7" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</base:AvaloniaWindow>

@@ -70,6 +70,19 @@ SPDX-License-Identifier: MPL-2.0
                         Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
                         IsChecked="{Binding PlaytimeCounterEnabled}" />
 
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Description}"
+                        IsVisible="{Binding PlaytimeTrackingEnabled}"
+                        IsEnabled="{Binding IsPlaytimeStatsButtonEnabled}">
+                        <controls:IconButton
+                            Command="{Binding OpenPlaytimeStatsCommand}"
+                            Content="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_ViewButton}"
+                            Icon="Activity"
+                            HorizontalAlignment="Stretch"
+                            ToolTip.Tip="{Binding PlaytimeStatsButtonHint, FallbackValue=''}" />
+                    </controls:OptionControl>
+
                     <controls:ToggleOption
                         Header="{x:Static resources:Strings.Menu_Integrations_DesktopApp_Title}"
                         Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/features/dont-exit-to-desktop-app/'}"
