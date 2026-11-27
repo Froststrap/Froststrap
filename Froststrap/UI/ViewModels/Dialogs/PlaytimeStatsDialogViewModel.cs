@@ -25,6 +25,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
     private readonly AccountManager _accountManager;
     private CancellationTokenSource _loadCts = new();
     private int _loadSeq;
+    private int _chartSeq;
     private bool _disposed;
 
     public PlaytimeStatsDialogViewModel()
@@ -75,10 +76,17 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         set
         {
             if (SetProperty(ref _selectedChartType, value))
-                _ = RefreshChartsAsync();
+            {
+                OnPropertyChanged(nameof(IsPieChart));
+                OnPropertyChanged(nameof(IsNotPieChart));
+                _ = RefreshChartsAsync(CancellationToken.None);
+            }
         }
     }
     private ChartType _selectedChartType = ChartType.Column;
+
+    public bool IsPieChart => SelectedChartType == ChartType.Pie;
+    public bool IsNotPieChart => SelectedChartType != ChartType.Pie;
 
     public ObservableCollection<ChartType> ChartTypes { get; }
 
@@ -92,7 +100,18 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
     public SummaryResult? Summary
     {
         get => _summary;
-        private set => SetProperty(ref _summary, value);
+        private set
+        {
+            if (SetProperty(ref _summary, value))
+            {
+                OnPropertyChanged(nameof(HasSummary));
+                OnPropertyChanged(nameof(SummaryTotalTime));
+                OnPropertyChanged(nameof(SummaryGamesPlayed));
+                OnPropertyChanged(nameof(SummarySessions));
+                OnPropertyChanged(nameof(SummaryAvgSession));
+                OnPropertyChanged(nameof(SummaryLongestSession));
+            }
+        }
     }
     private SummaryResult? _summary;
 
@@ -104,7 +123,8 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         int SessionCount,
         long LastPlayedAt,
         string FormattedTime,
-        string FormattedLastPlayed
+        string FormattedLastPlayed,
+        string GameName
     );
 
     public string EmptyMessage
@@ -134,8 +154,6 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
 
     public async Task RefreshAsync()
     {
-        if (IsLoading) return;
-
         var seq = ++_loadSeq;
         await _loadCts.CancelAsync();
         _loadCts = new CancellationTokenSource();
@@ -177,24 +195,28 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
             var totals = await stats.GetPerGameTotalsAsync(account.UserId, SelectedRange, now, TimeZoneInfo.Local, _loadCts.Token);
             if (seq != _loadSeq) return;
 
+            var gameNames = await GetGameNamesAsync(totals.Select(t => t.UniverseId).ToList());
+
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 GameTotals.Clear();
                 foreach (var t in totals)
                 {
+                    gameNames.TryGetValue(t.UniverseId, out var name);
                     GameTotals.Add(new GameTotalViewItem(
                         t.UniverseId,
                         t.TotalSeconds,
                         t.SessionCount,
                         t.LastPlayedAt,
                         FormatDuration(t.TotalSeconds),
-                        FormatLastPlayed(t.LastPlayedAt)
+                        FormatLastPlayed(t.LastPlayedAt),
+                        name ?? (t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}")
                     ));
                 }
             });
 
             Summary = summary;
-            await RefreshChartsAsync();
+            await RefreshChartsAsync(_loadCts.Token);
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -211,13 +233,35 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         }
     }
 
-    private async Task RefreshChartsAsync()
+    private static async Task<Dictionary<long, string>> GetGameNamesAsync(List<long> universeIds)
+    {
+        var result = new Dictionary<long, string>();
+        if (universeIds.Count == 0) return result;
+
+        try
+        {
+            using var db = new PlaytimeDb();
+            foreach (var id in universeIds)
+            {
+                if (id == 0) continue; // "Other" aggregate
+                var game = await db.GetGameAsync(id);
+                if (game?.Name != null)
+                    result[id] = game.Name;
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger.Error(ex, "Failed to load game names");
+        }
+        return result;
+    }
+
+    private async Task RefreshChartsAsync(CancellationToken ct)
     {
         var account = SelectedAccount;
         if (account == null || Summary == null) return;
 
-        var seq = ++_loadSeq;
-        using var cts = new CancellationTokenSource();
+        var seq = ++_chartSeq;
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         try
@@ -225,19 +269,19 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
             using var stats = new PlaytimeStats();
 
             // Build main chart
-            var mainSeries = await BuildMainChartSeriesAsync(stats, account.UserId, now, cts.Token);
-            if (seq != _loadSeq) return;
+            var (mainSeries, mainLabels) = await BuildMainChartSeriesAsync(stats, account.UserId, now, ct);
+            if (seq != _chartSeq) return;
 
             MainChartSeries = mainSeries;
-            MainChartXAxes = BuildMainChartXAxes();
+            MainChartXAxes = BuildMainChartXAxes(mainLabels);
             MainChartYAxes = BuildMainChartYAxes();
 
             // Build trend chart
-            var trendSeries = await BuildTrendChartSeriesAsync(stats, account.UserId, now, cts.Token);
-            if (seq != _loadSeq) return;
+            var (trendSeries, trendLabels) = await BuildTrendChartSeriesAsync(stats, account.UserId, now, ct);
+            if (seq != _chartSeq) return;
 
             TrendChartSeries = trendSeries;
-            TrendChartXAxes = BuildTrendChartXAxes();
+            TrendChartXAxes = BuildTrendChartXAxes(trendLabels);
             TrendChartYAxes = BuildTrendChartYAxes();
 
             OnPropertyChanged(nameof(MainChartSeries));
@@ -254,25 +298,32 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         }
     }
 
-    private async Task<ISeries[]> BuildMainChartSeriesAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
+    private async Task<(ISeries[] Series, string[] Labels)> BuildMainChartSeriesAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
     {
         var totals = await stats.GetPerGameTotalsAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct);
         var top8 = PlaytimeStats.TopNWithOther(totals, 8);
 
-        return SelectedChartType switch
+        var gameNames = await GetGameNamesAsync(top8.Select(t => t.UniverseId).ToList());
+        var labels = top8.Select(t => t.UniverseId == 0
+            ? Strings.Menu_Integrations_PlaytimeStats_Other
+            : (gameNames.TryGetValue(t.UniverseId, out var n) ? n : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}"))
+            .ToArray();
+
+        var series = SelectedChartType switch
         {
-            ChartType.Column => BuildColumnSeries(top8),
-            ChartType.Bar => BuildBarSeries(top8),
-            ChartType.Pie => BuildPieSeries(top8),
+            ChartType.Column => BuildColumnSeries(top8, labels),
+            ChartType.Bar => BuildBarSeries(top8, labels),
+            ChartType.Pie => BuildPieSeries(top8, labels),
             ChartType.Histogram => BuildHistogramSeries(await stats.GetSessionLengthHistogramAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct)),
-            _ => BuildColumnSeries(top8)
+            _ => BuildColumnSeries(top8, labels)
         };
+
+        return (series, labels);
     }
 
-    private static ISeries[] BuildColumnSeries(List<GameTotalResult> totals)
+    private static ISeries[] BuildColumnSeries(List<GameTotalResult> totals, string[] labels)
     {
         var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
-        var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
 
         return new ISeries[]
         {
@@ -286,10 +337,9 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private static ISeries[] BuildBarSeries(List<GameTotalResult> totals)
+    private static ISeries[] BuildBarSeries(List<GameTotalResult> totals, string[] labels)
     {
         var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
-        var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
 
         return new ISeries[]
         {
@@ -303,18 +353,18 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private static ISeries[] BuildPieSeries(List<GameTotalResult> totals)
+    private static ISeries[] BuildPieSeries(List<GameTotalResult> totals, string[] labels)
     {
-        var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
+        var values = totals.Select(t => (double)t.TotalSeconds).ToArray();
 
         var pieSeries = new PieSeries<double>
         {
-            Values = totals.Select(t => (double)t.TotalSeconds).ToArray(),
+            Values = values,
             InnerRadius = 50,
             DataLabelsSize = 12,
             DataLabelsPaint = new SolidColorPaint(SKColors.White),
-            DataLabelsFormatter = point => names[point.Index],
-            ToolTipLabelFormatter = point => $"{names[point.Index]}: {FormatDuration((long)point.Coordinate.PrimaryValue)}"
+            DataLabelsFormatter = point => labels[point.Index],
+            ToolTipLabelFormatter = point => $"{labels[point.Index]}: {FormatDuration((long)point.Coordinate.PrimaryValue)}"
         };
 
         return new ISeries[] { pieSeries };
@@ -337,12 +387,13 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private static Axis[] BuildMainChartXAxes()
+    private static Axis[] BuildMainChartXAxes(string[] labels)
     {
         return new Axis[]
         {
             new Axis
             {
+                Labels = labels,
                 LabelsRotation = 0,
                 SeparatorsPaint = new SolidColorPaint(SKColors.Transparent),
                 TicksPaint = new SolidColorPaint(SKColors.Gray),
@@ -366,7 +417,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private async Task<ISeries[]> BuildTrendChartSeriesAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
+    private async Task<(ISeries[] Series, string[] Labels)> BuildTrendChartSeriesAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
     {
         var buckets = await stats.GetTrendAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct);
 
@@ -375,7 +426,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
                 ? "MMM d"
                 : "MMM d", CultureInfo.InvariantCulture)).ToArray();
 
-        return new ISeries[]
+        var series = new ISeries[]
         {
             new LineSeries<double>
             {
@@ -389,9 +440,11 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
                 LineSmoothness = 0.3
             }
         };
+
+        return (series, labels);
     }
 
-    private static Axis[] BuildTrendChartXAxes()
+    private static Axis[] BuildTrendChartXAxes(string[]? labels = null)
     {
         return new Axis[]
         {
@@ -401,7 +454,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
                 SeparatorsPaint = new SolidColorPaint(SKColors.Transparent),
                 TicksPaint = new SolidColorPaint(SKColors.Gray),
                 TextSize = 10,
-                Labels = Array.Empty<string>()
+                Labels = labels ?? Array.Empty<string>()
             }
         };
     }

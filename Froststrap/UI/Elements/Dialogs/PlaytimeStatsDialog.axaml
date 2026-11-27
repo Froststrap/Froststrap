@@ -60,9 +60,9 @@ SPDX-License-Identifier: MPL-2.0
             </Border>
 
             <!-- Content -->
-            <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,Auto,*,*" RowSpacing="16">
-                <!-- Account selector + Range picker + Chart type picker -->
-                <Grid IsVisible="{Binding ShowAccountSelector}" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
+            <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="16">
+                <!-- Row 0: Account selector -->
+                <Grid Grid.Row="0" IsVisible="{Binding ShowAccountSelector}" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
                     <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Account}"
                                VerticalAlignment="Center" Opacity="0.7" />
                     <ComboBox Grid.Column="1" VerticalAlignment="Center"
@@ -77,7 +77,8 @@ SPDX-License-Identifier: MPL-2.0
                     </ComboBox>
                 </Grid>
 
-                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12" Margin="0,0,0,8">
+                <!-- Row 1: Range picker + Chart type picker -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12" Margin="0,0,0,8">
                     <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Range}"
                                VerticalAlignment="Center" Opacity="0.7" />
                     <ComboBox Grid.Column="1" VerticalAlignment="Center"
@@ -102,11 +103,9 @@ SPDX-License-Identifier: MPL-2.0
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    <ui:FAProgressRing Grid.Column="3" IsActive="{Binding IsLoading}" Width="20" Height="20"
-                                       Foreground="{DynamicResource SystemAccentColor}" VerticalAlignment="Center" Margin="12,0,0,0" />
                 </Grid>
 
-                <!-- Summary Cards -->
+                <!-- Row 2: Summary Cards -->
                 <controls:Card Grid.Row="2" Padding="0" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                IsVisible="{Binding HasSummary}">
                     <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto" RowSpacing="4">
@@ -153,38 +152,37 @@ SPDX-License-Identifier: MPL-2.0
                     </Grid>
                 </controls:Card>
 
-                <!-- Main Chart -->
+                <!-- Row 3: Main Chart -->
                 <controls:Card Grid.Row="3" Padding="16" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                IsVisible="{Binding HasSummary}">
                     <Grid RowDefinitions="Auto,*" RowSpacing="12">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                            <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_PerGame}"
-                                       FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
-                            <ComboBox Grid.Column="2" VerticalAlignment="Center"
-                                      ItemsSource="{Binding ChartTypes}"
-                                      SelectedItem="{Binding SelectedChartType, Mode=TwoWay}"
-                                      MinWidth="140"
-                                      ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_ChartTypeTooltip}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_PerGame}"
+                                   FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                        <Grid Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="8">
+                            <!-- Column/Bar/Histogram chart -->
+                            <lvc:CartesianChart Grid.Row="1"
+                                                IsVisible="{Binding IsNotPieChart}"
+                                                Series="{Binding MainChartSeries}"
+                                                XAxes="{Binding MainChartXAxes}"
+                                                YAxes="{Binding MainChartYAxes}"
+                                                TooltipPosition="Top"
+                                                LegendPosition="Bottom"
+                                                AnimationsSpeed="0:0:0.3"
+                                                ZoomMode="X"
+                                                Height="300" />
+                            <!-- Pie chart -->
+                            <lvc:PieChart Grid.Row="1"
+                                          IsVisible="{Binding IsPieChart}"
+                                          Series="{Binding MainChartSeries}"
+                                          TooltipPosition="Top"
+                                          LegendPosition="Bottom"
+                                          AnimationsSpeed="0:0:0.3"
+                                          Height="300" />
                         </Grid>
-                        <lvc:CartesianChart Grid.Row="1"
-                                            Series="{Binding MainChartSeries}"
-                                            XAxes="{Binding MainChartXAxes}"
-                                            YAxes="{Binding MainChartYAxes}"
-                                            TooltipPosition="Top"
-                                            LegendPosition="Bottom"
-                                            AnimationsSpeed="0:0:0.3"
-                                            ZoomMode="X"
-                                            Height="300" />
                     </Grid>
                 </controls:Card>
 
-                <!-- Trend Chart -->
+                <!-- Row 4: Trend Chart -->
                 <controls:Card Grid.Row="4" Padding="16" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                IsVisible="{Binding HasSummary}">
                     <Grid RowDefinitions="Auto,*" RowSpacing="12">
@@ -202,7 +200,7 @@ SPDX-License-Identifier: MPL-2.0
                     </Grid>
                 </controls:Card>
 
-                <!-- Empty state -->
+                <!-- Row 5: Empty state -->
                 <Border Grid.Row="3" Grid.RowSpan="2" IsVisible="{Binding !HasSummary}"
                         Padding="32" Background="#22000000" CornerRadius="8"
                         VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -214,7 +212,7 @@ SPDX-License-Identifier: MPL-2.0
                     </StackPanel>
                 </Border>
 
-                <!-- Game list -->
+                <!-- Row 5: Game list -->
                 <ScrollViewer Grid.Row="5" IsVisible="{Binding HasSummary}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
@@ -225,7 +223,7 @@ SPDX-License-Identifier: MPL-2.0
                                 <Border Padding="12" Margin="0,4" Background="#33000000" CornerRadius="8">
                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="16">
                                         <StackPanel Grid.Column="0" MinWidth="180" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding UniverseId, StringFormat={x:Static resources:Strings.Menu_Integrations_PlaytimeStats_UniverseFormat}}"
+                                            <TextBlock Text="{Binding GameName}"
                                                        FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
                                             <TextBlock Text="{Binding FormattedLastPlayed}"
                                                        FontSize="11" Opacity="0.5" />

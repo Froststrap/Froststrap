@@ -37,6 +37,13 @@ namespace Froststrap.UI.Converters
 
             var trimmedTypeName = dotIndex >= 0 ? typeName[(dotIndex + 1)..] : typeName;
 
+            // Try with underscore (for C# identifier compatibility in translation keys)
+            var keyWithUnderscore = $"{trimmedTypeName}_{stringVal}";
+            var translation = Translations.Get(keyWithUnderscore);
+            if (!string.IsNullOrEmpty(translation))
+                return translation;
+
+            // Fallback to dot notation
             return Translations.Get($"{trimmedTypeName}.{stringVal}");
         }
 
