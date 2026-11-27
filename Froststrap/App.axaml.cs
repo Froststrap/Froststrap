@@ -104,6 +104,8 @@ internal sealed partial class App : Application
 
     public static PlaytimePoller? PlaytimePoller { get; private set; }
 
+    public static PlaytimeGameMetadataFetcher? PlaytimeGameMetadataFetcher { get; private set; }
+
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
 
     public static void SavePendingUpdateNotes(UpdateInfo update)
@@ -172,6 +174,12 @@ internal sealed partial class App : Application
         var poller = new Froststrap.Integrations.Playtime.PlaytimePoller(db, stateMachine, accountManager);
 
         PlaytimePoller = poller;
+
+        // Initialize game metadata fetcher
+        var metadataFetcher = new Froststrap.Integrations.Playtime.PlaytimeGameMetadataFetcher(db);
+        PlaytimeGameMetadataFetcher = metadataFetcher;
+        metadataFetcher.Start();
+        Logger.Info("Playtime game metadata fetcher started");
 
         // Start poller if we have linked accounts with cookies
         var hasCookie = accountManager.Accounts.Any(a => !string.IsNullOrEmpty(accountManager.GetRoblosecurityForUser(a.UserId)));
@@ -636,6 +644,20 @@ internal sealed partial class App : Application
                 catch (Exception ex)
                 {
                     Logger.Error(ex, "Failed to stop playtime poller on exit");
+                }
+            }
+
+            // Stop game metadata fetcher
+            if (PlaytimeGameMetadataFetcher != null)
+            {
+                try
+                {
+                    PlaytimeGameMetadataFetcher.StopAsync().Wait(2000);
+                    Logger.Info("Playtime game metadata fetcher stopped");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex, "Failed to stop playtime game metadata fetcher");
                 }
             }
         };

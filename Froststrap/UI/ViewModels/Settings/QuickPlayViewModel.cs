@@ -1241,6 +1241,12 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
         var universeIds = games.Where(g => g.UniverseId > 0).Select(g => g.UniverseId).Distinct().ToList();
         if (universeIds.Count == 0) return;
 
+        // Ensure game metadata is cached
+        if (App.PlaytimeGameMetadataFetcher != null)
+        {
+            await App.PlaytimeGameMetadataFetcher.EnsureGamesCachedAsync(universeIds);
+        }
+
         try
         {
             var db = new PlaytimeDb();

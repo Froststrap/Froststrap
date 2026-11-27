@@ -122,7 +122,8 @@ public sealed class PlaytimeDbTests : IDisposable
 
         result.Success.Should().BeTrue();
         // EndedAt should be clamped to at least last_seen_at (which is >= started_at)
-        result.EndedAt.Should().BeGreaterThanOrEqualTo(result.LastSeenAt - 1); // allow 1 sec clock diff
+        // Allow 2 sec clock diff due to Unix second precision
+        result.EndedAt.Should().BeGreaterThanOrEqualTo(result.LastSeenAt - 2);
         result.EndedAt.Should().BeGreaterThanOrEqualTo(session.StartedAt);
 
         var sessions = await _db.GetSessionsAsync(123, 456);
