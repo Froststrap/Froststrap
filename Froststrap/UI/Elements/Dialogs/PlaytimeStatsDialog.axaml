@@ -59,202 +59,197 @@ SPDX-License-Identifier: MPL-2.0
                 </Grid>
             </Border>
 
-            <!-- Content -->
-            <Grid Grid.Row="1" Margin="16" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" RowSpacing="16">
-                <!-- Row 0: Account selector -->
-                <Grid Grid.Row="0" IsVisible="{Binding ShowAccountSelector}" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Margin="0,0,0,8">
-                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Account}"
-                               VerticalAlignment="Center" Opacity="0.7" />
-                    <ComboBox Grid.Column="1" VerticalAlignment="Center"
-                              ItemsSource="{Binding Accounts}"
-                              SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
-                              MinWidth="200">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DisplayName}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
+            <!-- Content area: scrollable page, loading overlay on top -->
+            <Grid Grid.Row="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Grid Margin="16" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
 
-                <!-- Row 1: Range picker + Chart type picker -->
-                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12" Margin="0,0,0,8">
-                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Range}"
-                               VerticalAlignment="Center" Opacity="0.7" />
-                    <ComboBox Grid.Column="1" VerticalAlignment="Center"
-                              ItemsSource="{Binding Ranges}"
-                              SelectedItem="{Binding SelectedRange, Mode=TwoWay}"
-                              MinWidth="180">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <TextBlock Grid.Column="2" Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_ChartType}"
-                               VerticalAlignment="Center" Opacity="0.7" Margin="12,0,4,0" />
-                    <ComboBox Grid.Column="3" VerticalAlignment="Center"
-                              ItemsSource="{Binding ChartTypes}"
-                              SelectedItem="{Binding SelectedChartType, Mode=TwoWay}"
-                              MinWidth="140">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </Grid>
-
-                <!-- Row 2: Summary Cards -->
-                <controls:Card Grid.Row="2" Padding="0" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                               IsVisible="{Binding HasSummary}">
-                    <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto" RowSpacing="4">
-                        <Border Grid.Row="0" Grid.Column="0" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_TotalTime}"
-                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding SummaryTotalTime}"
-                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="0" Grid.Column="1" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_GamesPlayed}"
-                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding SummaryGamesPlayed}"
-                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="0" Grid.Column="2" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Sessions}"
-                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding SummarySessions}"
-                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="0" Grid.Column="3" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_AvgSession}"
-                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding SummaryAvgSession}"
-                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Row="0" Grid.Column="4" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_LongestSession}"
-                                           FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding SummaryLongestSession}"
-                                           FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </controls:Card>
-
-                <!-- Row 3: Main Chart -->
-                <controls:Card Grid.Row="3" Padding="16" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                               IsVisible="{Binding HasSummary}">
-                    <Grid RowDefinitions="Auto,*" RowSpacing="12">
-                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_PerGame}"
-                                   FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
-                        <Grid Grid.Row="1" RowDefinitions="Auto,*" RowSpacing="8">
-                            <!-- Column/Bar/Histogram chart -->
-                            <lvc:CartesianChart Grid.Row="1"
-                                                IsVisible="{Binding IsNotPieChart}"
-                                                Series="{Binding MainChartSeries}"
-                                                XAxes="{Binding MainChartXAxes}"
-                                                YAxes="{Binding MainChartYAxes}"
-                                                TooltipPosition="Top"
-                                                LegendPosition="Bottom"
-                                                AnimationsSpeed="0:0:0.3"
-                                                ZoomMode="X"
-                                                Height="300" />
-                            <!-- Pie chart -->
-                            <lvc:PieChart Grid.Row="1"
-                                          IsVisible="{Binding IsPieChart}"
-                                          Series="{Binding MainChartSeries}"
-                                          TooltipPosition="Top"
-                                          LegendPosition="Bottom"
-                                          AnimationsSpeed="0:0:0.3"
-                                          Height="300" />
+                        <!-- Row 0: account selector -->
+                        <Grid Grid.Row="0" IsVisible="{Binding ShowAccountSelector}" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Account}"
+                                       VerticalAlignment="Center" Opacity="0.7" />
+                            <ComboBox Grid.Column="1" VerticalAlignment="Center"
+                                      ItemsSource="{Binding Accounts}"
+                                      SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+                                      MinWidth="200">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </Grid>
-                    </Grid>
-                </controls:Card>
 
-                <!-- Row 4: Trend Chart -->
-                <controls:Card Grid.Row="4" Padding="16" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                               IsVisible="{Binding HasSummary}">
-                    <Grid RowDefinitions="Auto,*" RowSpacing="12">
-                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Trend}"
-                                   FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
-                        <lvc:CartesianChart Grid.Row="1"
-                                            Series="{Binding TrendChartSeries}"
-                                            XAxes="{Binding TrendChartXAxes}"
-                                            YAxes="{Binding TrendChartYAxes}"
-                                            TooltipPosition="Top"
-                                            LegendPosition="Bottom"
-                                            AnimationsSpeed="0:0:0.3"
-                                            ZoomMode="X"
-                                            Height="200" />
-                    </Grid>
-                </controls:Card>
+                        <!-- Row 1: range picker -->
+                        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Range}"
+                                       VerticalAlignment="Center" Opacity="0.7" />
+                            <ComboBox Grid.Column="1" VerticalAlignment="Center"
+                                      ItemsSource="{Binding Ranges}"
+                                      SelectedItem="{Binding SelectedRange, Mode=TwoWay}"
+                                      MinWidth="180">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ., Converter={x:Static dialogsVm:PlaytimeStatsDialogViewModel.EnumLabelConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
 
-                <!-- Row 5: Empty state -->
-                <Border Grid.Row="3" Grid.RowSpan="2" IsVisible="{Binding !HasSummary}"
-                        Padding="32" Background="#22000000" CornerRadius="8"
-                        VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <StackPanel Spacing="12" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <ic:Lucide Icon="BarChart2" Height="48" Width="48" Opacity="0.4" />
-                        <TextBlock Text="{Binding EmptyMessage}"
-                                   FontSize="14" Opacity="0.7"
-                                   TextAlignment="Center" TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
+                        <!-- Row 2: summary cards (or empty state, never both) -->
+                        <controls:Card Grid.Row="2" Padding="0" CornerRadius="12" ClipToBounds="True"
+                                       Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                       IsVisible="{Binding HasSummary}">
+                            <Grid ColumnDefinitions="*,*,*,*,*">
+                                <Border Grid.Column="0" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_TotalTime}"
+                                                   FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding SummaryTotalTime}"
+                                                   FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_GamesPlayed}"
+                                                   FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding SummaryGamesPlayed}"
+                                                   FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Sessions}"
+                                                   FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding SummarySessions}"
+                                                   FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="3" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_AvgSession}"
+                                                   FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding SummaryAvgSession}"
+                                                   FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="4" Padding="12,8" Background="#33000000" CornerRadius="8" Margin="4">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_LongestSession}"
+                                                   FontSize="11" Opacity="0.6" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{Binding SummaryLongestSession}"
+                                                   FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </controls:Card>
 
-                <!-- Row 5: Game list -->
-                <ScrollViewer Grid.Row="5" IsVisible="{Binding HasSummary}"
-                              VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled"
-                              MaxHeight="250">
-                    <ItemsControl ItemsSource="{Binding GameTotals}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="dialogsVm:PlaytimeStatsDialogViewModel+GameTotalViewItem">
-                                <Border Padding="12" Margin="0,4" Background="#33000000" CornerRadius="8">
-                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="16">
-                                        <StackPanel Grid.Column="0" MinWidth="180" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding GameName}"
-                                                       FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Text="{Binding FormattedLastPlayed}"
-                                                       FontSize="11" Opacity="0.5" />
-                                        </StackPanel>
+                        <Border Grid.Row="2" IsVisible="{Binding !HasSummary}"
+                                Padding="32" Background="#22000000" CornerRadius="8"
+                                HorizontalAlignment="Center">
+                            <StackPanel Spacing="12" HorizontalAlignment="Center">
+                                <ic:Lucide Icon="BarChart2" Height="48" Width="48" Opacity="0.4" />
+                                <TextBlock Text="{Binding EmptyMessage}"
+                                           FontSize="14" Opacity="0.7"
+                                           TextAlignment="Center" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
 
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" Spacing="8">
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                        <!-- Row 3: main chart -->
+                        <controls:Card Grid.Row="3" Padding="16" CornerRadius="12" ClipToBounds="True"
+                                       Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                       IsVisible="{Binding HasSummary}">
+                            <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_PerGame}"
+                                               FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                                    <ComboBox Grid.Column="1" VerticalAlignment="Center"
+                                              ItemsSource="{Binding ChartTypes}"
+                                              SelectedItem="{Binding SelectedChartType, Mode=TwoWay}"
+                                              MinWidth="160"
+                                              ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_ChartTypeTooltip}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ., Converter={x:Static dialogsVm:PlaytimeStatsDialogViewModel.EnumLabelConverter}}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+
+                                <!-- Same cell: only one is visible. Pie needs PieChart, the rest need CartesianChart. -->
+                                <Grid Grid.Row="1" Height="300">
+                                    <lvc:CartesianChart Series="{Binding MainChartSeries}"
+                                                        XAxes="{Binding MainChartXAxes}"
+                                                        YAxes="{Binding MainChartYAxes}"
+                                                        IsVisible="{Binding IsCartesianSelected}"
+                                                        TooltipPosition="Top"
+                                                        LegendPosition="Hidden"
+                                                        AnimationsSpeed="0:0:0.3" />
+                                    <lvc:PieChart Series="{Binding PieChartSeries}"
+                                                  IsVisible="{Binding IsPieSelected}"
+                                                  TooltipPosition="Top"
+                                                  LegendPosition="Right"
+                                                  AnimationsSpeed="0:0:0.3" />
+                                </Grid>
+                            </Grid>
+                        </controls:Card>
+
+                        <!-- Row 4: trend chart -->
+                        <controls:Card Grid.Row="4" Padding="16" CornerRadius="12" ClipToBounds="True"
+                                       Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                       IsVisible="{Binding HasSummary}">
+                            <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Trend}"
+                                           FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" />
+                                <lvc:CartesianChart Grid.Row="1"
+                                                    Series="{Binding TrendChartSeries}"
+                                                    XAxes="{Binding TrendChartXAxes}"
+                                                    YAxes="{Binding TrendChartYAxes}"
+                                                    TooltipPosition="Top"
+                                                    LegendPosition="Hidden"
+                                                    AnimationsSpeed="0:0:0.3"
+                                                    Height="220" />
+                            </Grid>
+                        </controls:Card>
+
+                        <!-- Row 5: game list (page scrolls, no nested ScrollViewer) -->
+                        <ItemsControl Grid.Row="5" ItemsSource="{Binding GameTotals}" IsVisible="{Binding HasSummary}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="dialogsVm:PlaytimeStatsDialogViewModel+GameTotalViewItem">
+                                    <Border Padding="12" Margin="0,4" Background="#33000000" CornerRadius="8">
+                                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="24">
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                           FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding FormattedLastPlayed}"
+                                                           FontSize="11" Opacity="0.5" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                                                 <ic:Lucide Icon="Clock" Height="14" Width="14" Opacity="0.6" VerticalAlignment="Center" />
                                                 <TextBlock Text="{Binding FormattedTime}"
                                                            FontWeight="Medium" VerticalAlignment="Center" />
                                             </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Spacing="4">
+
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
                                                 <ic:Lucide Icon="Repeat" Height="14" Width="14" Opacity="0.6" VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding SessionCount}"
-                                                           VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding SessionCount}" VerticalAlignment="Center" />
                                             </StackPanel>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </ScrollViewer>
 
-                <!-- Loading overlay -->
-                <Grid Grid.Row="1" Grid.RowSpan="5" IsVisible="{Binding IsLoading}" Background="#40000000" ZIndex="1">
+                <!-- Loading overlay covers the whole content area -->
+                <Grid IsVisible="{Binding IsLoading}" Background="#40000000">
                     <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ui:FAProgressRing IsActive="{Binding IsLoading}" Width="40" Height="40"
                                            Foreground="{DynamicResource SystemAccentColor}" />
                         <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_PlaytimeStats_Loading}"
-                                   FontSize="12" Opacity="0.7" />
+                                   FontSize="12" Opacity="0.7" HorizontalAlignment="Center" />
                     </StackPanel>
                 </Grid>
             </Grid>

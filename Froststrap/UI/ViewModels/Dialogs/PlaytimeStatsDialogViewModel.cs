@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-using Avalonia.Threading;
+using Avalonia.Data.Converters;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations.AccountManager;
 using Froststrap.Localisation;
@@ -23,10 +23,25 @@ namespace Froststrap.UI.ViewModels.Dialogs;
 internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewModel, IDisposable
 {
     private readonly AccountManager _accountManager;
+    private readonly Dictionary<long, string> _gameNames = new();
     private CancellationTokenSource _loadCts = new();
-    private int _loadSeq;
-    private int _chartSeq;
+    private int _loadSeq;   // full reloads only
+    private int _chartSeq;  // chart rebuilds only. Must stay separate from _loadSeq.
     private bool _disposed;
+
+    /// <summary>Label for enum values in the combo boxes. Replaces EnumNameConverter, which showed "Unknown".</summary>
+    public static readonly IValueConverter EnumLabelConverter = new FuncValueConverter<object?, string>(value => value switch
+    {
+        TimeRange.Last7Days => "Last 7 days",
+        TimeRange.Last30Days => "Last 30 days",
+        TimeRange.Last90Days => "Last 90 days",
+        TimeRange.AllTime => "All time",
+        ChartType.Column => "Column",
+        ChartType.Bar => "Bar",
+        ChartType.Pie => "Pie",
+        ChartType.Histogram => "Session length",
+        _ => value?.ToString() ?? string.Empty
+    });
 
     public PlaytimeStatsDialogViewModel()
     {
@@ -77,18 +92,18 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         {
             if (SetProperty(ref _selectedChartType, value))
             {
-                OnPropertyChanged(nameof(IsPieChart));
-                OnPropertyChanged(nameof(IsNotPieChart));
-                _ = RefreshChartsAsync(CancellationToken.None);
+                OnPropertyChanged(nameof(IsPieSelected));
+                OnPropertyChanged(nameof(IsCartesianSelected));
+                _ = RefreshChartsAsync();
             }
         }
     }
     private ChartType _selectedChartType = ChartType.Column;
 
-    public bool IsPieChart => SelectedChartType == ChartType.Pie;
-    public bool IsNotPieChart => SelectedChartType != ChartType.Pie;
-
     public ObservableCollection<ChartType> ChartTypes { get; }
+
+    public bool IsPieSelected => SelectedChartType == ChartType.Pie;
+    public bool IsCartesianSelected => SelectedChartType != ChartType.Pie;
 
     public bool IsLoading
     {
@@ -104,6 +119,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         {
             if (SetProperty(ref _summary, value))
             {
+                // Derived props must raise too, otherwise the cards, charts and list never appear.
                 OnPropertyChanged(nameof(HasSummary));
                 OnPropertyChanged(nameof(SummaryTotalTime));
                 OnPropertyChanged(nameof(SummaryGamesPlayed));
@@ -119,12 +135,12 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
 
     internal sealed record GameTotalViewItem(
         long UniverseId,
+        string DisplayName,
         long TotalSeconds,
         int SessionCount,
         long LastPlayedAt,
         string FormattedTime,
-        string FormattedLastPlayed,
-        string GameName
+        string FormattedLastPlayed
     );
 
     public string EmptyMessage
@@ -143,20 +159,38 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
     public string SummaryLongestSession => Summary?.LongestSessionSeconds > 0 ? FormatDuration(Summary.LongestSessionSeconds) : "—";
 
     // Chart properties
-    public ISeries[]? MainChartSeries { get; private set; }
-    public Axis[]? MainChartXAxes { get; private set; }
-    public Axis[]? MainChartYAxes { get; private set; }
-    public ISeries[]? TrendChartSeries { get; private set; }
-    public Axis[]? TrendChartXAxes { get; private set; }
-    public Axis[]? TrendChartYAxes { get; private set; }
+    public ISeries[] MainChartSeries { get => _mainChartSeries; private set => SetProperty(ref _mainChartSeries, value); }
+    private ISeries[] _mainChartSeries = [];
+
+    public ISeries[] PieChartSeries { get => _pieChartSeries; private set => SetProperty(ref _pieChartSeries, value); }
+    private ISeries[] _pieChartSeries = [];
+
+    public Axis[] MainChartXAxes { get => _mainChartXAxes; private set => SetProperty(ref _mainChartXAxes, value); }
+    private Axis[] _mainChartXAxes = [new Axis()];
+
+    public Axis[] MainChartYAxes { get => _mainChartYAxes; private set => SetProperty(ref _mainChartYAxes, value); }
+    private Axis[] _mainChartYAxes = [new Axis()];
+
+    public ISeries[] TrendChartSeries { get => _trendChartSeries; private set => SetProperty(ref _trendChartSeries, value); }
+    private ISeries[] _trendChartSeries = [];
+
+    public Axis[] TrendChartXAxes { get => _trendChartXAxes; private set => SetProperty(ref _trendChartXAxes, value); }
+    private Axis[] _trendChartXAxes = [new Axis()];
+
+    public Axis[] TrendChartYAxes { get => _trendChartYAxes; private set => SetProperty(ref _trendChartYAxes, value); }
+    private Axis[] _trendChartYAxes = [new Axis()];
 
     public ICommand RefreshCommand { get; }
 
     public async Task RefreshAsync()
     {
+        // A new refresh always cancels the previous one. No "if (IsLoading) return" guard:
+        // it dropped range changes and, combined with the old seq bug, locked the dialog forever.
         var seq = ++_loadSeq;
-        await _loadCts.CancelAsync();
+        var previous = _loadCts;
         _loadCts = new CancellationTokenSource();
+        var ct = _loadCts.Token;
+        await previous.CancelAsync();
 
         IsLoading = true;
         Summary = null;
@@ -181,42 +215,38 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
             using var stats = new PlaytimeStats();
             var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            var summary = await stats.GetSummaryAsync(account.UserId, SelectedRange, now, TimeZoneInfo.Local, _loadCts.Token);
+            var summary = await stats.GetSummaryAsync(account.UserId, SelectedRange, now, TimeZoneInfo.Local, ct);
             if (seq != _loadSeq) return;
-
-            Summary = summary;
 
             if (summary.SessionCount == 0)
             {
+                // Summary stays null so HasSummary is false and the empty state shows.
                 EmptyMessage = Strings.Menu_Integrations_PlaytimeStats_NoData;
                 return;
             }
 
-            var totals = await stats.GetPerGameTotalsAsync(account.UserId, SelectedRange, now, TimeZoneInfo.Local, _loadCts.Token);
+            var totals = await stats.GetPerGameTotalsAsync(account.UserId, SelectedRange, now, TimeZoneInfo.Local, ct);
             if (seq != _loadSeq) return;
 
-            var gameNames = await GetGameNamesAsync(totals.Select(t => t.UniverseId).ToList());
+            await LoadGameNamesAsync(totals.Select(t => t.UniverseId), ct);
+            if (seq != _loadSeq) return;
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            GameTotals.Clear();
+            foreach (var t in totals)
             {
-                GameTotals.Clear();
-                foreach (var t in totals)
-                {
-                    gameNames.TryGetValue(t.UniverseId, out var name);
-                    GameTotals.Add(new GameTotalViewItem(
-                        t.UniverseId,
-                        t.TotalSeconds,
-                        t.SessionCount,
-                        t.LastPlayedAt,
-                        FormatDuration(t.TotalSeconds),
-                        FormatLastPlayed(t.LastPlayedAt),
-                        name ?? (t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}")
-                    ));
-                }
-            });
+                GameTotals.Add(new GameTotalViewItem(
+                    t.UniverseId,
+                    GameName(t.UniverseId),
+                    t.TotalSeconds,
+                    t.SessionCount,
+                    t.LastPlayedAt,
+                    FormatDuration(t.TotalSeconds),
+                    FormatLastPlayed(t.LastPlayedAt)
+                ));
+            }
 
             Summary = summary;
-            await RefreshChartsAsync(_loadCts.Token);
+            await RefreshChartsAsync(ct);
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -226,70 +256,37 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         }
         finally
         {
+            // Only the newest refresh clears the spinner.
             if (seq == _loadSeq)
-            {
                 IsLoading = false;
-            }
         }
     }
 
-    private static async Task<Dictionary<long, string>> GetGameNamesAsync(List<long> universeIds)
-    {
-        var result = new Dictionary<long, string>();
-        if (universeIds.Count == 0) return result;
-
-        try
-        {
-            using var db = new PlaytimeDb();
-            foreach (var id in universeIds)
-            {
-                if (id == 0) continue; // "Other" aggregate
-                var game = await db.GetGameAsync(id);
-                if (game?.Name != null)
-                    result[id] = game.Name;
-            }
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error(ex, "Failed to load game names");
-        }
-        return result;
-    }
-
-    private async Task RefreshChartsAsync(CancellationToken ct)
+    private async Task RefreshChartsAsync(CancellationToken outer = default)
     {
         var account = SelectedAccount;
         if (account == null || Summary == null) return;
 
-        var seq = ++_chartSeq;
+        var seq = ++_chartSeq; // NOT _loadSeq
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         try
         {
             using var stats = new PlaytimeStats();
 
-            // Build main chart
-            var (mainSeries, mainLabels) = await BuildMainChartSeriesAsync(stats, account.UserId, now, ct);
+            var main = await BuildMainChartAsync(stats, account.UserId, now, outer);
+            var trend = await BuildTrendChartAsync(stats, account.UserId, now, outer);
             if (seq != _chartSeq) return;
 
-            MainChartSeries = mainSeries;
-            MainChartXAxes = BuildMainChartXAxes(mainLabels);
-            MainChartYAxes = BuildMainChartYAxes();
+            // Pie goes to its own control. Cartesian series in a PieChart (and the reverse) draw nothing.
+            MainChartSeries = main.IsPie ? [] : main.Series;
+            PieChartSeries = main.IsPie ? main.Series : [];
+            MainChartXAxes = main.XAxes;
+            MainChartYAxes = main.YAxes;
 
-            // Build trend chart
-            var (trendSeries, trendLabels) = await BuildTrendChartSeriesAsync(stats, account.UserId, now, ct);
-            if (seq != _chartSeq) return;
-
-            TrendChartSeries = trendSeries;
-            TrendChartXAxes = BuildTrendChartXAxes(trendLabels);
-            TrendChartYAxes = BuildTrendChartYAxes();
-
-            OnPropertyChanged(nameof(MainChartSeries));
-            OnPropertyChanged(nameof(MainChartXAxes));
-            OnPropertyChanged(nameof(MainChartYAxes));
-            OnPropertyChanged(nameof(TrendChartSeries));
-            OnPropertyChanged(nameof(TrendChartXAxes));
-            OnPropertyChanged(nameof(TrendChartYAxes));
+            TrendChartSeries = trend.Series;
+            TrendChartXAxes = trend.XAxes;
+            TrendChartYAxes = trend.YAxes;
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -298,203 +295,209 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         }
     }
 
-    private async Task<(ISeries[] Series, string[] Labels)> BuildMainChartSeriesAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
+    private sealed record ChartBundle(ISeries[] Series, Axis[] XAxes, Axis[] YAxes, bool IsPie = false);
+
+    private async Task<ChartBundle> BuildMainChartAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
     {
+        if (SelectedChartType == ChartType.Histogram)
+        {
+            var bins = await stats.GetSessionLengthHistogramAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct);
+            var binLabels = bins.Select(b => b.Label).ToArray();
+
+            return new ChartBundle(
+                [
+                    new ColumnSeries<double>
+                    {
+                        Values = bins.Select(b => (double)b.Count).ToArray(),
+                        Name = Strings.Menu_Integrations_PlaytimeStats_Sessions,
+                        Fill = new SolidColorPaint(GetAccentColor()),
+                        Stroke = null
+                    }
+                ],
+                [CategoryAxis(binLabels)],
+                [CountAxis()]);
+        }
+
         var totals = await stats.GetPerGameTotalsAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct);
-        var top8 = PlaytimeStats.TopNWithOther(totals, 8);
+        var top = PlaytimeStats.TopNWithOther(totals, 8);
+        var names = top.Select(t => GameName(t.UniverseId)).ToArray();
+        var hours = top.Select(t => t.TotalSeconds / 3600.0).ToArray();
 
-        var gameNames = await GetGameNamesAsync(top8.Select(t => t.UniverseId).ToList());
-        var labels = top8.Select(t => t.UniverseId == 0
-            ? Strings.Menu_Integrations_PlaytimeStats_Other
-            : (gameNames.TryGetValue(t.UniverseId, out var n) ? n : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}"))
-            .ToArray();
-
-        var series = SelectedChartType switch
+        switch (SelectedChartType)
         {
-            ChartType.Column => BuildColumnSeries(top8, labels),
-            ChartType.Bar => BuildBarSeries(top8, labels),
-            ChartType.Pie => BuildPieSeries(top8, labels),
-            ChartType.Histogram => BuildHistogramSeries(await stats.GetSessionLengthHistogramAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct)),
-            _ => BuildColumnSeries(top8, labels)
-        };
+            case ChartType.Pie:
+                var palette = GetPiePalette();
+                var slices = top
+                    .Select((t, i) => BuildPieSlice(names[i], t.TotalSeconds, palette[i % palette.Length]))
+                    .ToArray();
+                return new ChartBundle(slices, [new Axis()], [new Axis()], IsPie: true);
 
-        return (series, labels);
+            case ChartType.Bar:
+                // Horizontal bars: categories on Y, hours on X.
+                return new ChartBundle(
+                    [
+                        new RowSeries<double>
+                        {
+                            Values = hours,
+                            Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
+                            Fill = new SolidColorPaint(GetAccentColor()),
+                            Stroke = null,
+                            // Row series: category axis is Y, so set both labels explicitly.
+                            YToolTipLabelFormatter = p => FormatDuration((long)(p.Coordinate.PrimaryValue * 3600)),
+                            XToolTipLabelFormatter = p => names[p.Index]
+                        }
+                    ],
+                    [HoursAxis()],
+                    [CategoryAxis(names)]);
+
+            default: // Column
+                return new ChartBundle(
+                    [
+                        new ColumnSeries<double>
+                        {
+                            Values = hours,
+                            Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
+                            Fill = new SolidColorPaint(GetAccentColor()),
+                            Stroke = null,
+                            // Game name comes from the X axis labels automatically.
+                            YToolTipLabelFormatter = p => FormatDuration((long)(p.Coordinate.PrimaryValue * 3600))
+                        }
+                    ],
+                    [CategoryAxis(names)],
+                    [HoursAxis()]);
+        }
     }
 
-    private static ISeries[] BuildColumnSeries(List<GameTotalResult> totals, string[] labels)
+    private static PieSeries<double> BuildPieSlice(string name, long seconds, SKColor color)
     {
-        var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
-
-        return new ISeries[]
+        // One series per slice: gives each its own color and legend entry.
+        return new PieSeries<double>
         {
-            new ColumnSeries<double>
-            {
-                Values = values,
-                Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
-                Fill = new SolidColorPaint(GetAccentColor()),
-                Stroke = null
-            }
-        };
-    }
-
-    private static ISeries[] BuildBarSeries(List<GameTotalResult> totals, string[] labels)
-    {
-        var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
-
-        return new ISeries[]
-        {
-            new RowSeries<double>
-            {
-                Values = values,
-                Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
-                Fill = new SolidColorPaint(GetAccentColor()),
-                Stroke = null
-            }
-        };
-    }
-
-    private static ISeries[] BuildPieSeries(List<GameTotalResult> totals, string[] labels)
-    {
-        var values = totals.Select(t => (double)t.TotalSeconds).ToArray();
-
-        var pieSeries = new PieSeries<double>
-        {
-            Values = values,
+            Values = new[] { (double)seconds },
+            Name = name,
+            Fill = new SolidColorPaint(color),
             InnerRadius = 50,
             DataLabelsSize = 12,
             DataLabelsPaint = new SolidColorPaint(SKColors.White),
-            DataLabelsFormatter = point => labels[point.Index],
-            ToolTipLabelFormatter = point => $"{labels[point.Index]}: {FormatDuration((long)point.Coordinate.PrimaryValue)}"
-        };
-
-        return new ISeries[] { pieSeries };
-    }
-
-    private static ISeries[] BuildHistogramSeries(List<HistogramBinResult> bins)
-    {
-        var values = bins.Select(b => (double)b.Count).ToArray();
-        var labels = bins.Select(b => b.Label).ToArray();
-
-        return new ISeries[]
-        {
-            new ColumnSeries<double>
-            {
-                Values = values,
-                Name = Strings.Menu_Integrations_PlaytimeStats_Sessions,
-                Fill = new SolidColorPaint(GetAccentColor()),
-                Stroke = null
-            }
+            DataLabelsFormatter = point => FormatDuration((long)point.Coordinate.PrimaryValue),
+            ToolTipLabelFormatter = point => $"{name}: {FormatDuration((long)point.Coordinate.PrimaryValue)}"
         };
     }
 
-    private static Axis[] BuildMainChartXAxes(string[] labels)
-    {
-        return new Axis[]
-        {
-            new Axis
-            {
-                Labels = labels,
-                LabelsRotation = 0,
-                SeparatorsPaint = new SolidColorPaint(SKColors.Transparent),
-                TicksPaint = new SolidColorPaint(SKColors.Gray),
-                TextSize = 11
-            }
-        };
-    }
-
-    private static Axis[] BuildMainChartYAxes()
-    {
-        return new Axis[]
-        {
-            new Axis
-            {
-                Labeler = value => $"{value}h",
-                SeparatorsPaint = new SolidColorPaint(SKColors.Gray.WithAlpha(50)),
-                TicksPaint = new SolidColorPaint(SKColors.Gray),
-                TextSize = 11,
-                MinLimit = 0
-            }
-        };
-    }
-
-    private async Task<(ISeries[] Series, string[] Labels)> BuildTrendChartSeriesAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
+    private async Task<ChartBundle> BuildTrendChartAsync(PlaytimeStats stats, long userId, long now, CancellationToken ct)
     {
         var buckets = await stats.GetTrendAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct);
 
-        var labels = buckets.Select(b => TimeZoneInfo.ConvertTimeFromUtc(new DateTimeOffset(b.BucketStartUtc).DateTime, TimeZoneInfo.Local).ToString(
-            SelectedRange == TimeRange.Last90Days || SelectedRange == TimeRange.AllTime
-                ? "MMM d"
-                : "MMM d", CultureInfo.InvariantCulture)).ToArray();
+        var labels = buckets
+            .Select(b => TimeZoneInfo.ConvertTimeFromUtc(
+                    DateTime.SpecifyKind(b.BucketStartUtc, DateTimeKind.Utc), TimeZoneInfo.Local)
+                .ToString("MMM d", CultureInfo.CurrentCulture))
+            .ToArray();
+        var hours = buckets.Select(b => b.Seconds / 3600.0).ToArray();
 
-        var series = new ISeries[]
+        return new ChartBundle(
+            [
+                new LineSeries<double>
+                {
+                    Values = hours,
+                    Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
+                    Fill = null,
+                    Stroke = new SolidColorPaint(GetAccentColor(), 3),
+                    GeometrySize = 6,
+                    GeometryFill = new SolidColorPaint(GetAccentColor()),
+                    GeometryStroke = new SolidColorPaint(SKColors.White, 2),
+                    LineSmoothness = 0.3,
+                    // Date comes from the X axis labels automatically.
+                    YToolTipLabelFormatter = p => FormatDuration((long)(p.Coordinate.PrimaryValue * 3600))
+                }
+            ],
+            [
+                new Axis
+                {
+                    Labels = labels,
+                    LabelsRotation = -45,
+                    SeparatorsPaint = new SolidColorPaint(SKColors.Transparent),
+                    TicksPaint = new SolidColorPaint(SKColors.Gray),
+                    TextSize = 10
+                }
+            ],
+            [HoursAxis()]);
+    }
+
+    private static Axis CategoryAxis(string[] labels) => new()
+    {
+        Labels = labels,
+        LabelsRotation = 0,
+        SeparatorsPaint = new SolidColorPaint(SKColors.Transparent),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        TextSize = 11
+    };
+
+    private static Axis HoursAxis() => new()
+    {
+        Labeler = value => $"{value:0.##}h",
+        SeparatorsPaint = new SolidColorPaint(SKColors.Gray.WithAlpha(50)),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        TextSize = 11,
+        MinLimit = 0
+    };
+
+    private static Axis CountAxis() => new()
+    {
+        Labeler = value => $"{value:0}",
+        MinStep = 1,
+        SeparatorsPaint = new SolidColorPaint(SKColors.Gray.WithAlpha(50)),
+        TicksPaint = new SolidColorPaint(SKColors.Gray),
+        TextSize = 11,
+        MinLimit = 0
+    };
+
+    private static SKColor GetAccentColor() => new(0x00, 0x78, 0xD4);
+
+    private static SKColor[] GetPiePalette() =>
+    [
+        new SKColor(0x00, 0x78, 0xD4),
+        new SKColor(0x10, 0x7C, 0x10),
+        new SKColor(0xD8, 0x3B, 0x01),
+        new SKColor(0xFF, 0xB9, 0x00),
+        new SKColor(0x5C, 0x2D, 0x91),
+        new SKColor(0x00, 0x82, 0x72),
+        new SKColor(0xD8, 0x3B, 0x7E),
+        new SKColor(0x6B, 0x69, 0xD6),
+        new SKColor(0x8E, 0x8E, 0x8E)
+    ];
+
+    private async Task LoadGameNamesAsync(IEnumerable<long> universeIds, CancellationToken ct)
+    {
+        try
         {
-            new LineSeries<double>
+            using var db = new PlaytimeDb();
+            foreach (var id in universeIds)
             {
-                Values = buckets.Select(b => (double)b.Seconds / 3600.0).ToArray(),
-                Name = Strings.Menu_Integrations_PlaytimeStats_Hours,
-                Fill = null,
-                Stroke = new SolidColorPaint(GetAccentColor(), 3),
-                GeometrySize = 6,
-                GeometryFill = new SolidColorPaint(GetAccentColor()),
-                GeometryStroke = new SolidColorPaint(SKColors.White, 2),
-                LineSmoothness = 0.3
+                ct.ThrowIfCancellationRequested();
+                if (id <= 0 || _gameNames.ContainsKey(id)) continue;
+
+                var game = await db.GetGameAsync(id, ct);
+                if (!string.IsNullOrWhiteSpace(game?.Name))
+                    _gameNames[id] = game.Name!;
             }
-        };
-
-        return (series, labels);
-    }
-
-    private static Axis[] BuildTrendChartXAxes(string[]? labels = null)
-    {
-        return new Axis[]
+        }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception ex)
         {
-            new Axis
-            {
-                LabelsRotation = -45,
-                SeparatorsPaint = new SolidColorPaint(SKColors.Transparent),
-                TicksPaint = new SolidColorPaint(SKColors.Gray),
-                TextSize = 10,
-                Labels = labels ?? Array.Empty<string>()
-            }
-        };
+            // Names are cosmetic. Fall back to "Universe {id}".
+            App.Logger.Error(ex, "Failed to load playtime game names");
+        }
     }
 
-    private static Axis[] BuildTrendChartYAxes()
+    private string GameName(long universeId)
     {
-        return new Axis[]
-        {
-            new Axis
-            {
-                Labeler = value => $"{value}h",
-                SeparatorsPaint = new SolidColorPaint(SKColors.Gray.WithAlpha(50)),
-                TicksPaint = new SolidColorPaint(SKColors.Gray),
-                TextSize = 11,
-                MinLimit = 0
-            }
-        };
-    }
+        if (universeId == 0)
+            return Strings.Menu_Integrations_PlaytimeStats_Other;
 
-    private static SKColor GetAccentColor()
-    {
-        return new SKColor(0x00, 0x78, 0xD4);
-    }
-
-    private static SolidColorPaint[] GetPieColors(int count)
-    {
-        var palette = new[]
-        {
-            new SKColor(0x00, 0x78, 0xD4),
-            new SKColor(0x10, 0x7C, 0x10),
-            new SKColor(0xD8, 0x3B, 0x01),
-            new SKColor(0xFF, 0xB9, 0x00),
-            new SKColor(0x5C, 0x2D, 0x91),
-            new SKColor(0x00, 0x82, 0x72),
-            new SKColor(0xD8, 0x3B, 0x7E),
-            new SKColor(0x6B, 0x69, 0xD6),
-            new SKColor(0x8E, 0x8E, 0x8E)
-        };
-
-        return palette.Take(count).Select(c => new SolidColorPaint(c)).ToArray();
+        return _gameNames.TryGetValue(universeId, out var name)
+            ? name
+            : string.Format(CultureInfo.CurrentCulture, Strings.Menu_Integrations_PlaytimeStats_UniverseFormat, universeId);
     }
 
     private void OnActiveAccountChanged(AccountManagerAccount? account)
