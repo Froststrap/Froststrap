@@ -13,6 +13,8 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 
 using TimeRange = Froststrap.Services.TimeRange;
@@ -20,7 +22,7 @@ using ChartType = Froststrap.Services.ChartType;
 
 namespace Froststrap.UI.ViewModels.Dialogs;
 
-internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewModel, IDisposable
+internal sealed partial class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewModel, IDisposable
 {
     private readonly AccountManager _accountManager;
     private readonly Dictionary<long, string> _gameNames = new();
@@ -320,7 +322,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
 
         var totals = await stats.GetPerGameTotalsAsync(userId, SelectedRange, now, TimeZoneInfo.Local, ct);
         var top = PlaytimeStats.TopNWithOther(totals, 8);
-        var names = top.Select(t => GameName(t.UniverseId)).ToArray();
+        var names = top.Select(t => ChartName(t.UniverseId)).ToArray();
         var hours = top.Select(t => t.TotalSeconds / 3600.0).ToArray();
 
         switch (SelectedChartType)
@@ -499,6 +501,47 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
             ? name
             : string.Format(CultureInfo.CurrentCulture, Strings.Menu_Integrations_PlaytimeStats_UniverseFormat, universeId);
     }
+
+    private static readonly SKTypeface ChartTypeface = SKTypeface.Default;
+
+    /// <summary>
+    /// Name for chart labels/tooltips. Skia charts have no per-glyph font fallback: one unsupported
+    /// symbol (Roblox names love them) turns the whole label into boxes. Strip what the font can't draw.
+    /// The game list keeps the full name, since Avalonia does its own fallback.
+    /// </summary>
+    private string ChartName(long universeId)
+    {
+        if (universeId == 0)
+            return Strings.Menu_Integrations_PlaytimeStats_Other;
+
+        if (_gameNames.TryGetValue(universeId, out var name))
+        {
+            var safe = ChartSafe(name);
+            if (safe.Length > 0)
+                return safe;
+        }
+
+        return string.Format(CultureInfo.CurrentCulture, Strings.Menu_Integrations_PlaytimeStats_UniverseFormat, universeId);
+    }
+
+    private static string ChartSafe(string text)
+    {
+        var sb = new StringBuilder(text.Length);
+        foreach (var rune in text.Replace('\r', ' ').Replace('\n', ' ').EnumerateRunes())
+        {
+            if (ChartTypeface.ContainsGlyph(rune.Value))
+                sb.Append(rune.ToString());
+        }
+
+        var result = EmptyBracketsRegex().Replace(sb.ToString(), ""); // brackets left empty
+        return WhitespaceRegex().Replace(result, " ").Trim();
+    }
+
+    [GeneratedRegex(@"[\[\(\{]\s*[\]\)\}]")]
+    private static partial Regex EmptyBracketsRegex();
+
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex WhitespaceRegex();
 
     private void OnActiveAccountChanged(AccountManagerAccount? account)
     {
