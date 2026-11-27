@@ -17,39 +17,31 @@ namespace Froststrap
             "roblox-studio-auth"
         ];
 
-        static readonly IHandler? Handler =
-            OperatingSystem.IsWindows() ? new WindowsHandler() :
-            OperatingSystem.IsLinux() ? new LinuxHandler() :
-            null; // macOS registers through other methods.
+        // Only Windows registers at runtime; non-Windows registers via hints during install.
+        public static void RegisterProtocolHandlers() => Safely(WindowsHandler.Register);
 
-        public static void RegisterProtocolHandlers() => Safely(() => Handler?.Register());
-
-        public static void UnregisterProtocolHandlers() => Safely(() => Handler?.Unregister());
+        public static void UnregisterProtocolHandlers() => Safely(WindowsHandler.Unregister);
 
         public static void EnsureRegistered() => Safely(() =>
         {
-            if (Handler is not null && !Handler.IsRegistered())
-                Handler.Register();
+            if (!WindowsHandler.IsRegistered())
+                WindowsHandler.Register();
         });
 
         // Velopack doesn't like exceptions in install/uninstall phase- so handle it properly
         static void Safely(Action action)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             try { action(); }
             catch (Exception ex) { App.Logger.Error(ex, "UriHandler failed"); }
         }
 
-        interface IHandler
-        {
-            void Register();
-            void Unregister();
-            bool IsRegistered();
-        }
-
         [SupportedOSPlatform("windows")]
-        sealed class WindowsHandler : IHandler
+        static class WindowsHandler
         {
-            public void Register()
+            public static void Register()
             {
                 string exe = Environment.ProcessPath!;
                 foreach (string scheme in Schemes)
@@ -62,66 +54,16 @@ namespace Froststrap
                 }
             }
 
-            public void Unregister()
+            public static void Unregister()
             {
                 foreach (string scheme in Schemes)
                     Registry.CurrentUser.DeleteSubKeyTree($@"Software\Classes\{scheme}", throwOnMissingSubKey: false);
             }
 
-            public bool IsRegistered()
+            public static bool IsRegistered()
             {
                 using var key = Registry.CurrentUser.OpenSubKey(@"Software\Classes\roblox-player\shell\open\command");
                 return key?.GetValue("") as string == $"\"{Environment.ProcessPath}\" \"%1\"";
-            }
-        }
-
-        [SupportedOSPlatform("linux")]
-        sealed class LinuxHandler : IHandler
-        {
-            static string DesktopFile => Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "applications", "froststrap.desktop");
-
-            // Inside an AppImage, ProcessPath is a temporary mount, APPIMAGE is the real file.
-            static string ExePath => Environment.GetEnvironmentVariable("APPIMAGE") ?? Environment.ProcessPath!;
-
-            public void Register()
-            {
-                string mime = string.Concat(Schemes.Select(s => $"x-scheme-handler/{s};"));
-
-                Directory.CreateDirectory(Path.GetDirectoryName(DesktopFile)!);
-                File.WriteAllText(DesktopFile,
-                    $"[Desktop Entry]\nType=Application\nName=Froststrap\nExec=\"{ExePath}\" %u\nTerminal=false\nNoDisplay=true\nMimeType={mime}\n");
-
-                foreach (string scheme in Schemes)
-                    Run("xdg-mime", $"default froststrap.desktop x-scheme-handler/{scheme}");
-                Run("update-desktop-database", $"\"{Path.GetDirectoryName(DesktopFile)}\"");
-            }
-
-            public void Unregister()
-            {
-                if (File.Exists(DesktopFile)) File.Delete(DesktopFile);
-            }
-
-            public bool IsRegistered()
-            {
-                if (!File.Exists(DesktopFile)) return false;
-                if (!File.ReadAllText(DesktopFile).Contains($"Exec=\"{ExePath}\"", StringComparison.Ordinal)) return false;
-
-                using var query = Process.Start(new ProcessStartInfo("xdg-mime", "query default x-scheme-handler/roblox-player")
-                {
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true
-                });
-                string current = query?.StandardOutput.ReadToEnd().Trim() ?? "";
-                query?.WaitForExit(5000);
-                return current == "froststrap.desktop";
-            }
-
-            static void Run(string file, string args)
-            {
-                try { Process.Start(new ProcessStartInfo(file, args) { UseShellExecute = false })?.WaitForExit(5000); }
-                catch { /* tool may be missing, not fatal */ }
             }
         }
     }

@@ -6,7 +6,6 @@
 
 use crate::{
     arch,
-    args::{self, Configuration},
     bundle::macos::AppBuilder,
     path,
     utils::{log, process},
@@ -15,10 +14,7 @@ use pissing::prelude::*;
 use std::{fs, path::PathBuf};
 
 fn find_dylib(file_name: &str) -> PathBuf {
-    let profile = match args::get().configuration {
-        Configuration::Release => "release",
-        Configuration::Debug => "debug",
-    };
+    let profile = "release";
     let triple = arch::rust_triple();
     let p = path::git_root()
         .join("backend/target")
@@ -140,6 +136,15 @@ fn thin_bin(path: PathBuf) -> PathBuf {
     path.into()
 }
 
+fn strip_bin(path: PathBuf) -> PathBuf {
+    let p = path.to_str().unwrap();
+
+    log::info!("Stripping local symbols from {}", p);
+    process("strip", ["-x", p]).exec_checked("strip");
+    process("codesign", ["--force", "--sign", "-", p]).exec_checked("codesign");
+    path
+}
+
 pub fn main() -> (PathBuf, PathBuf) {
     let version = super::version();
 
@@ -176,7 +181,7 @@ pub fn main() -> (PathBuf, PathBuf) {
         "libSkiaSharp.dylib",
         "libHarfBuzzSharp.dylib",
     ] {
-        let dylib = thin_bin(publish_dir.join(lib));
+        let dylib = strip_bin(thin_bin(publish_dir.join(lib)));
         builder = builder.framework(dylib);
     }
 

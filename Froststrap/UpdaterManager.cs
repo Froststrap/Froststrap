@@ -2,10 +2,11 @@
 //
 // SPDX-License-Identifier: MPL-2.0
 
-// How to test the updater in a dev environment without it reaching out to GitHub.
+// Testing the updater without it reaching out to GitHub.
 //
-// The updater only works in a Velopack-installed build (UpdateManager.IsInstalled),
-// so `dotnet run` can't actually utilise it. To test:
+// The updater only works with a Velopack-managed build- checked with `UpdateManager.IsInstalled`,
+// this means `dotnet run` can't actually utilise it.
+// To test:
 //   1. Install the Velopack CLI via: dotnet tool install -g vpk
 //   2. dotnet publish an older version with -p:AppVersion=<old> into publish/<old>
 //   3. vpk pack it into Releases/old (--outputDir Releases/old). This is the build
@@ -56,8 +57,7 @@ internal sealed class UpdaterManager(bool includePrerelease = false)
 
     public UpdateInfo? LastUpdate { get; private set; }
 
-    public async Task<UpdateInfo?> CheckForUpdatesAsync(
-        CancellationToken cancellationToken = default)
+    public async Task<UpdateInfo?> CheckForUpdatesAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -71,17 +71,12 @@ internal sealed class UpdaterManager(bool includePrerelease = false)
     public async Task DownloadUpdatesAsync(
         UpdateInfo update,
         Action<int>? progress = null,
-        CancellationToken cancellationToken = default)
-    {
-        await manager.DownloadUpdatesAsync(
-            update,
-            progress,
-            cancellationToken
-        );
-    }
+        CancellationToken cancellationToken = default
+    ) => await manager.DownloadUpdatesAsync(
+        update,
+        progress,
+        cancellationToken
+    );
 
-    public void ApplyUpdatesAndRestart(UpdateInfo update)
-    {
-        manager.ApplyUpdatesAndRestart(update);
-    }
+    public void ApplyUpdatesAndRestart(UpdateInfo update) => manager.ApplyUpdatesAndRestart(update);
 }

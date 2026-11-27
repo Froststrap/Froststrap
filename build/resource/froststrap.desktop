@@ -1,0 +1,9 @@
+[Desktop Entry]
+Categories=Game;Utility;
+Comment=A cross-platform Roblox bootstrapper, focused on performance and customization.
+Exec=froststrap %u
+Icon=froststrap
+MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;x-scheme-handler/roblox-studio;x-scheme-handler/roblox-studio-auth;
+Name=Froststrap
+Type=Application
+Version={}

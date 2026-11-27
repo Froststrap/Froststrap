@@ -40,6 +40,7 @@ internal sealed class MainWindowViewModel : ObservableObject
     public int IconButtonIconSize { get => _iconButtonIconSize; }
     private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 13;
     public int TitlebarTextSize { get => _titlebarTextSize; }
+    public int BreadcrumbChevronSize => (int)Math.Round(_titlebarTextSize * 0.625);
 
     private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
     {

@@ -12,7 +12,6 @@ namespace Froststrap
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public LaunchFlag SettingsFlag { get; } = new();
-        public LaunchFlag BackgroundUpdaterFlag { get; } = new();
         public LaunchFlag NoLaunchFlag { get; } = new();
         public LaunchFlag TestModeFlag { get; } = new();
         public LaunchFlag UpgradeFlag { get; } = new();
@@ -28,7 +27,7 @@ namespace Froststrap
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => BackgroundUpdaterFlag.Active;
+        public static bool BypassUpdateCheck => BackgroundUpdate.IsCurrentProcess;
 #endif
 
         public bool Silent { get; set; }
@@ -62,7 +61,6 @@ namespace Froststrap
             Args = args;
 
             SettingsFlag.Active = cli.Settings;
-            BackgroundUpdaterFlag.Active = cli.BackgroundUpdater;
             NoLaunchFlag.Active = cli.NoLaunch;
             TestModeFlag.Active = cli.TestMode;
             UpgradeFlag.Active = cli.Upgrade;

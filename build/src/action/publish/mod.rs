@@ -5,7 +5,7 @@
 //! publish module
 
 use std::{fs, env, sync::OnceLock};
-use crate::integrate::{git::git, velopack};
+use crate::integrate::velopack;
 use crate::{arch, args, path, utils::{log, process}};
 
 #[cfg(target_os = "linux")]
@@ -27,39 +27,32 @@ fn delete_pdbs(dir: &std::path::Path) -> std::io::Result<()> {
     Ok(())
 }
 
-fn env_nonempty(key: &str) -> Option<String> {
-    env::var(key).ok().filter(|s| !s.trim().is_empty())
-}
-
 fn version() -> String {
     static VERSION: OnceLock<String> = OnceLock::new();
     VERSION.get_or_init(version_for_run).clone()
 }
 
 fn version_for_run() -> String {
-    const DEFAULT: &str = "v0.0.2";
+    let csproj = path::git_root().join("Froststrap/Froststrap.csproj");
+    let contents = fs::read_to_string(&csproj).expect("failed to read Froststrap.csproj");
 
-    let tag = if let Some(v) = env_nonempty("FROSTSTRAP_VERSION") {
-        v
-    } else if env::var("GITHUB_REF_TYPE").as_deref() == Ok("tag") {
-        env_nonempty("GITHUB_REF_NAME").unwrap_or_default()
-    } else {
-        let mut tag = git(&["describe", "--tags", "--abbrev=0"])
-            .unwrap_or_else(|| DEFAULT.to_string());
+    let version = contents
+        .lines()
+        .find_map(|line| {
+            let line = line.trim();
+            line.starts_with("<AppVersion")
+                .then(|| line.split_once('>')?.1.split_once("</AppVersion>").map(|(v, _)| v.trim().to_string()))
+                .flatten()
+        })
+        .filter(|v| !v.is_empty())
+        .expect("Froststrap.csproj has no <AppVersion>");
 
-        if let Some(run) = env_nonempty("GITHUB_RUN_NUMBER") {
-            let base = tag.split('-').next().unwrap_or(&tag);
-            tag = format!("{base}-ci.{run}");
+    match env::var("GITHUB_RUN_NUMBER") {
+        Ok(run) if !run.is_empty() && env::var("GITHUB_REF_TYPE").as_deref() != Ok("tag") => {
+            format!("{version}-ci.{run}")
         }
-        tag
-    };
-
-    let tag = if tag.trim().is_empty() {
-        DEFAULT
-    } else {
-        tag.trim()
-    };
-    tag.strip_prefix('v').unwrap_or(tag).to_string()
+        _ => version,
+    }
 }
 
 pub fn main() {

@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Froststrap;
 
+namespace Froststrap.Startup;
+
 internal static class AppInitializer
 {
     [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]

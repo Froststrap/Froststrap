@@ -6,7 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <Project>
   <PropertyGroup>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnforceCodeStyleInBuild Condition="'$(Configuration)' == 'Debug'">true</EnforceCodeStyleInBuild>
+    <RunAnalyzers Condition="'$(Configuration)' != 'Debug'">false</RunAnalyzers>
     <AnalysisLevel>latest-all</AnalysisLevel>
     <NoWarn>$(NoWarn);CA1812;CA1863;CA2007;CA1031;CA1416;CS7035</NoWarn>
   </PropertyGroup>

@@ -293,7 +293,7 @@ internal sealed class Watcher : IDisposable
 
         _fallbackPid = 0;
 
-        var processes = Utility.Processes.GetProcessesSafe();
+        var processes = Utility.Processes.GetProcessList();
 
         try
         {

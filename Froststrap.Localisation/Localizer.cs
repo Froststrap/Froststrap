@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using System.Globalization;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text.Json;
 
@@ -13,7 +14,7 @@ namespace Froststrap.Localisation
         public const string SourceLocale = "en-US";
 
         private const string ResourcePrefix = "Froststrap.Localisation.Translations.";
-        private const string ResourceSuffix = ".json";
+        private const string ResourceSuffix = ".json.deflate";
 
         private static readonly Assembly ResourceAssembly = typeof(Localizer).Assembly;
 
@@ -105,7 +106,8 @@ namespace Froststrap.Localisation
             if (stream is null)
                 return null;
 
-            using var document = JsonDocument.Parse(stream);
+            using var inflated = new DeflateStream(stream, CompressionMode.Decompress);
+            using var document = JsonDocument.Parse(inflated);
             return ToDictionary(document);
         }
 

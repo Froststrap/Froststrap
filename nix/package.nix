@@ -6,7 +6,6 @@
   buildDotnetModule,
   makeRustPlatform,
   rustPlatform,
-  makeDesktopItem,
   pkg-config,
   fontconfig,
   freetype,
@@ -33,6 +32,8 @@
   krb5,
   dbus,
   openssl,
+  apple-sdk,
+  darwin,
   lib,
 }:
 {
@@ -58,7 +59,12 @@ let
     cargoHash = "sha256-WTz+k1t9M/sVZrPFResdpWo9DeheRFZ5u9xSNuJjWrY=";
     doCheck = false;
   };
-  version = "2.0.9-beta.1";
+  version = lib.pipe (builtins.readFile ../Froststrap/Froststrap.csproj) [
+    (lib.splitString "\n")
+    (map (builtins.match "[[:space:]]*<AppVersion[^>]*>([^<]+)</AppVersion>.*"))
+    (lib.findFirst (m: m != null) (throw "Froststrap.csproj has no <AppVersion>"))
+    builtins.head
+  ];
 
   runtimeDeps = lib.optionals stdenv.hostPlatform.isLinux [
     expat
@@ -85,23 +91,6 @@ let
     xcbutil
     glib
   ];
-
-  desktopItem = makeDesktopItem {
-    name = "froststrap-launcher"; # needed because for some reason on startup froststrap sets NoDisplay=true into ~/.local/share/applications/froststrap.desktop which takes priority
-    desktopName = "Froststrap";
-    comment = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
-    exec = "froststrap %u";
-    icon = "froststrap";
-    terminal = false;
-    startupNotify = true;
-    categories = [ "Game" ];
-    mimeTypes = [
-      "x-scheme-handler/roblox"
-      "x-scheme-handler/roblox-player"
-      "x-scheme-handler/roblox-studio"
-      "x-scheme-handler/roblox-studio-auth"
-    ];
-  };
 in
 buildDotnetModule {
   inherit
@@ -118,7 +107,9 @@ buildDotnetModule {
   dotnetInstallPath = "$out/lib/froststrap";
   cargoRoot = "backend";
   selfContainedBuild = true;
-  
+
+  executables = if stdenv.hostPlatform.isDarwin then [ ] else null;
+
   makeWrapperArgs = [
     "--prefix"
     "LD_LIBRARY_PATH"
@@ -128,43 +119,56 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-30TGDP5xGnqfws4nHk7bRLTj8ugkCoLrfHLtVEu0fk8=";
+    hash = "sha256-/pyk7zjH7vZ+M3Zh/iaUW2jaewZp0yURE6ePsoK/fY8=";
   };
 
   nativeBuildInputs = [
     rustPlatform.cargoSetupHook
     toolchain
     xtask
+    clang
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [
     pkg-config
-    clang
   ];
 
-  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
-    dbus
-    fontconfig
-    zlib
-    krb5
-  ];
+  buildInputs =
+    lib.optionals stdenv.hostPlatform.isLinux [
+      dbus
+      fontconfig
+      zlib
+      krb5
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      apple-sdk
+      darwin.ICU
+    ];
 
   buildPhase = ''
     runHook preBuild
-    export FROSTSTRAP_VERSION=${version}
     export CARGO_NET_OFFLINE=true
-    xtask publish --no-installers --output "$PWD/build/publish"
+    xtask publish --no-installers --output "$PWD/build"
     runHook postBuild
   '';
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/lib/froststrap $out/bin
-    cp -r build/publish/publish/. $out/lib/froststrap/
-    install -Dm644 ${desktopItem}/share/applications/froststrap-launcher.desktop $out/share/applications/froststrap-launcher.desktop
-    install -Dm644 ${src}/build/icon512.png $out/share/icons/hicolor/512x512/apps/froststrap.png
-    sed -i -E '/^Categories=/ s/([^;])$/\1;/' $out/share/applications/froststrap-launcher.desktop
-    runHook postInstall
-  '';
+  installPhase =
+    if stdenv.hostPlatform.isDarwin then
+      ''
+        runHook preInstall
+        mkdir -p $out/Applications $out/bin
+        cp -R build/dist/Froststrap.app $out/Applications/
+        makeWrapper $out/Applications/Froststrap.app/Contents/MacOS/froststrap $out/bin/froststrap
+        runHook postInstall
+      ''
+    else
+      ''
+        runHook preInstall
+        mkdir -p $out/lib/froststrap $out/bin
+        cp -r build/publish/. $out/lib/froststrap/
+        install -Dm644 build/dist/froststrap.desktop $out/share/applications/froststrap.desktop
+        install -Dm644 ${src}/build/icon512.png $out/share/icons/hicolor/512x512/apps/froststrap.png
+        runHook postInstall
+      '';
 
   meta = {
     description = "A cross-platform Roblox bootstrapper, focused on performance and customization.";
@@ -173,7 +177,6 @@ buildDotnetModule {
     mainProgram = "froststrap";
     platforms = [
       "x86_64-linux"
-      "x86_64-darwin"
       "aarch64-darwin"
     ];
   };

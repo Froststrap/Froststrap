@@ -54,9 +54,9 @@ internal static class VersionsCleaner
             }
         }
 
-        if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
+        if (BackgroundUpdate.IsRunning)
         {
-            App.Logger.Info("Background updater tried to cleanup, stopping!");
+            App.Logger.Info("A background update is in progress, skipping cleanup");
             return;
         }
 

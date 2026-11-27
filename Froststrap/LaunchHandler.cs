@@ -49,6 +49,13 @@ internal static class LaunchHandler
 
     public static async Task ProcessLaunchArgs()
     {
+        if (BackgroundUpdate.IsCurrentProcess)
+        {
+            App.Logger.Info("Running background update");
+            await BackgroundUpdate.RunAsync();
+            return;
+        }
+
         if (App.State.Prop.IsFirstLaunch)
         {
             App.Logger.Info("First launch detected, launching onboarding");
@@ -60,11 +67,6 @@ internal static class LaunchHandler
         {
             App.Logger.Info("Opening settings");
             LaunchSettings(quitIfAlreadyRunning: true);
-        }
-        else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-        {
-            App.Logger.Info("Opening background updater");
-            await LaunchBackgroundUpdater();
         }
         else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
         {
@@ -469,49 +471,6 @@ internal static class LaunchHandler
         }
 
         App.Terminate();
-    }
-
-    public static async Task LaunchBackgroundUpdater()
-    {
-        App.LaunchSettings.NoLaunchFlag.Active = true;
-        App.LaunchSettings.Silent = true;
-
-        App.Logger.Info("Initializing bootstrapper");
-        App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
-        {
-            LockName = Bootstrapper.BackgroundUpdaterLockName,
-            QuitIfLockExists = true
-        };
-
-        using var cts = new CancellationTokenSource();
-
-        await Task.Run(() =>
-        {
-            App.Logger.Info("Started event waiter");
-            using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
-                handle.WaitOne();
-
-            App.Logger.Info("Received close event, killing it all!");
-            App.Bootstrapper.Cancel();
-        }, cts.Token);
-
-        await Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
-        {
-            App.Logger.Info("Bootstrapper task has finished");
-            await cts.CancelAsync(); // stop event waiter
-
-            if (t.IsFaulted)
-            {
-                App.Logger.Error("An exception occurred when running the bootstrapper");
-
-                if (t.Exception is not null)
-                    await App.FinalizeExceptionHandling(t.Exception);
-            }
-
-            App.Terminate();
-        }, TaskScheduler.Default);
-
-        App.Logger.Info("Exiting");
     }
 
     private static int _activationInFlight;
