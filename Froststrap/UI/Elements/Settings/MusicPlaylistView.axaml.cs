@@ -9,7 +9,7 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    internal partial class MusicPlaylistView : UserControl
+    internal sealed partial class MusicPlaylistView : UserControl
     {
         private MusicPlaylistViewModel? _viewModel;
 
