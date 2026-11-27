@@ -198,7 +198,9 @@ static class WindowsRegistry
                 return;
             }
 
+            #pragma warning disable FS0001
             using var legacyKey = OpenUninstallKey(LegacyUninstallKey);
+#pragma warning restore FS0001
             legacyKey?.SetValue("DisplayVersion", version);
         }
         catch (Exception ex)
@@ -213,13 +215,17 @@ static class WindowsRegistry
         {
             try
             {
-                using (var legacyKey = root.OpenSubKey(LegacyUninstallKey))
+                #pragma warning disable FS0001
+            using (var legacyKey = root.OpenSubKey(LegacyUninstallKey))
+#pragma warning restore FS0001
                 {
                     if (legacyKey is null)
                         continue;
                 }
 
+                #pragma warning disable FS0001
                 root.DeleteSubKeyTree(LegacyUninstallKey, throwOnMissingSubKey: false);
+#pragma warning restore FS0001
                 App.Logger.Info($"Removed stale legacy uninstall registry entry from {root.Name}");
             }
             catch (Exception ex)
@@ -244,7 +250,11 @@ static class WindowsRegistry
     }
 
     private static RegistryKey? OpenActiveUninstallKey()
-        => OpenUninstallKey(UninstallKey) ?? OpenUninstallKey(LegacyUninstallKey);
+    {
+#pragma warning disable FS0001
+        return OpenUninstallKey(UninstallKey) ?? OpenUninstallKey(LegacyUninstallKey);
+#pragma warning restore FS0001
+    }
 
     public static void UpdateEstimatedSize()
     {

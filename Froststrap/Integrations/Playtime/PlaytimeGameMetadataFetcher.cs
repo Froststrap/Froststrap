@@ -39,7 +39,7 @@ internal sealed class PlaytimeGameMetadataFetcher : IDisposable
 
     public async Task StopAsync()
     {
-        _cts.Cancel();
+        await _cts.CancelAsync();
         if (_processorTask != null)
         {
             try { await _processorTask; } catch (OperationCanceledException) { }

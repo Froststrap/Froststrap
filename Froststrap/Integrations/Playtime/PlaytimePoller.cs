@@ -44,7 +44,7 @@ internal sealed class PlaytimePoller : IDisposable
         if (_pollTask == null)
             return;
 
-        _cts.Cancel();
+        await _cts.CancelAsync();
         try
         {
             await _pollTask;

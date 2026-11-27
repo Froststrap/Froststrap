@@ -12,6 +12,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows.Input;
 
 using TimeRange = Froststrap.Services.TimeRange;
@@ -97,7 +98,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
 
     public ObservableCollection<GameTotalViewItem> GameTotals { get; } = [];
 
-    public sealed record GameTotalViewItem(
+    internal sealed record GameTotalViewItem(
         long UniverseId,
         long TotalSeconds,
         int SessionCount,
@@ -136,7 +137,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         if (IsLoading) return;
 
         var seq = ++_loadSeq;
-        _loadCts.Cancel();
+        await _loadCts.CancelAsync();
         _loadCts = new CancellationTokenSource();
 
         IsLoading = true;
@@ -159,7 +160,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
                 return;
             }
 
-            var stats = new PlaytimeStats();
+            using var stats = new PlaytimeStats();
             var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             var summary = await stats.GetSummaryAsync(account.UserId, SelectedRange, now, TimeZoneInfo.Local, _loadCts.Token);
@@ -216,12 +217,12 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         if (account == null || Summary == null) return;
 
         var seq = ++_loadSeq;
-        var cts = new CancellationTokenSource();
+        using var cts = new CancellationTokenSource();
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         try
         {
-            var stats = new PlaytimeStats();
+            using var stats = new PlaytimeStats();
 
             // Build main chart
             var mainSeries = await BuildMainChartSeriesAsync(stats, account.UserId, now, cts.Token);
@@ -268,7 +269,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private ISeries[] BuildColumnSeries(List<GameTotalResult> totals)
+    private static ISeries[] BuildColumnSeries(List<GameTotalResult> totals)
     {
         var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
         var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
@@ -285,7 +286,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private ISeries[] BuildBarSeries(List<GameTotalResult> totals)
+    private static ISeries[] BuildBarSeries(List<GameTotalResult> totals)
     {
         var values = totals.Select(t => (double)t.TotalSeconds / 3600.0).ToArray();
         var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
@@ -302,7 +303,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private ISeries[] BuildPieSeries(List<GameTotalResult> totals)
+    private static ISeries[] BuildPieSeries(List<GameTotalResult> totals)
     {
         var names = totals.Select(t => t.UniverseId == 0 ? Strings.Menu_Integrations_PlaytimeStats_Other : $"{Strings.Menu_Integrations_PlaytimeStats_Game} {t.UniverseId}").ToArray();
 
@@ -319,7 +320,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         return new ISeries[] { pieSeries };
     }
 
-    private ISeries[] BuildHistogramSeries(List<HistogramBinResult> bins)
+    private static ISeries[] BuildHistogramSeries(List<HistogramBinResult> bins)
     {
         var values = bins.Select(b => (double)b.Count).ToArray();
         var labels = bins.Select(b => b.Label).ToArray();
@@ -336,7 +337,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private Axis[] BuildMainChartXAxes()
+    private static Axis[] BuildMainChartXAxes()
     {
         return new Axis[]
         {
@@ -350,7 +351,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private Axis[] BuildMainChartYAxes()
+    private static Axis[] BuildMainChartYAxes()
     {
         return new Axis[]
         {
@@ -372,7 +373,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         var labels = buckets.Select(b => TimeZoneInfo.ConvertTimeFromUtc(new DateTimeOffset(b.BucketStartUtc).DateTime, TimeZoneInfo.Local).ToString(
             SelectedRange == TimeRange.Last90Days || SelectedRange == TimeRange.AllTime
                 ? "MMM d"
-                : "MMM d")).ToArray();
+                : "MMM d", CultureInfo.InvariantCulture)).ToArray();
 
         return new ISeries[]
         {
@@ -390,7 +391,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private Axis[] BuildTrendChartXAxes()
+    private static Axis[] BuildTrendChartXAxes()
     {
         return new Axis[]
         {
@@ -405,7 +406,7 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private Axis[] BuildTrendChartYAxes()
+    private static Axis[] BuildTrendChartYAxes()
     {
         return new Axis[]
         {
@@ -420,12 +421,12 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
         };
     }
 
-    private SKColor GetAccentColor()
+    private static SKColor GetAccentColor()
     {
         return new SKColor(0x00, 0x78, 0xD4);
     }
 
-    private SolidColorPaint[] GetPieColors(int count)
+    private static SolidColorPaint[] GetPieColors(int count)
     {
         var palette = new[]
         {
@@ -472,6 +473,6 @@ internal sealed class PlaytimeStatsDialogViewModel : NotifyPropertyChangedViewMo
     public static string FormatLastPlayed(long unixSeconds)
     {
         if (unixSeconds <= 0) return "—";
-        return DateTimeOffset.FromUnixTimeSeconds(unixSeconds).ToLocalTime().ToString("g");
+        return DateTimeOffset.FromUnixTimeSeconds(unixSeconds).ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
     }
 }

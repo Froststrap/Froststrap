@@ -1051,7 +1051,7 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
         return localGames;
     }
 
-    private async Task<Dictionary<long, PlaytimeData>> LoadPlaytimeDataAsync(List<long> universeIds)
+    private static async Task<Dictionary<long, PlaytimeData>> LoadPlaytimeDataAsync(List<long> universeIds)
     {
         var result = new Dictionary<long, PlaytimeData>();
         var activeAccount = AccountManager.Shared?.ActiveAccount;
@@ -1059,7 +1059,7 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
 
         try
         {
-            var db = new PlaytimeDb();
+            using var db = new PlaytimeDb();
             var totals = await db.GetTotalsPerUniverseAsync(activeAccount.UserId);
 
             foreach (var total in totals)
@@ -1249,7 +1249,7 @@ internal sealed class QuickPlayViewModel : NotifyPropertyChangedViewModel, IDisp
 
         try
         {
-            var db = new PlaytimeDb();
+            using var db = new PlaytimeDb();
             var totals = await db.GetTotalsPerUniverseAsync(activeAccount.UserId);
 
             var totalsDict = totals.ToDictionary(t => t.UniverseId, t => t.TotalSeconds);

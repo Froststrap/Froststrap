@@ -61,7 +61,7 @@ internal sealed class PlaytimeStats : IDisposable
         _dbPath = Path.Combine(dataRoot, "playtime.db");
     }
 
-    private (long rangeStart, long rangeEnd) GetRangeBounds(TimeRange range, long now)
+    private static (long rangeStart, long rangeEnd) GetRangeBounds(TimeRange range, long now)
     {
         return range switch
         {
@@ -102,9 +102,9 @@ internal sealed class PlaytimeStats : IDisposable
                 reader.GetInt64(1),
                 reader.GetInt64(2),
                 reader.GetInt64(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
+                await reader.IsDBNullAsync(4, ct) ? null : reader.GetString(4),
                 reader.GetInt64(5),
-                reader.IsDBNull(6) ? null : reader.GetInt64(6),
+                await reader.IsDBNullAsync(6, ct) ? null : reader.GetInt64(6),
                 reader.GetInt64(7),
                 reader.GetInt64(8),
                 reader.GetInt32(9)

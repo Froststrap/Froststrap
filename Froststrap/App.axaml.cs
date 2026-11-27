@@ -215,7 +215,7 @@ internal sealed partial class App : Application
         {
             // No active account or no cookie - end all sessions and stop
             _ = EndAllPlaytimeSessionsAsync("account switched/removed");
-            PlaytimePoller.StopAsync();
+            _ = PlaytimePoller.StopAsync();
         }
     }
 
@@ -231,7 +231,7 @@ internal sealed partial class App : Application
         else if (state == Froststrap.Enums.CookieState.Invalid || state == Froststrap.Enums.CookieState.NotFound || state == Froststrap.Enums.CookieState.NotAllowed)
         {
             _ = EndAllPlaytimeSessionsAsync($"cookie state changed to {state}");
-            PlaytimePoller.StopAsync();
+            _ = PlaytimePoller.StopAsync();
         }
     }
 

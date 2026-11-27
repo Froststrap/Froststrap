@@ -112,7 +112,7 @@ internal sealed class PlaytimeStateMachine
         return actions;
     }
 
-    private List<Action> HandleNotInGame(long userId, AccountState state, long now)
+    private static List<Action> HandleNotInGame(long userId, AccountState state, long now)
     {
         var actions = new List<Action>();
 

@@ -5,6 +5,7 @@
 using Microsoft.Data.Sqlite;
 using System.Buffers;
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace Froststrap.Services;
 
@@ -41,11 +42,11 @@ internal sealed class PlaytimeDb : IDisposable
         return _connection;
     }
 
-    private async Task MigrateAsync(SqliteConnection connection)
+    private static async Task MigrateAsync(SqliteConnection connection)
     {
         using var cmd = connection.CreateCommand();
         cmd.CommandText = "PRAGMA user_version;";
-        var currentVersion = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+        var currentVersion = Convert.ToInt32(await cmd.ExecuteScalarAsync(), CultureInfo.InvariantCulture);
 
         if (currentVersion >= CurrentSchemaVersion)
             return;
@@ -62,7 +63,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     private static async Task CreateSchemaV1Async(SqliteConnection connection)
     {
-        using var tx = connection.BeginTransaction();
+        await using var tx = (SqliteTransaction)await connection.BeginTransactionAsync();
         try
         {
             using var cmd = connection.CreateCommand();
@@ -91,11 +92,11 @@ internal sealed class PlaytimeDb : IDisposable
                 );
                 """;
             await cmd.ExecuteNonQueryAsync();
-            tx.Commit();
+            await tx.CommitAsync();
         }
         catch
         {
-            tx.Rollback();
+            await tx.RollbackAsync();
             throw;
         }
     }
@@ -104,7 +105,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<SessionRow> OpenSessionAsync(long userId, long universeId, long placeId, string? jobId = null, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var id = GenerateUlid();
@@ -136,7 +137,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<bool> TouchSessionAsync(string sessionId, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var now = NowUnix();
@@ -161,7 +162,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<EndSessionResult> EndSessionAsync(string sessionId, long? endedAt = null, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var now = NowUnix();
@@ -227,7 +228,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<int> CloseOrphansAsync(CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var now = NowUnix();
@@ -250,7 +251,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<List<UniverseTotal>> GetTotalsPerUniverseAsync(long userId, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var conn = await GetConnectionAsync();
@@ -283,7 +284,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<List<SessionRow>> GetSessionsAsync(long userId, long universeId, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var conn = await GetConnectionAsync();
@@ -306,9 +307,9 @@ internal sealed class PlaytimeDb : IDisposable
                     reader.GetInt64(1),
                     reader.GetInt64(2),
                     reader.GetInt64(3),
-                    reader.IsDBNull(4) ? null : reader.GetString(4),
+                    await reader.IsDBNullAsync(4, ct) ? null : reader.GetString(4),
                     reader.GetInt64(5),
-                    reader.IsDBNull(6) ? null : reader.GetInt64(6),
+                    await reader.IsDBNullAsync(6, ct) ? null : reader.GetInt64(6),
                     reader.GetInt64(7),
                     reader.GetInt64(8),
                     reader.GetInt32(9)
@@ -324,7 +325,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<int> DeleteAllForUserAsync(long userId, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var now = NowUnix();
@@ -348,7 +349,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<bool> UpsertGameAsync(long universeId, string? name, string? iconUrl, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var now = NowUnix();
@@ -378,7 +379,7 @@ internal sealed class PlaytimeDb : IDisposable
 
     public async Task<GameRow?> GetGameAsync(long universeId, CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var conn = await GetConnectionAsync();
@@ -391,8 +392,8 @@ internal sealed class PlaytimeDb : IDisposable
             {
                 return new GameRow(
                     reader.GetInt64(0),
-                    reader.IsDBNull(1) ? null : reader.GetString(1),
-                    reader.IsDBNull(2) ? null : reader.GetString(2),
+                    await reader.IsDBNullAsync(1, ct) ? null : reader.GetString(1),
+                    await reader.IsDBNullAsync(2, ct) ? null : reader.GetString(2),
                     reader.GetInt64(3)
                 );
             }
@@ -425,7 +426,7 @@ internal sealed class PlaytimeDb : IDisposable
         // 48-bit timestamp + 80-bit randomness
         var timestamp = (ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         var random = new byte[10];
-        Random.Shared.NextBytes(random);
+        RandomNumberGenerator.Fill(random);
 
         const string encoding = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
         Span<char> result = stackalloc char[26];
@@ -472,7 +473,7 @@ internal sealed class PlaytimeDb : IDisposable
         string? jobId = null,
         CancellationToken ct = default)
     {
-        await _writerLock.WaitAsync();
+        await _writerLock.WaitAsync(ct);
         try
         {
             var id = GenerateUlid();
@@ -485,7 +486,7 @@ internal sealed class PlaytimeDb : IDisposable
                 INSERT INTO sessions (id, user_id, universe_id, place_id, job_id, started_at, ended_at, last_seen_at, updated_at, deleted)
                 VALUES ($id, $userId, $universeId, $placeId, $jobId, $startedAt, $endedAt, $lastSeenAt, $updatedAt, 0);
                 """;
-            cmd.Parameters.AddWithValue("$id", GenerateUlid());
+            cmd.Parameters.AddWithValue("$id", id);
             cmd.Parameters.AddWithValue("$userId", userId);
             cmd.Parameters.AddWithValue("$universeId", universeId);
             cmd.Parameters.AddWithValue("$placeId", placeId);

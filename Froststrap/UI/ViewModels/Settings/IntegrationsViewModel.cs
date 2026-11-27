@@ -88,13 +88,13 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         }
     }
 
-    public string PlaytimeTrackingLabel => Strings.Menu_Integrations_PlaytimeTracking_Title;
+    public static string PlaytimeTrackingLabel => Strings.Menu_Integrations_PlaytimeTracking_Title;
 
-    public bool IsPlaytimeTrackingAvailable => App.Settings.Prop.AllowCookieAccess;
+    public static bool IsPlaytimeTrackingAvailable => App.Settings.Prop.AllowCookieAccess;
 
-    public bool IsPlaytimeStatsButtonEnabled => App.Settings.Prop.EnablePlaytimeTracking && App.Settings.Prop.AllowCookieAccess && AccountManager.Shared?.ActiveAccount != null;
+    public static bool IsPlaytimeStatsButtonEnabled => App.Settings.Prop.EnablePlaytimeTracking && App.Settings.Prop.AllowCookieAccess && AccountManager.Shared?.ActiveAccount != null;
 
-    public string PlaytimeStatsButtonHint =>
+    public static string PlaytimeStatsButtonHint =>
         !App.Settings.Prop.AllowCookieAccess ? Strings.Menu_Integrations_PlaytimeStats_NoAccount :
         !App.Settings.Prop.EnablePlaytimeTracking ? Strings.Menu_Integrations_PlaytimeStats_TrackingOff :
         AccountManager.Shared?.ActiveAccount == null ? Strings.Menu_Integrations_PlaytimeStats_NoAccount :
