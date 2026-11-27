@@ -459,6 +459,51 @@ internal sealed class PlaytimeDb : IDisposable
         return new string(result);
     }
 
+    /// <summary>
+    /// Test-only: creates a session with specific timestamps for testing.
+    /// </summary>
+    public async Task<SessionRow> CreateTestSessionAsync(
+        long userId,
+        long universeId,
+        long placeId,
+        long startedAt,
+        long? endedAt = null,
+        long? lastSeenAt = null,
+        string? jobId = null,
+        CancellationToken ct = default)
+    {
+        await _writerLock.WaitAsync();
+        try
+        {
+            var id = GenerateUlid();
+            var now = lastSeenAt ?? startedAt;
+            var updatedAt = endedAt ?? lastSeenAt ?? startedAt;
+
+            var conn = await GetConnectionAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                INSERT INTO sessions (id, user_id, universe_id, place_id, job_id, started_at, ended_at, last_seen_at, updated_at, deleted)
+                VALUES ($id, $userId, $universeId, $placeId, $jobId, $startedAt, $endedAt, $lastSeenAt, $updatedAt, 0);
+                """;
+            cmd.Parameters.AddWithValue("$id", GenerateUlid());
+            cmd.Parameters.AddWithValue("$userId", userId);
+            cmd.Parameters.AddWithValue("$universeId", universeId);
+            cmd.Parameters.AddWithValue("$placeId", placeId);
+            cmd.Parameters.AddWithValue("$jobId", jobId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("$startedAt", startedAt);
+            cmd.Parameters.AddWithValue("$endedAt", endedAt ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("$lastSeenAt", lastSeenAt ?? startedAt);
+            cmd.Parameters.AddWithValue("$updatedAt", endedAt ?? lastSeenAt ?? startedAt);
+            await cmd.ExecuteNonQueryAsync(ct);
+
+            return new SessionRow(id, userId, universeId, placeId, jobId, startedAt, endedAt, lastSeenAt ?? startedAt, updatedAt, 0);
+        }
+        finally
+        {
+            _writerLock.Release();
+        }
+    }
+
     public sealed record SessionRow(
         string Id,
         long UserId,
