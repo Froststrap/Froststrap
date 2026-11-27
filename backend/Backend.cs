@@ -214,7 +214,7 @@ public class NativeNotify
     public static void SendMessage(
         string title,
         string description,
-        int duration = 5
+        int duration = 2
     )
     {
         Task.Run(() =>

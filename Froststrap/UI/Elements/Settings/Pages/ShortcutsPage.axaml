@@ -19,60 +19,45 @@ SPDX-License-Identifier: MPL-2.0
 
     <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="14,10">
-            <controls:OptionControl
+            <controls:ToggleOption
                 Header="{x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Title}"
                 Description="{Binding Source={x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://bloxstraplabs.com/wiki/info/using-roblox-icons-for-shortcuts/'}"
-                HelpLink="https://bloxstraplabs.com/wiki/info/using-roblox-icons-for-shortcuts/">
-                <ToggleSwitch IsChecked="{Binding ExtractIconsTask.NewState, Mode=TwoWay}" />
-            </controls:OptionControl>
+                HelpLink="https://bloxstraplabs.com/wiki/info/using-roblox-icons-for-shortcuts/"
+                IsChecked="{Binding ExtractIconsTask.NewState}" />
 
             <controls:SectionHeader
                 Title="{x:Static resources:Strings.Menu_Shortcuts_General_Title}"
                 Description="{x:Static resources:Strings.Menu_Shortcuts_General_Description}"
                 Margin="0,4,0,4" />
 
-            <Grid
-                x:Name="ShortcutsGrid"
-                ColumnDefinitions="*,*"
-                ColumnSpacing="4">
-                <controls:OptionControl
+            <Grid x:Name="ShortcutsGrid" ColumnDefinitions="*,*" ColumnSpacing="8">
+                <controls:ToggleOption
                     x:Name="DesktopOption"
                     Grid.Column="0"
-                    Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
-                    <ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
-                </controls:OptionControl>
+                    Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}"
+                    IsChecked="{Binding DesktopIconTask.NewState}" />
 
-                <controls:OptionControl
+                <controls:ToggleOption
                     x:Name="StartMenuOption"
                     Grid.Column="1"
                     Header="{x:Static resources:Strings.Common_Shortcuts_StartMenu}"
-                    IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
-                    <ToggleSwitch IsChecked="{Binding StartMenuIconTask.NewState, Mode=TwoWay}" />
-                </controls:OptionControl>
+                    IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+                    IsChecked="{Binding StartMenuIconTask.NewState}" />
             </Grid>
 
             <controls:SectionHeader
                 Title="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}"
                 Description="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
-                <controls:OptionControl
-                    Grid.Column="0"
-                    Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">
-                    <ToggleSwitch IsChecked="{Binding PlayerIconTask.NewState, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                <controls:ToggleOption Grid.Column="0" Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" IsChecked="{Binding PlayerIconTask.NewState}" />
 
-                <controls:OptionControl
+                <controls:ToggleOption
                     Grid.Column="1"
-                    Header="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}">
-                    <ToggleSwitch IsChecked="{Binding StudioIconTask.NewState, Mode=TwoWay}" />
-                </controls:OptionControl>
+                    Header="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}"
+                    IsChecked="{Binding StudioIconTask.NewState}" />
 
-                <controls:OptionControl
-                    Grid.Column="2"
-                    Header="{x:Static resources:Strings.Menu_Title}">
-                    <ToggleSwitch IsChecked="{Binding SettingsIconTask.NewState, Mode=TwoWay}" />
-                </controls:OptionControl>
+                <controls:ToggleOption Grid.Column="2" Header="{x:Static resources:Strings.Menu_Title}" IsChecked="{Binding SettingsIconTask.NewState}" />
             </Grid>
 
             <controls:SectionHeader
@@ -102,10 +87,7 @@ SPDX-License-Identifier: MPL-2.0
                                         RenderOptions.BitmapInterpolationMode="HighQuality" />
                                 </Border>
 
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Spacing="4"
-                                    VerticalAlignment="Center">
+                                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
                                     <TextBlock
                                         Text="{Binding PreviewName}"
                                         FontSize="20"
@@ -273,10 +255,7 @@ SPDX-License-Identifier: MPL-2.0
                                         RenderOptions.BitmapInterpolationMode="HighQuality" />
                                 </Border>
 
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Spacing="4"
-                                    VerticalAlignment="Center">
+                                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
                                     <TextBlock
                                         Text="{Binding LinkPreviewName}"
                                         FontSize="20"

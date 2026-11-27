@@ -10,7 +10,6 @@ pub struct GitInfo {
     pub commit: String,
     pub branch: String,
     pub dir: String,
-    pub tag: Option<String>,
 }
 
 pub fn git(args: &[&str]) -> Option<String> {
@@ -43,8 +42,6 @@ pub fn info() -> &'static GitInfo {
             commit: git(&["rev-parse", "HEAD"]).unwrap_or_else(|| "unknown".into()),
             branch,
             dir: crate::path::git_root().to_string_lossy().into_owned(),
-            tag: git(&["describe", "--tags", "--exact-match"])
-                .or_else(|| git(&["describe", "--tags", "--abbrev=0"])),
         }
     })
 }

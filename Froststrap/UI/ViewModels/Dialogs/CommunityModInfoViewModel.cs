@@ -6,21 +6,13 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.UI.Elements.Base;
 using System.Collections.ObjectModel;
 using AvaFontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    internal sealed partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
+    internal sealed partial class CommunityModInfoViewModel(CommunityMod mod, Action close) : NotifyPropertyChangedViewModel
     {
-        private string _colorDisplayText = string.Empty;
-        public string ColorDisplayText
-        {
-            get => _colorDisplayText;
-            set => SetProperty(ref _colorDisplayText, value);
-        }
-
         private CommunityMod _mod = mod;
         public CommunityMod Mod
         {
@@ -51,6 +43,13 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public bool IsGradientMode => Mod.GradientStops?.Count >= 2;
 
+        private IBrush? _colorBrush;
+        public IBrush? ColorBrush
+        {
+            get => _colorBrush;
+            set => SetProperty(ref _colorBrush, value);
+        }
+
         public void Initialize()
         {
             _ = Mod.LoadThumbnailAsync();
@@ -60,7 +59,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         }
 
         [RelayCommand]
-        private void Close() => window.Close();
+        private void Close() => close();
 
         private async Task InitializePreviewAsync()
         {
@@ -70,6 +69,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 var typeface = new Typeface(fontFamily);
 
                 UpdateGlyphColors();
+                ColorBrush = IsGradientMode ? CreateGradientBrush(90) : null;
                 await LoadGlyphPreviewsAsync(typeface);
             }
             catch (Exception ex)
@@ -83,19 +83,16 @@ namespace Froststrap.UI.ViewModels.Dialogs
             if (IsGradientMode)
             {
                 var stops = Mod.GradientStops!;
-                ColorDisplayText = string.Join(" → ", stops.Select(s => s.Color.ToUpperInvariant()));
-
                 if (stops.Count > 0 && Color.TryParse(stops[0].Color, out var firstColor))
                     PreviewBrush = new SolidColorBrush(firstColor);
                 else
                     PreviewBrush = new SolidColorBrush(Colors.White);
                 return;
             }
-            ColorDisplayText = "No color information";
             PreviewBrush = new SolidColorBrush(Colors.White);
         }
 
-        private IBrush CreateGradientBrush()
+        private IBrush CreateGradientBrush(double? angleOverride = null)
         {
             if (!IsGradientMode || Mod.GradientStops == null || Mod.GradientStops.Count < 2)
                 return PreviewBrush;
@@ -115,7 +112,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 GradientStops = avaloniaStops
             };
 
-            double angle = Mod.GradientAngle ?? 90;
+            double angle = angleOverride ?? Mod.GradientAngle ?? 90;
             double angleRad = angle * Math.PI / 180.0;
             double dx = Math.Sin(angleRad);
             double dy = -Math.Cos(angleRad);

@@ -9,6 +9,10 @@ use data_types::{NotificationMeta, ReplacesId};
 use dbus::blocking::Connection;
 use std::{collections::HashMap, time::Duration};
 
+pub fn init(_aumid: String) -> i32 {
+    0
+}
+
 pub fn send_notification(title: String, description: String, timeout: Duration) -> i32 {
     let conn = match Connection::new_session() {
         Ok(c) => c,

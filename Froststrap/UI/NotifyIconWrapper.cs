@@ -8,6 +8,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
 {
@@ -104,6 +105,7 @@ namespace Froststrap.UI
                 TrayIcon.SetIcons(app, icons);
             }
             icons.Add(_trayIcon);
+            MacOSDock.Refresh();
         }
 
         private void OnTrayIconClicked(object? sender, EventArgs e)
@@ -235,6 +237,7 @@ namespace Froststrap.UI
 
                     var trayIcons = TrayIcon.GetIcons(Application.Current!);
                     trayIcons?.Remove(_trayIcon);
+                    MacOSDock.Refresh();
 
                     _menuContainer.Close();
                     _trayIcon.Dispose();

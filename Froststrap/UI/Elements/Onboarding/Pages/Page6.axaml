@@ -7,14 +7,8 @@ SPDX-License-Identifier: MPL-2.0
 <UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="using:Froststrap.Localisation"
     xmlns:controls="using:Froststrap.UI.Elements.Controls"
     xmlns:vm="using:Froststrap.UI.ViewModels.Onboarding"
-    mc:Ignorable="d"
-    d:DesignWidth="800"
-    d:DesignHeight="600"
     x:Class="Froststrap.UI.Elements.Onboarding.Pages.Page6"
     x:DataType="vm:Page6ViewModel"
     >
@@ -49,11 +43,7 @@ SPDX-License-Identifier: MPL-2.0
                                 </Grid>
                             </Expander.Header>
 
-                            <Border
-                                Padding="4"
-                                CornerRadius="4"
-                                Margin="0,4,0,0"
-                                >
+                            <Border Padding="4" CornerRadius="4" Margin="0,4,0,0" >
                                 <controls:MarkdownTextBlock
                                     MarkdownText="{Binding Answer}"
                                     TextWrapping="Wrap"

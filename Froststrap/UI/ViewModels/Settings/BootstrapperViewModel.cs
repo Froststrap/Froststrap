@@ -49,6 +49,12 @@ namespace Froststrap.UI.ViewModels.Settings
             catch { /* ignore */ }
         }
 
+        internal static bool HasFreshRegionCache()
+        {
+            string path = GetCachePath();
+            return File.Exists(path) && File.GetLastWriteTimeUtc(path) > DateTime.UtcNow.AddDays(-7);
+        }
+
         private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync(bool allowExpired = false)
         {
             try
@@ -163,6 +169,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ObservableCollection<HzEntry> VirtualDisplayHzEntries { get; } = [];
 
+        public bool HasVirtualDisplayHzEntries => VirtualDisplayHzEntries.Count > 0;
+
         public ICommand AddVirtualDisplayHzCommand { get; }
 
         private string _newVirtualDisplayHz = "";
@@ -205,6 +213,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.Settings.Prop.VirtualDisplayHzModes = [.. VirtualDisplayHzEntries.Select(e => e.Value)];
             App.Settings.Save();
+            OnPropertyChanged(nameof(HasVirtualDisplayHzEntries));
         }
 
         internal sealed class HzEntry

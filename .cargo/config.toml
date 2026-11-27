@@ -5,6 +5,9 @@
 [build]
 rustflags = ["-Z", "threads=8"]
 
+[target.'cfg(target_vendor = "apple")']
+rustflags = ["-Z", "threads=8", "-C", "link-arg=-Wl,-x"]
+
 [alias]
 xtask = "run --timings --manifest-path ./build/Cargo.toml --"
 xp = "xtask publish"

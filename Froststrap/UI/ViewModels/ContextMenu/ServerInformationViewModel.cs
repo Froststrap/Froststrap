@@ -94,7 +94,7 @@ internal sealed class ServerInformationViewModel : NotifyPropertyChangedViewMode
     public bool ShowInstanceId => HasServerData && !string.IsNullOrEmpty(InstanceId);
     public bool AccessCodeVisibility => HasServerData && !string.IsNullOrEmpty(AccessCode);
     public bool ServerLocationVisibility => HasServerData && !string.IsNullOrEmpty(ServerLocation) && ServerLocation != Strings.Common_NotAvailable;
-    public bool ServerUptimeVisibility => HasServerData && !string.IsNullOrEmpty(ServerUptime) && ServerUptime != Strings.Common_NotAvailable && App.Settings.Prop.ShowServerUptime;
+    public bool ServerUptimeVisibility => HasServerData && !string.IsNullOrEmpty(ServerUptime) && ServerUptime != Strings.Common_NotAvailable && App.Settings.Prop.ShowServerDetails && App.Settings.Prop.ShowServerUptime;
     public bool ShowCopyButton => HasServerData;
 
     public ICommand CopyCommand { get; }

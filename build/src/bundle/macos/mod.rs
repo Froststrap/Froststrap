@@ -26,7 +26,33 @@ fn copy_any(src: &Path, dest: &Path) {
     }
 }
 
+fn has_tool(name: &str) -> bool {
+    std::env::var_os("PATH")
+        .is_some_and(|paths| std::env::split_paths(&paths).any(|dir| dir.join(name).is_file()))
+}
+
+fn write_png_icns(png_path: &Path, out_icns_path: &Path) {
+    let png = fs::read(png_path).unwrap();
+    let entry_len = u32::try_from(8 + png.len()).unwrap();
+    let total_len = 8 + entry_len;
+
+    let mut icns = Vec::with_capacity(total_len as usize);
+    icns.extend_from_slice(b"icns");
+    icns.extend_from_slice(&total_len.to_be_bytes());
+    icns.extend_from_slice(b"ic09");
+    icns.extend_from_slice(&entry_len.to_be_bytes());
+    icns.extend_from_slice(&png);
+
+    fs::write(out_icns_path, icns).unwrap();
+}
+
 fn compile_png_to_icns(png_path: &Path, out_icns_path: &Path) {
+    if !has_tool("sips") || !has_tool("iconutil") {
+        log::info!("sips/iconutil unavailable, embedding {} as a single 512px icon", png_path.display());
+        write_png_icns(png_path, out_icns_path);
+        return;
+    }
+
     let temp_dir = std::env::temp_dir().join(format!("iconset_{}", std::process::id()));
     let iconset_dir = temp_dir.join("app.iconset");
     fs::create_dir_all(&iconset_dir).unwrap();

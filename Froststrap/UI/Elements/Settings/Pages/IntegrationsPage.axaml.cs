@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Avalonia.Controls;
-using Avalonia.Input;
-using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
@@ -14,15 +12,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         {
             InitializeComponent();
 
-            App.FrostRPC?.SetPage("Integration");
-        }
-
-        public void CustomIntegrationSelection(object sender, SelectionChangedEventArgs e)
-        {
-            if (DataContext is IntegrationsViewModel viewModel && sender is ListBox listBox)
-            {
-                viewModel.SelectedCustomIntegration = listBox.SelectedItem as CustomIntegration;
-            }
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Integration"); };
         }
     }
 }

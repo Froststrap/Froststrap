@@ -491,7 +491,7 @@ internal sealed class ModEngine(
         if (modPaths.Restore == RestoreStrategy.PackageReextract && fileRestoreMap.Count > 0)
             await restoreFromPackages(fileRestoreMap);
 
-        if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !context.AppData.DistributionStateManager.HasFileOnDiskChanged())
+        if (BackgroundUpdate.IsCurrentProcess || !context.AppData.DistributionStateManager.HasFileOnDiskChanged())
         {
             context.AppData.DistributionState.ModManifest = [.. currentModManifest.Keys];
             context.AppData.DistributionStateManager.Save();

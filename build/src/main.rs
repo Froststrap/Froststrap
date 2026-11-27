@@ -28,7 +28,6 @@ pub fn main() {
     log::info!("Git commit: {}", git.commit);
     log::info!("Git branch: {}", git.branch);
     log::info!("Git local dir: {}", git.dir);
-    log::info!("Git tag: {}", git.tag.as_deref().unwrap_or("none"));
 
     println!(); // separator
 

@@ -17,6 +17,9 @@ SPDX-License-Identifier: MPL-2.0
     <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <EnableHWIntrinsic>false</EnableHWIntrinsic>
+    <!-- Don't ship IntelliSense XML (e.g. FluentAvalonia.xml) in the publish dir -->
+    <PublishReferencesDocumentationFiles>false</PublishReferencesDocumentationFiles>
+    <PublishDocumentationFile>false</PublishDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">

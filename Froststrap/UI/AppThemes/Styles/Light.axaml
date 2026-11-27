@@ -19,9 +19,7 @@ SPDX-License-Identifier: MPL-2.0
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="0" />
 
-                    <Border Name="PART_Indicator"
-                            HorizontalAlignment="Left"
-                            Background="{TemplateBinding Foreground}">
+                    <Border Name="PART_Indicator" HorizontalAlignment="Left" Background="{TemplateBinding Foreground}">
                         <Border.Transitions>
                             <Transitions>
                                 <DoubleTransition Property="Width" Duration="0:0:0.1" />

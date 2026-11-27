@@ -31,6 +31,14 @@ namespace Froststrap.Models
                 OnPropertyChanged(nameof(SpecifyGame));
             }
         }
+        private bool _isExpanded;
+        [JsonIgnore]
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set { _isExpanded = value; OnPropertyChanged(nameof(IsExpanded)); }
+        }
+
         public string LaunchArgs { get; set; } = "";
         public string GameID { get; set; } = "";
         public bool AutoCloseOnGame { get; set; } = true;

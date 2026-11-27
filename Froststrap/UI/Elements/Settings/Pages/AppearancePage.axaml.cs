@@ -14,6 +14,6 @@ internal sealed partial class AppearancePage : UserControl
     {
         InitializeComponent();
 
-        App.FrostRPC?.SetPage("Appearance");
+        AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Appearance"); };
     }
 }

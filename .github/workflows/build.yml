@@ -5,8 +5,13 @@ on:
     branches: ["**"]
   pull_request:
   workflow_call:
+    inputs:
+      configuration:
+        type: string
+        default: debug
 
 env:
+  CONFIGURATION: ${{ inputs.configuration || 'debug' }}
   VPK_VERSION: "1.2.161"
   PACKAGES_REPO: https://github.com/Froststrap/packages
 
@@ -18,17 +23,35 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+        with: { submodules: true }
 
       - name: Install .NET
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
-      - name: Use nightly Rust
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cache Rust build output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: windows-x64
+          workspaces: |
+            backend -> target
+            build -> target
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-windows-x64-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets') }}
+          restore-keys: nuget-windows-x64-
+
+      - name: Install vpk
         run: |
-          rustup toolchain install nightly --profile minimal
-          rustup default nightly
           dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
           echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
 
@@ -43,7 +66,7 @@ jobs:
         run: cargo xtask clean
 
       - name: Publish
-        run: cargo xtask publish
+        run: cargo xtask --configuration $CONFIGURATION publish
 
       - uses: actions/upload-artifact@v7
         if: always()
@@ -73,18 +96,35 @@ jobs:
           - { arch: x64, rust-target: x86_64-apple-darwin }
     steps:
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+        with: { submodules: true }
 
       - name: Install .NET
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "10.0.x"
 
-      - name: Install other deps
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: ${{ matrix.rust-target }}
+
+      - name: Cache Rust build output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: macos-${{ matrix.arch }}
+          workspaces: |
+            backend -> target
+            build -> target
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-macos-${{ matrix.arch }}-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets') }}
+          restore-keys: nuget-macos-${{ matrix.arch }}-
+
+      - name: Install vpk
         run: |
-          rustup toolchain install nightly --profile minimal
-          rustup default nightly
-          rustup target add ${{ matrix.rust-target }}
           dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
           echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
 
@@ -134,7 +174,7 @@ jobs:
       - name: Publish
         env:
           SIGN: ${{ startsWith(github.ref, 'refs/tags/v') && 'true' || 'false' }}
-        run: cargo xtask --override-arch ${{ matrix.arch }} publish
+        run: cargo xtask --override-arch ${{ matrix.arch }} --configuration $CONFIGURATION publish
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -178,7 +218,7 @@ jobs:
             pkg-config
 
       - uses: actions/checkout@v7
-        with: { submodules: true, fetch-tags: true, fetch-depth: 0 }
+        with: { submodules: true }
 
       - name: Install .NET
         uses: actions/setup-dotnet@v6
@@ -189,13 +229,26 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
         with:
           targets: x86_64-unknown-linux-gnu
-          components: rustfmt, clippy
 
-      - name: Install other deps
+      - name: Cache Rust build output
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: linux-x64
+          workspaces: |
+            backend -> target
+            build -> target
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-linux-x64-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.targets') }}
+          restore-keys: nuget-linux-x64-
+
+      - name: Install vpk
         run: |
           dotnet tool install vpk --version $VPK_VERSION --tool-path "$RUNNER_TEMP/vpk"
           echo "$RUNNER_TEMP/vpk" >> "$GITHUB_PATH"
-          apt install -y libdbus-1-dev pkg-config
 
       - name: Fetch previous release (for deltas)
         if: startsWith(github.ref, 'refs/tags/v')
@@ -208,7 +261,7 @@ jobs:
         run: cargo xtask clean
 
       - name: Publish
-        run: cargo xtask publish
+        run: cargo xtask --configuration $CONFIGURATION publish
 
       - uses: actions/upload-artifact@v7
         if: always()

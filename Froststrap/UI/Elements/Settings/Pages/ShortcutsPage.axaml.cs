@@ -11,7 +11,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public ShortcutsPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("Shortcut");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Shortcut"); };
 
             Loaded += (_, _) =>
             {

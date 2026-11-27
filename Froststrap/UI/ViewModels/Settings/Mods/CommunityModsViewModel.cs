@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -19,10 +18,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private CancellationTokenSource? _searchCts;
         private bool _disposed;
         private EventHandler? _remoteDataHandler;
-
-        public event EventHandler? OpenModsEvent;
-        public event EventHandler? OpenModGeneratorEvent;
-        public event EventHandler? OpenPresetModsEvent;
 
         private ObservableCollection<CommunityMod> _mods = [];
         public ObservableCollection<CommunityMod> Mods
@@ -77,10 +72,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             _remoteDataHandler = async (_, _) => await RefreshModsAsync();
             App.RemoteData.Subscribe(_remoteDataHandler);
         }
-
-        [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
-        [RelayCommand] private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
 
         [RelayCommand]
         private void SetFilter(object? parameter)
@@ -285,28 +276,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
         [RelayCommand]
-        private static async Task OpenModInfoDialog(Control? control)
+        private static void OpenModInfoDialog(Control? control)
         {
-            if (control?.DataContext is not CommunityMod mod) return;
-
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
-
-            App.FrostRPC?.SetDialog($"Viewing {mod.Name}");
-
-            try
-            {
-                var dialog = new CommunityModInfoDialog(mod);
-                await dialog.ShowDialog(parentWindow);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "Failed to open mod info dialog");
-            }
-            finally
-            {
-                App.FrostRPC?.ClearDialog();
-            }
+            if (control?.DataContext is CommunityMod mod && TopLevel.GetTopLevel(control) is Froststrap.UI.Elements.Settings.MainWindow window)
+                window.ShowCommunityModInfo(mod);
         }
 
         private static readonly HashSet<string> RequiredModFolders = new(StringComparer.OrdinalIgnoreCase)

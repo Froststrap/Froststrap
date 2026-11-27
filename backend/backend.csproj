@@ -18,9 +18,8 @@ SPDX-License-Identifier: MPL-2.0
 
   <PropertyGroup>
     <RustProjectDir>$(MSBuildProjectDirectory)</RustProjectDir>
-    <RustProfile Condition="'$(Configuration)' == 'Release'">release</RustProfile>
-    <RustProfile Condition="'$(Configuration)' != 'Release'">debug</RustProfile>
-    <RustCargoFlags Condition="'$(Configuration)' == 'Release'">--release</RustCargoFlags>
+    <RustProfile>release</RustProfile>
+    <RustCargoFlags>--release</RustCargoFlags>
 
     <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'osx-x64'">x86_64-apple-darwin</RustTargetTriple>
     <RustTargetTriple Condition="'$(RustTargetTriple)' == '' and '$(RuntimeIdentifier)' == 'osx-arm64'">aarch64-apple-darwin</RustTargetTriple>

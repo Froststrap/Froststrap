@@ -23,7 +23,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public ModsPresetsPage()
         {
             InitializeComponent();
-            App.FrostRPC?.SetPage("Preset Mods");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Preset Mods"); };
             this.DataContextChanged += OnDataContextChanged;
         }
 

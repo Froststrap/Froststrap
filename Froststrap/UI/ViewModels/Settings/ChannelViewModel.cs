@@ -464,6 +464,7 @@ internal sealed class ChannelViewModel : NotifyPropertyChangedViewModel, IDispos
             File.Copy(sourcePath, App.Settings.FileLocation, true);
             App.Settings.Load();
             RefreshBindings();
+            InvalidateOtherPages();
         }
         catch (Exception ex)
         {
@@ -505,7 +506,11 @@ internal sealed class ChannelViewModel : NotifyPropertyChangedViewModel, IDispos
         App.Settings.Prop = new global::Froststrap.Models.Persistable.Settings();
         App.Settings.Save();
         RefreshBindings();
+        InvalidateOtherPages();
     }
+
+    private static void InvalidateOtherPages() =>
+        (Froststrap.UI.Elements.Settings.MainWindow.Instance?.DataContext as MainWindowViewModel)?.InvalidatePages();
 
     private void RefreshBindings()
     {

@@ -16,17 +16,8 @@ using FontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    internal interface IModsDialogService
-    {
-        Task OpenCommunityModsAsync();
-        Task OpenPresetModsAsync();
-        Task OpenModGeneratorAsync();
-    }
-
     internal sealed partial class ModsViewModel : NotifyPropertyChangedViewModel
     {
-        private readonly IModsDialogService _dialogService;
-
         private ModConfig? _selectedMod;
         public ModConfig? SelectedMod
         {
@@ -168,24 +159,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand ExportModCommand => new AsyncRelayCommand<ModConfig>(ExportModAsync);
 
         public ModsViewModel()
-            : this(new DefaultModsDialogService())
         {
-        }
-
-        public ModsViewModel(IModsDialogService dialogService)
-        {
-            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-
             FontVariants = ["Regular", "Filled"];
             SelectedFontVariant = "Regular";
 
             LoadModifications();
             _ = LoadTogglePreviewGlyphsAsync();
         }
-
-        public ICommand OpenModGeneratorCommand => new AsyncRelayCommand(async () => await _dialogService.OpenModGeneratorAsync());
-        public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () => await _dialogService.OpenCommunityModsAsync());
-        public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () => await _dialogService.OpenPresetModsAsync());
 
         private void OpenFolder(ModConfig? mod)
         {
@@ -951,12 +931,5 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 HasFontPreview = false;
             }
         }
-    }
-
-    internal sealed class DefaultModsDialogService : IModsDialogService
-    {
-        public Task OpenCommunityModsAsync() => Task.CompletedTask;
-        public Task OpenPresetModsAsync() => Task.CompletedTask;
-        public Task OpenModGeneratorAsync() => Task.CompletedTask;
     }
 }

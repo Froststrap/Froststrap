@@ -17,10 +17,6 @@ use std::{
 };
 
 pub fn main() {
-    let args = args::get();
-    if args.no_installers {
-        return;
-    }
     let version = super::version();
     let icon = path::xtask_root().join("icon512.png");
     let desktop = path::dist().join("froststrap.desktop");
@@ -31,25 +27,16 @@ pub fn main() {
     let mut desktop_file = File::create(desktop.clone()).unwrap();
     desktop_file.write_all(entry.as_bytes()).unwrap();
 
+    let args = args::get();
+    if args.no_installers {
+        return;
+    }
+
     build_nfpm(dotnet_publish_artifacts(), version, desktop, icon);
 }
 
 fn desktop_entry(version: &str) -> String {
-    dedent(&format!(
-        r#"
-        [Desktop Entry]
-        Type=Application
-        Name=Froststrap
-        Comment=A fork of Fishstrap, focused on performance and customization
-        Exec=froststrap %u
-        TryExec=froststrap
-        Icon=froststrap
-        Terminal=false
-        Categories=Game;
-        MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;
-        X-AppImage-Version={version}
-    "#
-    ))
+    format!(include_str!("../../../resource/froststrap.desktop"), version)
 }
 
 fn build_nfpm(output_dir: PathBuf, version: String, desktop: PathBuf, icon: PathBuf) {

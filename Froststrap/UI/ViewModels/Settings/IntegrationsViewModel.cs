@@ -13,54 +13,33 @@ namespace Froststrap.UI.ViewModels.Settings;
 
 internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
 {
-    public ICommand AddIntegrationCommand => new RelayCommand(AddIntegration);
+    public ICommand AddIntegrationCommand { get; } = new RelayCommand(AddIntegration);
 
-    public ICommand DeleteIntegrationCommand => new RelayCommand(DeleteIntegration);
+    public ICommand DeleteIntegrationCommand { get; } = new RelayCommand<CustomIntegration>(integration =>
+    {
+        if (integration is not null)
+            CustomIntegrations.Remove(integration);
+    });
 
-    public IAsyncRelayCommand<Control> BrowseIntegrationLocationCommand => new AsyncRelayCommand<Control>(BrowseIntegrationLocation);
+    public IAsyncRelayCommand<CustomIntegration> BrowseIntegrationLocationCommand { get; } = new AsyncRelayCommand<CustomIntegration>(BrowseIntegrationLocation);
 
     public ICommand OpenGameHistoryCommand => new RelayCommand(OpenGameHistory);
 
-    private void AddIntegration()
+    private static void AddIntegration()
     {
-        CustomIntegrations.Add(new CustomIntegration()
+        CustomIntegrations.Add(new CustomIntegration
         {
-            Name = Strings.Menu_Integrations_Custom_NewIntegration
+            Name = Strings.Menu_Integrations_Custom_NewIntegration,
+            IsExpanded = true
         });
-
-        SelectedCustomIntegrationIndex = CustomIntegrations.Count - 1;
-
-        OnPropertyChanged(nameof(SelectedCustomIntegrationIndex));
-        OnPropertyChanged(nameof(IsCustomIntegrationSelected));
     }
 
-    private void DeleteIntegration()
+    private static async Task BrowseIntegrationLocation(CustomIntegration? integration)
     {
-        if (SelectedCustomIntegration is null)
+        if (integration is null || Froststrap.UI.Elements.Settings.MainWindow.Instance is not { } window)
             return;
 
-        CustomIntegrations.Remove(SelectedCustomIntegration);
-
-        if (CustomIntegrations.Count > 0)
-        {
-            SelectedCustomIntegrationIndex = CustomIntegrations.Count - 1;
-            OnPropertyChanged(nameof(SelectedCustomIntegrationIndex));
-        }
-
-        OnPropertyChanged(nameof(IsCustomIntegrationSelected));
-    }
-
-    private async Task BrowseIntegrationLocation(Control? control)
-    {
-        if (SelectedCustomIntegration is null) return;
-        if (control is null) return;
-
-        var topLevel = TopLevel.GetTopLevel(control);
-        if (topLevel is not Window parentWindow) return;
-
-        var storageProvider = parentWindow.StorageProvider;
-
-        var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Select Integration File",
             AllowMultiple = false,
@@ -68,25 +47,20 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
             [
                 new FilePickerFileType("All files")
                 {
-                    Patterns = ["*.*"]
+                    Patterns = ["*"]
                 }
             ]
         });
 
-        if (files != null && files.Count > 0)
-        {
-            var file = files[0];
-            string path = file.Path.LocalPath;
+        if (files.Count == 0)
+            return;
 
-            if (string.IsNullOrWhiteSpace(SelectedCustomIntegration.Name) || SelectedCustomIntegration.Name == Strings.Menu_Integrations_Custom_NewIntegration)
-            {
-                SelectedCustomIntegration.Name = Path.GetFileNameWithoutExtension(path);
-            }
+        string path = files[0].Path.LocalPath;
 
-            SelectedCustomIntegration.Location = path;
+        if (string.IsNullOrWhiteSpace(integration.Name) || integration.Name == Strings.Menu_Integrations_Custom_NewIntegration)
+            integration.Name = Path.GetFileNameWithoutExtension(path);
 
-            OnPropertyChanged(nameof(SelectedCustomIntegration));
-        }
+        integration.Location = path;
     }
 
     public bool ActivityTrackingEnabled
@@ -95,29 +69,8 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         set
         {
             App.Settings.Prop.EnableActivityTracking = value;
-
-            if (!value)
-            {
-                ShowServerDetailsEnabled = false;
-                ShowGameHistoryEnabled = false;
-                AutoRejoinEnabled = false;
-                PlaytimeCounterEnabled = false;
-                DisableAppPatchEnabled = false;
-                DiscordActivityEnabled = false;
-                DiscordActivityJoinEnabled = false;
-                StudioRPCEnabled = false;
-
-                OnPropertyChanged(nameof(ShowServerDetailsEnabled));
-                OnPropertyChanged(nameof(ShowGameHistoryEnabled));
-                OnPropertyChanged(nameof(AutoRejoinEnabled));
-                OnPropertyChanged(nameof(PlaytimeCounterEnabled));
-                OnPropertyChanged(nameof(DisableAppPatchEnabled));
-                OnPropertyChanged(nameof(DiscordActivityEnabled));
-                OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
-                OnPropertyChanged(nameof(StudioRPCEnabled));
-            }
-
             OnPropertyChanged(nameof(ActivityTrackingEnabled));
+            StudioPluginManager.Sync();
         }
     }
 
@@ -127,14 +80,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         set
         {
             App.Settings.Prop.ShowServerDetails = value;
-
-            if (!value)
-            {
-                ShowServerUptimeEnabled = false;
-
-                OnPropertyChanged(nameof(ShowServerUptimeEnabled));
-            }
-
             OnPropertyChanged(nameof(ShowServerDetailsEnabled));
         }
     }
@@ -198,16 +143,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         {
             App.Settings.Prop.UseDiscordRichPresence = value;
             OnPropertyChanged(nameof(DiscordActivityEnabled));
-
-            if (!value)
-            {
-                DiscordActivityJoinEnabled = value;
-                EnableCustomStatusDisplay = value;
-                DiscordAccountOnProfile = value;
-                OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
-                OnPropertyChanged(nameof(EnableCustomStatusDisplay));
-                OnPropertyChanged(nameof(DiscordAccountOnProfile));
-            }
         }
     }
 
@@ -284,20 +219,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
 
         OnPropertyChanged(nameof(StudioRPCEnabled));
 
-        if (!value)
-        {
-            ThumbnailChanging = value;
-            EditingInfo = value;
-            WorkspaceInfo = value;
-            ShowTesting = value;
-            StudioGameButton = value;
-            OnPropertyChanged(nameof(ThumbnailChanging));
-            OnPropertyChanged(nameof(EditingInfo));
-            OnPropertyChanged(nameof(WorkspaceInfo));
-            OnPropertyChanged(nameof(ShowTesting));
-            OnPropertyChanged(nameof(StudioGameButton));
-        }
-
         StudioPluginManager.Sync();
     }
 
@@ -349,31 +270,6 @@ internal sealed class IntegrationsViewModel : NotifyPropertyChangedViewModel
         get => App.Settings.Prop.CustomIntegrations;
         set => App.Settings.Prop.CustomIntegrations = value;
     }
-
-    private CustomIntegration? _selectedCustomIntegration;
-    public CustomIntegration? SelectedCustomIntegration
-    {
-        get => _selectedCustomIntegration;
-        set
-        {
-            _selectedCustomIntegration = value;
-            OnPropertyChanged(nameof(SelectedCustomIntegration));
-            OnPropertyChanged(nameof(IsCustomIntegrationSelected));
-        }
-    }
-
-    private int _selectedCustomIntegrationIndex = -1;
-    public int SelectedCustomIntegrationIndex
-    {
-        get => _selectedCustomIntegrationIndex;
-        set
-        {
-            _selectedCustomIntegrationIndex = value;
-            OnPropertyChanged(nameof(SelectedCustomIntegrationIndex));
-        }
-    }
-
-    public bool IsCustomIntegrationSelected => SelectedCustomIntegration is not null;
 
     private static bool IsBlocked(string path)
     {

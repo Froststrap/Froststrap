@@ -5,6 +5,7 @@
 using System.Formats.Tar;
 using System.IO.Compression;
 using System.Net.Security;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Froststrap.Clients.Contracts;
 using Froststrap.Clients.Launchers;
@@ -322,11 +323,19 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
                 return;
             }
 
-            string tempFile = Path.Combine(Path.GetTempPath(), download.Value.FileId);
+            // private 0700 folder, not a predictable name in the shared temp dir
+            string tempDir = Directory.CreateTempSubdirectory("froststrap-webview2-").FullName;
+            string tempFile = Path.Combine(tempDir, "MicrosoftEdgeWebView2Setup.exe");
             try
             {
                 await _reporter.DownloadAsync(download.Value.Url, tempFile);
                 _reporter.SetIndeterminate();
+
+                if (!await MatchesSha256Async(tempFile, download.Value.Sha256))
+                {
+                    App.Logger.Error("WebView2 installer doesn't match the hash from the update API, not running it.");
+                    return;
+                }
 
                 _reporter.SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
 
@@ -344,8 +353,14 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
             }
             finally
             {
-                if (File.Exists(tempFile))
-                    File.Delete(tempFile);
+                try
+                {
+                    Directory.Delete(tempDir, true);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warn($"Couldn't remove WebView2 temp folder: {ex.Message}");
+                }
             }
         }
         else
@@ -390,7 +405,8 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
                 if (sslPolicyErrors == SslPolicyErrors.None)
                     return true;
 
-                if (cert is null || chain is null)
+                // the pinned root only fixes chain errors; a hostname mismatch always fails
+                if (sslPolicyErrors != SslPolicyErrors.RemoteCertificateChainErrors || cert is null || chain is null)
                     return false;
 
                 chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
@@ -411,6 +427,24 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
         {
             handler?.Dispose();
         }
+    }
+
+    private async Task<bool> MatchesSha256Async(string path, string expectedBase64)
+    {
+        byte[] expected;
+        try
+        {
+            expected = Convert.FromBase64String(expectedBase64);
+        }
+        catch (FormatException)
+        {
+            App.Logger.Warn($"WebView2 SHA-256 from the update API isn't valid base64: {expectedBase64}");
+            return false;
+        }
+
+        await using var stream = File.OpenRead(path);
+        byte[] actual = await SHA256.HashDataAsync(stream, _cancellationToken);
+        return CryptographicOperations.FixedTimeEquals(actual, expected);
     }
 
     private async Task<string?> GetWebView2LatestVersionAsync()
@@ -439,7 +473,7 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
         }
     }
 
-    private async Task<(string Url, string FileId)?> GetWebView2RuntimeDownloadAsync(string version)
+    private async Task<(string Url, string Sha256)?> GetWebView2RuntimeDownloadAsync(string version)
     {
         try
         {
@@ -464,8 +498,16 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
                     ? d.FileId[..^4]
                     : d.FileId;
 
-                if (trimmed.Split('_').Length == 3)
-                    return (d.Url, d.FileId);
+                if (trimmed.Split('_').Length != 3)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(d.Hashes?.Sha256))
+                {
+                    App.Logger.Warn("WebView2 Runtime entry has no SHA-256, skipping install.");
+                    return null;
+                }
+
+                return (d.Url, d.Hashes.Sha256);
             }
 
             App.Logger.Warn("No standalone Runtime entry found among CDP download results.");

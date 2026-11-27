@@ -15,7 +15,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         {
             InitializeComponent();
 
-            App.FrostRPC?.SetPage("Region Selector");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Region Selector"); };
 
             GameSearchAutoCompleteBox.SelectionChanged += OnGameSearchSelectionChanged;
         }

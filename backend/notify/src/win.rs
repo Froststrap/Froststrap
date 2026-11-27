@@ -8,11 +8,12 @@ use crate::data_types::SendNotificationResult;
 use windows::Data::Xml::Dom::XmlDocument;
 use windows::UI::Notifications::{ToastNotification, ToastNotificationManager, ToastTemplateType};
 use windows::core::HSTRING;
+use std::time::Duration;
 
 static AUMID_LOCK: RwLock<Option<String>> = RwLock::new(None);
 
-pub fn set_application(aumid: String) -> i32 {
-    let mut writer = AUMID_LOCK.write().unwrap();
+pub fn init(aumid: String) -> i32 {
+    let mut writer = AUMID_LOCK.write().unwrap_or_else(|e| e.into_inner());
 
     *writer = Some(aumid);
 
@@ -22,14 +23,7 @@ pub fn set_application(aumid: String) -> i32 {
     0
 }
 
-pub fn send_notification(title: String, body: String) -> i32 {
-    match send_notification_impl(&title, &body) {
-        Ok(()) => SendNotificationResult::Sent as i32,
-        Err(_e) => SendNotificationResult::CallFailed as i32,
-    }
-}
-
-fn send_notification_impl(title: &str, body: &str) -> windows::core::Result<()> {
+fn show_toast(aumid: &str, title: String, body: String) -> windows::core::Result<()> {
     let toast_xml: XmlDocument =
         ToastNotificationManager::GetTemplateContent(ToastTemplateType::ToastText02)?;
 
@@ -45,13 +39,22 @@ fn send_notification_impl(title: &str, body: &str) -> windows::core::Result<()> 
 
     let toast = ToastNotification::CreateToastNotification(&toast_xml)?;
 
-    let aumid_reader = AUMID_LOCK.read().unwrap();
-    let aumid = aumid_reader
-        .clone()
-        .expect("set_application() must be run before to send a notification with an AUMID.");
-
     let notifier = ToastNotificationManager::CreateToastNotifierWithId(&HSTRING::from(aumid))?;
-    notifier.Show(&toast)?;
+    notifier.Show(&toast)
+}
 
-    Ok(())
+pub fn send_notification(title: String, body: String, _timeout: Duration) -> i32 {
+    let aumid = AUMID_LOCK.read().unwrap_or_else(|e| e.into_inner()).clone();
+    let Some(aumid) = aumid else {
+        log::error!("init() must be called before sending a notification");
+        return SendNotificationResult::NoBundleContext as i32;
+    };
+
+    match show_toast(&aumid, title, body) {
+        Ok(()) => SendNotificationResult::Sent as i32,
+        Err(e) => {
+            log::error!("Failed to show toast notification: {e}");
+            SendNotificationResult::OsError as i32
+        }
+    }
 }

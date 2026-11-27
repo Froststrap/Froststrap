@@ -67,11 +67,11 @@ internal sealed class DeploymentInstaller(
         IsInstalling = true;
 
         // make sure nothing is running before continuing upgrade
-        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && context.Client.Target == ClientTarget.Player)
+        if (!BackgroundUpdate.IsCurrentProcess && context.Client.Target == ClientTarget.Player)
             await CloseRunningClientAsync();
 
         // get a fully clean install
-        if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(context.VersionDirectory))
+        if (!BackgroundUpdate.IsCurrentProcess && Directory.Exists(context.VersionDirectory))
         {
             try
             {

@@ -32,10 +32,7 @@ SPDX-License-Identifier: MPL-2.0
                     VerticalAlignment="Center">
                     <AutoCompleteBox.ItemTemplate>
                         <DataTemplate DataType="apis:OmniSearchContent">
-                            <Grid
-                                ColumnDefinitions="Auto,*,Auto"
-                                ColumnSpacing="8"
-                                MaxWidth="270">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" MaxWidth="270">
                                 <Border
                                     Grid.Column="0"
                                     Width="44"
@@ -147,17 +144,11 @@ SPDX-License-Identifier: MPL-2.0
                         <DataTemplate DataType="models:ServerEntry">
                             <Border
                                 Padding="16,8"
-                                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                                 CornerRadius="8">
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel
-                                        Grid.Column="0"
-                                        Spacing="4"
-                                        VerticalAlignment="Center">
-                                        <TextBlock
-                                            Text="{Binding Region}"
-                                            FontSize="14"
-                                            FontWeight="SemiBold" />
+                                    <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Region}" FontSize="14" FontWeight="SemiBold" />
                                         <TextBlock
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}">
@@ -181,13 +172,10 @@ SPDX-License-Identifier: MPL-2.0
 
             <Border
                 IsVisible="{Binding IsServerListEmptyAndNotLoading}"
-                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8"
                 Opacity="0.8">
-                <StackPanel
-                    Spacing="16"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <ic:Lucide
                         Icon="Search"
                         Width="48"
@@ -208,18 +196,11 @@ SPDX-License-Identifier: MPL-2.0
 
             <Border
                 IsVisible="{Binding ShowLoadingIndicator}"
-                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8"
                 Opacity="0.8">
-                <StackPanel
-                    Spacing="16"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <ui:FAProgressRing
-                        IsIndeterminate="True"
-                        Width="100"
-                        Height="100"
-                        HorizontalAlignment="Center" />
+                <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ui:FAProgressRing IsIndeterminate="True" Width="100" Height="100" HorizontalAlignment="Center" />
                     <TextBlock
                         Text="{Binding LoadingMessage}"
                         FontSize="14"
@@ -231,18 +212,11 @@ SPDX-License-Identifier: MPL-2.0
 
             <Border
                 IsVisible="{Binding IsLoadingMore}"
-                Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8"
                 Opacity="0.8">
-                <StackPanel
-                    Spacing="16"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <ui:FAProgressRing
-                        IsIndeterminate="True"
-                        Width="100"
-                        Height="100"
-                        HorizontalAlignment="Center" />
+                <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ui:FAProgressRing IsIndeterminate="True" Width="100" Height="100" HorizontalAlignment="Center" />
                     <TextBlock
                         Text="{x:Static resources:Strings.Menu_RegionSelector_LoadingMore}"
                         FontSize="14"

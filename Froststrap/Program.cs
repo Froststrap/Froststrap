@@ -4,120 +4,51 @@
 
 using NLog;
 using Avalonia;
-using Avalonia.Media.Fonts;
-using Velopack;
+using Avalonia.Media;
 using Froststrap;
 using Froststrap.Backend;
+using Froststrap.Startup;
 using Froststrap.Cli;
 
 namespace Froststrap;
 
-sealed partial class Program
+sealed class Program
 {
     private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
     internal static readonly Stopwatch StartupTimer = Stopwatch.StartNew();
 
-#if _WIN32
-    private const int AttachParentProcess = -1;
-
-    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
-    private static partial int AllocConsole();
-
-    [System.Runtime.InteropServices.LibraryImport("kernel32.dll")]
-    private static partial int AttachConsole(int dwProcessId);
-#endif
-
-    private static void AttachParentConsole()
-    {
-#if _WIN32
-        _ = AttachConsole(AttachParentProcess);
-#endif
-    }
-
     [STAThread]
     public static int Main(string[] args)
     {
         AppInitializer.InitializeNativeResolvers();
+        VelopackSetup.Run();
 
-        var velopackBuilder = VelopackApp.Build()
-            .SetAutoApplyOnStartup(false);
+        var cli = CliInvocation.Parse(args);
 
-        if (OperatingSystem.IsWindows())
-        {
-            velopackBuilder = velopackBuilder
-                .OnAfterInstallFastCallback(v => UriHandler.RegisterProtocolHandlers())
-                .OnAfterUpdateFastCallback(v => UriHandler.RegisterProtocolHandlers())
-                .OnBeforeUninstallFastCallback(v => UriHandler.UnregisterProtocolHandlers());
-        }
-
-        velopackBuilder.Run();
-
-        string[] launchArgs = args;
-
-#if _WIN32
-        if (launchArgs.Any(static a => a is "--console" or "-c"))
-            _ = AllocConsole();
-#endif
+        if (cli.ShowConsole)
+            WindowsConsole.Allocate();
 
         Logging.Configure(Paths.Logs);
+#if DEBUG
+        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
+#endif
         _ = Task.Run(() => AppInitializer.RunMacSecurityDiagnostics());
         NativeLog.Register();
 
-        if (launchArgs.Length == 0)
+        if (!cli.TryCreateLaunchSettings(out var launchSettings, out int exitCode))
         {
-            App.LaunchSettings = new LaunchSettings(new FroststrapCliCommand(), launchArgs);
-        }
-        else
-        {
-            var parseResult = DotMake.CommandLine.Cli.Parse<FroststrapCliCommand>(launchArgs);
-
-            if (launchArgs.Any(static arg => arg is "--help" or "-h" or "--version"))
-            {
-                AttachParentConsole();
-                int exitCode = parseResult.ParseResult.Invoke();
-                LogManager.Shutdown();
-                return exitCode;
-            }
-
-            if (parseResult.ParseResult.Errors.Count > 0)
-            {
-                AttachParentConsole();
-
-                foreach (var parseError in parseResult.ParseResult.Errors)
-                {
-                    Console.Error.WriteLine(parseError.Message);
-                    Logger.Error(parseError.Message);
-                }
-
-                LogManager.Shutdown();
-                return (int)ErrorCode.ERROR_CANCELLED;
-            }
-
-            var cli = parseResult.Bind<FroststrapCliCommand>();
-            App.LaunchSettings = new LaunchSettings(cli, launchArgs);
-        }
-
-        var launchSettings = App.LaunchSettings;
-
-        if (launchSettings.UnknownArgs.Count > 0)
-        {
-            var unknown = launchSettings.UnknownArgs;
-            Logger.Error($"{unknown.Count} unrecognized argument(s): {string.Join(", ", unknown)}");
             LogManager.Shutdown();
-            return (int)ErrorCode.ERROR_CANCELLED;
+            return exitCode;
         }
 
-        if (launchArgs.Length != 0)
-            Logger.Debug($"Arguments: {string.Join(" ", launchArgs)}");
+        App.LaunchSettings = launchSettings;
 
         Logger.Debug($"Log file: {Logging.FileLocation}");
 
         try
         {
-#if __APPLE__
             NativeNotify.Init(ProjectInfo.BundleId);
-#endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
@@ -133,96 +64,14 @@ sealed partial class Program
         return 0;
     }
 
-
     public static AppBuilder BuildAvaloniaApp()
-    {
-        var builder = AppBuilder.Configure<App>()
+        => AppBuilder.Configure<App>()
             .UsePlatformDetect()
-            .ConfigureFonts(fontManager => fontManager.AddFontCollection(
-                new EmbeddedFontCollection(
-                    new Uri("fonts:Froststrap", UriKind.Absolute),
-                    new Uri("avares://Froststrap/Resources/Fonts", UriKind.Absolute))))
+            .WithInterFont()
+            .With(new FontManagerOptions { DefaultFamilyName = "fonts:Inter#Inter" })
 #if DEBUG
             .WithDeveloperTools()
 #endif
-            .LogToTrace();
-
-#if DEBUG
-        Logger.Warn("Debug build! Expect shit performance due to use of debuggers.");
-#endif
-
-        if (OperatingSystem.IsMacOS())
-            builder = builder.With(new AvaloniaNativePlatformOptions
-            {
-                // Remove render with deprecated Core OpenGL, want best experience for macOS.
-                // https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_pg_concepts/opengl_pg_concepts.html
-                //
-                // > Important: OpenGL was deprecated in macOS 10.14.
-                // > To create high-performance code on GPUs, use the Metal framework instead.
-                // 
-                // Quote from linked website.
-                RenderingMode = new[]
-                {
-                    AvaloniaNativeRenderingMode.Metal,
-                    AvaloniaNativeRenderingMode.Software
-                }
-            });
-
-        if (OperatingSystem.IsLinux())
-        {
-            builder = builder.With(new X11PlatformOptions
-            {
-                // https://docs.avaloniaui.net/api/avalonia/x11platformoptions#uid-1eb188c693
-                // 
-                // Add Vulkan as a possible render method, possibly unstable?
-                RenderingMode = new[]
-                {
-                    X11RenderingMode.Glx,
-                    X11RenderingMode.Vulkan,
-                    X11RenderingMode.Software
-                },
-            });
-
-            if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("FROSTSTRAP_FORCE_WAYLAND")))
-            {
-                App.Logger.Debug("Using Wayland backend (FROSTSTRAP_FORCE_WAYLAND)");
-
-                builder = builder.UseWayland()
-                    .With(new WaylandPlatformOptions
-                    {
-                        UseDmabufSwapchain = true
-                    });
-            }
-        }
-
-        if (OperatingSystem.IsWindows())
-        {
-            if (App.LaunchSettings?.NoGpuFlag.Active == true)
-            {
-                builder = builder.With(new Win32PlatformOptions
-                {
-                    RenderingMode = [Win32RenderingMode.Software]
-                });
-            }
-            else
-            {
-                // https://docs.avaloniaui.net/docs/platform-specific-guides/windows#rendering-mode
-                // 
-                // All options in here might actually be nice to have available.
-                // `AngleGL` is noted to only work with `WinUIComposition` and `DirectComposition`
-                // which possibly is dependents of the backdrops we have, haven't tested.
-                builder = builder.With(new Win32PlatformOptions
-                {
-                    RenderingMode = [
-                        Win32RenderingMode.AngleEgl,
-                        Win32RenderingMode.Wgl,
-                        Win32RenderingMode.Vulkan,
-                        Win32RenderingMode.Software
-                    ]
-                });
-            }
-        }
-
-        return builder;
-    }
+            .LogToTrace()
+            .ConfigurePlatformRendering();
 }

@@ -5,33 +5,15 @@
 using Froststrap.AppData;
 using Froststrap.RobloxInterfaces;
 
-namespace Froststrap.Utility;
+namespace Froststrap.BackgroundUpdater;
 
 internal static class BackgroundUpdatePolicy
 {
-    public static bool IsEligible(bool isStudio, bool mustUpgrade, Version? latestVersion, IAppData appData)
+    public static bool IsEligible(Version? latestVersion, IAppData appData)
     {
-        if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
-        {
-            App.Logger.Debug("Not eligible: Is the background updater process");
-            return false;
-        }
-
         if (!App.Settings.Prop.BackgroundUpdatesEnabled)
         {
             App.Logger.Debug("Not eligible: Background updates disabled");
-            return false;
-        }
-
-        if (isStudio)
-        {
-            App.Logger.Debug("Not eligible: Studio launch");
-            return false;
-        }
-
-        if (mustUpgrade)
-        {
-            App.Logger.Debug("Not eligible: Must upgrade is true");
             return false;
         }
 

@@ -40,6 +40,7 @@ internal sealed class MainWindowViewModel : ObservableObject
     public int IconButtonIconSize { get => _iconButtonIconSize; }
     private int _titlebarTextSize = OperatingSystem.IsMacOS() ? 18 : 13;
     public int TitlebarTextSize { get => _titlebarTextSize; }
+    public int BreadcrumbChevronSize => (int)Math.Round(_titlebarTextSize * 0.625);
 
     private static readonly Dictionary<string, LucideIconNames> _pageIconMap = new()
     {
@@ -187,26 +188,37 @@ internal sealed class MainWindowViewModel : ObservableObject
         BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
         SearchBar = new();
 
-        NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
-        NavigateToBootstrapperCommand = new RelayCommand(() => Navigate("bootstrapper", Strings.Menu_Bootstrapper_Title, Strings.Menu_Bootstrapper_Description, new BootstrapperViewModel()));
-        NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
-        NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Strings.Menu_PresetMods_Title, Strings.Menu_PresetMods_Description, new ModsPresetsViewModel()));
-        NavigateToFastFlagsCommand = new RelayCommand(() =>
+        _pageFactories = new()
         {
-            var dialogService = new FastFlagsDialogService(this);
-            var viewModel = new FastFlagsViewModel(
-                new DefaultFastFlagsService(),
-                new DefaultSettingsService(),
-                dialogService
-            );
-            Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, viewModel);
-        });
-        NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
-        NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Strings.Menu_RegionSelector_Title, Strings.Menu_RegionSelector_Description, new RegionSelectorViewModel()));
-        NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Strings.Menu_GlobalSettings_Title, Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
-        NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", Strings.Common_Shortcuts, Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
-        NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", Strings.Menu_QuickPlay_Title, Strings.Menu_QuickPlay_Description, new QuickPlayViewModel()));
-        NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", Strings.Common_Deployment, Strings.Menu_Channel_Description, new ChannelViewModel()));
+            ["integrations"] = () => new IntegrationsViewModel(),
+            ["bootstrapper"] = () => new BootstrapperViewModel(),
+            ["linuxsettings"] = () => new LinuxSettingsViewModel(),
+            ["mods"] = () => new ModsPresetsViewModel(),
+            ["fastflags"] = () => new FastFlagsViewModel(new DefaultFastFlagsService(), new DefaultSettingsService(), new FastFlagsDialogService(this)),
+            ["appearance"] = () => new AppearanceViewModel(),
+            ["regionselector"] = () => new RegionSelectorViewModel(),
+            ["globalsettings"] = () => new GlobalSettingsViewModel(),
+            ["shortcuts"] = () => new ShortcutsViewModel(),
+            ["quickplay"] = () => new QuickPlayViewModel(),
+            ["channels"] = () => new ChannelViewModel(),
+            ["globalsettingseditor"] = () => new GlobalSettingsEditorViewModel(this),
+            ["fastflageditor"] = () => new FastFlagEditorViewModel(this),
+            ["communitymods"] = () => new CommunityModsViewModel(),
+            ["modgenerator"] = () => new ModGeneratorViewModel(),
+            ["custommods"] = () => new ModsViewModel()
+        };
+
+        NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, _pageFactories["integrations"]));
+        NavigateToBootstrapperCommand = new RelayCommand(() => Navigate("bootstrapper", Strings.Menu_Bootstrapper_Title, Strings.Menu_Bootstrapper_Description, _pageFactories["bootstrapper"]));
+        NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, _pageFactories["linuxsettings"]));
+        NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Strings.Menu_PresetMods_Title, Strings.Menu_PresetMods_Description, _pageFactories["mods"]));
+        NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, _pageFactories["fastflags"]));
+        NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, _pageFactories["appearance"]));
+        NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Strings.Menu_RegionSelector_Title, Strings.Menu_RegionSelector_Description, _pageFactories["regionselector"]));
+        NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Strings.Menu_GlobalSettings_Title, Strings.Menu_GBSEditor_Description, _pageFactories["globalsettings"]));
+        NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", Strings.Common_Shortcuts, Strings.Menu_Shortcuts_Description, _pageFactories["shortcuts"]));
+        NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", Strings.Menu_QuickPlay_Title, Strings.Menu_QuickPlay_Description, _pageFactories["quickplay"]));
+        NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", Strings.Common_Deployment, Strings.Menu_Channel_Description, _pageFactories["channels"]));
 
         NavigateToGlobalSettingsEditorCommand = new RelayCommand(() =>
         {
@@ -214,7 +226,7 @@ internal sealed class MainWindowViewModel : ObservableObject
                 new() { Content = Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
                 new() { Content = Strings.Common_Editor, Tag = null, IsLast = true }
             ];
-            Navigate("globalsettingseditor", Strings.Common_Editor, Strings.Menu_GlobalSettingsEditor_Description, new GlobalSettingsEditorViewModel(this), crumbs);
+            Navigate("globalsettingseditor", Strings.Common_Editor, Strings.Menu_GlobalSettingsEditor_Description, _pageFactories["globalsettingseditor"], crumbs);
         });
 
         NavigateToFastFlagEditorCommand = new RelayCommand(() =>
@@ -223,7 +235,7 @@ internal sealed class MainWindowViewModel : ObservableObject
                 new() { Content = Strings.Menu_FastFlags_Title, Tag = "fastflags" },
                 new() { Content = Strings.Common_Editor, Tag = null, IsLast = true }
             ];
-            Navigate("fastflageditor", Strings.Common_Editor, Strings.Menu_FastFlagEditor_Description, new FastFlagEditorViewModel(this), crumbs);
+            Navigate("fastflageditor", Strings.Common_Editor, Strings.Menu_FastFlagEditor_Description, _pageFactories["fastflageditor"], crumbs);
         });
 
         NavigateToCommunityModsCommand = new RelayCommand(() =>
@@ -232,12 +244,12 @@ internal sealed class MainWindowViewModel : ObservableObject
                 new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
                 new() { Content = Strings.Menu_CommunityMods_Title, Tag = null, IsLast = true }
             ];
-            Navigate("communitymods", Strings.Menu_CommunityMods_Title, Strings.Menu_CommunityMods_Description, new CommunityModsViewModel(), crumbs);
+            Navigate("communitymods", Strings.Menu_CommunityMods_Title, Strings.Menu_CommunityMods_Description, _pageFactories["communitymods"], crumbs);
         });
 
         NavigateToModGeneratorCommand = new RelayCommand(() =>
         {
-            Navigate("modgenerator", Strings.Menu_ModGenerator_Title, Strings.Menu_ModGenerator_Description, new ModGeneratorViewModel(), [
+            Navigate("modgenerator", Strings.Menu_ModGenerator_Title, Strings.Menu_ModGenerator_Description, _pageFactories["modgenerator"], [
                 new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
                 new() { Content = Strings.Menu_ModGenerator_Title, Tag = null, IsLast = true }
             ]);
@@ -249,7 +261,7 @@ internal sealed class MainWindowViewModel : ObservableObject
                 new() { Content = Strings.Menu_PresetMods_Title, Tag = "mods" },
                 new() { Content = Strings.Menu_Mods_Title, Tag = null, IsLast = true }
             ];
-            Navigate("custommods", Strings.Menu_Mods_Title, Strings.Menu_Mods_InfoBar, new ModsViewModel(), crumbs);
+            Navigate("custommods", Strings.Menu_Mods_Title, Strings.Menu_Mods_InfoBar, _pageFactories["custommods"], crumbs);
         });
 
         var lastPageName = App.State.Prop.LastPage;
@@ -261,10 +273,11 @@ internal sealed class MainWindowViewModel : ObservableObject
         SelectedLaunchMode = App.State.Prop.LastLaunchMode;
     }
 
-    private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)
+    private void Navigate(string pageId, string title, string description, Func<object> createViewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)
     {
         try
         {
+            object viewModel = GetOrCreatePage(pageId, createViewModel);
             SelectedPage = pageId;
             CurrentPageTitle = title;
             CurrentPageDescription = description;
@@ -276,6 +289,63 @@ internal sealed class MainWindowViewModel : ObservableObject
         {
             App.Logger.Error(ex);
         }
+    }
+
+    private static readonly HashSet<string> UncachedPages = ["custommods"];
+
+    private readonly Dictionary<string, object> _pageCache = [];
+
+    private readonly Dictionary<string, Func<object>> _pageFactories;
+
+    public object? PrewarmPage(string pageId)
+    {
+        if (UncachedPages.Contains(pageId) || _pageCache.ContainsKey(pageId) || !_pageFactories.TryGetValue(pageId, out var factory))
+            return null;
+
+        var viewModel = factory();
+        _pageCache[pageId] = viewModel;
+        return viewModel;
+    }
+
+    private object GetOrCreatePage(string pageId, Func<object> createViewModel)
+    {
+        if (UncachedPages.Contains(pageId))
+            return createViewModel();
+
+        if (_pageCache.TryGetValue(pageId, out var cached))
+        {
+            (cached as NotifyPropertyChangedViewModel)?.OnPropertyChanged(string.Empty);
+            return cached;
+        }
+
+        var viewModel = createViewModel();
+        _pageCache[pageId] = viewModel;
+        return viewModel;
+    }
+
+    public bool IsCachedPage(object viewModel) => _pageCache.ContainsValue(viewModel);
+
+    public void InvalidatePages()
+    {
+        foreach (var (pageId, viewModel) in _pageCache.ToList())
+        {
+            if (ReferenceEquals(viewModel, CurrentPage))
+                continue;
+
+            _pageCache.Remove(pageId);
+            (viewModel as IDisposable)?.Dispose();
+        }
+    }
+
+    public void DisposePages()
+    {
+        if (CurrentPage is IDisposable current && !IsCachedPage(current))
+            current.Dispose();
+
+        foreach (var viewModel in _pageCache.Values)
+            (viewModel as IDisposable)?.Dispose();
+
+        _pageCache.Clear();
     }
 
     private void NavigateToLastPage(string pageTypeName)

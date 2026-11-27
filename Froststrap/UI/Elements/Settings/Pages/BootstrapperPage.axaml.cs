@@ -12,6 +12,6 @@ internal sealed partial class BootstrapperPage : UserControl
     {
         InitializeComponent();
 
-        App.FrostRPC?.SetPage("Bootstrapper");
+        AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Bootstrapper"); };
     }
 }

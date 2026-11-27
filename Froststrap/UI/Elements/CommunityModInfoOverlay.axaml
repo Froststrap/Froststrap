@@ -1,0 +1,142 @@
+<!--
+SPDX-FileCopyrightText: 2026 Froststrap
+
+SPDX-License-Identifier: MPL-2.0
+-->
+
+<UserControl
+    x:Class="Froststrap.UI.Elements.CommunityModInfoOverlay"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Froststrap.UI.Elements.Controls"
+    xmlns:models="using:Froststrap.Models"
+    xmlns:resources="using:Froststrap.Localisation"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="using:Froststrap.UI.ViewModels.Dialogs"
+    x:DataType="vm:CommunityModInfoViewModel"
+    Focusable="True">
+
+    <Panel>
+        <Border Background="#99000000" PointerPressed="Backdrop_PointerPressed" />
+
+        <controls:Surface Width="640"
+                          MaxHeight="640"
+                          Margin="24"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          CornerRadius="12"
+                          ClipToBounds="True"
+                          BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                          BorderThickness="1"
+                          PointerPressed="Card_PointerPressed">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+                <Panel Grid.Row="0" Height="240" Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                    <Image Source="{Binding Mod.Thumbnail}"
+                           Stretch="UniformToFill"
+                           RenderOptions.BitmapInterpolationMode="HighQuality" />
+
+                    <Border IsHitTestVisible="False">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,35%" EndPoint="0%,100%">
+                                <GradientStop Offset="0" Color="#00000000" />
+                                <GradientStop Offset="1" Color="#D9000000" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+
+                    <controls:IconButton Icon="X"
+                                         Command="{Binding CloseCommand}"
+                                         Width="32"
+                                         Height="32"
+                                         Padding="0"
+                                         Margin="12"
+                                         IconSize="14"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Top"
+                                         Background="#66000000"
+                                         BorderThickness="0"
+                                         Foreground="White"
+                                         ToolTip.Tip="{x:Static resources:Strings.Common_Close}" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16" Margin="20,0,20,16" VerticalAlignment="Bottom">
+                        <StackPanel Spacing="2" VerticalAlignment="Bottom">
+                            <TextBlock Text="{Binding Mod.Name}" FontSize="26" FontWeight="Bold" Foreground="White" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" FontSize="12" Foreground="#CCFFFFFF" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Bottom">
+                            <Border Classes="tag" IsVisible="{Binding Mod.GradientAngle.HasValue}">
+                                <TextBlock Text="{Binding Mod.GradientAngle, StringFormat='{}{0}°'}" />
+                            </Border>
+                            <Border Classes="tag" Background="{DynamicResource SystemAccentColor}">
+                                <TextBlock Text="{Binding Mod.ModTypeDisplay}" />
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Panel>
+
+                <Border Grid.Row="1"
+                        Height="6"
+                        Background="{Binding ColorBrush}"
+                        IsVisible="{Binding ColorBrush, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Hidden">
+                    <StackPanel Margin="20,16,20,4" Spacing="16">
+                        <TextBlock Text="{Binding Mod.Description}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                        <StackPanel Spacing="8" IsVisible="{Binding Mod.IsColorMod}">
+                            <TextBlock Text="{x:Static resources:Strings.Common_GlyphPreview}" FontWeight="SemiBold" />
+                            <Panel>
+                                <ItemsControl ItemsSource="{Binding GlyphItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:GlyphItem">
+                                            <Border Width="48" Height="48" Margin="3" Padding="8" CornerRadius="6"
+                                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" BorderThickness="1">
+                                                <Viewbox>
+                                                    <Path Data="{Binding Data}" Fill="{Binding Brush}" />
+                                                </Viewbox>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <ui:FAProgressRing IsIndeterminate="True" IsVisible="{Binding IsLoadingGlyphs}" Width="24" Height="24" />
+                            </Panel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="3" Margin="20,12,20,20" Spacing="8">
+                    <ProgressBar Value="{Binding Mod.DownloadProgress}" Height="4" IsVisible="{Binding Mod.IsDownloading}" />
+                    <controls:IconButton Content="Download"
+                                         Icon="Download"
+                                         Classes="Primary"
+                                         HorizontalAlignment="Stretch"
+                                         Height="40"
+                                         Command="{Binding Mod.DownloadCommand}"
+                                         CommandParameter="{Binding Mod}" />
+                </StackPanel>
+            </Grid>
+        </controls:Surface>
+    </Panel>
+
+    <UserControl.Styles>
+        <Style Selector="Border.tag">
+            <Setter Property="Background" Value="#66000000" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="8,3" />
+        </Style>
+        <Style Selector="Border.tag > TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+    </UserControl.Styles>
+</UserControl>

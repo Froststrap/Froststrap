@@ -15,6 +15,7 @@ members = [
 default-members = [
   "notify",
   "audioplayer",
+  "modgenerator",
 ]
 
 [workspace.package]

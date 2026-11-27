@@ -27,9 +27,7 @@ SPDX-License-Identifier: MPL-2.0
                VerticalAlignment="Top"
                Margin="0,60,0,0" />
 
-        <Grid VerticalAlignment="Bottom"
-              Background="#191A1F"
-              Height="91">
+        <Grid VerticalAlignment="Bottom" Background="#191A1F" Height="91">
 
             <ProgressBar VerticalAlignment="Top"
                          Height="6"

@@ -39,4 +39,5 @@ global using Froststrap.Models.SettingTasks;
 global using Froststrap.Models.SettingTasks.Base;
 global using Froststrap.Localisation;
 global using Froststrap.UI;
+global using Froststrap.BackgroundUpdater;
 global using Froststrap.Utility;

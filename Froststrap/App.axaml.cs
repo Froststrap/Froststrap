@@ -17,6 +17,7 @@ using Froststrap.Clients.Registry;
 using Froststrap.Clients.Runtime;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Utility;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -430,7 +431,7 @@ internal sealed partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
-        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Froststrap#Inter");
+        Resources["ContentControlThemeFontFamily"] = new Avalonia.Media.FontFamily("fonts:Inter#Inter");
         Resources["ComboBoxPadding"] = new Thickness(12, 7, 0, 5);
         Resources["ComboBoxItemThemePadding"] = new Thickness(11, 7, 11, 5);
         Resources["ComboBoxEditableTextPadding"] = new Thickness(11, 7, 32, 4);
@@ -444,6 +445,8 @@ internal sealed partial class App : Application
 
         if (OperatingSystem.IsMacOS() && TryGetFeature(typeof(IActivatableLifetime)) is IActivatableLifetime activatableLifetime)
             activatableLifetime.Activated += OnAppActivated;
+
+        MacOSDock.Initialize();
     }
 
     private static void OnAppActivated(object? sender, ActivatedEventArgs e)
@@ -519,7 +522,7 @@ internal sealed partial class App : Application
 
         // must happen before anything below loads Settings/State from the new data root
         if (OperatingSystem.IsWindows())
-            Updater.MigrateOutOfInstallRoot();
+            Migrations.MigrateOutOfInstallRoot();
 
         NLog.GlobalDiagnosticsContext.Set("logRoot", Paths.Logs);
         NLog.GlobalDiagnosticsContext.Set("startTime", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture));
@@ -593,7 +596,7 @@ internal sealed partial class App : Application
 
                 _ = AssertWindowsAUMIDAsync();
 
-                await Updater.RunMigrations();
+                await Migrations.RunMigrations();
 
                 if (Settings.Prop.AllowCookieAccess)
                     await Cookies.LoadCookies();
@@ -668,7 +671,7 @@ internal sealed partial class App : Application
         if (LaunchSettings.RobloxLaunchMode != LaunchMode.None
             || State.Prop.IsFirstLaunch
             || LaunchSettings.SettingsFlag.Active
-            || LaunchSettings.BackgroundUpdaterFlag.Active)
+            || BackgroundUpdate.IsCurrentProcess)
             return;
 
         Logger.Debug("Waiting for a possible cold-start URL activation");

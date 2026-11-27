@@ -26,7 +26,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
         {
             InitializeComponent();
 
-            App.FrostRPC?.SetPage("Global Settings");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("Global Settings"); };
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -22,8 +22,45 @@ SPDX-License-Identifier: MPL-2.0
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources/Translations/*.json" LogicalName="Froststrap.Localisation.Translations.%(Filename)%(Extension)" />
+    <TranslationSource Include="Resources/Translations/*.json" />
+    <UpToDateCheckInput Include="@(TranslationSource)" />
   </ItemGroup>
+
+  <UsingTask TaskName="DeflateFiles" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Sources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OutputDirectory ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Code Type="Fragment" Language="cs">
+<![CDATA[
+Directory.CreateDirectory(OutputDirectory);
+foreach (var item in Sources)
+{
+    string source = item.GetMetadata("FullPath");
+    string output = Path.Combine(OutputDirectory, Path.GetFileName(source) + ".deflate");
+    using var input = File.OpenRead(source);
+    using var file = File.Create(output);
+    using var deflate = new DeflateStream(file, CompressionLevel.Optimal);
+    input.CopyTo(deflate);
+}
+]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="CompressTranslations" BeforeTargets="PrepareForBuild" Inputs="@(TranslationSource);$(MSBuildProjectFile)" Outputs="@(TranslationSource->'$(MSBuildProjectDirectory)/$(IntermediateOutputPath)translations/%(Filename)%(Extension).deflate')">
+    <DeflateFiles Sources="@(TranslationSource)" OutputDirectory="$(MSBuildProjectDirectory)/$(IntermediateOutputPath)translations" />
+  </Target>
+
+  <Target Name="EmbedCompressedTranslations" DependsOnTargets="CompressTranslations" BeforeTargets="PrepareForBuild">
+    <ItemGroup>
+      <EmbeddedResource Include="@(TranslationSource->'$(MSBuildProjectDirectory)/$(IntermediateOutputPath)translations/%(Filename)%(Extension).deflate')" LogicalName="Froststrap.Localisation.Translations.%(Filename)%(Extension).deflate" />
+      <FileWrites Include="@(TranslationSource->'$(MSBuildProjectDirectory)/$(IntermediateOutputPath)translations/%(Filename)%(Extension).deflate')" />
+    </ItemGroup>
+  </Target>
 
   <UsingTask TaskName="GenerateStrings" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>

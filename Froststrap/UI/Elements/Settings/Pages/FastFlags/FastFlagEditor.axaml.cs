@@ -55,7 +55,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             DataGrid.Columns[1].SortKey = o => ((FastFlag)o!).Name;
             DataGrid.Columns[2].SortKey = o => ((FastFlag)o!).Value;
 
-            App.FrostRPC?.SetPage("FastFlag Editor");
+            AttachedToVisualTree += (_, _) => { if (!MainWindow.IsStagingPages) App.FrostRPC?.SetPage("FastFlag Editor"); };
         }
 
         protected override void OnLoaded(RoutedEventArgs e)
