@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Froststrap
+//
+// SPDX-License-Identifier: MPL-2.0
+
 namespace Froststrap.Integrations.ActivityWatcher.StudioRichPresenceUtilities;
 
 internal sealed class HTTPServer : IDisposable
