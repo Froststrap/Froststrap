@@ -8,6 +8,7 @@ internal static class Events
 {
     public static event EventHandler? OnHistoryUpdated;
     public static event EventHandler<string>? OnLogEntry;
+    public static event EventHandler? OnGameJoining;
     public static event EventHandler? ShowNotif;
     public static event EventHandler? OnGameJoin;
     public static event EventHandler? OnGameLeave;
@@ -20,6 +21,7 @@ internal static class Events
 
     internal static void RaiseHistoryUpdated(Watcher sender) => OnHistoryUpdated?.Invoke(sender, EventArgs.Empty);
     internal static void RaiseLogEntry(Watcher sender, string entry) => OnLogEntry?.Invoke(sender, entry);
+    internal static void RaiseGameJoining(Watcher sender) => OnGameJoining?.Invoke(sender, EventArgs.Empty);
     internal static void RaiseShowNotif(Watcher sender) => ShowNotif?.Invoke(sender, EventArgs.Empty);
     internal static void RaiseGameJoin(Watcher sender) => OnGameJoin?.Invoke(sender, EventArgs.Empty);
     internal static void RaiseGameLeave(Watcher sender) => OnGameLeave?.Invoke(sender, EventArgs.Empty);
