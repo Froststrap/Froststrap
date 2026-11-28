@@ -11,7 +11,7 @@ internal sealed class Watcher : IDisposable
     private readonly CancellationTokenSource _disposeCancellation = new();
 
     private const string GameMessageEntry = "[FLog::CreatorOutput] [BloxstrapRPC]";
-    internal const string GameJoiningEntry = "[FLog::Output] ! Joining game";
+    private const string GameJoiningEntry = "[FLog::Output] ! Joining game";
     private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
     private const string GameLaunchEventEntry = "[FLog::NewWebView2Browser] Webview handles hybrid javascript event";
     private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
@@ -192,6 +192,9 @@ internal sealed class Watcher : IDisposable
     private void ReadLogEntry(string entry)
     {
         Events.RaiseLogEntry(this, entry);
+
+        if (entry.Contains(GameJoiningEntry, StringComparison.Ordinal))
+            Events.RaiseGameJoining(this);
 
         _logEntriesRead += 1;
 

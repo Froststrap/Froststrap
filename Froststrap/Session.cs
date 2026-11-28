@@ -82,7 +82,7 @@ internal sealed class Session : IDisposable
             if (App.Settings.Prop.UseDisableAppPatch)
             {
                 Integrations.ActivityWatcher.Events.OnAppClose += OnAppClose;
-                Integrations.ActivityWatcher.Events.OnLogEntry += OnLogEntry;
+                Integrations.ActivityWatcher.Events.OnGameJoining += OnGameJoining;
             }
 
             if ((sessionData.LaunchMode == LaunchMode.Studio || sessionData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
@@ -373,11 +373,8 @@ internal sealed class Session : IDisposable
     private void OnAppClose(object? sender, EventArgs e) => _ = CloseRobloxAsync(sessionData!.ProcessId);
 
     // joining another game during the wait cancels the force-close (the close request was already sent)
-    private void OnLogEntry(object? sender, string entry)
+    private void OnGameJoining(object? sender, EventArgs e)
     {
-        if (!entry.Contains(Integrations.ActivityWatcher.Watcher.GameJoiningEntry, StringComparison.Ordinal))
-            return;
-
         lock (_closeLock)
             _closeCancel?.Cancel();
     }
@@ -454,7 +451,7 @@ internal sealed class Session : IDisposable
         PlayerRichPresence?.Dispose();
         StudioRichPresence?.Dispose();
         Integrations.ActivityWatcher.Events.OnAppClose -= OnAppClose;
-        Integrations.ActivityWatcher.Events.OnLogEntry -= OnLogEntry;
+        Integrations.ActivityWatcher.Events.OnGameJoining -= OnGameJoining;
         ActivityWatcher?.Dispose();
         _cancellationTokenSource.Dispose();
         _lock.Dispose();

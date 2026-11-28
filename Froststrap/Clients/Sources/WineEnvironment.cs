@@ -412,6 +412,7 @@ internal sealed class WineSetup(IInstallReporter reporter, string versionDirecto
                 chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
                 chain.ChainPolicy.CustomTrustStore.Add(_webView2RootCert);
                 chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+                chain.ChainPolicy.ApplicationPolicy.Add(new Oid("1.3.6.1.5.5.7.3.1"));
 
                 return chain.Build(cert);
             }
