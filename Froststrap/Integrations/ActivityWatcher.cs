@@ -93,7 +93,7 @@ internal sealed class ActivityWatcher : IDisposable
         _client = client;
         _logs = client.Logs;
 
-        if (!String.IsNullOrEmpty(logFile))
+        if (!string.IsNullOrEmpty(logFile))
             LogLocation = logFile;
 
         _launchMode = launchMode;
@@ -192,8 +192,6 @@ internal sealed class ActivityWatcher : IDisposable
 
         return null;
     }
-
-    private bool IsStudioLaunch => _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth;
 
     private void ResetStudioPlaceState()
     {
