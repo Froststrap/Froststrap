@@ -7,7 +7,7 @@ namespace Froststrap.Integrations.AccountManager
 {
     internal static class RobloxApiService
     {
-        public static async Task<AccountManagerAccount?> GetAccountInfoFromCookieAsync(string securityCookie)
+        public static async Task<AccountManagerAccount?> GetAccountInfoFromCookieAsync(string securityCookie, CancellationToken token = default)
         {
             try
             {
@@ -19,10 +19,10 @@ namespace Froststrap.Integrations.AccountManager
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
                 using var client = new HttpClient(handler);
 
-                var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
+                var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true), token);
                 response.EnsureSuccessStatusCode();
 
-                var user = await JsonHelper.ReadFromJsonAsync<AuthenticatedUser>(response.Content);
+                var user = await JsonHelper.ReadFromJsonAsync<AuthenticatedUser>(response.Content, token);
                 if (user == null) return null;
 
                 return new AccountManagerAccount(
@@ -31,6 +31,10 @@ namespace Froststrap.Integrations.AccountManager
                     user.Username,
                     user.DisplayName
                 );
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -61,7 +65,7 @@ namespace Froststrap.Integrations.AccountManager
             }
         }
 
-        public static async Task<bool?> ValidateAccountAsync(AccountManagerAccount account)
+        public static async Task<bool?> ValidateAccountAsync(AccountManagerAccount account, CancellationToken token = default)
         {
             try
             {
@@ -78,12 +82,16 @@ namespace Froststrap.Integrations.AccountManager
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
                 using var client = new HttpClient(handler);
 
-                var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
+                var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true), token);
 
                 if (response.StatusCode == HttpStatusCode.OK) return true;
                 if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden) return false;
 
                 return null;
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                throw;
             }
             catch (Exception ex)
             {

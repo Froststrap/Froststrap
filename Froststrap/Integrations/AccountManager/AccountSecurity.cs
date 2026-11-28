@@ -27,6 +27,21 @@ internal static class AccountSecurity
         return null;
     }
 
+    /// Found, Missing (nothing saved) or Failed (the store couldn't be read).
+    public static CredentialRead ReadCredential(string accountId, out string token)
+    {
+        token = string.Empty;
+
+        try
+        {
+            return CredentialStore.Read(accountId, out token);
+        }
+        catch
+        {
+            return CredentialRead.Failed;
+        }
+    }
+
     public static bool SetCredential(string accountId, string credential)
     {
         if (string.IsNullOrWhiteSpace(accountId) || string.IsNullOrEmpty(credential))

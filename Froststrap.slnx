@@ -9,6 +9,7 @@ SPDX-License-Identifier: MPL-2.0
   <Project Path="./Froststrap/Froststrap.csproj" />
   <Project Path="./Froststrap.Core/Froststrap.Core.csproj" />
   <Project Path="./Froststrap.Localisation/Froststrap.Localisation.csproj" />
+  <Project Path="./Froststrap.Tests/Froststrap.Tests.csproj" />
   <Project Path="./FluentAvalonia/FluentAvalonia.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />

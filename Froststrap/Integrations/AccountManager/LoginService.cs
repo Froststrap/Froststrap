@@ -174,7 +174,7 @@ namespace Froststrap.Integrations.AccountManager
 
                 if (string.IsNullOrEmpty(robloSecurity)) return null;
 
-                var account = await RobloxApiService.GetAccountInfoFromCookieAsync(robloSecurity);
+                var account = await RobloxApiService.GetAccountInfoFromCookieAsync(robloSecurity, token);
                 if (account != null)
                     await Dispatcher.UIThread.InvokeAsync(() => dialog.CompleteSignIn());
 

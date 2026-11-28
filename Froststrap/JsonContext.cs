@@ -33,6 +33,7 @@ namespace Froststrap
     [JsonSerializable(typeof(RobloxCookies))]
     [JsonSerializable(typeof(AuthenticatedUser))]
     [JsonSerializable(typeof(AccountManagerData))]
+    [JsonSerializable(typeof(Froststrap.Integrations.AccountManager.AccountExportFile))]
     [JsonSerializable(typeof(ApiArrayResponse<ThumbnailResponse>))]
     [JsonSerializable(typeof(ApiArrayResponse<GameDetailResponse>))]
     [JsonSerializable(typeof(UserPresenceResponse))]
