@@ -143,19 +143,6 @@ internal sealed partial class App : Application
     private static DateTime _waitStart;
     private static List<Style>? _disableAnimationStyles;
 
-    private static string? GetEnvironmentVariable(params string[] names)
-    {
-        foreach (string name in names)
-        {
-            string? value = Environment.GetEnvironmentVariable(name);
-
-            if (!string.IsNullOrWhiteSpace(value))
-                return value;
-        }
-
-        return null;
-    }
-
     private async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e)
     {
         if (e.ExceptionObject is Exception ex) await FinalizeExceptionHandling(ex);
