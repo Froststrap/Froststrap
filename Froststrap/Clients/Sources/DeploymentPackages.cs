@@ -228,6 +228,12 @@ internal sealed class DeploymentPackages(
             if (!string.IsNullOrEmpty(targetDir))
                 Directory.CreateDirectory(targetDir);
 
+            if (!OperatingSystem.IsWindows() && IsSymbolicLink(entry))
+            {
+                ExtractSymbolicLink(entry, targetPath, fullTargetFolder);
+                continue;
+            }
+
             try
             {
                 entry.ExtractToFile(targetPath, overwrite: true);
@@ -238,6 +244,32 @@ internal sealed class DeploymentPackages(
                 reporter.MarkExtractionFailed();
             }
         }
+    }
+
+    private static bool IsSymbolicLink(ZipArchiveEntry entry)
+    {
+        const int fileTypeMask = 0xF000;
+        const int symbolicLinkType = 0xA000;
+        return ((entry.ExternalAttributes >> 16) & fileTypeMask) == symbolicLinkType;
+    }
+
+    private static void ExtractSymbolicLink(ZipArchiveEntry entry, string targetPath, string fullTargetFolder)
+    {
+        string linkTarget;
+        using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
+            linkTarget = reader.ReadToEnd();
+
+        string resolvedTarget = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(targetPath)!, linkTarget));
+        if (Path.IsPathRooted(linkTarget) || !resolvedTarget.StartsWith(fullTargetFolder, StringComparison.Ordinal))
+        {
+            App.Logger.Warn($"Skipping symbolic link pointing outside the extraction folder: {entry.FullName} -> {linkTarget}");
+            return;
+        }
+
+        if (File.Exists(targetPath) || new FileInfo(targetPath).LinkTarget is not null)
+            File.Delete(targetPath);
+
+        File.CreateSymbolicLink(targetPath, linkTarget);
     }
 
     public async Task<bool> ExtractAsync(Package package, List<string>? files = null)
