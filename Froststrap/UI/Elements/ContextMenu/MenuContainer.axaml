@@ -28,7 +28,7 @@ SPDX-License-Identifier: MPL-2.0
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Click="JoinLastServerMenuItem_Click" />
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CloseRoblox}" Click="CloseRobloxMenuItem_Click" />
-            <NativeMenuItem Header="{x:Static resources:Strings.Menu_ContextMenu_CloseWatcher}" Click="CloseWatcheMenuItem_Click" />
+            <NativeMenuItem Header="{x:Static resources:Strings.Menu_ContextMenu_CloseWatcher}" Click="CloseSessionMenuItem_Click" />
         </NativeMenu>
     </NativeMenu.Menu>
 </Window>

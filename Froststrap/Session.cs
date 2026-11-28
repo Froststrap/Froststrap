@@ -3,20 +3,19 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Clients.Contracts;
-using Froststrap.Clients.Model;
 using Froststrap.Integrations;
 
 namespace Froststrap;
 
-internal sealed class Watcher : IDisposable
+internal sealed class Session : IDisposable
 {
     private readonly InterProcessLock _lock = new("Watcher");
 
-    private readonly WatcherData? _watcherData;
+    private readonly SessionData? sessionData;
 
     private readonly NotifyIconWrapper? _notifyIcon;
 
-    public readonly ActivityWatcher? ActivityWatcher;
+    public readonly Integrations.ActivityWatcher.Watcher? ActivityWatcher;
 
     public readonly IntegrationWatcher? IntegrationWatcher;
 
@@ -43,73 +42,64 @@ internal sealed class Watcher : IDisposable
 
     private readonly IRobloxClient _client;
 
-    public Watcher(WatcherData watcherData, IRobloxClient client)
+    public Session(SessionData sessionData, IRobloxClient client)
     {
         _client = client;
 
         if (!_lock.IsAcquired)
         {
-            App.Logger.Error("Watcher instance already exists");
+            App.Logger.Error("Session instance already exists");
             return;
         }
 
-        _watcherData = watcherData;
+        this.sessionData = sessionData;
 
-        ProcessId = _watcherData.ProcessId;
+        ProcessId = sessionData.ProcessId;
 
         if (OperatingSystem.IsWindowsVersionAtLeast(5, 0) && App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking)
-            WindowManipulation = new(_watcherData.ProcessId);
+            WindowManipulation = new(sessionData.ProcessId);
 
-        if (_client.RuntimeEnvironment is not null && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
+        if (_client.RuntimeEnvironment is not null && App.Settings.Prop.StudioGameMode && (sessionData.LaunchMode == LaunchMode.Studio || sessionData.LaunchMode == LaunchMode.StudioAuth))
         {
             _ = Task.Run(async () =>
             {
                 await Task.Delay(1000);
-                _gameModeHandle = await RegisterGameModeWithDbusSendAsync(_watcherData.ProcessId, _cancellationTokenSource.Token);
+                _gameModeHandle = await RegisterGameModeWithDbusSendAsync(sessionData.ProcessId, _cancellationTokenSource.Token);
             });
         }
 
         if (App.Settings.Prop.EnableActivityTracking)
         {
-            ActivityWatcher = new(_client, _watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
+            ActivityWatcher = new(_client, sessionData.LogFile, sessionData.LaunchMode, sessionData.ProcessId);
 
-            if (!string.IsNullOrEmpty(_watcherData.AccessCode))
+            if (!string.IsNullOrEmpty(sessionData.AccessCode))
             {
-                ActivityWatcher.Data.AccessCode = _watcherData.AccessCode;
+                ActivityWatcher.Data.AccessCode = sessionData.AccessCode;
                 ActivityWatcher.Data.ServerType = ServerType.Private;
-                App.Logger.Info($"Set access code from launch data: {_watcherData.AccessCode}");
+                App.Logger.Info($"Set access code from launch data: {sessionData.AccessCode}");
             }
 
             if (App.Settings.Prop.UseDisableAppPatch)
             {
-                ActivityWatcher.OnAppClose += (_, _) => _ = CloseRobloxAsync(_watcherData.ProcessId);
-
-                // joining another game during the wait cancels the force-close (the close request was already sent)
-                ActivityWatcher.OnLogEntry += (_, entry) =>
-                {
-                    if (!entry.Contains(Integrations.ActivityWatcher.GameJoiningEntry, StringComparison.Ordinal))
-                        return;
-
-                    lock (_closeLock)
-                        _closeCancel?.Cancel();
-                };
+                Integrations.ActivityWatcher.Events.OnAppClose += OnAppClose;
+                Integrations.ActivityWatcher.Events.OnLogEntry += OnLogEntry;
             }
 
-            if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
+            if ((sessionData.LaunchMode == LaunchMode.Studio || sessionData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
                 StudioRichPresence = new(ActivityWatcher);
-            else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
+            else if (sessionData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                 PlayerRichPresence = new(ActivityWatcher);
 
-            if (_watcherData.LaunchMode == LaunchMode.Player && OperatingSystem.IsWindows())
+            if (sessionData.LaunchMode == LaunchMode.Player && OperatingSystem.IsWindows())
                 IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, WindowManipulation);
 
-            if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
-                Softkey = new Softkey(_watcherData.ProcessId);
+            if (sessionData.LaunchMode == LaunchMode.Player && App.Settings.Prop.SoftKeyEnabled)
+                Softkey = new Softkey(sessionData.ProcessId);
 
             _notifyIcon = new(this);
         }
 
-        if (_watcherData.LaunchMode == LaunchMode.Player)
+        if (sessionData.LaunchMode == LaunchMode.Player)
         {
             _ = Task.Run(async () =>
             {
@@ -265,7 +255,7 @@ internal sealed class Watcher : IDisposable
         }
     }
 
-    public void KillRobloxProcess() => _client.Kill(_watcherData!.ProcessId);
+    public void KillRobloxProcess() => _client.Kill(sessionData!.ProcessId);
 
     private static bool IsProcessRunning(int pid)
     {
@@ -283,9 +273,9 @@ internal sealed class Watcher : IDisposable
         }
     }
 
-    private bool IsRobloxRunning(WatcherData watcherData, bool isStudio)
+    private bool IsRobloxRunning(SessionData sessionData, bool isStudio)
     {
-        if (IsProcessRunning(watcherData.ProcessId))
+        if (IsProcessRunning(sessionData.ProcessId))
             return true;
 
         if (_fallbackPid != 0 && IsProcessRunning(_fallbackPid))
@@ -308,15 +298,15 @@ internal sealed class Watcher : IDisposable
 
                 if (newestStudioPid != 0)
                 {
-                    App.Logger.Info($"Studio process {watcherData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
-                    watcherData.ProcessId = newestStudioPid;
+                    App.Logger.Info($"Studio process {sessionData.ProcessId} is no longer running, now tracking PID {newestStudioPid}");
+                    sessionData.ProcessId = newestStudioPid;
                     ProcessId = newestStudioPid;
                 }
 
                 return true;
             }
 
-            if (watcherData.LaunchMode != LaunchMode.Player)
+            if (sessionData.LaunchMode != LaunchMode.Player)
                 return false;
 
             if (!_client.Processes.CanFollowRelaunch)
@@ -327,7 +317,7 @@ internal sealed class Watcher : IDisposable
             if (player is null)
                 return false;
 
-            App.Logger.Info($"Roblox process {watcherData.ProcessId} is no longer running, watching '{player.ProcessName}' (PID {player.Id}) instead");
+            App.Logger.Info($"Roblox process {sessionData.ProcessId} is no longer running, watching '{player.ProcessName}' (PID {player.Id}) instead");
             _fallbackPid = player.Id;
 
             return true;
@@ -341,7 +331,7 @@ internal sealed class Watcher : IDisposable
 
     public async Task Run()
     {
-        if (!_lock.IsAcquired || _watcherData is null)
+        if (!_lock.IsAcquired || sessionData is null)
             return;
 
         ActivityWatcher?.Start();
@@ -349,13 +339,13 @@ internal sealed class Watcher : IDisposable
         if (OperatingSystem.IsWindowsVersionAtLeast(5, 0))
             WindowManipulation?.Start();
 
-        bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
+        bool isStudio = sessionData.LaunchMode == LaunchMode.Studio || sessionData.LaunchMode == LaunchMode.StudioAuth;
 
         try
         {
             while (!_cancellationTokenSource.Token.IsCancellationRequested)
             {
-                if (!IsRobloxRunning(_watcherData, isStudio))
+                if (!IsRobloxRunning(sessionData, isStudio))
                     break;
 
                 await Task.Delay(1000, _cancellationTokenSource.Token);
@@ -370,14 +360,26 @@ internal sealed class Watcher : IDisposable
 
         AppStorageManager.Apply();
 
-        if (_watcherData.AutoclosePids is not null)
+        if (sessionData.AutoclosePids is not null)
         {
-            foreach (int pid in _watcherData.AutoclosePids)
+            foreach (int pid in sessionData.AutoclosePids)
                 Utility.Processes.Close(pid);
         }
 
         if (App.LaunchSettings.TestModeFlag.Active)
             Process.Start(Paths.Process, "--settings --test-mode");
+    }
+
+    private void OnAppClose(object? sender, EventArgs e) => _ = CloseRobloxAsync(sessionData!.ProcessId);
+
+    // joining another game during the wait cancels the force-close (the close request was already sent)
+    private void OnLogEntry(object? sender, string entry)
+    {
+        if (!entry.Contains(Integrations.ActivityWatcher.Watcher.GameJoiningEntry, StringComparison.Ordinal))
+            return;
+
+        lock (_closeLock)
+            _closeCancel?.Cancel();
     }
 
     // "Close To Desktop": asks Roblox to close, then ends it if it's still running
@@ -432,7 +434,7 @@ internal sealed class Watcher : IDisposable
         if (_isDisposed)
             return;
 
-        App.Logger.Info("Disposing Watcher");
+        App.Logger.Info("Disposing Session");
 
         _cancellationTokenSource.Cancel();
 
@@ -451,6 +453,8 @@ internal sealed class Watcher : IDisposable
         _notifyIcon?.Dispose();
         PlayerRichPresence?.Dispose();
         StudioRichPresence?.Dispose();
+        Integrations.ActivityWatcher.Events.OnAppClose -= OnAppClose;
+        Integrations.ActivityWatcher.Events.OnLogEntry -= OnLogEntry;
         ActivityWatcher?.Dispose();
         _cancellationTokenSource.Dispose();
         _lock.Dispose();

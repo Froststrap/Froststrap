@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.ContextMenu;
 
 internal sealed partial class ServerInformation : Base.AvaloniaWindow
 {
-    private readonly Watcher? _watcher;
+    private readonly Session? session;
     private readonly ServerInformationViewModel _viewModel;
 
     public ServerInformation()
@@ -20,15 +20,15 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
         DataContext = _viewModel;
     }
 
-    public ServerInformation(Watcher watcher) : this()
+    public ServerInformation(Session session) : this()
     {
-        _watcher = watcher;
-        if (_watcher?.ActivityWatcher is ActivityWatcher aw)
+        this.session = session;
+        if (session?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
         {
             _viewModel.SetWatcher(aw);
-            aw.OnGameJoin += OnGameJoin;
-            aw.OnGameLeave += OnGameLeave;
-            aw.ShowNotif += OnShowNotif;
+            Integrations.ActivityWatcher.Events.OnGameJoin += OnGameJoin;
+            Integrations.ActivityWatcher.Events.OnGameLeave += OnGameLeave;
+            Integrations.ActivityWatcher.Events.ShowNotif += OnShowNotif;
 
             if (aw.InGame)
             {
@@ -41,7 +41,7 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
 
     private void OnGameJoin(object? sender, EventArgs e)
     {
-        if (sender is ActivityWatcher aw)
+        if (sender is Integrations.ActivityWatcher.Watcher aw)
             Dispatcher.UIThread.Invoke(() =>
             {
                 UpdateViewModel(aw);
@@ -64,19 +64,16 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
         });
     }
 
-    private void UpdateViewModel(ActivityWatcher aw)
+    private void UpdateViewModel(Integrations.ActivityWatcher.Watcher aw)
     {
         _viewModel.UpdateData(aw.Data);
     }
 
     protected override void OnClosed(EventArgs e)
     {
-        if (_watcher?.ActivityWatcher is ActivityWatcher aw)
-        {
-            aw.OnGameJoin -= OnGameJoin;
-            aw.OnGameLeave -= OnGameLeave;
-            aw.ShowNotif -= OnShowNotif;
-        }
+        Integrations.ActivityWatcher.Events.OnGameJoin -= OnGameJoin;
+        Integrations.ActivityWatcher.Events.OnGameLeave -= OnGameLeave;
+        Integrations.ActivityWatcher.Events.ShowNotif -= OnShowNotif;
 
         _viewModel.StopUptimeUpdates();
         base.OnClosed(e);

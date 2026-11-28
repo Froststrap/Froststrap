@@ -17,11 +17,12 @@ namespace Froststrap.UI.Elements.ContextMenu
             InitializeComponent();
         }
 
-        public ServerHistory(ActivityWatcher watcher) : this()
+        public ServerHistory(Integrations.ActivityWatcher.Watcher watcher) : this()
         {
             var viewModel = new ServerHistoryViewModel(watcher);
 
             viewModel.RequestCloseEvent += (_, _) => Close();
+            Closed += (_, _) => viewModel.Detach();
 
             DataContext = viewModel;
         }
