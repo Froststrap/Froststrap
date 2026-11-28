@@ -19,8 +19,8 @@ internal sealed class NotifyIconWrapper : IDisposable
     private readonly TrayIcon _trayIcon;
 #pragma warning restore CA2213
     private readonly MenuContainer _menuContainer;
-    private readonly Watcher _watcher;
-    private Integrations.ActivityWatcher.Watcher? ActivityWatcher => _watcher.ActivityWatcher;
+    private readonly Session session;
+    private Integrations.ActivityWatcher.Watcher? ActivityWatcher => session.ActivityWatcher;
 
     private DateTime _lastClickTime = DateTime.MinValue;
     private const int DoubleClickThresholdMs = 300;
@@ -32,7 +32,7 @@ internal sealed class NotifyIconWrapper : IDisposable
         return BitConverter.ToUInt32(bytes, 0) | 1u;
     }
 
-    public NotifyIconWrapper(Watcher watcher)
+    public NotifyIconWrapper(Session session)
     {
 #if __APPLE__
         if (App.Settings.Prop.LaunchWithVirtualDisplay) Dispatcher.UIThread.Post(() =>
@@ -62,8 +62,8 @@ internal sealed class NotifyIconWrapper : IDisposable
 #endif
         App.Logger.Info("Initializing TrayIcon");
 
-        _watcher = watcher;
-        _menuContainer = new MenuContainer(_watcher);
+        this.session = session;
+        _menuContainer = new MenuContainer(session);
 
         var nativeMenu = NativeMenu.GetMenu(_menuContainer);
 

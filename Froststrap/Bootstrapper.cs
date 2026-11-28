@@ -108,7 +108,7 @@ internal sealed class Bootstrapper : IDisposable
     private readonly BootstrapperProgress _progress;
 
 
-    public WatcherData? PendingWatcherData { get; private set; }
+    public SessionData? PendingSessionData { get; private set; }
 
     #endregion
 
@@ -404,7 +404,7 @@ internal sealed class Bootstrapper : IDisposable
 
         _appPid = launch.Pid;
 
-        App.Logger.Debug($"Started {TargetClient.DisplayName} (PID {_appPid}). Launching Watcher...");
+        App.Logger.Debug($"Started {TargetClient.DisplayName} (PID {_appPid}). Launching session...");
 
         if (runIntegrations && _launchMode == LaunchMode.Player)
             await CustomIntegrationLauncher.LaunchPostLaunchAsync(autoclosePids);
@@ -421,7 +421,7 @@ internal sealed class Bootstrapper : IDisposable
         try
         {
             await launch.WaitUntilReadyAsync(_cancelTokenSource.Token);
-            App.Logger.Info($"{TargetClient.DisplayName} is running, handing off to the watcher");
+            App.Logger.Info($"{TargetClient.DisplayName} is running, handing off to the session");
         }
         catch (OperationCanceledException)
         {
@@ -469,9 +469,9 @@ internal sealed class Bootstrapper : IDisposable
             || autoclosePids.Count > 0))
             return;
 
-        if (PendingWatcherData is not null)
+        if (PendingSessionData is not null)
         {
-            App.Logger.Error("A watcher was already prepared for this launch, ignoring the duplicate");
+            App.Logger.Error("A session was already prepared for this launch, ignoring the duplicate");
             return;
         }
 
@@ -495,11 +495,11 @@ internal sealed class Bootstrapper : IDisposable
             }
             catch (OperationCanceledException) when (!_cancelTokenSource.IsCancellationRequested)
             {
-                App.Logger.Warn("No log file appeared within 30 seconds, the watcher will keep looking");
+                App.Logger.Warn("No log file appeared within 30 seconds, the session will keep looking");
             }
         }
 
-        PendingWatcherData = new WatcherData
+        PendingSessionData = new SessionData
         {
             ProcessId = _appPid,
             LogFile = logFileName,
@@ -508,7 +508,7 @@ internal sealed class Bootstrapper : IDisposable
             AccessCode = _joinData.AccessCode
         };
 
-        App.Logger.Info($"Watcher prepared for pid {_appPid} ({_launchMode})");
+        App.Logger.Info($"Session prepared for pid {_appPid} ({_launchMode})");
     }
 
     private bool ShouldRunAsAdmin() => TargetClient.Registration.RequestsAdmin(AppData.ExecutablePath);

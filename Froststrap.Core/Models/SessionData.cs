@@ -4,7 +4,7 @@
 
 namespace Froststrap.Models
 {
-    internal class WatcherData
+    internal class SessionData
     {
         public int ProcessId { get; set; }
 

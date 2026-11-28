@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.ContextMenu;
 
 internal sealed partial class ServerInformation : Base.AvaloniaWindow
 {
-    private readonly Watcher? _watcher;
+    private readonly Session? session;
     private readonly ServerInformationViewModel _viewModel;
 
     public ServerInformation()
@@ -20,10 +20,10 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
         DataContext = _viewModel;
     }
 
-    public ServerInformation(Watcher watcher) : this()
+    public ServerInformation(Session session) : this()
     {
-        _watcher = watcher;
-        if (_watcher?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
+        this.session = session;
+        if (session?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
         {
             _viewModel.SetWatcher(aw);
             Integrations.ActivityWatcher.Events.OnGameJoin += OnGameJoin;
