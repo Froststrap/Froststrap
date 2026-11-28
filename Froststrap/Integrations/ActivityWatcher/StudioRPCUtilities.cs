@@ -98,8 +98,11 @@ internal sealed class HTTPServer : IDisposable
 
     public void Dispose()
     {
+        if (IsDisposed)
+            return;
+
         IsDisposed = true;
-        _httpListener?.Close();
+        Stop();
         _httpCancellationTokenSource.Dispose();
     }
 }

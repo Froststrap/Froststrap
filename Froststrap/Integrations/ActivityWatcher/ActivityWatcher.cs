@@ -97,7 +97,7 @@ internal sealed class Watcher : IDisposable
 
     private readonly ILogLocator _logs;
 
-    private StudioRichPresenceUtilities.HTTPServer? hTTPServer;
+    private StudioRichPresenceUtilities.HTTPServer? httpServer;
 
     public Watcher(IRobloxClient client, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
     {
@@ -113,8 +113,8 @@ internal sealed class Watcher : IDisposable
         if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
         {
             InRobloxStudio = true;
-            hTTPServer = new StudioRichPresenceUtilities.HTTPServer(this);
-            hTTPServer.Start();
+            httpServer = new StudioRichPresenceUtilities.HTTPServer(this);
+            httpServer.Start();
         }
 
         LoadGameHistory();
@@ -314,10 +314,12 @@ internal sealed class Watcher : IDisposable
                 if (reasonCode == 1 || reasonCode == 277)
                 {
                     _shouldAutoRejoin = true;
-                    App.Logger.Info($"Inactivity/Internet disconnect detected");
+                    App.Logger.Info($"Inactivity/Internet disconnect detected (reason: {reasonCode})");
                 }
-
-                App.Logger.Info($"Disconnect reason code: {reasonCode}");
+                else
+                {
+                    App.Logger.Info($"Disconnect reason code: {reasonCode}");
+                }
             }
         }
 
@@ -730,10 +732,12 @@ internal sealed class Watcher : IDisposable
 
     public void Dispose()
     {
-        if (InRobloxStudio)
-            hTTPServer?.Stop();
+        if (IsDisposed)
+            return;
+
+        IsDisposed = true;
         _disposeCancellation.Cancel();
         _disposeCancellation.Dispose();
-        hTTPServer?.Dispose();
+        httpServer?.Dispose();
     }
 }
