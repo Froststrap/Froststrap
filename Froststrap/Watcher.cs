@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using Froststrap.Clients.Contracts;
-using Froststrap.Clients.Model;
 using Froststrap.Integrations;
 
 namespace Froststrap;
@@ -16,7 +15,7 @@ internal sealed class Watcher : IDisposable
 
     private readonly NotifyIconWrapper? _notifyIcon;
 
-    public readonly ActivityWatcher? ActivityWatcher;
+    public readonly Integrations.ActivityWatcher.Watcher? ActivityWatcher;
 
     public readonly IntegrationWatcher? IntegrationWatcher;
 
@@ -87,7 +86,7 @@ internal sealed class Watcher : IDisposable
                 // joining another game during the wait cancels the force-close (the close request was already sent)
                 ActivityWatcher.OnLogEntry += (_, entry) =>
                 {
-                    if (!entry.Contains(Integrations.ActivityWatcher.GameJoiningEntry, StringComparison.Ordinal))
+                    if (!entry.Contains(Integrations.ActivityWatcher.Watcher.GameJoiningEntry, StringComparison.Ordinal))
                         return;
 
                     lock (_closeLock)

@@ -9,14 +9,14 @@ namespace Froststrap.Integrations
     [SupportedOSPlatform("windows")]
     internal sealed class IntegrationWatcher : IDisposable
     {
-        private readonly ActivityWatcher _activityWatcher;
+        private readonly ActivityWatcher.Watcher _activityWatcher;
         private readonly WindowManipulation? _windowManipulation;
         private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
 
         private static bool WindowManipulationEnabled =>
             App.Settings.Prop.EnableWindowManipulation && App.Settings.Prop.EnableActivityTracking;
 
-        public IntegrationWatcher(ActivityWatcher activityWatcher, WindowManipulation? windowManipulation = null)
+        public IntegrationWatcher(ActivityWatcher.Watcher activityWatcher, WindowManipulation? windowManipulation = null)
         {
             _activityWatcher = activityWatcher;
             _windowManipulation = windowManipulation;

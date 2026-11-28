@@ -7,14 +7,13 @@ using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.ContextMenu;
 
 internal sealed class ServerInformationViewModel : NotifyPropertyChangedViewModel
 {
-    private ActivityWatcher? _activityWatcher;
+    private Integrations.ActivityWatcher.Watcher? _activityWatcher;
     private string _serverType = string.Empty;
     private string _instanceId = string.Empty;
     private string _accessCode = string.Empty;
@@ -117,7 +116,7 @@ internal sealed class ServerInformationViewModel : NotifyPropertyChangedViewMode
         _uptimeTimer.Tick += (s, e) => RefreshUptime();
     }
 
-    public void SetWatcher(ActivityWatcher? watcher)
+    public void SetWatcher(Integrations.ActivityWatcher.Watcher? watcher)
     {
         _activityWatcher = watcher;
     }

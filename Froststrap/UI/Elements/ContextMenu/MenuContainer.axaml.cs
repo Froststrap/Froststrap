@@ -14,7 +14,7 @@ namespace Froststrap.UI.Elements.ContextMenu
     internal sealed partial class MenuContainer : Base.AvaloniaWindow
     {
         private readonly Watcher? _watcher;
-        private ActivityWatcher? ActivityWatcher => _watcher?.ActivityWatcher;
+        private Integrations.ActivityWatcher.Watcher? ActivityWatcher => _watcher?.ActivityWatcher;
 
         private ServerInformation? _serverInformationWindow;
         private ServerHistory? _gameHistoryWindow;

@@ -5,8 +5,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
-using Avalonia.Threading;
-using Froststrap.Integrations;
+using Avalonia.Threading;   
+using Froststrap.Integrations.ActivityWatcher;
 using Froststrap.UI.Elements.ContextMenu;
 using Froststrap.UI.Utility;
 
@@ -20,7 +20,7 @@ internal sealed class NotifyIconWrapper : IDisposable
 #pragma warning restore CA2213
     private readonly MenuContainer _menuContainer;
     private readonly Watcher _watcher;
-    private ActivityWatcher? ActivityWatcher => _watcher.ActivityWatcher;
+    private Integrations.ActivityWatcher.Watcher? ActivityWatcher => _watcher.ActivityWatcher;
 
     private DateTime _lastClickTime = DateTime.MinValue;
     private const int DoubleClickThresholdMs = 300;

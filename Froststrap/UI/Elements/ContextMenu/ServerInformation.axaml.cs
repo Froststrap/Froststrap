@@ -23,7 +23,7 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
     public ServerInformation(Watcher watcher) : this()
     {
         _watcher = watcher;
-        if (_watcher?.ActivityWatcher is ActivityWatcher aw)
+        if (_watcher?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
         {
             _viewModel.SetWatcher(aw);
             aw.OnGameJoin += OnGameJoin;
@@ -41,7 +41,7 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
 
     private void OnGameJoin(object? sender, EventArgs e)
     {
-        if (sender is ActivityWatcher aw)
+        if (sender is Integrations.ActivityWatcher.Watcher aw)
             Dispatcher.UIThread.Invoke(() =>
             {
                 UpdateViewModel(aw);
@@ -64,14 +64,14 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
         });
     }
 
-    private void UpdateViewModel(ActivityWatcher aw)
+    private void UpdateViewModel(Integrations.ActivityWatcher.Watcher aw)
     {
         _viewModel.UpdateData(aw.Data);
     }
 
     protected override void OnClosed(EventArgs e)
     {
-        if (_watcher?.ActivityWatcher is ActivityWatcher aw)
+        if (_watcher?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
         {
             aw.OnGameJoin -= OnGameJoin;
             aw.OnGameLeave -= OnGameLeave;

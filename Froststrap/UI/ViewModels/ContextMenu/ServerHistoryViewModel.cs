@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MPL-2.0
 
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
 using Avalonia.Media.Imaging;
 using System.Windows.Input;
 
@@ -11,7 +10,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 {
     internal sealed class ServerHistoryViewModel : NotifyPropertyChangedViewModel
     {
-        private readonly ActivityWatcher _activityWatcher;
+        private readonly Integrations.ActivityWatcher.Watcher _activityWatcher;
 
         public List<ActivityData>? GameHistory { get; private set; }
 
@@ -24,7 +23,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public EventHandler? RequestCloseEvent;
 
-        public ServerHistoryViewModel(ActivityWatcher activityWatcher)
+        public ServerHistoryViewModel(Integrations.ActivityWatcher.Watcher activityWatcher)
         {
             _activityWatcher = activityWatcher;
 

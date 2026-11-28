@@ -6,7 +6,6 @@ using DiscordRPC;
 using DiscordRPC.IO;
 using DiscordRPC.Logging;
 using RichPresence = DiscordRPC.RichPresence;
-using DiscordRPC.Message;
 using Froststrap.Integrations.Discord;
 using System.Net.Sockets;
 
@@ -15,7 +14,7 @@ namespace Froststrap.Integrations
     internal sealed class PlayerDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
-        private readonly ActivityWatcher _activityWatcher;
+        private readonly ActivityWatcher.Watcher _activityWatcher;
         private readonly Queue<Message> _messageQueue = new();
 
         private RichPresence? _currentPresence;
@@ -30,7 +29,7 @@ namespace Froststrap.Integrations
         private bool _visible = true;
         private bool _disposed;
 
-        public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
+        public PlayerDiscordRichPresence(ActivityWatcher.Watcher activityWatcher)
         {
             INamedPipeClient? pipeClient = DiscordIpcPipeClient.Create();
             try

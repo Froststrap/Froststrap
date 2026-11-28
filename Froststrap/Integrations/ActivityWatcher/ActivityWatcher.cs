@@ -4,10 +4,12 @@
 
 using Froststrap.Clients.Contracts;
 
-namespace Froststrap.Integrations;
+namespace Froststrap.Integrations.ActivityWatcher;
 
-internal sealed class ActivityWatcher : IDisposable
+internal sealed class Watcher : IDisposable
 {
+    private readonly CancellationTokenSource _disposeCancellation = new();
+
     private const string GameMessageEntry = "[FLog::CreatorOutput] [BloxstrapRPC]";
     internal const string GameJoiningEntry = "[FLog::Output] ! Joining game";
     private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
@@ -45,19 +47,31 @@ internal sealed class ActivityWatcher : IDisposable
 
     private static readonly JsonSerializerOptions _loadOptions = new() { PropertyNameCaseInsensitive = true };
     private static readonly JsonSerializerOptions _saveOptions = new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-
+    public Events Events { get; } = new();
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnHistoryUpdated;
-
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler<string>? OnLogEntry;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? ShowNotif;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnGameJoin;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnGameLeave;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnStudioPlaceOpened;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnStudioPlaceClosed;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnLogOpen;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler? OnAppClose;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler<Message>? OnRPCMessage;
+    [Obsolete("Use Events property instead of individual events.")]
     public event EventHandler<StudioMessage>? OnStudioRPCMessage;
+
+    public void RaiseOnStudioRPCMessage(StudioMessage message) => OnStudioRPCMessage?.Invoke(this, message);
 
     private DateTime LastRPCRequest;
 
@@ -69,10 +83,6 @@ internal sealed class ActivityWatcher : IDisposable
     public bool InGame;
     public bool InStudioPlace;
     public bool InRobloxStudio;
-
-    private const int HttpPort = 4875;
-    private HttpListener? _httpListener;
-    private readonly CancellationTokenSource _httpCancellationTokenSource = new();
 
     public ActivityData Data { get; private set; } = new();
 
@@ -86,9 +96,10 @@ internal sealed class ActivityWatcher : IDisposable
     private readonly IRobloxClient _client;
 
     private readonly ILogLocator _logs;
-    private readonly CancellationTokenSource _disposeCancellation = new();
 
-    public ActivityWatcher(IRobloxClient client, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
+    private StudioRichPresenceUtilities.HTTPServer? hTTPServer;
+
+    public Watcher(IRobloxClient client, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
     {
         _client = client;
         _logs = client.Logs;
@@ -102,7 +113,8 @@ internal sealed class ActivityWatcher : IDisposable
         if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
         {
             InRobloxStudio = true;
-            StartHTTPServer();
+            hTTPServer = new StudioRichPresenceUtilities.HTTPServer(this);
+            hTTPServer.Start();
         }
 
         LoadGameHistory();
@@ -302,12 +314,10 @@ internal sealed class ActivityWatcher : IDisposable
                 if (reasonCode == 1 || reasonCode == 277)
                 {
                     _shouldAutoRejoin = true;
-                    App.Logger.Info($"Inactivity/Internet disconnect detected (reason: {reasonCode})");
+                    App.Logger.Info($"Inactivity/Internet disconnect detected");
                 }
-                else
-                {
-                    App.Logger.Info($"Disconnect reason code: {reasonCode}");
-                }
+
+                App.Logger.Info($"Disconnect reason code: {reasonCode}");
             }
         }
 
@@ -601,88 +611,7 @@ internal sealed class ActivityWatcher : IDisposable
         }
     }
 
-    private void StartHTTPServer()
-    {
-        try
-        {
-            _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add($"http://localhost:{HttpPort}/");
-            _httpListener.Start();
-
-            _ = ListenForHTTPRequests(_httpCancellationTokenSource.Token);
-
-            App.Logger.Info($"Studio RPC server active on port {HttpPort}");
-        }
-        catch (Exception ex) { App.Logger.Error(ex, "Failed to start activity HTTP server"); }
-    }
-
-    public void StopHTTPServer()
-    {
-        _httpCancellationTokenSource.Cancel();
-
-        if (_httpListener is null)
-            return;
-
-        try { _httpListener.Close(); }
-        catch { }
-        _httpListener = null;
-    }
-
-    private async Task ListenForHTTPRequests(CancellationToken token)
-    {
-        while (_httpListener?.IsListening == true && !token.IsCancellationRequested)
-        {
-            try
-            {
-                var context = await _httpListener.GetContextAsync().WaitAsync(token);
-
-                _ = Task.Run(() => ProcessHTTPRequest(context), token);
-            }
-            catch (OperationCanceledException) { break; }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex);
-                await Task.Delay(1000, token);
-            }
-        }
-    }
-
-    private void ProcessHTTPRequest(HttpListenerContext context)
-    {
-        using var response = context.Response;
-
-        try
-        {
-            if (context.Request.HttpMethod != "POST" || context.Request.Url?.AbsolutePath != "/rpc")
-            {
-                response.StatusCode = 404;
-                return;
-            }
-
-            using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
-            string json = reader.ReadToEnd();
-            var message = JsonHelper.Deserialize<StudioMessage>(json);
-
-            if (message == null)
-                return;
-
-            if (message.StudioCommand == "SetRichPresence")
-            {
-                var richPresenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
-                if (richPresenceData != null)
-                    message.Data = JsonHelper.SerializeToElement(richPresenceData);
-            }
-
-            OnStudioRPCMessage?.Invoke(this, message);
-            response.StatusCode = 200;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error(ex, "Failed to process activity HTTP request");
-            response.StatusCode = 500;
-        }
-    }
-
+   
     public void LoadGameHistory()
     {
         try
@@ -801,11 +730,10 @@ internal sealed class ActivityWatcher : IDisposable
 
     public void Dispose()
     {
-        IsDisposed = true;
+        if (InRobloxStudio)
+            hTTPServer?.Stop();
         _disposeCancellation.Cancel();
         _disposeCancellation.Dispose();
-        if (InRobloxStudio)
-            StopHTTPServer();
-        _httpCancellationTokenSource.Dispose();
+        hTTPServer?.Dispose();
     }
 }
