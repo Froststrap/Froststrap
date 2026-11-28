@@ -24,6 +24,7 @@
   glib,
   callPackage,
   dbus,
+  libpulseaudio,
   openssl,
 }:
 {
@@ -46,6 +47,7 @@ mkFragment (finalAttrs: {
     wayland
     libxkbcommon
     dbus
+    libpulseaudio
 
     # X11 libs
     libX11

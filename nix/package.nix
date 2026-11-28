@@ -31,6 +31,7 @@
   zlib,
   krb5,
   dbus,
+  libpulseaudio,
   openssl,
   apple-sdk,
   darwin,
@@ -78,6 +79,7 @@ let
     libsecret
     skia
     dbus
+    libpulseaudio
     openssl
 
     # X11 libs
@@ -119,7 +121,7 @@ buildDotnetModule {
 
   cargoDeps = rustPlatform.fetchCargoVendor {
     src = "${src}/backend";
-    hash = "sha256-/pyk7zjH7vZ+M3Zh/iaUW2jaewZp0yURE6ePsoK/fY8=";
+    hash = "sha256-ofcuybSYLCp9WLqYLowJ4Di6aHGkU3Sv0NwjY1p4a2I=";
   };
 
   nativeBuildInputs = [
@@ -135,6 +137,7 @@ buildDotnetModule {
   buildInputs =
     lib.optionals stdenv.hostPlatform.isLinux [
       dbus
+      libpulseaudio
       fontconfig
       zlib
       krb5

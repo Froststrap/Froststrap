@@ -241,6 +241,8 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
             Position = NotificationPosition.TopRight,
             MaxItems = 3
         };
+
+        BackgroundMusic.Start();
     }
 
     public void StartIndexingAllPagesIfNeeded()
@@ -921,6 +923,8 @@ internal sealed partial class MainWindow : Base.AvaloniaWindow
 
     private void MainWindow_Closed(object? sender, EventArgs e)
     {
+        BackgroundMusic.Stop();
+
         if (_remoteDataHandler != null)
         {
             App.RemoteData.Unsubscribe(_remoteDataHandler);

@@ -170,6 +170,7 @@ pub fn main() -> (PathBuf, PathBuf) {
         "libvirtualdisplay.dylib",
         "libmobileappreg.dylib",
         "libnotify.dylib",
+        "libaudioplayer.dylib",
         "libmod_generator.dylib",
     ] {
         let dylib = find_dylib(lib);
