@@ -44,9 +44,9 @@ namespace Froststrap.Integrations
 
             _activityWatcher = activityWatcher;
 
-            _activityWatcher.OnGameJoin += (_, _) => Task.Run(() => SetCurrentGame());
-            _activityWatcher.OnGameLeave += (_, _) => Task.Run(() => SetCurrentGame());
-            _activityWatcher.OnRPCMessage += (_, message) => ProcessRPCMessage(message);
+            ActivityWatcher.Events.OnGameJoin += OnGameChanged;
+            ActivityWatcher.Events.OnGameLeave += OnGameChanged;
+            ActivityWatcher.Events.OnRPCMessage += OnRPCMessage;
 
             _rpcClient.OnReady += (_, e) => App.Logger.Info($"Received ready from user {e.User} ({e.User.ID})");
 
@@ -518,10 +518,17 @@ namespace Froststrap.Integrations
             }
         }
 
+        private void OnGameChanged(object? sender, EventArgs e) => Task.Run(() => SetCurrentGame());
+        private void OnRPCMessage(object? sender, Message message) => ProcessRPCMessage(message);
+
         public void Dispose()
         {
             if (_disposed) return;
             _disposed = true;
+
+            ActivityWatcher.Events.OnGameJoin -= OnGameChanged;
+            ActivityWatcher.Events.OnGameLeave -= OnGameChanged;
+            ActivityWatcher.Events.OnRPCMessage -= OnRPCMessage;
 
             App.Logger.Info("Cleaning up Discord RPC and Presence");
 

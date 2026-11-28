@@ -75,10 +75,10 @@ namespace Froststrap.UI.Elements.ContextMenu
 
             if (ActivityWatcher is not null)
             {
-                ActivityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
-                ActivityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
-                ActivityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
-                ActivityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
+                Integrations.ActivityWatcher.Events.OnGameJoin += ActivityWatcher_OnGameJoin;
+                Integrations.ActivityWatcher.Events.OnGameLeave += ActivityWatcher_OnGameLeave;
+                Integrations.ActivityWatcher.Events.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
+                Integrations.ActivityWatcher.Events.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
                 Dispatcher.UIThread.Post(() =>
                 {
@@ -175,6 +175,15 @@ namespace Froststrap.UI.Elements.ContextMenu
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
             });
+
+        protected override void OnClosed(EventArgs e)
+        {
+            Integrations.ActivityWatcher.Events.OnGameJoin -= ActivityWatcher_OnGameJoin;
+            Integrations.ActivityWatcher.Events.OnGameLeave -= ActivityWatcher_OnGameLeave;
+            Integrations.ActivityWatcher.Events.OnStudioPlaceOpened -= ActivityWatcher_OnStudioPlaceOpened;
+            Integrations.ActivityWatcher.Events.OnStudioPlaceClosed -= ActivityWatcher_OnStudioPlaceClosed;
+            base.OnClosed(e);
+        }
 
         private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e) => _studioPlaceJoinTime = DateTime.Now;
         private void ActivityWatcher_OnStudioPlaceClosed(object? sender, EventArgs e) => _studioPlaceJoinTime = null;

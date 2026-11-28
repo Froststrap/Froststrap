@@ -47,31 +47,6 @@ internal sealed class Watcher : IDisposable
 
     private static readonly JsonSerializerOptions _loadOptions = new() { PropertyNameCaseInsensitive = true };
     private static readonly JsonSerializerOptions _saveOptions = new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-    public Events Events { get; } = new();
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnHistoryUpdated;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler<string>? OnLogEntry;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? ShowNotif;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnGameJoin;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnGameLeave;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnStudioPlaceOpened;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnStudioPlaceClosed;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnLogOpen;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler? OnAppClose;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler<Message>? OnRPCMessage;
-    [Obsolete("Use Events property instead of individual events.")]
-    public event EventHandler<StudioMessage>? OnStudioRPCMessage;
-
-    public void RaiseOnStudioRPCMessage(StudioMessage message) => OnStudioRPCMessage?.Invoke(this, message);
 
     private DateTime LastRPCRequest;
 
@@ -165,7 +140,7 @@ internal sealed class Watcher : IDisposable
 
         while (!IsDisposed)
         {
-            OnLogOpen?.Invoke(this, EventArgs.Empty);
+            Events.RaiseLogOpen(this);
 
             FileInfo? next = await TailLogAsync(logFile);
             if (next is null)
@@ -211,12 +186,12 @@ internal sealed class Watcher : IDisposable
             return;
 
         InStudioPlace = false;
-        OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
+        Events.RaiseStudioPlaceClosed(this);
     }
 
     private void ReadLogEntry(string entry)
     {
-        OnLogEntry?.Invoke(this, entry);
+        Events.RaiseLogEntry(this, entry);
 
         _logEntriesRead += 1;
 
@@ -269,7 +244,10 @@ internal sealed class Watcher : IDisposable
 
         InStudioPlace = !InStudioPlace;
         App.Logger.Info(InStudioPlace ? "Studio place opened" : "Studio place closed");
-        (InStudioPlace ? OnStudioPlaceOpened : OnStudioPlaceClosed)?.Invoke(this, EventArgs.Empty);
+        if (InStudioPlace)
+            Events.RaiseStudioPlaceOpened(this);
+        else
+            Events.RaiseStudioPlaceClosed(this);
     }
 
     private async void ProcessPlayerLogEntry(string logMessage)
@@ -293,7 +271,7 @@ internal sealed class Watcher : IDisposable
         {
             App.Logger.Debug("User is back into the desktop app");
 
-            OnAppClose?.Invoke(this, EventArgs.Empty);
+            Events.RaiseAppClose(this);
 
             if (Data.PlaceId != 0 && !InGame)
             {
@@ -461,7 +439,7 @@ internal sealed class Watcher : IDisposable
                     App.Logger.Info($"Joined Game ({Data})");
                     InGame = true;
                     Data.TimeJoined = DateTime.Now;
-                    OnGameJoin?.Invoke(this, EventArgs.Empty);
+                    Events.RaiseGameJoin(this);
                 }
                 else
                 {
@@ -478,7 +456,7 @@ internal sealed class Watcher : IDisposable
                 InGame = false;
                 Data.TimeLeft = DateTime.Now;
                 AddToHistory(Data);
-                OnGameLeave?.Invoke(this, EventArgs.Empty);
+                Events.RaiseGameLeave(this);
 
                 var autoRejoinData = Data;
                 Data = new();
@@ -585,7 +563,7 @@ internal sealed class Watcher : IDisposable
                     Data.RPCLaunchData = data;
                 }
 
-                OnRPCMessage?.Invoke(this, message);
+                Events.RaiseRPCMessage(this, message);
 
                 LastRPCRequest = DateTime.Now;
             }
@@ -608,7 +586,7 @@ internal sealed class Watcher : IDisposable
                 if (App.Settings.Prop.ShowServerDetails && Data.MachineAddressValid)
                     _ = Data.QueryServerLocation();
 
-                ShowNotif?.Invoke(this, null!);
+                Events.RaiseShowNotif(this);
             }
         }
     }
@@ -689,7 +667,7 @@ internal sealed class Watcher : IDisposable
             History = [.. History.OrderByDescending(x => x.TimeJoined).Take(300)];
 
         SaveGameHistory();
-        OnHistoryUpdated?.Invoke(this, EventArgs.Empty);
+        Events.RaiseHistoryUpdated(this);
     }
 
     public void SaveGameHistory()

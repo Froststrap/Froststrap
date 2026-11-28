@@ -81,17 +81,8 @@ internal sealed class Watcher : IDisposable
 
             if (App.Settings.Prop.UseDisableAppPatch)
             {
-                ActivityWatcher.OnAppClose += (_, _) => _ = CloseRobloxAsync(_watcherData.ProcessId);
-
-                // joining another game during the wait cancels the force-close (the close request was already sent)
-                ActivityWatcher.OnLogEntry += (_, entry) =>
-                {
-                    if (!entry.Contains(Integrations.ActivityWatcher.Watcher.GameJoiningEntry, StringComparison.Ordinal))
-                        return;
-
-                    lock (_closeLock)
-                        _closeCancel?.Cancel();
-                };
+                Integrations.ActivityWatcher.Events.OnAppClose += OnAppClose;
+                Integrations.ActivityWatcher.Events.OnLogEntry += OnLogEntry;
             }
 
             if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
@@ -379,6 +370,18 @@ internal sealed class Watcher : IDisposable
             Process.Start(Paths.Process, "--settings --test-mode");
     }
 
+    private void OnAppClose(object? sender, EventArgs e) => _ = CloseRobloxAsync(_watcherData!.ProcessId);
+
+    // joining another game during the wait cancels the force-close (the close request was already sent)
+    private void OnLogEntry(object? sender, string entry)
+    {
+        if (!entry.Contains(Integrations.ActivityWatcher.Watcher.GameJoiningEntry, StringComparison.Ordinal))
+            return;
+
+        lock (_closeLock)
+            _closeCancel?.Cancel();
+    }
+
     // "Close To Desktop": asks Roblox to close, then ends it if it's still running
     // (newer Roblox builds can keep running in the system tray when their window is closed)
     private async Task CloseRobloxAsync(int pid)
@@ -450,6 +453,8 @@ internal sealed class Watcher : IDisposable
         _notifyIcon?.Dispose();
         PlayerRichPresence?.Dispose();
         StudioRichPresence?.Dispose();
+        Integrations.ActivityWatcher.Events.OnAppClose -= OnAppClose;
+        Integrations.ActivityWatcher.Events.OnLogEntry -= OnLogEntry;
         ActivityWatcher?.Dispose();
         _cancellationTokenSource.Dispose();
         _lock.Dispose();

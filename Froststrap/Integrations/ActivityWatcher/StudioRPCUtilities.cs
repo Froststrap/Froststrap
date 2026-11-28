@@ -86,7 +86,7 @@ internal sealed class HTTPServer : IDisposable
                 if (richPresenceData != null)
                     message.Data = JsonHelper.SerializeToElement(richPresenceData);
             }
-            watcher.RaiseOnStudioRPCMessage(message);
+            Events.RaiseStudioRPCMessage(watcher, message);
             response.StatusCode = 200;
         }
         catch (Exception ex)

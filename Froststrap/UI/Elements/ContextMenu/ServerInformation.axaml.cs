@@ -26,9 +26,9 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
         if (_watcher?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
         {
             _viewModel.SetWatcher(aw);
-            aw.OnGameJoin += OnGameJoin;
-            aw.OnGameLeave += OnGameLeave;
-            aw.ShowNotif += OnShowNotif;
+            Integrations.ActivityWatcher.Events.OnGameJoin += OnGameJoin;
+            Integrations.ActivityWatcher.Events.OnGameLeave += OnGameLeave;
+            Integrations.ActivityWatcher.Events.ShowNotif += OnShowNotif;
 
             if (aw.InGame)
             {
@@ -71,12 +71,9 @@ internal sealed partial class ServerInformation : Base.AvaloniaWindow
 
     protected override void OnClosed(EventArgs e)
     {
-        if (_watcher?.ActivityWatcher is Integrations.ActivityWatcher.Watcher aw)
-        {
-            aw.OnGameJoin -= OnGameJoin;
-            aw.OnGameLeave -= OnGameLeave;
-            aw.ShowNotif -= OnShowNotif;
-        }
+        Integrations.ActivityWatcher.Events.OnGameJoin -= OnGameJoin;
+        Integrations.ActivityWatcher.Events.OnGameLeave -= OnGameLeave;
+        Integrations.ActivityWatcher.Events.ShowNotif -= OnShowNotif;
 
         _viewModel.StopUptimeUpdates();
         base.OnClosed(e);

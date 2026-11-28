@@ -21,8 +21,8 @@ namespace Froststrap.Integrations
             _activityWatcher = activityWatcher;
             _windowManipulation = windowManipulation;
 
-            _activityWatcher.OnGameJoin += OnGameJoin;
-            _activityWatcher.OnGameLeave += OnGameLeave;
+            ActivityWatcher.Events.OnGameJoin += OnGameJoin;
+            ActivityWatcher.Events.OnGameLeave += OnGameLeave;
         }
 
         private void OnGameJoin(object? sender, EventArgs e)
@@ -204,6 +204,9 @@ namespace Froststrap.Integrations
 
         public void Dispose()
         {
+            ActivityWatcher.Events.OnGameJoin -= OnGameJoin;
+            ActivityWatcher.Events.OnGameLeave -= OnGameLeave;
+
             foreach (var pid in _activeIntegrations.Keys)
                 TerminateProcess(pid);
 

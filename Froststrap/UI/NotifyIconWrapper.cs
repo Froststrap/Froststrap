@@ -92,9 +92,9 @@ internal sealed class NotifyIconWrapper : IDisposable
         if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
         {
             if (App.Settings.Prop.ShowServerUptime)
-                ActivityWatcher.ShowNotif += ShowNotification;
+                Integrations.ActivityWatcher.Events.ShowNotif += ShowNotification;
             else
-                ActivityWatcher.OnGameJoin += ShowNotification;
+                Integrations.ActivityWatcher.Events.OnGameJoin += ShowNotification;
         }
 
         var app = Application.Current!;
@@ -251,11 +251,8 @@ internal sealed class NotifyIconWrapper : IDisposable
             }
         });
 
-        if (ActivityWatcher is not null)
-        {
-            ActivityWatcher.ShowNotif -= ShowNotification;
-            ActivityWatcher.OnGameJoin -= ShowNotification;
-        }
+        Integrations.ActivityWatcher.Events.ShowNotif -= ShowNotification;
+        Integrations.ActivityWatcher.Events.OnGameJoin -= ShowNotification;
 
         GC.SuppressFinalize(this);
     }

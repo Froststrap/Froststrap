@@ -27,10 +27,18 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         {
             _activityWatcher = activityWatcher;
 
-            _activityWatcher.OnGameLeave += (_, _) => LoadData();
-            _activityWatcher.OnHistoryUpdated += (_, _) => LoadData();
+            Integrations.ActivityWatcher.Events.OnGameLeave += OnHistoryChanged;
+            Integrations.ActivityWatcher.Events.OnHistoryUpdated += OnHistoryChanged;
 
             LoadData();
+        }
+
+        private void OnHistoryChanged(object? sender, EventArgs e) => LoadData();
+
+        public void Detach()
+        {
+            Integrations.ActivityWatcher.Events.OnGameLeave -= OnHistoryChanged;
+            Integrations.ActivityWatcher.Events.OnHistoryUpdated -= OnHistoryChanged;
         }
 
         private async void LoadData()
