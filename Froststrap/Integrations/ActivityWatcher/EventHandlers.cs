@@ -1,6 +1,6 @@
 namespace Froststrap.Integrations.ActivityWatcher;
 
-internal class Events
+internal sealed class Events
 {
     public event EventHandler? OnHistoryUpdated;
     public event EventHandler<string>? OnLogEntry;
