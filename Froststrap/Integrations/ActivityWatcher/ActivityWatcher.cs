@@ -4,10 +4,12 @@
 
 using Froststrap.Clients.Contracts;
 
-namespace Froststrap.Integrations;
+namespace Froststrap.Integrations.ActivityWatcher;
 
-internal sealed class ActivityWatcher : IDisposable
+internal sealed class Watcher : IDisposable
 {
+    private readonly CancellationTokenSource _disposeCancellation = new();
+
     private const string GameMessageEntry = "[FLog::CreatorOutput] [BloxstrapRPC]";
     internal const string GameJoiningEntry = "[FLog::Output] ! Joining game";
     private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
@@ -46,19 +48,6 @@ internal sealed class ActivityWatcher : IDisposable
     private static readonly JsonSerializerOptions _loadOptions = new() { PropertyNameCaseInsensitive = true };
     private static readonly JsonSerializerOptions _saveOptions = new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
-    public event EventHandler? OnHistoryUpdated;
-
-    public event EventHandler<string>? OnLogEntry;
-    public event EventHandler? ShowNotif;
-    public event EventHandler? OnGameJoin;
-    public event EventHandler? OnGameLeave;
-    public event EventHandler? OnStudioPlaceOpened;
-    public event EventHandler? OnStudioPlaceClosed;
-    public event EventHandler? OnLogOpen;
-    public event EventHandler? OnAppClose;
-    public event EventHandler<Message>? OnRPCMessage;
-    public event EventHandler<StudioMessage>? OnStudioRPCMessage;
-
     private DateTime LastRPCRequest;
 
     private readonly LaunchMode _launchMode;
@@ -69,10 +58,6 @@ internal sealed class ActivityWatcher : IDisposable
     public bool InGame;
     public bool InStudioPlace;
     public bool InRobloxStudio;
-
-    private const int HttpPort = 4875;
-    private HttpListener? _httpListener;
-    private readonly CancellationTokenSource _httpCancellationTokenSource = new();
 
     public ActivityData Data { get; private set; } = new();
 
@@ -86,14 +71,15 @@ internal sealed class ActivityWatcher : IDisposable
     private readonly IRobloxClient _client;
 
     private readonly ILogLocator _logs;
-    private readonly CancellationTokenSource _disposeCancellation = new();
 
-    public ActivityWatcher(IRobloxClient client, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
+    private StudioRichPresenceUtilities.HTTPServer? httpServer;
+
+    public Watcher(IRobloxClient client, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
     {
         _client = client;
         _logs = client.Logs;
 
-        if (!String.IsNullOrEmpty(logFile))
+        if (!string.IsNullOrEmpty(logFile))
             LogLocation = logFile;
 
         _launchMode = launchMode;
@@ -102,7 +88,8 @@ internal sealed class ActivityWatcher : IDisposable
         if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
         {
             InRobloxStudio = true;
-            StartHTTPServer();
+            httpServer = new StudioRichPresenceUtilities.HTTPServer(this);
+            httpServer.Start();
         }
 
         LoadGameHistory();
@@ -153,7 +140,7 @@ internal sealed class ActivityWatcher : IDisposable
 
         while (!IsDisposed)
         {
-            OnLogOpen?.Invoke(this, EventArgs.Empty);
+            Events.RaiseLogOpen(this);
 
             FileInfo? next = await TailLogAsync(logFile);
             if (next is null)
@@ -193,20 +180,18 @@ internal sealed class ActivityWatcher : IDisposable
         return null;
     }
 
-    private bool IsStudioLaunch => _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth;
-
     private void ResetStudioPlaceState()
     {
         if (!InStudioPlace)
             return;
 
         InStudioPlace = false;
-        OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
+        Events.RaiseStudioPlaceClosed(this);
     }
 
     private void ReadLogEntry(string entry)
     {
-        OnLogEntry?.Invoke(this, entry);
+        Events.RaiseLogEntry(this, entry);
 
         _logEntriesRead += 1;
 
@@ -259,7 +244,10 @@ internal sealed class ActivityWatcher : IDisposable
 
         InStudioPlace = !InStudioPlace;
         App.Logger.Info(InStudioPlace ? "Studio place opened" : "Studio place closed");
-        (InStudioPlace ? OnStudioPlaceOpened : OnStudioPlaceClosed)?.Invoke(this, EventArgs.Empty);
+        if (InStudioPlace)
+            Events.RaiseStudioPlaceOpened(this);
+        else
+            Events.RaiseStudioPlaceClosed(this);
     }
 
     private async void ProcessPlayerLogEntry(string logMessage)
@@ -283,7 +271,7 @@ internal sealed class ActivityWatcher : IDisposable
         {
             App.Logger.Debug("User is back into the desktop app");
 
-            OnAppClose?.Invoke(this, EventArgs.Empty);
+            Events.RaiseAppClose(this);
 
             if (Data.PlaceId != 0 && !InGame)
             {
@@ -451,7 +439,7 @@ internal sealed class ActivityWatcher : IDisposable
                     App.Logger.Info($"Joined Game ({Data})");
                     InGame = true;
                     Data.TimeJoined = DateTime.Now;
-                    OnGameJoin?.Invoke(this, EventArgs.Empty);
+                    Events.RaiseGameJoin(this);
                 }
                 else
                 {
@@ -468,7 +456,7 @@ internal sealed class ActivityWatcher : IDisposable
                 InGame = false;
                 Data.TimeLeft = DateTime.Now;
                 AddToHistory(Data);
-                OnGameLeave?.Invoke(this, EventArgs.Empty);
+                Events.RaiseGameLeave(this);
 
                 var autoRejoinData = Data;
                 Data = new();
@@ -575,7 +563,7 @@ internal sealed class ActivityWatcher : IDisposable
                     Data.RPCLaunchData = data;
                 }
 
-                OnRPCMessage?.Invoke(this, message);
+                Events.RaiseRPCMessage(this, message);
 
                 LastRPCRequest = DateTime.Now;
             }
@@ -598,93 +586,12 @@ internal sealed class ActivityWatcher : IDisposable
                 if (App.Settings.Prop.ShowServerDetails && Data.MachineAddressValid)
                     _ = Data.QueryServerLocation();
 
-                ShowNotif?.Invoke(this, null!);
+                Events.RaiseShowNotif(this);
             }
         }
     }
 
-    private void StartHTTPServer()
-    {
-        try
-        {
-            _httpListener = new HttpListener();
-            _httpListener.Prefixes.Add($"http://localhost:{HttpPort}/");
-            _httpListener.Start();
-
-            _ = ListenForHTTPRequests(_httpCancellationTokenSource.Token);
-
-            App.Logger.Info($"Studio RPC server active on port {HttpPort}");
-        }
-        catch (Exception ex) { App.Logger.Error(ex, "Failed to start activity HTTP server"); }
-    }
-
-    public void StopHTTPServer()
-    {
-        _httpCancellationTokenSource.Cancel();
-
-        if (_httpListener is null)
-            return;
-
-        try { _httpListener.Close(); }
-        catch { }
-        _httpListener = null;
-    }
-
-    private async Task ListenForHTTPRequests(CancellationToken token)
-    {
-        while (_httpListener?.IsListening == true && !token.IsCancellationRequested)
-        {
-            try
-            {
-                var context = await _httpListener.GetContextAsync().WaitAsync(token);
-
-                _ = Task.Run(() => ProcessHTTPRequest(context), token);
-            }
-            catch (OperationCanceledException) { break; }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex);
-                await Task.Delay(1000, token);
-            }
-        }
-    }
-
-    private void ProcessHTTPRequest(HttpListenerContext context)
-    {
-        using var response = context.Response;
-
-        try
-        {
-            if (context.Request.HttpMethod != "POST" || context.Request.Url?.AbsolutePath != "/rpc")
-            {
-                response.StatusCode = 404;
-                return;
-            }
-
-            using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
-            string json = reader.ReadToEnd();
-            var message = JsonHelper.Deserialize<StudioMessage>(json);
-
-            if (message == null)
-                return;
-
-            if (message.StudioCommand == "SetRichPresence")
-            {
-                var richPresenceData = JsonHelper.Deserialize<StudioRichPresence>(message.Data);
-                if (richPresenceData != null)
-                    message.Data = JsonHelper.SerializeToElement(richPresenceData);
-            }
-
-            OnStudioRPCMessage?.Invoke(this, message);
-            response.StatusCode = 200;
-        }
-        catch (Exception ex)
-        {
-            App.Logger.Error(ex, "Failed to process activity HTTP request");
-            response.StatusCode = 500;
-        }
-    }
-
+   
     public void LoadGameHistory()
     {
         try
@@ -760,7 +667,7 @@ internal sealed class ActivityWatcher : IDisposable
             History = [.. History.OrderByDescending(x => x.TimeJoined).Take(300)];
 
         SaveGameHistory();
-        OnHistoryUpdated?.Invoke(this, EventArgs.Empty);
+        Events.RaiseHistoryUpdated(this);
     }
 
     public void SaveGameHistory()
@@ -803,11 +710,12 @@ internal sealed class ActivityWatcher : IDisposable
 
     public void Dispose()
     {
+        if (IsDisposed)
+            return;
+
         IsDisposed = true;
         _disposeCancellation.Cancel();
         _disposeCancellation.Dispose();
-        if (InRobloxStudio)
-            StopHTTPServer();
-        _httpCancellationTokenSource.Dispose();
+        httpServer?.Dispose();
     }
 }

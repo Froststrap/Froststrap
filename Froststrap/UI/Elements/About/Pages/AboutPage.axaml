@@ -10,6 +10,8 @@ SPDX-License-Identifier: MPL-2.0
              xmlns:dmodels="using:Froststrap.UI.ViewModels.About"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:resources="using:Froststrap.Localisation"
+             xmlns:utility="using:Froststrap.UI.Utility"
+             xmlns:ic="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
              x:DataType="dmodels:AboutViewModel"
              x:Class="Froststrap.UI.Elements.About.Pages.AboutPage">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -89,11 +91,53 @@ SPDX-License-Identifier: MPL-2.0
                 Margin="0,4,0,0"
                 IsExpanded="True"
             >
-                <StackPanel>
-                    <controls:MarkdownTextBlock MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
-                    <controls:MarkdownTextBlock MarkdownText="[SquireDot](https://github.com/UltimatePlayer97)" />
-                    <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net)" />
-                </StackPanel>
+                <ItemsControl ItemsSource="{Binding CodeContributors}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="dmodels:ContributorItem">
+                            <controls:Card Margin="4" Padding="0" CornerRadius="12,12,4,4" ClipToBounds="True">
+                                <StackPanel>
+                                    <Border Margin="8,8,8,0" CornerRadius="8" ClipToBounds="True"
+                                            Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                        <Viewbox Stretch="Uniform">
+                                            <Panel Width="100" Height="100">
+                                                <ic:Lucide
+                                                    Icon="User"
+                                                    Width="40"
+                                                    Height="40"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center" />
+                                                <Image
+                                                    utility:RemoteImage.SourceUrl="{Binding AvatarUrl}"
+                                                    Stretch="UniformToFill"
+                                                    RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                            </Panel>
+                                        </Viewbox>
+                                    </Border>
+                                    <StackPanel Margin="8" Spacing="8">
+                                        <TextBlock
+                                            Text="{Binding Name}"
+                                            FontWeight="SemiBold"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <controls:IconButton
+                                            Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                            CommandParameter="{Binding Url}"
+                                            Icon="Link"
+                                            IconSize="14"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Center"
+                                            Classes="Primary"
+                                            ToolTip.Tip="{Binding Url}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </controls:Card>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </controls:CardExpander>
 
             <controls:CardExpander

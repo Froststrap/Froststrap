@@ -13,8 +13,8 @@ namespace Froststrap.UI.Elements.ContextMenu
 {
     internal sealed partial class MenuContainer : Base.AvaloniaWindow
     {
-        private readonly Watcher? _watcher;
-        private ActivityWatcher? ActivityWatcher => _watcher?.ActivityWatcher;
+        private readonly Session? session;
+        private Integrations.ActivityWatcher.Watcher? ActivityWatcher => session?.ActivityWatcher;
 
         private ServerInformation? _serverInformationWindow;
         private ServerHistory? _gameHistoryWindow;
@@ -69,16 +69,16 @@ namespace Froststrap.UI.Elements.ContextMenu
             CloseRobloxMenuItem = items.ElementAtOrDefault(10);
         }
 
-        public MenuContainer(Watcher watcher) : this()
+        public MenuContainer(Session session) : this()
         {
-            _watcher = watcher;
+            this.session = session;
 
             if (ActivityWatcher is not null)
             {
-                ActivityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
-                ActivityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
-                ActivityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
-                ActivityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
+                Integrations.ActivityWatcher.Events.OnGameJoin += ActivityWatcher_OnGameJoin;
+                Integrations.ActivityWatcher.Events.OnGameLeave += ActivityWatcher_OnGameLeave;
+                Integrations.ActivityWatcher.Events.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
+                Integrations.ActivityWatcher.Events.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
                 Dispatcher.UIThread.Post(() =>
                 {
@@ -104,16 +104,16 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
 
-                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && _watcher?.Softkey != null && OperatingSystem.IsWindows();
+                        SoftkeyMenuItem?.IsVisible = App.Settings.Prop.SoftKeyEnabled && session?.Softkey != null && OperatingSystem.IsWindows();
                         SoftkeyMenuItem?.IsChecked = true;
                     }
 
                     if (RichPresenceMenuItem != null)
                     {
-                        RichPresenceMenuItem.IsVisible = (_watcher?.PlayerRichPresence is not null || _watcher?.StudioRichPresence is not null);
+                        RichPresenceMenuItem.IsVisible = (session?.PlayerRichPresence is not null || session?.StudioRichPresence is not null);
 
-                        _watcher?.PlayerRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
-                        _watcher?.StudioRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
+                        session?.PlayerRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
+                        session?.StudioRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
                     }
 
                     VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{ProjectInfo.Name} {App.Version}");
@@ -151,7 +151,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         {
             if (_serverInformationWindow is null)
             {
-                _serverInformationWindow = new(_watcher!);
+                _serverInformationWindow = new(session!);
                 _serverInformationWindow.Closed += (_, _) => _serverInformationWindow = null;
             }
 
@@ -176,10 +176,19 @@ namespace Froststrap.UI.Elements.ContextMenu
                 AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
             });
 
+        protected override void OnClosed(EventArgs e)
+        {
+            Integrations.ActivityWatcher.Events.OnGameJoin -= ActivityWatcher_OnGameJoin;
+            Integrations.ActivityWatcher.Events.OnGameLeave -= ActivityWatcher_OnGameLeave;
+            Integrations.ActivityWatcher.Events.OnStudioPlaceOpened -= ActivityWatcher_OnStudioPlaceOpened;
+            Integrations.ActivityWatcher.Events.OnStudioPlaceClosed -= ActivityWatcher_OnStudioPlaceClosed;
+            base.OnClosed(e);
+        }
+
         private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e) => _studioPlaceJoinTime = DateTime.Now;
         private void ActivityWatcher_OnStudioPlaceClosed(object? sender, EventArgs e) => _studioPlaceJoinTime = null;
 
-        private void CloseWatcheMenuItem_Click(object? sender, EventArgs e) => _watcher?.Dispose();
+        private void CloseSessionMenuItem_Click(object? sender, EventArgs e) => session?.Dispose();
 
         private void RichPresenceMenuItem_Click(object? sender, EventArgs e)
         {
@@ -187,8 +196,8 @@ namespace Froststrap.UI.Elements.ContextMenu
             {
                 bool isChecked = item.IsChecked;
 
-                _watcher?.PlayerRichPresence?.SetVisibility(isChecked);
-                _watcher?.StudioRichPresence?.SetVisibility(isChecked);
+                session?.PlayerRichPresence?.SetVisibility(isChecked);
+                session?.StudioRichPresence?.SetVisibility(isChecked);
             }
         }
 
@@ -196,7 +205,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         {
             if (sender is NativeMenuItem item)
             {
-                _watcher?.Softkey?.SetEnabled(item.IsChecked);
+                session?.Softkey?.SetEnabled(item.IsChecked);
             }
         }
 
@@ -213,7 +222,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         }
 
         private void ServerDetailsMenuItem_Click(object? sender, EventArgs e) => ShowServerInformationWindow();
-        private void CloseRobloxMenuItem_Click(object? sender, EventArgs e) => _watcher?.KillRobloxProcess();
+        private void CloseRobloxMenuItem_Click(object? sender, EventArgs e) => session?.KillRobloxProcess();
 
         private void JoinLastServerMenuItem_Click(object? sender, EventArgs e)
         {

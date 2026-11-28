@@ -7,16 +7,16 @@ using DiscordRPC;
 using DiscordRPC.IO;
 using DiscordRPC.Logging;
 using RichPresence = DiscordRPC.RichPresence;
-using DiscordRPC.Message;
 using Froststrap.Integrations.Discord;
 using System.Net.Sockets;
+using Froststrap.Integrations.ActivityWatcher;
 
 namespace Froststrap.Integrations
 {
     internal sealed class StudioDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
-        private readonly ActivityWatcher _activityWatcher;
+        private readonly ActivityWatcher.Watcher _activityWatcher;
         private readonly Queue<StudioMessage> _messageQueue = [];
 
         private RichPresence? _currentPresence;
@@ -26,7 +26,7 @@ namespace Froststrap.Integrations
         private bool _rpcEnabled = true;
         private bool _disposed;
 
-        public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
+        public StudioDiscordRichPresence(ActivityWatcher.Watcher activityWatcher)
         {
             INamedPipeClient? pipeClient = DiscordIpcPipeClient.Create();
             try
@@ -41,9 +41,9 @@ namespace Froststrap.Integrations
 
             _activityWatcher = activityWatcher;
 
-            _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
-            _activityWatcher.OnStudioPlaceOpened += (_, _) => HandleStudioPlaceOpened();
-            _activityWatcher.OnStudioPlaceClosed += (_, _) => HandleStudioPlaceClosed();
+            ActivityWatcher.Events.OnStudioRPCMessage += OnStudioRPCMessage;
+            ActivityWatcher.Events.OnStudioPlaceOpened += OnStudioPlaceOpened;
+            ActivityWatcher.Events.OnStudioPlaceClosed += OnStudioPlaceClosed;
 
             _rpcClient.OnReady += (_, e) =>
             {
@@ -259,10 +259,18 @@ namespace Froststrap.Integrations
             }
         }
 
+        private void OnStudioRPCMessage(object? sender, StudioMessage message) => ProcessRPCMessage(message);
+        private void OnStudioPlaceOpened(object? sender, EventArgs e) => HandleStudioPlaceOpened();
+        private void OnStudioPlaceClosed(object? sender, EventArgs e) => HandleStudioPlaceClosed();
+
         public void Dispose()
         {
             if (_disposed) return;
             _disposed = true;
+
+            ActivityWatcher.Events.OnStudioRPCMessage -= OnStudioRPCMessage;
+            ActivityWatcher.Events.OnStudioPlaceOpened -= OnStudioPlaceOpened;
+            ActivityWatcher.Events.OnStudioPlaceClosed -= OnStudioPlaceClosed;
 
             App.Logger.Info("Cleaning up Discord RPC");
 

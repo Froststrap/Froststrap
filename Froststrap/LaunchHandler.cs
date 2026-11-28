@@ -35,7 +35,7 @@ internal static class LaunchHandler
                 break;
 
             default:
-                if (App.Bootstrapper is not null || Volatile.Read(ref _activeWatcher) is not null)
+                if (App.Bootstrapper is not null || Volatile.Read(ref activeSession) is not null)
                 {
                     App.Logger.Info("Not closing, Roblox is still being launched or watched");
                     break;
@@ -372,21 +372,21 @@ internal static class LaunchHandler
                     await App.FinalizeExceptionHandling(t.Exception);
             }
 
-            WatcherData? watcherData = App.Bootstrapper.PendingWatcherData;
+            SessionData? sessionData = App.Bootstrapper.PendingSessionData;
 
             App.Bootstrapper.Dispose();
             App.Bootstrapper = null;
 
-            if (watcherData is null)
+            if (sessionData is null)
             {
                 EndLaunch();
                 return;
             }
 
-            App.Logger.Info("Handing off to the watcher");
+            App.Logger.Info("Handing off to the session");
 
-            // the watcher owns this process from here on, so only bail out of it if it refused to start
-            bool handedOff = await Dispatcher.UIThread.InvokeAsync(() => LaunchWatcher(watcherData));
+            // the session owns this process from here on, so only bail out of it if it refused to start
+            bool handedOff = await Dispatcher.UIThread.InvokeAsync(() => LaunchSession(sessionData));
 
             if (!handedOff)
                 EndLaunch();
@@ -403,50 +403,50 @@ internal static class LaunchHandler
             App.Bootstrapper.Dialog = null;
         }
 
-        App.Logger.Info("Bootstrapper started, this process may hand off to the watcher when it finishes");
+        App.Logger.Info("Bootstrapper started, this process may hand off to the session when it finishes");
     }
 
-    private static Watcher? _activeWatcher;
+    private static Session? activeSession;
 
-    public static bool LaunchWatcher(WatcherData data)
+    public static bool LaunchSession(SessionData data)
     {
-        if (Volatile.Read(ref _activeWatcher) is not null)
+        if (Volatile.Read(ref activeSession) is not null)
         {
-            App.Logger.Error("A watcher is already running in this process, ignoring the handoff");
+            App.Logger.Error("A session is already running in this process, ignoring the handoff");
             return true;
         }
 
-        var watcher = new Watcher(data, data.LaunchMode == LaunchMode.Player ? App.Clients.Player : App.Clients.Studio);
+        var session = new Session(data, data.LaunchMode == LaunchMode.Player ? App.Clients.Player : App.Clients.Studio);
 
-        if (!watcher.IsActive)
+        if (!session.IsActive)
         {
-            App.Logger.Error("Another process is already watching Roblox, not starting another watcher");
-            watcher.Dispose();
+            App.Logger.Error("Another process is already watching Roblox, not starting another session");
+            session.Dispose();
             return false;
         }
 
-        if (Interlocked.CompareExchange(ref _activeWatcher, watcher, null) is not null)
+        if (Interlocked.CompareExchange(ref activeSession, session, null) is not null)
         {
-            App.Logger.Error("A watcher is already running in this process, ignoring the handoff");
-            watcher.Dispose();
+            App.Logger.Error("A session is already running in this process, ignoring the handoff");
+            session.Dispose();
             return true;
         }
 
-        App.Logger.Info("Watcher started");
+        App.Logger.Info("Session started");
 
-        Task watcherTask = Task.Run(watcher.Run);
+        Task sessionTask = Task.Run(session.Run);
 
-        watcherTask.ContinueWith(async t =>
+        sessionTask.ContinueWith(async t =>
         {
-            App.Logger.Info("Watcher task has finished");
+            App.Logger.Info("Session task has finished");
 
-            watcher.Dispose();
+            session.Dispose();
 
-            Interlocked.CompareExchange(ref _activeWatcher, null, watcher);
+            Interlocked.CompareExchange(ref activeSession, null, session);
 
             if (t.IsFaulted)
             {
-                App.Logger.Error("An exception occurred when running the watcher");
+                App.Logger.Error("An exception occurred when running the session");
 
                 if (t.Exception is not null)
                     await App.FinalizeExceptionHandling(t.Exception);

@@ -8,7 +8,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
-using Froststrap.UI.Utility;
 
 namespace Froststrap.UI
 {
@@ -65,14 +64,10 @@ namespace Froststrap.UI
 
                 Window? owner = null;
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
                     owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
-                }
 
                 if (owner != null && owner.IsVisible)
-                {
                     await dialog.ShowDialog(owner);
-                }
                 else
                 {
                     var tcs = new TaskCompletionSource<bool>();
@@ -97,14 +92,10 @@ namespace Froststrap.UI
 
                 Window? owner = null;
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
                     owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
-                }
 
                 if (owner != null && owner.IsVisible)
-                {
                     await dialog.ShowDialog(owner);
-                }
                 else
                 {
                     var tcs = new TaskCompletionSource<bool>();
@@ -158,14 +149,10 @@ namespace Froststrap.UI
                 var messagebox = new FluentMessageBox(message, icon, buttons);
 
                 if (owner is null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
                     owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
-                }
 
                 if (owner != null)
-                {
                     await messagebox.ShowDialog(owner);
-                }
                 else
                 {
                     var tcs = new TaskCompletionSource<bool>();
