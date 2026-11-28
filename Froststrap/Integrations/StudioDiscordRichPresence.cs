@@ -16,7 +16,6 @@ namespace Froststrap.Integrations
     internal sealed class StudioDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient? _rpcClient;
-        private readonly ActivityWatcher.Watcher _activityWatcher;
         private readonly Queue<StudioMessage> _messageQueue = [];
 
         private RichPresence? _currentPresence;
@@ -38,8 +37,6 @@ namespace Froststrap.Integrations
             {
                 pipeClient?.Dispose();
             }
-
-            _activityWatcher = activityWatcher;
 
             ActivityWatcher.Events.OnStudioRPCMessage += OnStudioRPCMessage;
             ActivityWatcher.Events.OnStudioPlaceOpened += OnStudioPlaceOpened;
